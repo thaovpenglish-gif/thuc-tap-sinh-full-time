@@ -57,7 +57,7 @@ const FEEDBACK_MINI = {
 
 const GAMES_MINI = {
   type: 'pick', title: 'Chọn trò cho đoàn U50', icon: '🏖️',
-  prompt: 'Đoàn Dược Khỏe Re: trung bình 48 tuổi, 3 người đau lưng, muốn "sôi động như tụi trẻ". Chọn 3 trò.', pick: 3, time: 35, pass: 0.66,
+  prompt: 'Đoàn Dược Khỏe Re: trung bình 48 tuổi, 3 người đau lưng, muốn "sôi động như tụi trẻ". Chọn 3 trò.', pick: 3, time: 40, pass: 0.66,
   items: [
     { text: 'Mật thư tìm kho báu quanh resort', correct: true },
     { text: 'Rung chuông vàng về sản phẩm công ty', correct: true },

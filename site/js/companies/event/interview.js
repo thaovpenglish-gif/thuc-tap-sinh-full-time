@@ -5,7 +5,7 @@ const isTier = (...ids) => (s) => ids.includes(s.tier);
 
 const KIT_MINI = {
   type: 'pick', title: 'Xếp túi "event kit"', icon: '🎒',
-  prompt: 'Anh Duy: "Team building bãi biển, 120 khách, 6 giờ sáng xuất phát. Chọn 4 món phải có trong túi."', pick: 4, time: 30, pass: 0.75,
+  prompt: 'Anh Duy: "Team building bãi biển, 120 khách, 6 giờ sáng xuất phát. Chọn 4 món phải có trong túi."', pick: 4, time: 40, pass: 0.75,
   items: [
     { text: 'Băng keo đen + dây rút', sub: 'dán dây, buộc backdrop, sửa đời', correct: true },
     { text: 'Micro dự phòng + pin AA', correct: true },

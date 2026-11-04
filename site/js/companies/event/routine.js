@@ -27,7 +27,7 @@ const CUT_MINI = {
 
 const CONCEPT_MINI = {
   type: 'quiz', title: 'Đặt tên concept year-end', icon: '💡',
-  prompt: 'Khoa: "Khách cấm dùng chữ Rise. Chọn tên KHÔNG có chữ Rise."', time: 20, pass: 0.66,
+  prompt: 'Khoa: "Khách cấm dùng chữ Rise. Chọn tên KHÔNG có chữ Rise."', time: 30, pass: 0.66,
   questions: [
     { q: 'Chọn một:', options: ['Together We Rise', 'Cùng Nhau Đi Xa', 'Rise Together 2027'], correct: 1 },
     { q: 'Chọn tiếp:', options: ['Bứt Phá Vững Vàng', 'Sunrise Gala', 'We Rise Again'], correct: 0 },
