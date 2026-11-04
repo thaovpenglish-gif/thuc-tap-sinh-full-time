@@ -995,7 +995,7 @@ export const INTERN_EPISODES = [
         ] },
       ] },
       { who: 'tuyet', obj: '15:00 Gặp chị Tuyết: "ý nhỏ" về anh Bảo', time: '15:00', scene: [
-        ['tuyet', 'Thư xếp cho em mười lăm phút. Ý nhỏ của em là gì?'],
+        ['tuyet', 'Em xin chị mười lăm phút. Lịch ghi lý do: "ý nhỏ". Ý nhỏ của em là gì?'],
         { if: F('bao_dossier'), then: [['me', 'Hồ sơ của anh Bảo ạ: bốn bằng chứng anh ấy làm việc như một nhân viên. Chi phí có chị Quỳnh. Chỉ thiếu chữ ký của chị.']],
           else: [['me', 'Dạ, anh Bảo thực tập ba năm rồi ạ. Em nghĩ anh ấy xứng đáng được ký hợp đồng.']] },
         { if: tie('bao_driver'), then: [
@@ -1535,7 +1535,7 @@ export const INTERN_EPISODES = [
       ] },
       { who: 'obj:interview', obj: 'Vào phòng họp: trình bày cuối với Êm Ru', time: '10:00', seat: 'mr_seat', pos: { tuyet: 'mr_head', han: 'mr_n1', mai: 'mr_n2' }, scene: [
         { if: F('client_tea'), then: [['nar', 'Ba vị khách Êm Ru, lần này đúng giờ. Vị lớn tuổi nhất nhìn bạn, gật đầu như nhận ra người pha "trà tư vấn".']],
-          else: [['nar', 'Ba vị khách Êm Ru, lần này đúng giờ. Chị Gấm đặt phòng trên lịch. Không ai phải ra pantry.']] },
+          else: [['nar', 'Ba vị khách Êm Ru, lần này đúng giờ. Phòng họp không bị đặt trùng. Tiến bộ.']] },
         ['tuyet', 'Mời em.'],
         ['nar', 'Vị khách lớn tuổi hỏi: "Sáu tuần, hai trăm trang, bốn mươi slide. Vậy chúng tôi làm gì trước?"'],
         { c: 'ep_final_answer', o: [

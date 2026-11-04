@@ -225,7 +225,7 @@ export const OFFICIAL_EPISODES = [
         ] },
       ] },
       { who: 'mai', obj: 'Chị Mai và Long muốn nói chuyện', time: '15:00', pos: { long: 'x1', mai: 'x2' }, scene: [
-        { if: F('mai_handover'), then: [['mai', 'Chị sắp đi rồi, nên chị nói thẳng: chỗ nào cũng có một Khang. Câu hỏi là ở đó có ai đứng về phía em không.']],
+        { if: F('mai_left'), then: [['mai', 'Chị sắp đi rồi, nên chị nói thẳng: chỗ nào cũng có một Khang. Câu hỏi là ở đó có ai đứng về phía em không.']],
           else: [['mai', 'Chị ở lại vì ở đây chị được nói "không". Em cũng có quyền đó. Dùng nó trước khi nó hết hạn.']] },
         ['long', 'Tao dịch giúp: "T&M 2030" = "chị Hân có ngân sách mới". "Agile hơn" = "ít người hơn".'],
         { c: 'off_tx_allies', o: [
