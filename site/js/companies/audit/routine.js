@@ -1,9 +1,10 @@
 // Cân Đối & Cộng Sự — routine beats for ordinary days + side-task templates.
 
 const intern = (r) => r.status !== 'official';
+const khoaHere = (r) => !r.flags.khoa_left; // anh Khoa quits in the official arc
 
 export const ROUTINE = [
-  { id: 'au_r_voice', who: 'khoa', obj: 'Anh Khoa hỏi về voice note', time: '10:00', scene: [
+  { id: 'au_r_voice', who: 'khoa', obj: 'Anh Khoa hỏi về voice note', time: '10:00', when: khoaHere, scene: [
     ['khoa', 'Em nghe voice note anh gửi chưa?'],
     ['nar', 'Voice note dài 4 phút 12 giây. Bốn phút đầu là tiếng gõ phím, tiếng thở dài, và một đoạn anh Khoa nói chuyện với cây xương rồng.'],
     { c: '_au_r_voice', o: [
@@ -36,7 +37,7 @@ export const ROUTINE = [
       { t: '"Chị ơi, một đồng thì immaterial ạ."', fx: { dr: 2, rel: { thao: -1 } }, then: [['thao', 'Immaterial thì không điều chỉnh. Nhưng phải biết nó từ đâu. Không biết thì một đồng hôm nay là một tỷ năm sau.']] },
     ] },
   ] },
-  { id: 'au_r_question', who: 'khoa', obj: 'Anh Khoa nhờ giải mã một dấu hỏi', time: '15:00', scene: [
+  { id: 'au_r_question', who: 'khoa', obj: 'Anh Khoa nhờ giải mã một dấu hỏi', time: '15:00', when: khoaHere, scene: [
     ['khoa', 'Chị Thảo để note "?" ở WP của anh. Em đoán xem nghĩa là gì?'],
     ['nar', 'Dấu hỏi nằm ở ô "Kết luận". Ô đó trống.'],
     { c: '_au_r_question', o: [
@@ -44,7 +45,7 @@ export const ROUTINE = [
       { t: '"Chị ấy hỏi anh có ổn không ạ."', fx: { rel: { khoa: 2 } }, then: [['khoa', '…Chưa ai hỏi anh câu đó trong note bao giờ. Em làm anh nhìn lại cái dấu hỏi.']] },
     ] },
   ] },
-  { id: 'au_r_partner', who: 'phong', obj: 'Anh Phong (Partner) bất ngờ ghé', time: '10:00', scene: [
+  { id: 'au_r_partner', who: 'phong', obj: 'Anh Phong (Partner) bất ngờ ghé', time: '10:00', when: (r) => !r.flags.partner_noticed, scene: [
     ['phong', 'Em… Tâm phải không? Thảo bảo em làm tồn kho.'],
     ['me', 'Dạ em là {ten} ạ.'],
     { c: '_au_r_partner', o: [
@@ -88,7 +89,7 @@ export const ROUTINE = [
       { t: 'Nhìn ly trà sữa của chị Thảo thật lâu.', fx: { dr: 1, nl: 5, rel: { thao: 1 } }, then: [['thao', '…Đây. Chị uống nửa rồi. Đừng kể ai.']] },
     ] },
   ] },
-  { id: 'au_r_teambuilding', who: 'hue', obj: 'Chị Huệ mời đăng ký team building', time: '14:00', scene: [
+  { id: 'au_r_teambuilding', who: 'hue', obj: 'Chị Huệ mời đăng ký team building', time: '14:00', once: true, scene: [
     ['hue', 'Đăng ký team building nhé! Thứ Bảy tuần sau, công viên gần đây. Chủ đề: "Cân bằng cuộc sống".'],
     ['think', 'Team building chủ đề cân bằng cuộc sống, giữa busy season, vào thứ Bảy.'],
     { c: '_au_r_tb', o: [
@@ -103,7 +104,7 @@ export const ROUTINE = [
       { t: '"Anh còn mẹo nào nữa không?"', fx: { rel: { tuan: 2 } }, then: [['tuan', 'F2 để sửa ô. F4 để khoá tham chiếu. Alt + = để cộng nhanh. Và… thôi, mẹo cuối dùng khi chị Thảo gọi lúc 23 giờ. Đừng dùng.']] },
     ] },
   ] },
-  { id: 'au_r_hieu', who: 'hieu', obj: 'Anh Hiếu (Tax) đang buồn', time: '14:30', scene: [
+  { id: 'au_r_hieu', who: 'hieu', obj: 'Anh Hiếu (Tax) đang buồn', time: '14:30', once: true, scene: [
     ['hieu', 'Em ơi, ai hỏi em về thuế thì nói: "tùy trường hợp". Câu đó đúng 100%.'],
     ['hieu', 'Hôm nay anh phát hiện một văn bản anh trích suốt ba tháng đã bị thay thế. Từ bốn tháng trước.'],
     { c: '_au_r_hieu', o: [
@@ -116,7 +117,7 @@ export const ROUTINE = [
     { c: '_au_r_sang', o: [
       { t: 'Nghe máy, ghi lại câu hỏi giúp anh Sang.', fx: { nl: -3, rel: { sang: 2 } }, then: [
         ['nar', 'Chị Bảy hỏi: "Mua vàng tặng con dâu có tính vào chi phí tiệm không em?" Bạn ghi lại, kèm ba dấu chấm than.'],
-        ['sang', 'Không. Nhưng anh phải nói "không" theo cách để năm sau chị ấy vẫn thuê anh.'],
+        ['sang', 'Không. Quà riêng không phải chi phí kinh doanh. Nhưng anh phải nói "không" theo cách để năm sau chị ấy vẫn thuê anh. (thông tin giải trí, không phải tư vấn pháp lý)'],
       ] },
       { t: '"Anh đâu có họp ạ."', fx: { dr: 1, rel: { sang: -1 } }, then: [['sang', 'Anh đang họp với chính anh. Về sức khỏe tinh thần.']] },
     ] },
@@ -169,15 +170,15 @@ export const ROUTINE = [
       { t: 'Để Tuấn ngủ. Anh ấy cần.', fx: { dr: 1, rel: { tuan: 1 } }, then: [['thao', 'Tuấn ngủ à. Ừ. Để nó ngủ. Hồi chị A1, chị ngủ trên đúng hộp đó.']] },
     ] },
   ] },
-  { id: 'au_r_wedding', who: 'thao', obj: 'Chị Thảo nhờ một việc riêng', time: '16:00', scene: [
+  { id: 'au_r_wedding', who: 'thao', obj: 'Chị Thảo nhờ một việc riêng', time: '16:00', once: true, scene: [
     ['thao', 'Em ơi, chị nhờ chút việc riêng. Bạn chị cưới, chị phải làm slide ảnh. Em làm đẹp giúp chị được không?'],
     { c: '_au_r_wedding', o: [
       { t: 'Nhận làm, ghi chú "việc riêng, không charge giờ".', fx: { nl: -5, rel: { thao: 2 } }, then: [['thao', 'Không charge giờ. Em hiểu văn hoá nhanh quá. Chị hơi lo cho em.']] },
       { t: '"Em xong WP rồi em làm ạ."', fx: { uy: 1, rel: { thao: 1 } }, then: [['thao', 'Ưu tiên đúng. Chị thích. Bạn chị thì không.']] },
     ] },
   ] },
-  { id: 'au_r_year', who: 'obj:desk', obj: 'Về bàn rà lại 15 file WP', time: '14:30', scene: [
-    ['nar', 'Tiêu đề cả 15 file WP ghi "Năm tài chính kết thúc 31/12/2024". Bạn copy từ file năm ngoái của năm ngoái.'],
+  { id: 'au_r_year', who: 'obj:desk', obj: 'Về bàn rà lại 15 file WP', time: '14:30', once: true, scene: [
+    ['nar', 'Tiêu đề cả 15 file WP ghi "Năm tài chính kết thúc 31/12/2024". Bạn copy từ file năm ngoái mà quên đổi năm.'],
     { c: '_au_r_year', o: [
       { t: 'Sửa cả 15 file, kiểm tra luôn công thức.', fx: { nl: -6, uy: 2 }, then: [['think', 'Ba file có công thức trỏ tới sheet không tồn tại. Hồn ma năm cũ ở khắp nơi.']] },
       { t: 'Dùng Find & Replace cho nhanh.', fx: { dr: 1, nl: -3 }, then: [['nar', 'Find & Replace đổi luôn một số tiền có chứa "2024" ở ô doanh thu. Bạn phát hiện ra sau mười phút. May.']] },
@@ -207,7 +208,7 @@ export const ROUTINE = [
       { t: 'Forward cho anh Khoa.', fx: { rel: { khoa: 1 } }, then: [['khoa', 'Ừ. Anh gọi chị Hồng. Anh dùng giọng "người không ngủ ba ngày". Giọng đó rất thuyết phục.']] },
     ] },
   ] },
-  { id: 'au_r_replyall', who: 'khoa', obj: 'Email "Re: Re: Re: Fw: Re: số dư tiền"', time: '09:30', scene: [
+  { id: 'au_r_replyall', who: 'khoa', obj: 'Email "Re: Re: Re: Fw: Re: số dư tiền"', time: '09:30', when: khoaHere, scene: [
     ['nar', 'Email "Re: Re: Re: Fw: Re: số dư tiền" có 47 người nhận. Bạn được cc ở lần forward thứ sáu. Không ai nhớ câu hỏi gốc.'],
     ['khoa', 'Em đọc thread đó rồi trả lời giúp anh câu hỏi gốc nhé.'],
     { c: '_au_r_replyall', o: [
@@ -215,21 +216,21 @@ export const ROUTINE = [
       { t: 'Bấm Reply All: "Dạ đã khớp ạ."', fx: { dr: 3 }, then: [['nar', '47 người nhận được. 12 người reply all "ok". Hộp thư cả phòng ngập trong tiếng "ok".']] },
     ] },
   ] },
-  { id: 'au_r_payroll', who: 'obj:desk', obj: 'File khách gửi có một sheet lạ', time: '16:00', scene: [
+  { id: 'au_r_payroll', who: 'obj:desk', obj: 'File khách gửi có một sheet lạ', time: '16:00', once: true, scene: [
     ['nar', 'File chi phí khách gửi có thêm sheet "Lương BGĐ". Bạn vừa biết lương kế toán trưởng. Và của CFO. Và vì sao chị Hồng mệt.'],
     { c: '_au_r_payroll', o: [
       { t: 'Đóng sheet, báo anh Khoa xin khách gửi lại bản không có lương.', fx: { uy: 3, rel: { khoa: 1 } }, then: [['khoa', 'Đúng. Mình chỉ lấy cái mình cần. Biết nhiều quá không phải lợi thế. Là rủi ro.']] },
       { t: 'Nhìn thêm năm giây.', fx: { dr: 2 }, then: [['think', 'Lương CFO gấp mười lăm lần lương chị Hồng. Mình sẽ không bao giờ quên con số này. Đó chính là vấn đề.']] },
     ] },
   ] },
-  { id: 'au_r_sun', who: 'khoa', obj: 'Anh Khoa hỏi chuyện thời tiết', time: '12:15', scene: [
+  { id: 'au_r_sun', who: 'khoa', obj: 'Anh Khoa hỏi chuyện thời tiết', time: '12:15', when: khoaHere, scene: [
     ['khoa', 'Em vừa ở ngoài vào hả? Trời thế nào? Kể anh nghe.'],
     { c: '_au_r_sun', o: [
       { t: 'Kể thật chi tiết: nắng, gió, mùi bánh mì.', fx: { rel: { khoa: 2 } }, then: [['khoa', 'Bánh mì… có pa-tê không em?'], ['nar', 'Anh Khoa nhắm mắt nghe như nghe nhạc.']] },
       { t: 'Kéo anh ra cửa sổ năm phút.', fx: { nl: 3, rel: { khoa: 3 } }, then: [['khoa', 'Ồ. Nó vẫn ở đó. Mặt trời. Anh tưởng nó chuyển sang job khác rồi.']] },
     ] },
   ] },
-  { id: 'au_r_printscan', who: 'my', obj: 'Chị My phổ biến quy trình mới', time: '14:00', scene: [
+  { id: 'au_r_printscan', who: 'my', obj: 'Chị My phổ biến quy trình mới', time: '14:00', once: true, scene: [
     ['my', 'Quy trình mới: mọi chứng từ điện tử phải in ra, ký nháy, scan lại, rồi upload.'],
     ['think', 'In một file điện tử để biến nó thành file điện tử.'],
     { c: '_au_r_printscan', o: [
@@ -237,10 +238,10 @@ export const ROUTINE = [
       { t: 'Đề xuất ký số thay vì in.', fx: { uy: 2, rel: { my: 1 } }, then: [['my', 'Đề xuất tốt. Em viết hướng dẫn cho cả phòng nhé. Hạn thứ Sáu.'], ['think', 'Phần thưởng cho ý tưởng tốt: thêm việc.']] },
     ] },
   ] },
-  { id: 'au_r_lift', who: 'lua', obj: 'Cô Lụa báo tin thang máy', time: '08:45', scene: [
+  { id: 'au_r_lift', who: 'lua', obj: 'Cô Lụa báo tin thang máy', time: '08:45', once: true, scene: [
     ['lua', 'Thang máy hôm nay bảo trì. Đi thang bộ nhé cháu. Mười một tầng.'],
     { c: '_au_r_lift', o: [
-      { t: 'Leo thang bộ.', fx: { nl: -8, rel: { phong: 1 } }, then: [['nar', 'Tầng 7, bạn gặp anh Phong đang nghỉ chân. "Chào… Tâm," anh nói. Hai người leo nốt bốn tầng trong im lặng tôn trọng.']] },
+      { t: 'Leo thang bộ.', fx: { nl: -8, rel: { phong: 1 } }, then: [{ if: (r) => !!r.flags.partner_noticed, then: [['nar', 'Tầng 7, bạn gặp anh Phong đang nghỉ chân. "Chào {ten}," anh nói. Đúng tên. Hai người leo nốt bốn tầng trong im lặng tôn trọng.']], else: [['nar', 'Tầng 7, bạn gặp anh Phong đang nghỉ chân. "Chào… Tâm," anh nói. Hai người leo nốt bốn tầng trong im lặng tôn trọng.']] }] },
       { t: 'Ngồi uống trà gừng chờ thang sửa xong.', fx: { clock: 20, nl: 4, rel: { lua: 1 } }, then: [['lua', 'Ngồi đi. Thang sửa xong lúc nào cô cũng không biết. Nhưng trà thì xong rồi.']] },
     ] },
   ] },
@@ -262,7 +263,7 @@ export const ROUTINE = [
 ];
 
 export const SIDE_TASKS = [
-  { id: 'au_stamp', title: 'Mang thư xác nhận của anh Khoa qua cô Lụa đóng dấu', from: 'khoa', base: 70, legs: [
+  { id: 'au_stamp', title: 'Mang thư xác nhận của anh Khoa qua cô Lụa đóng dấu', from: 'khoa', base: 70, when: khoaHere, legs: [
     { npc: 'khoa', line: ['khoa', 'Em mang tập thư này qua cô Lụa đóng dấu giúp anh. Đừng giục cô. Giục là cô đóng chậm hơn.'] },
     { npc: 'lua', line: ['lua', 'Thư của Khoa à. Ừ. Dấu đỏ, thẳng hàng. Mang về cho nó.'] },
     { npc: 'khoa', line: ['khoa', 'Thẳng hàng thật. Cô Lụa là thước kẻ sống.'] },
@@ -287,7 +288,7 @@ export const SIDE_TASKS = [
     { obj: 'printer', line: ['nar', 'Bạn in 46 trang. Trang cuối ghi: "Văn bản này có hiệu lực kể từ ngày ký". Anh Hiếu sẽ thích dòng này.'] },
     { npc: 'hieu', line: ['hieu', 'Cảm ơn em. Anh sẽ đọc tối nay. Như đọc thơ.'] },
   ] },
-  { id: 'au_coffee', title: 'Pha cà phê cho anh Khoa (anh chưa rời ghế từ hôm qua)', from: 'khoa', base: 50, legs: [
+  { id: 'au_coffee', title: 'Pha cà phê cho anh Khoa (anh chưa rời ghế từ hôm qua)', from: 'khoa', base: 50, when: khoaHere, legs: [
     { npc: 'khoa', line: ['khoa', 'Em pha giúp anh một ly cà phê. Đen. Không đường. Như tương lai của job này.'] },
     { obj: 'coffee', line: ['nar', 'Bạn pha cà phê. Pantry có ba gói cà phê và một tờ giấy: "Quỹ ăn đêm chỉ claim sau 21h".'] },
     { npc: 'khoa', line: ['khoa', 'Đắng. Ấm. Cảm ơn em. Anh vừa cảm nhận được thời gian.'] },
@@ -297,7 +298,7 @@ export const SIDE_TASKS = [
     { npc: 'diep', line: ['diep', 'Của Ngân à. Chị biết ngay vì tô màu nền. Ừ, đúng. Thiếu một dòng tổng. Bảo Ngân chị không thấy gì.'] },
     { npc: 'ngan', line: ['ngan', 'Diệp gật rồi à? Tốt. Chị sẽ không kể với Diệp là chị vui.'] },
   ] },
-  { id: 'au_initials', title: 'Xin chữ ký nháy anh Khoa cho chị My', from: 'my', base: 70, legs: [
+  { id: 'au_initials', title: 'Xin chữ ký nháy anh Khoa cho chị My', from: 'my', base: 70, when: khoaHere, legs: [
     { npc: 'my', line: ['my', 'Hồ sơ này thiếu chữ ký nháy của Khoa ở trang 37. Em mang qua.'] },
     { npc: 'khoa', line: ['khoa', 'Lại trang 37. Anh nghĩ trang 37 bị nguyền.'] },
     { npc: 'my', line: ['my', 'Đủ rồi. Chị ghi. Trang "đã xong".'] },
@@ -315,7 +316,7 @@ export const SIDE_TASKS = [
   { id: 'au_partner_tea', title: 'Pha trà mang vào cho anh Phong trước giờ ký', from: 'lua', base: 50, legs: [
     { npc: 'lua', line: ['lua', 'Anh Phong sắp đến. Cháu pha giúp cô ấm trà. Trà, không phải cà phê. Anh Phong ký bằng trà.'] },
     { obj: 'coffee', line: ['nar', 'Bạn pha một ấm trà. Pantry có ba loại trà, bạn chọn loại có hạn dùng còn xa nhất.'] },
-    { npc: 'phong', line: ['phong', 'Trà vừa. Cảm ơn em… Tâm phải không?'] },
+    { npc: 'phong', line: ['phong', 'Trà vừa. Cảm ơn em. Ký bằng trà thì chữ ký mềm hơn một chút.'] },
   ] },
   { id: 'au_greenpen', title: 'Xin chị Huệ một cây bút xanh lá cho chị Diệp', from: 'diep', base: 80, legs: [
     { npc: 'diep', line: ['diep', 'Chị hết bút xanh lá. Em xin chị Huệ giúp chị một cây. Đây là chuyện khẩn cấp.'] },

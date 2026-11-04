@@ -1400,7 +1400,7 @@ const OWNERROR = {
   intro: 'Báo cáo kiểm toán Phúc Lộc đã phát hành. Bản cứng có chữ ký mực xanh đen của anh Phong, đã nằm trong tủ "HỒ SƠ KIỂM TOÁN".\n\nSáng nay, khi mở lại bảng thuyết minh để copy mẫu cho job khác, bạn thấy: tổng cột "Chi phí trả trước" lệch 12.000.000 đồng. Bạn cộng sai. Chính bạn.',
   steps: [
     { who: 'obj:desk', obj: 'Cộng lại cột thuyết minh lần thứ năm', time: '08:45', scene: [
-      ['nar', 'Bạn cộng lần thứ năm. Vẫn lệch mười hai triệu. Mức trọng yếu của job là ba tỷ. Mười hai triệu là "immaterial". Nhưng nó là của bạn.'],
+      ['nar', 'Bạn cộng lần thứ năm. Vẫn lệch mười hai triệu. Mức trọng yếu của job là một tỷ rưỡi. Mười hai triệu là "immaterial". Nhưng nó là của bạn.'],
       ['think', 'Không ai biết. Báo cáo đã phát hành. Hồ sơ đã khoá.'],
       { fx: { nl: -3 } },
     ] },
@@ -1408,7 +1408,7 @@ const OWNERROR = {
       ['tuan', 'Sao mặt em như vừa nhận review note lúc 3 giờ sáng?'],
       { c: 'au_oe_tuan', o: [
         { t: 'Kể cho Tuấn nghe.', fx: { rel: { tuan: 2 } }, then: [
-          ['tuan', 'Mười hai triệu trên ba tỷ? Immaterial. Nhưng em biết, và em sẽ nhớ. Anh có một cái như thế từ năm ngoái. Anh vẫn nhớ.'],
+          ['tuan', 'Mười hai triệu trên một tỷ rưỡi? Immaterial. Nhưng em biết, và em sẽ nhớ. Anh có một cái như thế từ năm ngoái. Anh vẫn nhớ.'],
           ['tuan', 'Anh không báo. Đến giờ anh vẫn không biết mình đúng hay sai.'],
         ] },
         { t: '"Không có gì đâu anh."', fx: { nl: -3 }, then: [
@@ -1517,7 +1517,8 @@ const YEAREND = {
       { if: (r) => r.status === 'official', then: [['think', 'Giờ mình là nhân viên chính thức. Tất niên không bắt buộc. Note thì bắt buộc.']] },
       { c: 'au_ye_party', o: [
         { t: 'Đi tất niên, uống ít, về bằng xe ôm công nghệ.', fx: { money: -120_000, nl: 10, rel: { tuan: 1, hue: 1, diep: 1 }, set: { drank_today: true } }, then: [
-          ['nar', 'Anh Khoa nhận voucher spa thứ tư. Chị Diệp nhảy. Chị Thảo về sớm vì con. Ai cũng giả vờ không thấy chị My cười.'],
+          { if: F('khoa_left'), then: [['nar', 'Voucher spa của anh Khoa được chị Huệ gửi qua bưu điện tới quán cà phê. Chị Diệp nhảy. Chị Thảo về sớm vì con. Ai cũng giả vờ không thấy chị My cười.']],
+            else: [['nar', 'Anh Khoa nhận voucher spa thứ tư. Chị Diệp nhảy. Chị Thảo về sớm vì con. Ai cũng giả vờ không thấy chị My cười.']] },
         ] },
         { t: 'Ở lại clear note, nhắn group "mọi người vui nhé".', fx: { nl: -10, uy: 2, rel: { thao: 1 } }, then: [
           ['nar', 'Văn phòng tối. Còn bạn, màn hình, và Mèo Số Dư. Nó nằm lên bàn phím, gõ "aaa". Nó đang chúc mừng năm mới.'],
@@ -1531,7 +1532,7 @@ const YEAREND = {
 // ---------- official arc ----------
 const OFF1 = {
   id: 'off_honeymoon', official: true, title: 'A1 chính thức: tuần trăng mật',
-  intro: 'Ngày đầu với chức danh "Associate 1". Danh thiếp in tên bạn, sai một dấu. Email chào mừng của chị Huệ dài ba dòng; dòng thứ ba là mã job mới.\n\nCảm giác như được lên lớp. Bài tập về nhà cũng lên lớp.',
+  intro: 'Tuần đầu với chức danh "Associate 1". Danh thiếp in tên bạn, sai một dấu. Email chào mừng của chị Huệ dài ba dòng; dòng thứ ba là mã job mới.\n\nCảm giác như được lên lớp. Bài tập về nhà cũng lên lớp.',
   steps: [
     { who: 'hue', obj: 'Chị Huệ làm thủ tục nhân viên chính thức', time: '08:45', scene: [
       ['hue', 'Chúc mừng em! Từ tháng này em có hợp đồng lao động, nên có bảo hiểm xã hội, y tế, thất nghiệp. Phần em đóng khoảng 10,5% lương.'],
@@ -1576,7 +1577,7 @@ const OFF1 = {
       ] },
     ] },
   ],
-  diary: (s) => `Ngày đầu làm A1. Danh thiếp sai một dấu. ${s.flags.took_three ? 'Mình nhận ba job cùng lúc.' : 'Mình đàm phán được còn hai job.'} Tuần trăng mật kéo dài 45 phút.`,
+  diary: (s) => `Tuần đầu làm A1. Danh thiếp sai một dấu. ${s.flags.took_three ? 'Mình nhận ba job cùng lúc.' : 'Mình đàm phán được còn hai job.'} Tuần trăng mật kéo dài 45 phút.`,
 };
 
 const OFF2 = {
@@ -1584,7 +1585,7 @@ const OFF2 = {
   intro: 'Busy season đạt đỉnh. Văn phòng sáng đèn tới 23 giờ. Quỹ ăn đêm hết từ ngày 12. Máy in kẹt bốn lần trong một ngày, kỷ lục mới.\n\nSáng nay anh Khoa đến với một phong bì trắng. Không phải quà. Đơn nghỉ việc.',
   steps: [
     { who: 'khoa', obj: 'Anh Khoa có chuyện muốn nói', time: '08:45', scene: [
-      ['khoa', 'Anh nghỉ. Anh vừa nhận thưởng. Anh đi bán cà phê. Ít nhất ly cà phê thì cân được.'],
+      ['khoa', 'Anh nghỉ. Thưởng anh cũng không chờ nữa. Anh đi bán cà phê. Ít nhất ly cà phê thì cân được.'],
       ['khoa', 'Job Vạn Thịnh đang dở 60%. Anh bàn giao cho em. File tên "VanThinh_ban_giao_FINAL_anh_Khoa". Anh xin lỗi vì chữ FINAL.'],
       { if: F('khoa_owes'), then: [['khoa', 'Anh hết nợ em rồi nhé. Anh để lại chậu xương rồng. Nó quang hợp hộ em.']] },
       { c: 'au_ob_khoa', o: [
@@ -1617,7 +1618,7 @@ const OFF2 = {
       ] },
     ] },
     { who: 'loc', obj: 'Anh Lộc đi ngang, nhìn laptop của bạn', time: '16:00', scene: [
-      ['loc', 'Năm giờ kém. Laptop em kêu như máy cày. Em muốn anh xem trước khi anh về không?'],
+      ['loc', 'Bốn giờ chiều rồi. Laptop em kêu như máy cày. Em muốn anh xem trước khi anh về không?'],
       ['nar', 'Còn một tiếng nữa anh Lộc về. Còn bảy tiếng nữa bạn về.'],
       { c: 'au_ob_loc', o: [
         { t: 'Nhờ anh Lộc dọn máy.', fx: { rel: { loc: 2 } }, then: [['loc', 'Xong. Anh xoá 14GB file tạm. Trong đó 3GB tên "WP_FINAL". Đừng lo, chỉ là bản nháp. Chắc vậy.']] },
@@ -1625,6 +1626,8 @@ const OFF2 = {
           ['loc', 'Một lần. Năm 2019. Anh thấy chị Thảo khóc ở phòng review lúc 23 giờ. Từ đó anh về đúng năm giờ, để công ty còn một người bình thường.'],
         ] },
       ] },
+      ['nar', 'Lúc bạn quay lại, anh Khoa đã ôm thùng carton ra thang máy. Trên bàn anh còn tờ giấy nhớ: "Tick xong chưa em? — K."'],
+      { fx: { set: { khoa_left: true } } },
     ] },
   ],
   diary: (s) => `Anh Khoa nghỉ, đi bán cà phê. ${s.flags.acting_incharge ? 'Mình thành in-charge tạm của Vạn Thịnh.' : 'Chị Thảo tự làm in-charge.'} ${s.flags.resign_draft ? 'Chị Diệp bảo viết đơn ra giấy. Mình đang nghĩ.' : ''}`,
@@ -1678,7 +1681,7 @@ const OFF3 = {
       ] },
     ] },
     { who: 'hue', obj: 'Chị Huệ gọi nhỏ', time: '16:00', scene: [
-      ['hue', 'Chị báo trước để em không sốc: tháng sau phòng Assurance "tái cấu trúc". Công ty gọi là "tối ưu nguồn lực sau mùa vụ".'],
+      ['hue', 'Chị báo trước để em không sốc: sắp tới phòng Assurance "tái cấu trúc". Công ty gọi là "tối ưu nguồn lực sau mùa vụ".'],
       ['hue', 'Chị không được nói ai có tên trong danh sách. Chị chỉ được nói là… có danh sách.'],
       { c: 'au_ocl_hue', o: [
         { t: '"Em có trong danh sách không chị?"', fx: { rel: { hue: 1 } }, then: [['hue', 'Chị không được nói. Nhưng chị khuyên em cập nhật CV. Chị khuyên câu này với tất cả mọi người. Kể cả chị.']] },
@@ -1696,7 +1699,8 @@ const OFF4 = {
     { who: 'obj:desk', obj: 'Đọc lại email 3:04 sáng của chị Thảo', time: '08:45', scene: [
       ['nar', 'Bạn đọc lại email lần thứ mười. Không có dấu hỏi. Lần đầu tiên chị Thảo viết một email không có dấu hỏi.'],
       { if: F('resign_draft'), then: [['think', 'Trong ngăn kéo có lá đơn mình viết từ hôm chị Diệp bảo "viết ra giấy đi". Nó chưa có chữ ký.']] },
-      ['nar', 'Bốn mươi hai đêm về sau 22 giờ. Cận tăng 0,75 độ. Một chậu xương rồng thừa kế.'],
+      ['nar', 'Hơn ba mươi đêm về sau 22 giờ. Cận tăng 0,75 độ.'],
+      { if: F('khoa_owes'), then: [['nar', 'Và một chậu xương rồng thừa kế.']] },
       { fx: { nl: -5 } },
     ] },
     { who: 'thao', obj: 'Vào phòng chị Thảo', time: '09:30', scene: [
@@ -1706,7 +1710,7 @@ const OFF4 = {
       ['thao', 'Họ cho em hai lựa chọn: nghỉ "theo nguyện vọng cá nhân", hoặc chờ quyết định cho thôi việc. Cái đầu hồ sơ đẹp hơn. Cái sau… đúng hơn.'],
       { c: 'au_of_thao', o: [
         { t: '"Nếu là chị, chị chọn gì?"', fx: { rel: { thao: 2 } }, then: [
-          ['thao', 'Chị năm 25 tuổi thì chọn cái đúng. Chị bây giờ thì chọn cái để con chị có bảo hiểm. Em 25 tuổi.'],
+          ['thao', 'Chị năm 25 tuổi thì chọn cái đúng. Chị bây giờ thì chọn cái để con chị có bảo hiểm. Em còn trẻ hơn chị năm đó.'],
         ] },
         { t: '"Em cảm ơn chị vì đã nói thật."', fx: { rel: { thao: 3 } }, then: [
           ['thao', 'Nói thật là thứ duy nhất chị còn cho em được. Thưởng thì… em biết rồi.'],
@@ -1742,7 +1746,8 @@ const OFF4 = {
       ] },
     ] },
     { who: 'diep', obj: 'Chào chị Diệp trước khi về', time: '17:00', scene: [
-      ['diep', 'Em đi hả. Đây. Bộ bút bốn màu. Chị mua từ hồi em làm thư xác nhận. Chị quên đưa.'],
+      { if: F('confirm_alt'), then: [['diep', 'Em đi hả. Đây. Bộ bút bốn màu. Chị mua từ hồi em làm thư xác nhận. Chị quên đưa.']],
+        else: [['diep', 'Em đi hả. Đây. Bộ bút bốn màu. Chị mua cho intern nào tick đúng màu. Chị chờ mãi. Thôi, em cầm.']] },
       ['diep', 'Đỏ: đã đối chiếu. Xanh: đã lần xuôi. Tím: đã cộng. Cam: hỏi lại. Mang theo, dùng cho bất cứ việc gì em làm tiếp.'],
       ['nar', 'Ra tới cửa, bạn quay lại. Mèo Số Dư nằm trên bàn bạn, cuộn tròn thành số 0. Cuối cùng, mọi thứ cũng cân.'],
     ] },

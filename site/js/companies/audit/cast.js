@@ -9,6 +9,7 @@ export const CAST = {
   thao: { name: 'Chị Thảo', role: 'Audit Manager · review note lúc 3 giờ sáng', emoji: '🖍️', color: '#ff8fa3', spot: 'finance',
     look: { shirt: '#ff8fa3', pants: '#4a3f5a', hair: 'bun', hairColor: '#1d1d1f', glasses: true, mug: true } },
   khoa: { name: 'Anh Khoa', role: 'Senior In-charge · chưa thấy nắng từ tháng Một', emoji: '🧟', color: '#c9d1dc', spot: 'senior',
+    present: (r) => !(r.flags && r.flags.khoa_left), // quits in the official arc (off_busy)
     look: { shirt: '#c9d1dc', pants: '#3a3f4a', skin: '#f2e8e0', hair: 'curly', hairColor: '#2a2a2a', pods: true, mug: true } },
   diep: { name: 'Chị Diệp', role: 'Associate 2 · tick-mark 4 màu', emoji: '🖊️', color: '#c9b6ff', spot: 'c1',
     look: { shirt: '#c9b6ff', pants: '#3f3f55', hair: 'pony', hairColor: '#2b1b14', clip: true, notes: true } },

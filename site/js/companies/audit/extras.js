@@ -131,7 +131,7 @@ export const ENDINGS = {
   quit: (r) => {
     const p = (r.flags || {}).final_path;
     if (p === 'client') return { title: 'Bạn sang phe khách hàng', text: 'Bạn làm kế toán tổng hợp ở Phúc Lộc Foods, lương gấp rưỡi. Tuần đầu, đoàn kiểm toán mới gửi PBC 42 dòng. Bạn chia ba đợt, đợt đầu tám mục. Intern bên kia gọi cảm ơn. Bạn suýt khóc.' };
-    if (p === 'pushed') return { title: 'Bạn bị "tối ưu nguồn lực"', text: 'Bạn không ký chữ "nguyện vọng". Quyết định ghi "lý do kinh tế". Bạn nhận trợ cấp đúng quy định và một thư giới thiệu anh Phong viết tay: "Giữ ý kiến khi khó giữ." (thông tin giải trí, không phải tư vấn pháp lý)' };
+    if (p === 'pushed') return { title: 'Bạn bị "tối ưu nguồn lực"', text: 'Bạn không ký chữ "nguyện vọng". Quyết định ghi "lý do kinh tế". Bạn nhận đủ lương những ngày báo trước; trợ cấp thôi việc thì không, vì chưa đủ mười hai tháng. Kèm thư giới thiệu anh Phong viết tay: "Giữ ý kiến khi khó giữ." (thông tin giải trí, không phải tư vấn pháp lý)' };
     return { title: 'Bạn nghỉ việc sau busy season', text: 'Bạn nộp đơn sau khi nhận nửa tháng thưởng, cùng một nửa phòng Assurance. Ngủ ba ngày liền. Ngày thứ tư bạn mơ thấy tick-mark màu cam. Nghĩa là: hỏi lại. Bạn hỏi lại cuộc đời. Nó chưa trả lời.' };
   },
   layoff: (r) => (((r.flags || {}).final_path === 'pushed') ? { title: 'Bạn bị "tối ưu nguồn lực"', text: 'Bạn không ký chữ "nguyện vọng". Quyết định ghi "lý do kinh tế". Bạn nhận đủ lương những ngày báo trước; trợ cấp thôi việc thì không, vì chưa đủ mười hai tháng. Kèm một thư giới thiệu anh Phong viết tay: "Giữ ý kiến khi khó giữ." (thông tin giải trí, không phải tư vấn pháp lý)' } : { title: 'Cân Đối "tái cấu trúc"', text: 'Email ghi "tối ưu nguồn lực sau mùa vụ". Bạn đọc lại ba lần, như đọc một review note không có dấu hỏi. Rồi bạn hiểu: lần này không cần clear.' }),
@@ -162,7 +162,7 @@ export const FOOD = [
 ];
 
 export const LIFE_EVENTS = [
-  { id: 'audit_stockcall', emoji: '🧊', text: 'Nửa đêm, anh Khoa nhắn: "Cuối tuần có lịch kiểm kê kho phân bón lúc 4 giờ sáng. Mang khẩu trang. Và áo khoác. Và niềm tin."', choices: [
+  { id: 'audit_stockcall', emoji: '🧊', when: (r) => !r.flags.khoa_left, text: 'Nửa đêm, anh Khoa nhắn: "Cuối tuần có lịch kiểm kê kho phân bón lúc 4 giờ sáng. Mang khẩu trang. Và áo khoác. Và niềm tin."', choices: [
     { t: 'Đi ngủ ngay cho chắc', fx: { nl: 5 }, after: 'Bạn ngủ lúc 22:30. Mơ thấy pallet. Pallet trong mơ cũng không khớp.' },
     { t: 'Xem nốt một tập phim', fx: { nl: -10, dr: 1 }, after: 'Một tập thành ba tập. Sáng ra bạn có đôi mắt của anh Khoa.' },
   ] },
