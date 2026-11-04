@@ -48,4 +48,4 @@ Vào Supabase → Table editor → `confessions` → đặt `hidden = true` cho 
 
 ## Cache khi deploy
 
-GitHub Pages cho trình duyệt giữ file cũ khoảng 10 phút. Mỗi lần đổi code, cập nhật số `?v=` ở `style.css` và `js/main.js` trong `site/index.html`, để người chơi không bị trộn code cũ với trang mới (lỗi màn hình trắng).
+GitHub Pages cho trình duyệt giữ file cũ khoảng 10 phút. Khi deploy, `scripts/stamp-version.mjs` tự gắn `?v=<mã commit>` vào `style.css`, `js/main.js` và **mọi** lệnh `import` giữa các file JS, nên người chơi luôn tải trọn một bộ file khớp nhau (không bị trộn bản đồ cũ với code mới, không bị màn hình trắng). Không cần sửa số `?v=` bằng tay.
