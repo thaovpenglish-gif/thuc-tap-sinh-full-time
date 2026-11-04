@@ -84,7 +84,7 @@ export const REVIEW_MINI = {
     { text: '"Thiếu ref chéo từ lead schedule sang WP chi tiết."', correct: true },
     { text: '"Tick-mark màu cam này nghĩa là gì?"' },
     { text: '"Chọn mẫu 25 hoá đơn nhưng WP chỉ có 23."', correct: true },
-    { text: '"?"' },
+    { text: '"?" (ở logo công ty trên trang bìa)' },
     { text: '"Đổi tên sheet cho đẹp."' },
   ],
 };
@@ -105,7 +105,7 @@ export const SIGNOFF_QUIZ = {
   type: 'quiz', title: '"Số này hơi lạ nhỉ?"', icon: '🖋️',
   prompt: 'Anh Phong nhìn bạn. Cả phòng nhìn bạn. Mèo Số Dư cũng nhìn bạn.', time: 30, pass: 0.66,
   questions: [
-    { q: 'Tồn kho tăng 40%, doanh thu tăng 5%. Em giải thích thế nào?', options: ['Do thị trường ạ', 'Khách tích trữ trước Tết: có hợp đồng mua, có biên bản kiểm kê', 'Năm ngoái cũng thế ạ'], correct: 1 },
+    { q: 'Tồn kho tăng 40%, doanh thu tăng 5%. Em giải thích thế nào?', options: ['Do thị trường ạ', 'Công ty trữ hàng cho đơn Tết: có hợp đồng bán đã ký, có biên bản kiểm kê', 'Năm ngoái cũng thế ạ'], correct: 1 },
     { q: 'Rủi ro cần lưu ý là gì?', options: ['Hàng tồn lâu, cần đánh giá dự phòng giảm giá', 'Không có rủi ro', 'Cá có thể bơi đi'], correct: 0 },
     { q: 'Bằng chứng nào mạnh nhất?', options: ['Lời chú Tư', 'Email của anh Quang', 'Biên bản kiểm kê có chọn mẫu và ảnh chụp'], correct: 2 },
   ],
@@ -367,15 +367,15 @@ const STOCK = {
   steps: [
     { who: 'obj:desk', obj: 'Ngồi xuống bàn, viết lại biên bản kiểm kê đêm qua', time: '08:30', scene: [
       ['nar', 'Bạn mở tập phiếu. Mực nhoè vì hơi lạnh. Bạn nhớ lại đêm qua…'],
-      { if: F('tuan_tips'), then: [['think', 'May mà nghe Tuấn mang áo khoác. Bạn đi cùng ca kiểm kê mặc áo mưa.'], { fx: { nl: 5 } }],
-        else: [['think', 'Mình không mang áo khoác. Ba tiếng trong kho lạnh, mình hiểu cảm giác của một con cá đông lạnh.'], { fx: { nl: -8 } }] },
+      { if: F('tuan_tips'), then: [['think', 'May mà nghe Tuấn: balo lúc nào cũng có áo khoác. Bảo vệ kho mặc áo mưa, nhìn mình đầy ghen tị.'], { fx: { nl: 5 } }],
+        else: [['think', 'Cái áo khoác anh Khoa dặn hôm thứ Hai đang treo ở nhà. Ba tiếng trong kho lạnh, mình hiểu cảm giác của một con cá đông lạnh.'], { fx: { nl: -8 } }] },
       ['nar', '2:10 sáng. Chú Tư, thủ kho, cầm tờ danh sách đã điền sẵn số lượng.'],
-      ['tu', 'Khỏi đếm con ơi, chú nhớ hết. Đếm xong kịp về ăn tất niên.'],
+      ['tu', 'Khỏi đếm con ơi, chú nhớ hết. Không đếm thì kịp về ngủ trước khi gà gáy.'],
       { c: 'au_sc_count', o: [
         { t: 'Yêu cầu mở thùng kiểm tra ngẫu nhiên.', fx: { nl: -12 }, then: [
           { mini: STOCK_MINI,
             good: [
-              ['nar', 'Pallet B7: bạn gõ, nghe "bộp". Mở ra: bốn mươi thùng rỗng xếp ngoài cùng như một bức tường. Chú Tư gãi đầu rất lâu.'],
+              ['nar', 'Pallet bạn chọn đều có chuyện. Lần theo đó, bạn gõ cả dãy B. B7 kêu "bộp": bốn mươi thùng rỗng xếp ngoài cùng như một bức tường. Chú Tư gãi đầu rất lâu.'],
               ['think', 'Bốn mươi thùng không khí. Đông lạnh rất chuyên nghiệp.'],
               { fx: { uy: 4, set: { count_strict: true, b7_found: true } } },
             ],
@@ -476,7 +476,7 @@ const STOCK = {
 
 const GHOST = {
   id: 'ghost_invoice', minDay: 8, maxDay: 11, title: 'Hoá đơn ma 2,1 tỷ',
-  intro: 'Anh Khoa giao bạn chọn mẫu 25 khoản "chi phí khác" của Phúc Lộc để đối chiếu chứng từ.\n\nKhoản số 17: "Chi phí tư vấn chiến lược theo chỉ đạo — Công ty TNHH Tư Vấn Sao Mai Rực Rỡ — 2.100.000.000 đồng". Diễn giải đúng sáu chữ. Không chữ nào là "hợp đồng".',
+  intro: 'Anh Khoa giao bạn chọn mẫu 25 khoản "chi phí khác" của Phúc Lộc để đối chiếu chứng từ.\n\nKhoản số 17: "Chi phí tư vấn chiến lược theo chỉ đạo — Công ty TNHH Tư Vấn Sao Mai Rực Rỡ — 2.100.000.000 đồng". Diễn giải đúng chín chữ. Không chữ nào là "hợp đồng".',
   steps: [
     { who: 'khoa', obj: 'Anh Khoa giao 25 mẫu chi phí khác', time: '09:00', scene: [
       ['khoa', 'Hai lăm mẫu, vouching về chứng từ gốc. Mẫu nào thiếu thì tick cam, đừng tick đỏ cho đẹp.'],
@@ -486,7 +486,7 @@ const GHOST = {
     { who: 'obj:desk', obj: 'Tra cứu hoá đơn điện tử của mẫu 17', time: '10:00', scene: [
       ['nar', 'Bạn nhập mã số thuế người bán, ký hiệu, số hoá đơn. Trang web quay vòng tròn mười giây.'],
       { mini: GHOST_MINI,
-        good: [['nar', 'Kết quả: "Người bán đã ngừng hoạt động". Bạn chụp màn hình, ghi ngày giờ tra, lưu vào WP đúng thư mục. Tim đập hơi nhanh.'], { fx: { uy: 3, set: { ghost_checked: true } } }],
+        good: [['nar', 'Kết quả: "Người bán đã ngừng hoạt động". Bạn chụp màn hình, ghi ngày giờ tra, lưu vào WP đúng thư mục. Tim đập hơi nhanh.'], { fx: { uy: 3, set: { ghost_checked: true, ghost_shot: true } } }],
         bad: [['nar', 'Bạn nhập nhầm ký hiệu hai lần. Lần thứ ba mới ra: "Người bán đã ngừng hoạt động". Bạn quên chụp màn hình.'], { fx: { nl: -4, set: { ghost_checked: true } } }],
       },
       ['nar', '(Thủ tục trong game được đơn giản hoá, thông tin giải trí, không phải tư vấn pháp lý.)'],
@@ -752,8 +752,13 @@ const CONFIRM = {
           ] },
         ] },
       ], else: [
-        ['khoa', 'Bảy mươi phần trăm, tính cả thủ tục thay thế. Em làm đúng sách. Anh sẽ khoe chị Thảo là anh dạy.'],
-        { fx: { uy: 3, rel: { khoa: 1 } } },
+        { if: (r) => !!r.flags.confirm_alt || !!r.flags.confirm_called, then: [
+          ['khoa', 'Bảy mươi phần trăm, tính cả thủ tục thay thế. Em làm đúng sách. Anh sẽ khoe chị Thảo là anh dạy.'],
+          { fx: { uy: 3, rel: { khoa: 1 } } },
+        ], else: [
+          ['khoa', 'Mười thư trên ba mươi. Còn xa bảy mươi. Mai em gọi khách nợ và làm thủ tục thay thế nốt nhé.'],
+          ['think', 'Thư xác nhận là loại thư duy nhất mà người gửi phải đi đòi hồi âm.'],
+        ] },
       ] },
     ] },
   ],
@@ -785,7 +790,7 @@ const TAX = {
       ['hieu', 'Trước khi đụng vào 1.400 hoá đơn, em làm bài test của anh. Ba câu.'],
       { mini: TAX_QUIZ,
         good: [['hieu', 'Đúng. Nhất là câu hỏi văn bản nào còn hiệu lực. Ở phòng anh, câu đó cứu nhiều mạng hơn mọi công thức.'], { fx: { uy: 2, rel: { hieu: 2 }, set: { tax_skill: true } } }],
-        bad: [['hieu', 'Sai câu quan trọng: em tin một con số anh trích mà không hỏi văn bản nào. Kể cả anh, em cũng đừng tin.'], { fx: { rel: { hieu: 1 } } }],
+        bad: [['hieu', 'Chưa ổn. Nhớ giúp anh một điều: đừng tin một điều khoản ai trích mà không hỏi văn bản nào. Kể cả anh, em cũng đừng tin.'], { fx: { rel: { hieu: 1 } } }],
       },
       ['nar', '(Nội dung thuế trong game được đơn giản hoá, thông tin giải trí, không phải tư vấn pháp lý.)'],
     ] },
@@ -897,7 +902,7 @@ const AVALANCHE = {
           ['nar', 'Chị Thảo bật cười. Lần đầu bạn thấy chị cười. Trông chị trẻ ra năm tuổi.'],
         ] },
         { t: 'Chỉ hỏi chị có cần em giúp gì không.', fx: { rel: { thao: 1 } }, then: [
-          ['thao', 'Có. Clear nốt 24 note. Nhưng cảm ơn em đã hỏi.'],
+          ['thao', 'Có. Clear nốt chỗ note còn lại, đúng thứ tự quan trọng. Nhưng cảm ơn em đã hỏi.'],
         ] },
       ] },
     ] },
@@ -972,7 +977,7 @@ const QC = {
       ['my', 'Trang 37 thiếu chữ ký nháy. Trước khi nói chuyện khác, em sắp xếp lại giúp chị thứ tự ký duyệt một hồ sơ.'],
       { mini: SIGN_ORDER,
         good: [['my', 'Đúng. Ai làm ký trước, ai soát ký sau. Partner ký cuối, không phải vì quan trọng nhất. Vì chịu trách nhiệm cuối.'], { fx: { uy: 2, rel: { my: 2 } } }],
-        bad: [['my', 'Em để Partner ký trước Senior. Nghĩa là anh Phong ký lên thứ chưa ai đọc. Chị ghi câu này lại. Trong sổ.'], { fx: { rel: { my: -1 } } }],
+        bad: [['my', 'Sai thứ tự. Nghĩa là có người ký lên thứ người trước chưa đọc. Chị ghi câu này lại. Trong sổ.'], { fx: { rel: { my: -1 } } }],
       },
       ['nar', 'Chị My lật một cuốn sổ bìa đen. Bìa ghi: "Những điều không nên làm, tập 6".'],
     ] },
