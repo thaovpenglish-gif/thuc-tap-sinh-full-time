@@ -1373,7 +1373,7 @@ export const INTERN_EPISODES = [
       { who: 'gam', obj: 'Chị Gấm đóng dấu giáp lai', time: '10:30', scene: [
         ['gam', 'Đóng dấu giáp lai hả em? Ba bộ… để chị xem một tí đã nhé.'],
         ['nar', 'Chị Gấm lấy con dấu khỏi két, lau bằng khăn mùi soa, hà hơi, rồi đóng. Một trang. Rất đẹp. Còn 419 trang.'],
-        { if: F('covered_gam'), then: [['gam', 'Hôm trước em đỡ cho chị vụ phòng họp. Hôm nay chị đóng nhanh. Nhanh theo kiểu của chị.'], { fx: { clock: -10 } }] },
+        { if: F('covered_gam'), then: [['gam', 'Hôm trước em đỡ cho chị vụ phòng họp. Hôm nay chị đóng nhanh. Nhanh theo kiểu của chị.'], { fx: { rel: { gam: 1 } } }] },
         { c: 'ep_tender_stamp', o: [
           { t: 'Giữ giấy, lật trang cho chị Gấm như dây chuyền.', fx: { nl: -5, rel: { gam: 2 }, set: { tender_ok: true } }, then: [
             ['gam', 'Em lật nhanh ghê. Chị đóng theo nhịp em. Như hát karaoke.'],
