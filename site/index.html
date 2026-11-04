@@ -29,6 +29,7 @@
         <div class="bar"><label>Drama</label><div class="track drama"><i id="barDr"></i></div></div>
         <div class="bar"><label>Năng lượng</label><div class="track energy"><i id="barNl"></i></div></div>
       </div>
+      <div class="hud-meta"><span id="hudMoney"></span><span id="hudMood"></span></div>
     </div>
     <div class="hud-obj card" id="hudObj">
       <div class="obj-arrow" id="objArrow">➤</div>
@@ -148,13 +149,27 @@
         <label class="name-field">Tên trên thẻ nhân viên
           <input id="soloName" maxlength="16" placeholder="VD: Linh" autocomplete="off">
         </label>
-        <button class="btn primary" id="soloNew">Đi phỏng vấn →</button>
+        <button class="btn primary" id="soloNew">Chọn công ty để ứng tuyển →</button>
       </div>
-      <p class="muted small">💾 Đang lưu trên trình duyệt này. Lưu qua email / mã lưu để chơi trên máy khác: sắp có.</p>
+      <div id="cloudBox" class="cloud-box"></div>
       <div class="btns solo-foot"><button class="btn ghost" id="soloBack">← Menu chính</button><a class="link" href="?legacy=1">📼 Chơi lại chuyện cũ: Ba Mẹ &amp; Partners</a></div>
     </div>
   </div>
   <div id="taskList" hidden></div>
+
+  <!-- Solo: pick a company to apply to -->
+  <div id="companyMenu" class="overlay title" hidden>
+    <div class="menu-card co-wrap">
+      <div class="kicker">SOLO · CHỌN CÔNG TY</div>
+      <h2 class="solo-h">Bạn muốn ứng tuyển vào đâu?</h2>
+      <p class="muted">Mỗi công ty là một lượt thực tập tối đa 45 ngày, có review mỗi thứ Sáu. Chỉ có một con đường để lên chính thức. Không có game over: hết công ty này thì sang công ty khác.</p>
+      <label class="name-field">Tên trên thẻ nhân viên
+        <input id="companyName" maxlength="16" placeholder="VD: Linh" autocomplete="off">
+      </label>
+      <div id="companyCards" class="co-grid"></div>
+      <div class="btns solo-foot"><button class="btn ghost" id="companyBack">← Hồ sơ sự nghiệp</button></div>
+    </div>
+  </div>
 
   <div id="title" class="overlay title" hidden>
     <div class="title-card">

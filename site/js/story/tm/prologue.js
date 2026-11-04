@@ -9,7 +9,7 @@ const isTier = (...ids) => (s) => ids.includes(s.tier);
 
 export const CONTRACT_MINI = {
   type: 'pick', title: 'Thỏa thuận thực tập', icon: '📄',
-  prompt: 'Tìm 3 điều khoản "có vấn đề" trước khi ký.', pick: 3, time: 35, pass: 0.66,
+  prompt: 'Tìm 3 điều khoản "có vấn đề" trước khi ký.', pick: 3, time: 45, pass: 0.66,
   items: [
     { text: 'Thực tập sinh tuân thủ nội quy và văn hóa công ty.' },
     { text: 'OT tự nguyện theo yêu cầu của quản lý.', correct: true },
@@ -18,7 +18,7 @@ export const CONTRACT_MINI = {
     { text: 'Thực tập sinh hỗ trợ các công việc khác khi được yêu cầu.', correct: true },
     { text: 'Bảo mật thông tin khách hàng và tài liệu nội bộ.' },
     { text: 'Được tham gia các buổi đào tạo nội bộ.' },
-    { text: 'Nghỉ phép theo thỏa thuận với quản lý trực tiếp.' },
+    { text: 'Được nghỉ lễ, Tết theo quy định chung của công ty.' },
   ],
 };
 

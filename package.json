@@ -4,6 +4,7 @@
   "description": "T&M Partners · Consulting Chaos Simulator (static site in /site, no build step)",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "test:e2e": "node tests/e2e/legacy-playthrough.cjs first && node tests/e2e/legacy-playthrough.cjs mid"
+    "test:e2e": "node tests/e2e/legacy-playthrough.cjs first && node tests/e2e/legacy-playthrough.cjs mid",
+    "validate": "node tests/validate-companies.mjs"
   }
 }

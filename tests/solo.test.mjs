@@ -50,8 +50,10 @@ test('starting a new run never deletes an existing one (nhảy công ty)', () =>
 
 test('run label reads like the menu entry', () => {
   const r = { ...newRun({ name: 'x', id: 'r' }), tier: 't3', level: 2, day: 4 };
-  assert.equal(runLabel(r, (t) => TIERS[t].label), 'T&M Partners · Level 2 · 3 triệu · Ngày 4');
-  assert.equal(runLabel(newRun({ name: 'x', id: 'q' })), 'T&M Partners · Level 1 · Vòng phỏng vấn');
+  assert.equal(runLabel(r, (t) => TIERS[t].label), 'T&M Partners · 3 triệu · Ngày 4/45');
+  assert.equal(runLabel(newRun({ name: 'x', id: 'q' })), 'T&M Partners · Vòng phỏng vấn');
+  assert.equal(runLabel({ ...r, status: 'official' }), 'T&M Partners · Nhân viên chính thức · Ngày 4/45');
+  assert.equal(runLabel({ ...r, ended: { type: 'finish', day: 45 } }, (t) => t), 'T&M Partners · t3 · Đã kết thúc');
 });
 
 test('validateProfile rejects garbage and repairs partial runs', () => {
@@ -62,6 +64,11 @@ test('validateProfile rejects garbage and repairs partial runs', () => {
   assert.equal(p.runs.z.st.uy, 70);
   assert.equal(p.runs.z.st.nl, 100);
   assert.equal(p.activeId, null);
+  // v1 saves are migrated: company defaults to T&M, pocket money and intern status are filled in
+  assert.equal(p.runs.z.company, 'tm');
+  assert.equal(p.runs.z.status, 'intern');
+  assert.equal(p.runs.z.money, 2_000_000);
+  assert.deepEqual(p.runs.z.reviews, []);
 });
 
 test('merge keeps the most recently updated copy of each run', () => {

@@ -79,11 +79,11 @@ export function createFPControls({ camera, input, getMode, onPause, start = [0, 
       return { deg: -90 - rel * 180 / Math.PI, dist: Math.hypot(dx, dz) };
     },
 
-    update(dt, { colliders, others = [], bounds, canMove, idleSpin = false }) {
+    update(dt, { colliders, others = [], bounds, canMove, idleSpin = false, speed = 1 }) {
       const ax = canMove ? input.axis() : { x: 0, y: 0 };
       const len = Math.hypot(ax.x, ax.y);
       if (len > 0.05) {
-        const sp = input.running() ? 5.2 : 3.2;
+        const sp = (input.running() ? 5.2 : 3.2) * speed;
         const fx = -Math.sin(player.yaw), fz = -Math.cos(player.yaw);
         const rx = Math.cos(player.yaw), rz = -Math.sin(player.yaw);
         moveActor(player.pos, (fx * ax.y + rx * ax.x) * sp * dt, (fz * ax.y + rz * ax.x) * sp * dt, { colliders, others, bounds });

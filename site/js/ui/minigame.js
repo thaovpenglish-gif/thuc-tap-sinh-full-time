@@ -1,6 +1,8 @@
 // Small, repeatable mini-games shown as a sticker card (keyboard 1–9 / Enter, or tap).
 // Types: 'pick' (choose N right items), 'quiz' (one question at a time), 'order' (tap items in the right order).
-// runMinigame(config) -> Promise<{ score: 0..1 }>
+// runMinigame(config) -> Promise<{ score: 0..1 }>. config.pass = the bar shown to the player AND used by the caller.
+// pick: score = right picks / min(pick, #correct) — a wrong pick costs the slot it took, nothing more.
+// After finishing, the answers are revealed (right = green, wrong pick = red, missed = dashed) so players learn.
 import { esc } from '../core/util.js';
 import { sfx } from '../core/audio.js';
 
@@ -12,6 +14,7 @@ function shell(cfg) {
   el.innerHTML = `<div class="mini-card">
     <div class="mini-head"><span class="mini-ico">${cfg.icon || '🧩'}</span><b>${esc(cfg.title)}</b><span class="mini-time"><i></i></span></div>
     <div class="mini-prompt">${esc(cfg.prompt || '')}</div>
+    ${cfg.barNote ? `<div class="mini-bar">${esc(cfg.barNote)}</div>` : ''}
     <div class="mini-body"></div>
     <div class="mini-foot"></div>
   </div>`;
@@ -37,16 +40,19 @@ export function runMinigame(cfg) {
     }, 100);
 
     let evaluate = () => 0;
+    let reveal = () => {};
     function finish() {
       if (done) return;
       done = true;
       clearInterval(timer);
       window.removeEventListener('keydown', onKey, true);
       const score = Math.max(0, Math.min(1, evaluate()));
-      const ok = score >= (cfg.pass ?? 0.5);
+      const need = cfg.pass ?? 0.5;
+      const ok = score >= need - 1e-9;
       (ok ? sfx.good : sfx.bad)();
-      foot.innerHTML = `<div class="mini-result ${ok ? 'ok' : 'no'}">${ok ? '✅ Qua' : '❌ Chưa qua'} · ${Math.round(score * 100)}%</div>`;
-      setTimeout(() => { el.hidden = true; resolve({ score }); }, 1100);
+      reveal();
+      foot.innerHTML = `<div class="mini-result ${ok ? 'ok' : 'no'}">${ok ? '✅ Qua' : '❌ Chưa qua'} · ${Math.round(score * 100)}% <small>(cần ${Math.round(need * 100)}%)</small></div>`;
+      setTimeout(() => { el.hidden = true; if (window.__miniDebug) window.__miniDebug = null; resolve({ score }); }, 1900);
     }
 
     if (cfg.type === 'pick') {
@@ -57,10 +63,18 @@ export function runMinigame(cfg) {
       body.innerHTML = items.map((it, k) => `<button class="mini-opt" data-k="${k}"><span class="num">${k + 1}</span><span><b>${esc(it.text)}</b>${it.sub ? `<small>${esc(it.sub)}</small>` : ''}</span></button>`).join('');
       foot.innerHTML = need > 1 ? `<span class="mini-count">Đã chọn 0/${need}</span><button class="btn primary mini-go">Xong ↵</button>` : '';
       evaluate = () => {
-        let s = 0;
-        for (const k of picked) s += items[k].correct ? 1 : -1;
-        return s / nCorrect;
+        let hits = 0;
+        for (const k of picked) if (items[k].correct) hits++;
+        return hits / Math.min(need, nCorrect);
       };
+      reveal = () => body.querySelectorAll('.mini-opt').forEach((b) => {
+        const it = items[Number(b.dataset.k)];
+        const was = picked.has(Number(b.dataset.k));
+        b.classList.remove('on');
+        if (it.correct) b.classList.add(was ? 'right' : 'missed'); else if (was) b.classList.add('wrong');
+        b.disabled = true;
+      });
+      if (window.__miniDebug !== undefined) window.__miniDebug = { type: 'pick', answer: items.map((it, k) => (it.correct ? k : -1)).filter((k) => k >= 0).slice(0, need) };
       const toggle = (k) => {
         if (done || !items[k]) return;
         if (picked.has(k)) picked.delete(k); else if (picked.size < need) picked.add(k);
@@ -80,6 +94,7 @@ export function runMinigame(cfg) {
       const render = () => {
         const q = cfg.questions[qi];
         const opts = shuffle(q.options.map((t, i) => ({ t, i })));
+        if (window.__miniDebug !== undefined) window.__miniDebug = { type: 'quiz', answer: [opts.findIndex((o) => o.i === q.correct)] };
         body.innerHTML = `<div class="mini-q"><small>Câu ${qi + 1}/${cfg.questions.length}</small><b>${esc(q.q)}</b></div>` +
           opts.map((o, k) => `<button class="mini-opt" data-i="${o.i}"><span class="num">${k + 1}</span><span>${esc(o.t)}</span></button>`).join('');
         const answer = (i) => {
@@ -108,6 +123,13 @@ export function runMinigame(cfg) {
       body.innerHTML = items.map((it, k) => `<button class="mini-opt" data-k="${k}"><span class="num">${k + 1}</span><span>${esc(it.text)}</span><em class="pos"></em></button>`).join('');
       foot.innerHTML = '<button class="btn mini-undo">↺ Làm lại</button>';
       evaluate = () => seq.reduce((a, k, pos) => a + (items[k].order === pos ? 1 : 0), 0) / items.length;
+      reveal = () => body.querySelectorAll('.mini-opt').forEach((b) => {
+        const k = Number(b.dataset.k), pos = seq.indexOf(k);
+        b.classList.remove('on'); b.classList.add(pos === items[k].order ? 'right' : 'wrong');
+        b.querySelector('.pos').textContent = `#${pos + 1}${pos === items[k].order ? '' : ` → #${items[k].order + 1}`}`;
+        b.disabled = true;
+      });
+      if (window.__miniDebug !== undefined) window.__miniDebug = { type: 'order', answer: items.map((it, k) => [it.order, k]).sort((a, b) => a[0] - b[0]).map((x) => x[1]) };
       const paint = () => body.querySelectorAll('.mini-opt').forEach((b) => { const k = Number(b.dataset.k); const p = seq.indexOf(k); b.classList.toggle('on', p >= 0); b.querySelector('.pos').textContent = p >= 0 ? `#${p + 1}` : ''; });
       const tap = (k) => {
         if (done || !items[k] || seq.includes(k)) return;
