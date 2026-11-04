@@ -1,5 +1,5 @@
 // LEGACY MODE: the original "Ba Mẹ & Partners" 5-day story, ported onto the shared modules
-// (elevated camera, shared dialogue engine, phone, physics). Hidden from the menu; open with ?legacy=1.
+// (shared dialogue engine, phone, physics). Solo keeps the original FIRST-PERSON view; the elevated camera is for multiplayer.
 import * as THREE from 'three';
 import { $, clamp, esc, angleLerp, store } from '../core/util.js';
 import { sfx, tone, unlockAudio, isSoundOn, setSound } from '../core/audio.js';
@@ -17,7 +17,8 @@ import { net, clean } from '../net/legacy-net.js';
 const SAVE_KEY = 'tts_save_v1';
 const BOUNDS = { minX: -14.7, maxX: 14.7, minZ: -9.7, maxZ: 9.85 };
 
-export function startLegacy({ scene, rig, input }) {
+export function startLegacy({ scene, camera, input }) {
+  const canvas = $('#game');
   let S = null;
   let mode = 'title'; // title | intro | play | dialog | phone | overlay | pause | ringing
   const newState = (name) => ({ v: 1, name, day: 0, step: 0, st: { uy: 50, dr: 0, nl: 100 }, rel: {}, flags: {}, chat: [], unread: 0, altar: {}, coffee: {}, desk: {}, done: false });
@@ -35,7 +36,7 @@ export function startLegacy({ scene, rig, input }) {
     const tag = nameTag(def.name, def.role.split('·')[0].trim(), { color: def.color });
     mesh.add(tag);
     const marker = makeMarker();
-    marker.position.y = 2.35; marker.visible = false;
+    marker.position.y = 2.05; marker.visible = false;
     mesh.add(marker);
     scene.add(mesh);
     npcs[id] = { mesh, tag, marker, target: new THREE.Vector3(), rest: 0, walk: 0, phase: Math.random() * 6, talking: false };
@@ -44,16 +45,12 @@ export function startLegacy({ scene, rig, input }) {
   objMarker.visible = false;
   scene.add(objMarker);
 
-  // the player is now visible (elevated camera)
-  const player = { pos: new THREE.Vector3(PLAYER_START[0], 0, PLAYER_START[1]), face: Math.PI, walk: 0, mesh: null, tag: null };
-  player.mesh = makePerson({ shirt: '#fff1b8', pants: '#6b7a99', hair: 'short', hairColor: '#1d1d1f' });
-  scene.add(player.mesh);
-  function setPlayerTag(name) {
-    if (player.tag) player.mesh.remove(player.tag);
-    player.tag = nameTag(name || 'Bạn', 'bạn', { color: '#fff1b8' });
-    player.mesh.add(player.tag);
-  }
-  setPlayerTag('Bạn');
+  // first-person player: camera at eye height, yaw 0 looks north (-z)
+  const EYE = 1.38;
+  const player = { pos: new THREE.Vector3(PLAYER_START[0], EYE, PLAYER_START[1]), yaw: PLAYER_START[2], pitch: 0, eye: EYE, bob: 0 };
+  let focusTarget = null; // camera eases toward the speaking NPC during dialogue
+  let lookTouch = null;
+  camera.rotation.order = 'YXZ';
 
   // ---------- HUD ----------
   function charInfo(id) {
@@ -116,7 +113,7 @@ export function startLegacy({ scene, rig, input }) {
       if (callMode) {
         document.querySelectorAll('#callTiles .tile').forEach((t) => t.classList.toggle('speaking', t.dataset.id === spk || (spk === 'think' && t.dataset.id === 'me')));
       } else if (npcs[spk] && npcs[spk].mesh.position.distanceTo(player.pos) < 10) {
-        rig.focus = npcs[spk].mesh.position;
+        focusTarget = npcs[spk].mesh.position.clone().setY(1.12);
         npcs[spk].talking = true;
       }
     },
@@ -125,14 +122,16 @@ export function startLegacy({ scene, rig, input }) {
   function startDialogMode() {
     mode = 'dialog';
     $('#prompt').hidden = true;
+    $('#crosshair').hidden = true;
+    if (document.pointerLockElement) document.exitPointerLock();
     $('#actBtn').hidden = true;
     $('#mobile').hidden = true;
   }
   function endDialogMode() {
     dialogue.hide();
-    rig.focus = null;
+    focusTarget = null;
     Object.values(npcs).forEach((n) => { n.talking = false; });
-    if (mode === 'dialog') { mode = 'play'; $('#mobile').hidden = !isTouch; }
+    if (mode === 'dialog') { mode = 'play'; $('#mobile').hidden = !isTouch; $('#crosshair').hidden = isTouch; lockPointer(); }
   }
 
   // ---------- story flow ----------
@@ -156,8 +155,8 @@ export function startLegacy({ scene, rig, input }) {
   async function runStep(step) {
     startDialogMode();
     if (step.who === 'obj:seat') {
-      player.pos.set(MEETING_SEAT[0], 0, MEETING_SEAT[1] + 0.35);
-      player.face = Math.PI;
+      player.pos.set(MEETING_SEAT[0], 1.05, MEETING_SEAT[1] + 0.25);
+      player.eye = 1.05; player.yaw = 0; player.pitch = -0.05;
     }
     if (step.call) openCallFrame(step.call);
     const nodes = step.scene === 'altar' ? altarScene() : step.scene === 'meeting' ? MEETING : step.scene;
@@ -190,6 +189,7 @@ export function startLegacy({ scene, rig, input }) {
     if (mode !== 'play') { ringTimer = setTimeout(tryRing, 1500); return; }
     const caller = charInfo(step.who.slice(5));
     mode = 'ringing';
+    if (document.pointerLockElement) document.exitPointerLock();
     $('#prompt').hidden = true; $('#mobile').hidden = true;
     $('#incAvatar').textContent = caller.emoji;
     $('#incAvatar').style.background = caller.color;
@@ -211,6 +211,7 @@ export function startLegacy({ scene, rig, input }) {
     $('#mobile').hidden = !isTouch;
     applyFx({ uy: -2 });
     toast('📵 Bạn từ chối cuộc gọi. Họ sẽ gọi lại… và nhớ chuyện này.', 'bad', 3);
+    lockPointer();
     maybeScheduleCall(9000);
   }
   function openCallFrame(call) {
@@ -249,8 +250,8 @@ export function startLegacy({ scene, rig, input }) {
     getChat: () => (S ? S.chat : []),
     getName: () => (S ? S.name : ''),
     onReadChat: () => { if (S) { S.unread = 0; updateHUD(); } },
-    onOpen: () => { if (mode === 'play' || mode === 'pause') mode = 'phone'; $('#pause').hidden = true; },
-    onClose: () => { if (mode === 'phone') mode = 'play'; },
+    onOpen: () => { if (mode === 'play' || mode === 'pause') mode = 'phone'; if (document.pointerLockElement) document.exitPointerLock(); $('#pause').hidden = true; },
+    onClose: () => { if (mode === 'phone') { mode = 'play'; lockPointer(); } },
   });
   function pushChat(list, delayStart = 400) {
     list.forEach(([from, text, dm], k) => {
@@ -277,6 +278,7 @@ export function startLegacy({ scene, rig, input }) {
 
   function showDayIntro() {
     mode = 'intro';
+    if (document.pointerLockElement) document.exitPointerLock();
     const d = DAYS[S.day];
     $('#hud').hidden = true;
     overlay(`
@@ -285,27 +287,29 @@ export function startLegacy({ scene, rig, input }) {
       <div class="ov-sub">Thực tập sinh: ${esc(S.name)}</div>
       <p class="ov-text">${esc(fmt(d.intro))}</p>
       <div class="btns"><button class="btn primary" id="goDay">${S.day === 4 ? 'Bước vào phòng họp →' : 'Vào làm →'}</button></div>
-      ${isTouch ? '' : '<div class="help"><div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> đi · <kbd>Shift</kbd> chạy · <kbd>E</kbd> nói chuyện · <kbd>Q</kbd> Teams · <kbd>Esc</kbd> tạm dừng</div></div>'}
+      ${isTouch ? '' : '<div class="help"><div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> đi · chuột nhìn · <kbd>E</kbd> nói chuyện · <kbd>Q</kbd> Teams · <kbd>Esc</kbd> tạm dừng</div></div>'}
     `);
     $('#goDay').onclick = () => { hideOverlay(); startDay(); };
   }
   function startDay() {
     const d = DAYS[S.day];
-    player.pos.set(PLAYER_START[0], 0, PLAYER_START[1]);
-    player.face = Math.PI;
+    player.pos.set(PLAYER_START[0], EYE, PLAYER_START[1]);
+    player.yaw = PLAYER_START[2]; player.pitch = 0; player.eye = EYE;
     if (S.step === 0) S.coffee[S.day] = 0;
     placeNPCs(true);
     if (S.step === 0 && d.chatStart) pushChat(d.chatStart, 900);
     mode = 'play';
     $('#hud').hidden = false;
+    $('#crosshair').hidden = isTouch;
     $('#mobile').hidden = !isTouch;
     updateHUD();
     save();
-    rig.target.copy(player.pos); rig.snap();
+    lockPointer();
     maybeScheduleCall(3500);
   }
   function dayEnd() {
     mode = 'overlay';
+    if (document.pointerLockElement) document.exitPointerLock();
     const d = DAYS[S.day];
     overlay(`
       <div class="ov-kicker">17:30 · TAN LÀM</div>
@@ -321,6 +325,7 @@ export function startLegacy({ scene, rig, input }) {
   }
   async function finishGame() {
     mode = 'overlay';
+    if (document.pointerLockElement) document.exitPointerLock();
     const key = computeEnding(S);
     const E = ENDINGS[key];
     S.done = true; S.ending = key; save();
@@ -353,14 +358,15 @@ export function startLegacy({ scene, rig, input }) {
   // ---------- interaction ----------
   let currentInteract = null;
   function findInteract() {
-    const fx = Math.sin(player.face), fz = Math.cos(player.face);
+    const fx = -Math.sin(player.yaw), fz = -Math.cos(player.yaw);
     let best = null, bestScore = Infinity;
     const consider = (kind, id, pos, label) => {
       const dx = pos.x - player.pos.x, dz = pos.z - player.pos.z;
       const d = Math.hypot(dx, dz);
-      if (d > 1.9) return;
+      if (d > 2.6) return;
       const dot = d > 0.001 ? (dx * fx + dz * fz) / d : 1;
-      const score = d * (1.6 - 0.6 * dot);
+      if (dot < 0.45 && d > 1.1) return;
+      const score = d * (1.6 - dot);
       if (score < bestScore) { bestScore = score; best = { kind, id, label }; }
     };
     for (const [id, n] of Object.entries(npcs)) consider('npc', id, n.mesh.position, `Nói chuyện với ${CHARS[id].name}`);
@@ -451,9 +457,42 @@ export function startLegacy({ scene, rig, input }) {
   });
   if (!net.ok) $('#titleOnline').textContent = '👥 chế độ ngoại tuyến';
 
-  // ---------- controls ----------
-  const pause = () => { if (mode === 'play') { mode = 'pause'; $('#pause').hidden = false; } };
-  const resume = () => { $('#pause').hidden = true; if (mode === 'pause') mode = 'play'; };
+  // ---------- controls (first person) ----------
+  function lockPointer() {
+    if (isTouch || mode !== 'play') return;
+    try { const pr = canvas.requestPointerLock(); if (pr && pr.catch) pr.catch(() => {}); } catch { /* not allowed yet */ }
+  }
+  document.addEventListener('pointerlockchange', () => {
+    if (!document.pointerLockElement && mode === 'play' && !isTouch) { mode = 'pause'; $('#pause').hidden = false; }
+  });
+  canvas.addEventListener('click', () => {
+    if (mode === 'dialog') { dialogue.advance(); return; }
+    if (mode === 'play') lockPointer();
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (document.pointerLockElement !== canvas || mode !== 'play') return;
+    player.yaw -= e.movementX * 0.0022;
+    player.pitch = clamp(player.pitch - e.movementY * 0.0022, -1.25, 1.25);
+  });
+  if (isTouch) {
+    // drag anywhere outside the joystick/buttons to look around
+    canvas.addEventListener('touchstart', (e) => {
+      if (mode === 'dialog') { dialogue.advance(); return; }
+      const t = e.changedTouches[0];
+      if (!lookTouch) lookTouch = { id: t.identifier, x: t.clientX, y: t.clientY };
+    }, { passive: true });
+    window.addEventListener('touchmove', (e) => {
+      for (const t of e.changedTouches) if (lookTouch && t.identifier === lookTouch.id && mode === 'play') {
+        player.yaw -= (t.clientX - lookTouch.x) * 0.0055;
+        player.pitch = clamp(player.pitch - (t.clientY - lookTouch.y) * 0.0045, -1.2, 1.2);
+        lookTouch.x = t.clientX; lookTouch.y = t.clientY;
+      }
+    }, { passive: true });
+    const endLook = (e) => { for (const t of e.changedTouches) if (lookTouch && t.identifier === lookTouch.id) lookTouch = null; };
+    window.addEventListener('touchend', endLook); window.addEventListener('touchcancel', endLook);
+  }
+  const pause = () => { if (mode === 'play') { if (document.pointerLockElement) document.exitPointerLock(); mode = 'pause'; $('#pause').hidden = false; } };
+  const resume = () => { $('#pause').hidden = true; if (mode === 'pause') { mode = 'play'; lockPointer(); } };
   $('#resumeBtn').onclick = resume;
   $('#pause').addEventListener('click', (e) => { if (e.target.id === 'pause') resume(); });
   $('#pausePhone').onclick = () => { resume(); phone.open(); };
@@ -470,10 +509,6 @@ export function startLegacy({ scene, rig, input }) {
   $('#incAccept').onclick = acceptCall;
   $('#incDecline').onclick = declineCall;
   $('#actBtn').addEventListener('click', () => interact());
-  document.addEventListener('pointerdown', (e) => {
-    // tap anywhere (outside UI) advances dialogue
-    if (mode === 'dialog' && e.target === $('#game')) dialogue.advance();
-  });
 
   input.onKey((e, { inField }) => {
     if (inField) { if (e.key === 'Escape' && phone.isOpen) phone.close(); return; }
@@ -491,7 +526,6 @@ export function startLegacy({ scene, rig, input }) {
     if (mode === 'play') {
       if (e.code === 'KeyE' || e.code === 'KeyF') interact();
       if (e.code === 'KeyQ' || e.code === 'Tab') { e.preventDefault(); phone.open(); }
-      if (e.code === 'Escape') pause();
     } else if (mode === 'pause' && e.code === 'Escape') resume();
     else if (phone.isOpen && (e.code === 'KeyQ' || e.code === 'Escape' || e.code === 'Tab')) { e.preventDefault(); phone.close(); }
   });
@@ -512,14 +546,14 @@ export function startLegacy({ scene, rig, input }) {
     if (!name) { $('#nameInput').focus(); $('#nameInput').placeholder = 'Nhập tên đã nào!'; return; }
     unlockAudio();
     S = newState(name); save();
-    net.setName(name); setPlayerTag(name);
+    net.setName(name);
     $('#title').hidden = true;
     showDayIntro();
   };
   $('#continueBtn').onclick = () => {
     unlockAudio();
     S = loadSave();
-    net.setName(S.name); setPlayerTag(S.name);
+    net.setName(S.name);
     $('#title').hidden = true;
     if (S.step === 0) showDayIntro(); else startDay();
   };
@@ -531,8 +565,7 @@ export function startLegacy({ scene, rig, input }) {
   $('#title').hidden = false;
   refreshTitle();
   if (!isTouch) setTimeout(() => $('#nameInput').focus(), 100);
-  rig.bounds = { minX: -11, maxX: 11, minZ: -7.5, maxZ: 5.5 };
-  rig.target.set(0, 0, 0); rig.zoom = 1.5; rig.snap();
+  player.pos.set(-1, 1.6, 7.5); player.yaw = 0.3; player.pitch = -0.12;
 
   // ---------- per-frame ----------
   let elapsed = 0;
@@ -541,29 +574,30 @@ export function startLegacy({ scene, rig, input }) {
     world.update(elapsed);
     const step = S ? currentStep() : null;
 
-    // player movement (screen-relative: up = north = -z)
+    // first-person movement (relative to where you look)
     const ax = mode === 'play' ? input.axis() : { x: 0, y: 0 };
-    const moving = Math.hypot(ax.x, ax.y) > 0.05;
-    if (moving) {
-      const speed = (input.running() ? 5.4 : 3.4);
+    const len = Math.hypot(ax.x, ax.y);
+    if (len > 0.05) {
+      const sp = input.running() ? 5.2 : 3.2;
+      const fx = -Math.sin(player.yaw), fz = -Math.cos(player.yaw);
+      const rx = Math.cos(player.yaw), rz = -Math.sin(player.yaw);
       const others = Object.values(npcs).map((n) => n.mesh.position);
-      moveActor(player.pos, ax.x * speed * dt, -ax.y * speed * dt, { colliders: world.colliders, others, bounds: BOUNDS });
-      player.face = angleLerp(player.face, Math.atan2(ax.x, -ax.y), 0.3);
-      player.walk += dt * 10;
+      moveActor(player.pos, (fx * ax.y + rx * ax.x) * sp * dt, (fz * ax.y + rz * ax.x) * sp * dt, { colliders: world.colliders, others, bounds: BOUNDS });
+      player.bob += dt * 9;
     }
-    const pp = player.mesh.userData.parts;
-    player.mesh.position.copy(player.pos);
-    player.mesh.rotation.y = player.face;
-    pp.legL.rotation.x = moving ? Math.sin(player.walk) * 0.6 : pp.legL.rotation.x * 0.8;
-    pp.legR.rotation.x = moving ? -Math.sin(player.walk) * 0.6 : pp.legR.rotation.x * 0.8;
-    pp.armL.rotation.x = moving ? -Math.sin(player.walk) * 0.5 : pp.armL.rotation.x * 0.8;
-    pp.armR.rotation.x = moving ? Math.sin(player.walk) * 0.5 : pp.armR.rotation.x * 0.8;
-    player.mesh.visible = mode !== 'title';
-
-    // camera
-    if (mode === 'title') { rig.zoom = 1.5; rig.target.set(Math.sin(elapsed * 0.1) * 4, 0, Math.cos(elapsed * 0.1) * 2); }
-    else { rig.zoom = 1; rig.target.copy(player.pos); }
-    rig.update(dt);
+    if (mode === 'title') player.yaw += dt * 0.09;
+    // dialogue: ease the view toward whoever is speaking
+    if (focusTarget && mode === 'dialog') {
+      const dx = focusTarget.x - player.pos.x, dz = focusTarget.z - player.pos.z;
+      const k = 1 - Math.pow(0.002, dt);
+      player.yaw = angleLerp(player.yaw, Math.atan2(-dx, -dz), k);
+      player.pitch += (Math.atan2(focusTarget.y - player.eye, Math.hypot(dx, dz)) * 0.8 - player.pitch) * k;
+    }
+    const wantFov = window.innerWidth < window.innerHeight ? 85 : 72;
+    if (camera.fov !== wantFov || camera.near !== 0.05) { camera.fov = wantFov; camera.near = 0.05; camera.updateProjectionMatrix(); }
+    const bobY = len > 0.05 && mode === 'play' ? Math.sin(player.bob) * 0.035 : 0;
+    camera.position.set(player.pos.x, player.eye + bobY, player.pos.z);
+    camera.rotation.set(player.pitch, player.yaw, 0);
 
     // NPCs
     for (const [id, n] of Object.entries(npcs)) {
@@ -589,10 +623,10 @@ export function startLegacy({ scene, rig, input }) {
       }
       parts.torso.scale.y = 1 + Math.sin(elapsed * 2 + n.phase) * 0.012;
       parts.head.rotation.y = Math.sin(elapsed * 0.6 + n.phase) * 0.15;
-      n.tag.visible = m.position.distanceTo(player.pos) < 7 || (step && step.who === id);
+      n.tag.visible = m.position.distanceTo(player.pos) < 9 || (step && step.who === id);
       const isTarget = step && step.who === id && mode !== 'dialog';
       n.marker.visible = !!isTarget;
-      if (isTarget) { n.marker.position.y = 2.35 + Math.sin(elapsed * 3) * 0.06; n.marker.rotation.y += dt * 2; }
+      if (isTarget) { n.marker.position.y = 2.05 + Math.sin(elapsed * 3) * 0.06; n.marker.rotation.y += dt * 2; }
     }
     if (step && step.who.startsWith('obj:') && mode !== 'dialog') {
       const it = world.interactables.find((x) => 'obj:' + x.id === step.who);
@@ -609,15 +643,15 @@ export function startLegacy({ scene, rig, input }) {
       const dx = g.target.x - g.mesh.position.x, dz = g.target.z - g.mesh.position.z;
       const d = Math.hypot(dx, dz);
       g.mesh.position.x += dx * Math.min(1, dt * 6); g.mesh.position.z += dz * Math.min(1, dt * 6);
-      g.mesh.rotation.y = angleLerp(g.mesh.rotation.y, g.rot, 0.2);
+      g.mesh.rotation.y = angleLerp(g.mesh.rotation.y, g.rot + Math.PI, 0.2);
       const w = d > 0.05 ? Math.sin(elapsed * 10) * 0.5 : 0;
       g.mesh.userData.parts.legL.rotation.x = w; g.mesh.userData.parts.legR.rotation.x = -w;
     }
     if (S && (mode === 'play' || mode === 'dialog') && now - lastSent > 200) {
-      const movedNet = Math.abs(player.pos.x - lastSentPos.x) + Math.abs(player.pos.z - lastSentPos.z) > 0.05 || Math.abs(player.face - lastSentPos.r) > 0.1;
+      const movedNet = Math.abs(player.pos.x - lastSentPos.x) + Math.abs(player.pos.z - lastSentPos.z) > 0.05 || Math.abs(player.yaw - lastSentPos.r) > 0.1;
       if (movedNet || now - lastSent > 3000) {
-        net.sendPos(player.pos.x, player.pos.z, player.face, S.name);
-        lastSent = now; lastSentPos = { x: player.pos.x, z: player.pos.z, r: player.face };
+        net.sendPos(player.pos.x, player.pos.z, player.yaw, S.name);
+        lastSent = now; lastSentPos = { x: player.pos.x, z: player.pos.z, r: player.yaw };
       }
     }
 
@@ -644,12 +678,16 @@ export function startLegacy({ scene, rig, input }) {
       }
       if (tp) {
         const dx = tp.x - player.pos.x, dz = tp.z - player.pos.z;
-        // screen space: up = north (-z); ➤ glyph points right at 0deg
-        $('#objArrow').style.transform = `rotate(${Math.atan2(dx, -dz) * 180 / Math.PI - 90}deg)`;
+        let rel = Math.atan2(-dx, -dz) - player.yaw;
+        rel = Math.atan2(Math.sin(rel), Math.cos(rel));
+        $('#objArrow').style.transform = `rotate(${-90 - rel * 180 / Math.PI}deg)`;
         $('#objDist').textContent = `· ${Math.round(Math.hypot(dx, dz))}m`;
       }
     }
   }
+
+  // (pointer-lock hint for desktop)
+  setInterval(() => { $('#clickHint').hidden = !(mode === 'play' && !isTouch && document.pointerLockElement !== canvas); }, 250);
 
   // test hook (headless playthrough tests)
   window.__tts = {

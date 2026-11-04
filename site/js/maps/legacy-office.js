@@ -1,4 +1,4 @@
-// Legacy office map (Ba Mẹ & Partners story). Pastel, sticker-outlined, cutaway walls for the elevated camera.
+// Legacy office map (Ba Mẹ & Partners story), full height with ceiling for the first-person Solo view.
 import * as THREE from 'three';
 import { INK, T, outline, canvasTex, roundRect, textTexture, gradientMap } from '../art/kit.js';
 
@@ -115,11 +115,22 @@ export function buildWorld(scene) {
   const ring = new THREE.Mesh(new THREE.RingGeometry(1.9, 2.0, 48), new THREE.MeshBasicMaterial({ color: '#c9b6ff' }));
   ring.rotation.x = -Math.PI / 2; ring.scale.set(1.35, 0.9, 1); ring.position.set(0.5, 0.006, -4.3); root.add(ring);
 
+  const ceil = new THREE.Mesh(new THREE.PlaneGeometry(30, 20), new THREE.MeshBasicMaterial({ color: '#fffaf3' }));
+  ceil.rotation.x = Math.PI / 2; ceil.position.y = 3; root.add(ceil);
+  const panelMat = new THREE.MeshBasicMaterial({ color: '#ffffff' });
+  for (let x = -12; x <= 12; x += 4) for (let z = -8; z <= 8; z += 4) {
+    const p = new THREE.Mesh(new THREE.CircleGeometry(0.45, 24), panelMat);
+    p.rotation.x = Math.PI / 2; p.position.set(x, 2.99, z); root.add(p);
+    const r = new THREE.Mesh(new THREE.RingGeometry(0.45, 0.5, 24), new THREE.MeshBasicMaterial({ color: '#e8dcc8', side: THREE.DoubleSide }));
+    r.rotation.x = Math.PI / 2; r.position.set(x, 2.985, z); root.add(r);
+  }
+
   // ---------- outer walls ----------
-  const H = 1.3, Tk = 0.2; // cutaway walls for the elevated camera
+  const H = 3, Tk = 0.2;
   box(13.5, H, Tk, P.wall, -8.25, 0, 10, true, 0, 0);
   box(13.5, H, Tk, P.wall, 8.25, 0, 10, true, 0, 0);
-  plane(3, 1.2, glassMat, 0, 0.6, 10.05, 0);
+  box(3, 0.6, Tk, P.wall, 0, 2.4, 10, false, 0, 0);
+  plane(3, 2.4, glassMat, 0, 1.2, 10.05, 0);
   collideRect(-1.5, 1.5, 10.05, 10.6);
   box(Tk, H, 20, P.wall, 15, 0, 0, true, 0, 0);
   box(Tk, H, 20, P.wall, -15, 0, 0, true, 0, 0);
@@ -131,21 +142,45 @@ export function buildWorld(scene) {
   box(8, H, Tk, P.wall, -11, 0, -10, true, 0, 0);
   box(8, H, Tk, P.wall, 11, 0, -10, true, 0, 0);
   box(14, 0.9, Tk, P.sky, 0, 0, -10, true, 0, 0.02);
-  plane(14, 0.4, glassMat, 0, 1.1, -10.0, 0);
-  for (let x = -7; x <= 7; x += 2) box(0.08, 0.4, 0.1, '#ffffff', x, 0.9, -10, false, 0, 0.015);
+  box(14, 0.4, Tk, P.wall, 0, 2.6, -10, false, 0, 0);
+  plane(14, 1.7, glassMat, 0, 1.75, -10.0, 0);
+  for (let x = -7; x <= 7; x += 2) box(0.08, 1.7, 0.1, '#ffffff', x, 0.9, -10, false, 0, 0.015);
+  const skyTex = canvasTex(2048, 512, (g, w, h) => {
+    const grd = g.createLinearGradient(0, 0, 0, h);
+    grd.addColorStop(0, '#bfe3ff'); grd.addColorStop(0.65, '#ffe3ef'); grd.addColorStop(1, '#fff1d6');
+    g.fillStyle = grd; g.fillRect(0, 0, w, h);
+    // clouds
+    g.fillStyle = '#ffffff';
+    [[200, 90], [700, 60], [1250, 110], [1750, 70]].forEach(([cx, cy]) => { for (let k = 0; k < 4; k++) { g.beginPath(); g.arc(cx + k * 40, cy + (k % 2) * 10, 38, 0, 7); g.fill(); } });
+    const cols = ['#c9b6ff', '#b8f0d8', '#ffc8dd', '#ffe9a0', '#bfe3ff', '#ffd3b8'];
+    let x = 0, n = 0;
+    while (x < w) {
+      const bw = 70 + ((n * 53) % 130), bh = 150 + ((n * 97) % 260);
+      g.fillStyle = cols[n % cols.length];
+      roundRect(g, x, h - bh, bw, bh + 20, 14); g.fill();
+      g.strokeStyle = INK; g.lineWidth = 5; g.stroke();
+      g.fillStyle = 'rgba(255,255,255,0.75)';
+      for (let wy = h - bh + 18; wy < h - 14; wy += 30) for (let wx = x + 12; wx < x + bw - 16; wx += 22) g.fillRect(wx, wy, 10, 14);
+      x += bw + 10; n++;
+    }
+    g.fillStyle = '#ffffff'; roundRect(g, 1280, 150, 420, 110, 20); g.fill(); g.strokeStyle = INK; g.lineWidth = 6; g.stroke();
+    g.fillStyle = INK; g.font = '900 48px Be Vietnam Pro, Arial'; g.textAlign = 'center'; g.fillText('TRÀ SỮA TÂM TRẠNG 🧋', 1490, 218);
+  });
+  const sky = new THREE.Mesh(new THREE.PlaneGeometry(40, 10), new THREE.MeshBasicMaterial({ map: skyTex }));
+  sky.position.set(0, 1.5, -16); root.add(sky);
 
   // glass partition helper
   function glassWall(x1, z1, x2, z2) {
     const len = Math.hypot(x2 - x1, z2 - z1);
     const cx = (x1 + x2) / 2, cz = (z1 + z2) / 2;
     const ry = Math.abs(x2 - x1) > Math.abs(z2 - z1) ? 0 : Math.PI / 2;
-    plane(len, 1.3, glassMat, cx, 0.65, cz, ry);
-    box(ry ? 0.08 : len, 0.08, ry ? len : 0.08, '#ffffff', cx, 1.3, cz, false, 0, 0.015);
+    plane(len, 2.6, glassMat, cx, 1.3, cz, ry);
+    box(ry ? 0.08 : len, 0.08, ry ? len : 0.08, '#ffffff', cx, 2.6, cz, false, 0, 0.015);
     box(ry ? 0.08 : len, 0.12, ry ? len : 0.08, '#ffffff', cx, 0, cz, false, 0, 0.015);
     if (ry) collideRect(cx - 0.08, cx + 0.08, Math.min(z1, z2), Math.max(z1, z2));
     else collideRect(Math.min(x1, x2), Math.max(x1, x2), cz - 0.08, cz + 0.08);
-    box(0.08, 1.3, 0.08, '#ffffff', x1, 0, z1, false, 0, 0.015);
-    box(0.08, 1.3, 0.08, '#ffffff', x2, 0, z2, false, 0, 0.015);
+    box(0.08, 2.6, 0.08, '#ffffff', x1, 0, z1, false, 0, 0.015);
+    box(0.08, 2.6, 0.08, '#ffffff', x2, 0, z2, false, 0, 0.015);
   }
   function sign(text, bg, x, y, z, ry, w = 1.4) {
     const tex = textTexture([text], { w: 512, h: 128, bg, sizes: [56] });
@@ -158,6 +193,7 @@ export function buildWorld(scene) {
   glassWall(-7, -10, -7, -6.2);
   glassWall(-7, -4.8, -7, -4);
   box(8, H, Tk, P.lilac, -11, 0, -4, true, 0, 0);
+  box(0.08, 0.4, 1.4, '#ffffff', -7, 2.6, -5.5, false, 0, 0.015);
   box(2.4, 0.74, 1.0, P.woodDark, -11, 0, -7.4, true);
   box(2.5, 0.06, 1.1, P.wood, -11, 0.74, -7.4, false);
   box(0.7, 1.15, 0.2, '#9fb4ff', -11, 0.25, -9.2, false);
@@ -177,6 +213,7 @@ export function buildWorld(scene) {
   box(Tk, H, 6, P.peach, 7, 0, -7, true, 0, 0);
   box(1, H, Tk, P.peach, 7.5, 0, -4, true, 0, 0);
   box(5.5, H, Tk, P.peach, 12.25, 0, -4, true, 0, 0);
+  box(1.5, 0.6, Tk, P.peach, 8.75, 2.4, -4, false, 0, 0);
   box(2.2, 0.74, 1.0, '#ffd3b8', 11, 0, -7.4, true);
   box(2.3, 0.06, 1.1, P.desk, 11, 0.74, -7.4, false);
   for (let i = 0; i < 4; i++) box(0.3, 0.05, 0.22, ['#ffb3c7', '#9fb4ff', '#b8f0d8', '#ffe08a'][i], 10.4 + i * 0.05, 0.8 + i * 0.05, -7.2, false, 0, 0.01);
@@ -195,6 +232,7 @@ export function buildWorld(scene) {
   mintFloor.rotation.x = -Math.PI / 2; mintFloor.position.set(-11, 0.004, 0.5); root.add(mintFloor);
   glassWall(-7, -4, -7, 1);
   glassWall(-7, 2.6, -7, 5);
+  box(0.08, 0.4, 1.6, '#ffffff', -7, 2.6, 1.8, false, 0, 0.015);
   box(8, H, Tk, P.mint, -11, 0, 5, true, 0, 0);
   box(5.2, 0.72, 1.5, P.desk, -11, 0, 0.5, true);
   box(5.3, 0.06, 1.6, P.wood, -11, 0.72, 0.5, false);
@@ -223,9 +261,9 @@ export function buildWorld(scene) {
   // ---------- Reception ----------
   box(3.4, 0.82, 0.7, '#ffc8dd', -4, 0, 6.4, true);
   box(3.5, 0.06, 0.8, P.desk, -4, 0.82, 6.4, false);
-  box(4.4, 1.5, 0.2, '#c9b6ff', -4, 0, 4.4, true);
+  box(4.4, 2.6, 0.2, '#c9b6ff', -4, 0, 4.4, true);
   const logo = textTexture(['BA MẸ & PARTNERS', 'Management Consulting · Since 1998', '"We treat clients like family."'], { w: 1024, h: 512, bg: '#fff8ef', sizes: [92, 40, 34], weights: [900, 700, 500] });
-  plane(2.9, 1.45, basic(logo), -4, 0.78, 4.52, 0);
+  plane(4.1, 2.05, basic(logo), -4, 1.6, 4.52, 0);
   cyl(0.06, 0.08, 0.06, '#ffe08a', -3.2, 0.88, 6.3, 12, 0.01);
 
   // ---------- Altar (Thần Tài) ----------

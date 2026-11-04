@@ -48,8 +48,8 @@ kbd { display: inline-block; min-width: 1.6em; padding: 1px 6px; margin: 0 2px; 
 #phoneBtn.ring { animation: ring .5s ease 2; }
 @keyframes ring { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-14deg); } 75% { transform: rotate(14deg); } }
 
-#crosshair-unused { position: fixed; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #fff; border: 2px solid var(--ink); z-index: 4; pointer-events: none; }
-#clickHint-unused { position: fixed; left: 50%; top: calc(50% - 60px); transform: translateX(-50%); background: #fff; border: var(--line); box-shadow: var(--pop); padding: 7px 14px; border-radius: 99px; font-size: 13px; font-weight: 800; pointer-events: none; z-index: 6; }
+#crosshair { position: fixed; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #fff; border: 2px solid var(--ink); z-index: 4; pointer-events: none; }
+#clickHint { position: fixed; left: 50%; top: calc(50% - 60px); transform: translateX(-50%); background: #fff; border: var(--line); box-shadow: var(--pop); padding: 7px 14px; border-radius: 99px; font-size: 13px; font-weight: 800; pointer-events: none; z-index: 6; }
 #prompt { position: fixed; left: 50%; top: calc(50% + 40px); transform: translateX(-50%); background: #fff; border: var(--line); box-shadow: var(--pop); padding: 8px 16px; border-radius: 99px; font-weight: 800; font-size: 14px; z-index: 6; pointer-events: none; white-space: nowrap; max-width: 92vw; overflow: hidden; text-overflow: ellipsis; }
 #prompt kbd { margin-right: 8px; }
 #prompt.target { background: var(--butter); }

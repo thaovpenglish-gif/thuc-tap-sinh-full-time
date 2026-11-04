@@ -37,7 +37,7 @@ async function startSolo() {
   // Solo currently plays the existing story (Chương 1). The T&M Solo campaign plugs in here later.
   $('#mainMenu').hidden = true;
   const { startLegacy } = await import('./modes/legacy.js');
-  active = startLegacy({ scene, rig, input });
+  active = startLegacy({ scene, camera, input });
 }
 
 function showMainMenu() {

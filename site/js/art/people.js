@@ -104,7 +104,8 @@ export function makePerson(def, { ghost = false } = {}) {
   return g;
 }
 
-export function nameTag(title, subtitle, { color = INK, ghost = false } = {}) {
+// size: 'fp' (first-person Solo, default) or 'top' (bigger, for the elevated multiplayer camera)
+export function nameTag(title, subtitle, { color = INK, ghost = false, size = 'fp' } = {}) {
   const tex = canvasTex(512, 140, (g, w, h) => {
     g.fillStyle = ghost ? '#cfe0ff' : '#ffffff';
     roundRect(g, 6, 6, w - 12, h - 12, 30); g.fill();
@@ -116,8 +117,8 @@ export function nameTag(title, subtitle, { color = INK, ghost = false } = {}) {
     if (color && !ghost) { g.fillStyle = color; g.beginPath(); g.arc(40, h / 2, 14, 0, 7); g.fill(); g.lineWidth = 4; g.stroke(); }
   });
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: true, transparent: true }));
-  sp.scale.set(1.45, 0.4, 1);
-  sp.position.y = 1.95;
+  if (size === 'top') { sp.scale.set(1.45, 0.4, 1); sp.position.y = 1.95; }
+  else { sp.scale.set(0.95, 0.26, 1); sp.position.y = 1.78; }
   return sp;
 }
 

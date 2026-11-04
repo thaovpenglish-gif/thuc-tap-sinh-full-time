@@ -15,7 +15,7 @@ site/                       web tĩnh, deploy thẳng lên GitHub Pages (không 
   index.html, style.css
   js/main.js                điểm vào: renderer, vòng lặp, chọn chế độ
   js/flags.js               cờ tính năng (?legacy=1 mở cốt truyện cũ đang ẩn)
-  js/core/                  util, audio, input (phím + joystick), physics, camera nhìn từ trên
+  js/core/                  util, audio, input (phím + joystick), physics, camera nhìn từ trên (cho Multiplayer; Solo dùng góc nhìn thứ nhất)
   js/art/                   kit.js (vật liệu toon, viền sticker), people.js (nhân vật chibi)
   js/maps/                  bản đồ văn phòng
   js/game/sim.js            mô phỏng thuần (item, cầm/đặt/chuyền đồ) dùng chung Solo + host multiplayer

@@ -40,8 +40,8 @@ const strategy = process.argv[2] || 'first';
         if (s.who.startsWith('obj:')) tp = t.world.interactables.find(x => 'obj:' + x.id === s.who).pos;
         else tp = t.npcs[s.who].target;
         // stand 1.2m away, facing target
-        const pl = t.player; pl.pos.set(tp.x + 0.0, 0, tp.z + 1.1);
-        pl.face = Math.PI;
+        const pl = t.player; pl.pos.set(tp.x + 0.0, 1.38, tp.z + 1.1);
+        pl.yaw = 0; pl.pitch = 0;
       });
       await p.waitForTimeout(150);
       const cur = await p.evaluate(()=>{ const t=window.__tts; return document.querySelector('#promptText').textContent; });
@@ -50,7 +50,7 @@ const strategy = process.argv[2] || 'first';
       const m2 = await p.evaluate(()=>window.__tts.mode);
       if (m2 === 'play') {
         // maybe collider pushed us; try directly calling via other side
-        await p.evaluate(() => { const t = window.__tts, s = t.currentStep(); let tp = s.who.startsWith('obj:') ? t.world.interactables.find(x => 'obj:' + x.id === s.who).pos : t.npcs[s.who].mesh.position; t.player.pos.set(tp.x, 0, tp.z - 1.0); t.player.face = 0; });
+        await p.evaluate(() => { const t = window.__tts, s = t.currentStep(); let tp = s.who.startsWith('obj:') ? t.world.interactables.find(x => 'obj:' + x.id === s.who).pos : t.npcs[s.who].mesh.position; t.player.pos.set(tp.x, 1.38, tp.z - 1.0); t.player.yaw = Math.PI; });
         await p.waitForTimeout(150);
         await p.keyboard.press('KeyE');
         await p.waitForTimeout(150);
