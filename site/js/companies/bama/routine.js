@@ -47,7 +47,7 @@ export const ROUTINE = [
   { id: 'r_giaomy', who: 'mai', obj: 'Chị Mai nhờ trả lời inbox', time: '10:30', scene: [
     ['mai', 'Em rep giùm chị khách này. Lần thứ bảy trong tuần có người hỏi "shop ơi có giao Mỹ không".'],
     { c: '_r_giaomy', o: [
-      { t: 'Soạn sẵn một câu trả lời mẫu cho cả team dùng.', fx: { uy: 3, rel: { mai: 2 } }, then: [['mai', 'Câu mẫu! Sao chị không nghĩ ra trong sáu năm? À, vì chị bận kể chuyện.']] },
+      { t: 'Soạn sẵn một câu trả lời mẫu cho cả team dùng.', fx: { uy: 3, rel: { mai: 2 } }, then: [['mai', 'Câu mẫu! Sao chị không nghĩ ra trong bảy năm? À, vì chị bận kể chuyện.']] },
       { t: '"Dạ shop chưa giao Mỹ, nhưng giao tận nhà người thân của chị ở Việt Nam ạ!"', fx: { uy: 1 }, then: [['khach', 'Ok em, giao cho mẹ chị ở Cần Thơ 5 gói. Mẹ chị gửi qua Mỹ.'], ['think', 'Vậy là có giao Mỹ. Bằng mẹ.']] },
     ] },
   ] },
@@ -95,7 +95,7 @@ export const ROUTINE = [
     ['nar', 'Bạn bấm nghe. 3 phút 12 giây. Câu đầu: "Con ơi". Câu cuối: "Mai giao hai thùng cho cô Sáu". Ở giữa là tiếng máy hút chân không.'],
     { c: '_r_voice', o: [
       { t: 'Nghe hết, ghi lại thành checklist.', fx: { uy: 2, rel: { hang: 1 }, nl: -3 }, then: [['hang', 'Con nghe hết hả? Đứa đầu tiên. Kevin nghe 10 giây rồi gửi lại "ok mom".']] },
-      { t: 'Hỏi lại chị Mai Má nói gì.', fx: { rel: { mai: 1 } }, then: [['mai', 'Hai thùng cô Sáu. Chị nghe Má nói câu đó mỗi thứ Năm suốt sáu năm.']] },
+      { t: 'Hỏi lại chị Mai Má nói gì.', fx: { rel: { mai: 1 } }, then: [['mai', 'Hai thùng cô Sáu. Chị nghe Má nói câu đó mỗi thứ Năm suốt bảy năm.']] },
     ] },
   ] },
   { id: 'r_add_nham', who: 'mai', obj: 'Chị Mai: "Em bị add vô nhóm nào kìa?"', time: '11:30', scene: [
@@ -107,8 +107,8 @@ export const ROUTINE = [
       { t: 'Kể cho chị Mai.', fx: { dr: 5, rel: { mai: 3 } }, then: [['mai', 'CỔ PHẦN? Trời ơi. Chị biết rồi. Giờ chị phải đi… "chăm sóc khách hàng nội bộ".']] },
     ] },
   ] },
-  { id: 'r_live_comment', who: 'mi', obj: 'Út Mi hỏi chuyện tối qua', time: '10:10', scene: [
-    ['mi', 'Tối qua có đứa comment "ủa chị trợ live dễ thương vậy". Ba lần. Cùng một nick.'],
+  { id: 'r_live_comment', who: 'mi', obj: 'Út Mi hỏi chuyện hôm bữa live', time: '10:10', when: (r) => r.day > 3, scene: [
+    ['mi', 'Hôm bữa live có đứa comment "ủa chị trợ live dễ thương vậy". Ba lần. Cùng một nick.'],
     ['mi', 'Em có quen nick đó hông?'],
     { c: '_r_live_comment', o: [
       { t: '"Dạ không chị. Mà chị là host, người ta mua vì chị mà."', fx: { rel: { mi: 2 } }, then: [['mi', 'Ừ. Đúng. Tất nhiên. …Mai em đứng lệch qua trái thêm mười phân nha.']] },
@@ -158,7 +158,7 @@ export const ROUTINE = [
     ['mai', 'Khách đặt mít sấy cho mẹ ăn chay ngày rằm. Nhận được khô bò. Đăng bài "shop vô tâm". Em gói lại đơn bù giùm chị.'],
     { mini: CARTON_MINI,
       good: [['mai', 'Đúng rồi. Có thiệp nữa. Khách đăng bài cảm ơn rồi kìa.'], { fx: { uy: 3, rel: { mai: 1 } } }],
-      bad: [['mai', 'Em lại bỏ khô gà "tặng kèm" vô đơn ăn chay hả em ơi…'], { fx: { dr: 3 } }],
+      bad: [['mai', 'Em lại bỏ đồ mặn vô đơn ăn chay hả em ơi…'], { fx: { dr: 3 } }],
     },
   ] },
   { id: 'r_bom', who: 'hang', obj: 'Má: "30 đơn bom, ai duyệt?"', time: '14:20', scene: [
@@ -170,7 +170,7 @@ export const ROUTINE = [
   ] },
   { id: 'r_maimoi', who: 'hang', obj: 'Má xếp chỗ ngồi bữa cơm', time: '11:50', scene: [
     ['hang', 'Trưa nay con ngồi kế Kevin. Hai đứa nói chuyện "data" với nhau cho vui.'],
-    ['mi', '(nhỏ) Chị dâu tương lai hả ta? 👀'],
+    ['mi', '(nhỏ) Má đang "mai mối" đó hả ta? 👀'],
     { c: '_r_maimoi', o: [
       { t: 'Cười, ngồi, nói chuyện data thật.', fx: { rel: { hang: 1, tuan: 1 }, dr: 3 }, then: [['tuan', 'So… ROAS của em là bao nhiêu?'], ['think', 'Câu tán tỉnh tệ nhất mình từng nghe. Mà anh ấy không tán.']] },
       { t: '"Dạ Má, con ngồi với chị Mai quen rồi ạ."', fx: { uy: 2, rel: { hang: -1, mai: 1 } }, then: [['hang', 'Ừ… tùy con.'], ['nar', 'Má gắp cho bạn một khúc cá. Khúc đuôi.']] },
@@ -199,7 +199,7 @@ export const ROUTINE = [
       { t: 'Gật gù, mở laptop làm tiếp.', fx: { nl: 2, rel: { hung: -1 } }, then: [['hung', 'Ừ. Tụi trẻ bây giờ bận.'], ['think', 'Ba nói câu đó nhẹ như gió. Mà nghe nặng.']] },
     ] },
   ] },
-  { id: 'r_happy', who: 'vy', obj: 'Chị Vy tổ chức "Thứ Sáu Hạnh Phúc"', time: '16:10', scene: [
+  { id: 'r_happy', who: 'vy', obj: 'Chị Vy tổ chức "Thứ Sáu Hạnh Phúc"', time: '16:10', when: (r) => (r.day - 1) % 7 === 4, scene: [
     ['vy', '"Happiness Friday" nè em! Hoạt động hôm nay: ăn khô vụn và chia sẻ một điều biết ơn.'],
     ['nar', 'Người tham gia: chị Vy, Mèo Khô Gà, và bạn.'],
     { c: '_r_happy', o: [
@@ -235,7 +235,7 @@ export const ROUTINE = [
     { fx: { nl: 12, rel: { tu: 1 } } },
     { c: '_r_khovun', o: [
       { t: '"Sao cô cho con ạ?"', fx: { rel: { tu: 1 } }, then: [['tu', 'Tại con hay rửa chén. Ở đây cô nhớ ai rửa chén. Má nhớ ai làm bể chén.']] },
-      { t: 'Chia cho Ngân một nửa.', fx: { rel: { ngan: 2, tu: 1 } }, then: [['ngan', 'Cho mình hả? …Ngon thật. Mình làm ở đây ba tuần mà chưa ai cho mình cái gì không ghi sổ.']] },
+      { t: 'Chia cho Ngân một nửa.', fx: { rel: { ngan: 2, tu: 1 } }, then: [['ngan', 'Cho mình hả? …Ngon thật. Mình làm ở đây từ đầu tới giờ chưa ai cho mình cái gì mà không ghi sổ.']] },
     ] },
   ] },
   { id: 'r_ngan_cay', who: 'ngan', obj: 'Ngân ngồi một mình ở bàn', time: '13:10', scene: [
@@ -247,7 +247,7 @@ export const ROUTINE = [
     ] },
   ] },
   { id: 'r_carton', who: 'bay', obj: 'Hết thùng carton!', time: '14:40', scene: [
-    ['bay', 'Hết thùng carton. Nhà in hẹn thứ Hai. Đơn thì hôm nay.'],
+    ['bay', 'Hết thùng carton. Nhà in hẹn tuần sau. Đơn thì hôm nay.'],
     { c: '_r_carton', o: [
       { t: 'Qua tạp hóa kế bên xin thùng mì gói.', fx: { nl: -4, rel: { bay: 1 } }, then: [['nar', 'Ba chục đơn khô gà đi trong thùng "Mì tôm chua cay". Một khách đánh giá: "Tưởng mì, hóa ra khô. Bất ngờ, 5 sao."']] },
       { t: 'Dời đơn, nhắn xin lỗi khách.', fx: { uy: -1, dr: 1 }, then: [['mai', 'Dời đơn hả? Khách chửi chị, em nhớ chia nửa với chị.']] },
@@ -286,7 +286,7 @@ export const ROUTINE = [
   ] },
   { id: 'r_o_tinnhan', who: 'hang', official: true, obj: 'Má nhắn lúc 22:47 (đọc lúc sáng)', time: '08:50', scene: [
     { chat: [['hang', 'Tối nay bao nhiêu đơn con?', true], ['hang', 'Con ngủ rồi hả?', true], ['hang', 'Người nhà mà ngủ sớm.', true]] },
-    ['think', 'Ba tin nhắn. Gửi lúc 22:47, 23:15 và 23:58. Hồi intern, Má không nhắn sau giờ làm.'],
+    ['think', 'Ba tin nhắn. Gửi lúc 22:47, 23:15 và 23:58. Hồi intern, Má nhắn tối là chuyện hiếm. Giờ là lịch.'],
     { c: '_r_o_tinnhan', o: [
       { t: 'Trả lời đầy đủ số đơn, xin phép tắt thông báo sau 22 giờ.', fx: { uy: 2, rel: { hang: -1 } }, then: [['hang', 'Tắt thông báo? Lỡ Má cần thì sao?'], ['think', 'Lỡ mình cần ngủ thì sao?']] },
       { t: 'Trả lời: "Dạ con xin lỗi Má, tối nay con sẽ thức."', fx: { nl: -8, rel: { hang: 1 } }, then: [['think', 'Từ "nhân viên chính thức" đến "trực đêm không lương": một tuần.']] },

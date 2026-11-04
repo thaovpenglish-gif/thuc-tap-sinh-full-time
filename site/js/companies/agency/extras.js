@@ -12,7 +12,7 @@ export const SIDE_TASKS = [
     { npc: 'loc', line: ['loc', 'Đủ 27. Giờ chỉ còn đợi CPM bớt cao.'] },
   ] },
   { id: 'print_deck', title: 'In deck 20 trang màu cho chị Diệp đi gặp client', from: 'diep', base: 60, legs: [
-    { npc: 'diep', line: ['diep', 'Em in giùm chị deck 20 trang, màu, hai bản. Chị đi gặp client lúc 15:00.'] },
+    { npc: 'diep', line: ['diep', 'Em in giùm chị deck 20 trang, màu, hai bản. Lát nữa chị đi gặp client.'] },
     { obj: 'printer', line: ['nar', 'Máy in đòi mật khẩu. Tờ giấy dán: "TrendTre2016". Trang 7 ra màu cam. Bạn in lại trang 7.'] },
     { npc: 'diep', line: ['diep', 'Hai bản, đủ trang, không cam. Em là người hùng thầm lặng của ngành in ấn.'] },
   ] },
@@ -62,7 +62,7 @@ export const SIDE_TASKS = [
     { npc: 'quan', line: ['quan', 'Hai bản? Ồ. 3x3. Máy in này có tư duy chiến lược.'] },
   ] },
   { id: 'altar', title: 'Thắp hương Thần Tài trước giờ trình client cho anh Tùng', from: 'tung', base: 50, legs: [
-    { npc: 'tung', line: ['tung', 'Chiều nay trình client lớn. Em thắp giúp anh nén hương Thần Tài. Khấn: "cho client duyệt vòng 1".'] },
+    { npc: 'tung', line: ['tung', 'Lát nữa trình client lớn. Em thắp giúp anh nén hương Thần Tài. Khấn: "cho client duyệt vòng 1".'] },
     { obj: 'altar', line: ['nar', 'Bạn thắp hương, khấn "cho client duyệt vòng 1". Rồi khấn thêm "hoặc vòng 2 cũng được". Thực tế là quan trọng.'] },
     { npc: 'tung', line: ['tung', 'Khấn vòng 1 hả? Tham vọng! Anh thích!'] },
   ] },
@@ -114,7 +114,8 @@ export const PROMOTION = {
     ['tung', 'Anh nói ngắn, theo kiểu agency: tụi anh muốn giữ em. Account Executive. Mười triệu. Hợp đồng lao động, có bảo hiểm.'],
     ['diep', 'Chị nói thêm phần anh Tùng không nói: em sẽ nhận client riêng. Client đó là Răng Xinh. Có anh Tuấn. Có Bin.'],
     { if: f('client_praised'), then: [['diep', 'Chị Nguyệt bên Ông Táo cũng hỏi tên em. Hai lần. Nên tụi chị phải giữ em trước khi client giữ.']] },
-    ['think', 'Mười triệu. Có bảo hiểm. Và một con rồng.'],
+    ['think', 'Mười triệu. Có bảo hiểm. Và có Bin 🔥.'],
+    { if: f('go_client'), then: [['think', 'Mình đã nhận lời chị Nguyệt rồi. Giờ có hai lời mời. Đời không bao giờ đưa từng cái một.']] },
     { c: '_ag_offer', o: [
       { t: 'Nhận lời.', fx: { uy: 5, rel: { diep: 1, tung: 1 }, set: { accept_official: true } }, then: [
         ['tung', 'Welcome to the team! Chính thức! Make it pop!'],
@@ -134,7 +135,7 @@ export const PROMOTION = {
 export const OFFICIAL_EPISODES = [
   {
     id: 'off_handover', official: true, title: 'Client của em',
-    intro: 'Ngày đầu chính thức. Bạn nhận bàn giao Răng Xinh từ bạn AE cũ (đã nghỉ, để lại file "BAN_GIAO.txt" dài đúng một dòng).\n\nKèm 14 nhóm Zalo. Và tin nhắn của anh Tuấn lúc 7:02: "Em ơi".',
+    intro: 'Tuần đầu chính thức. Bạn nhận bàn giao Răng Xinh từ bạn AE cũ (đã nghỉ, để lại file "BAN_GIAO.txt" dài đúng một dòng).\n\nKèm 14 nhóm Zalo. Và tin nhắn của anh Tuấn lúc 7:02: "Em ơi".',
     steps: [
       {
         who: 'diep', obj: 'Chị Diệp bàn giao Răng Xinh', time: '09:30',
@@ -190,7 +191,7 @@ export const OFFICIAL_EPISODES = [
         who: 'hong', obj: 'Chị Hồng: timesheet "thật" đầu tiên', time: '17:00',
         scene: [
           ['hong', 'Chúc mừng em lên chính thức. Quà của em: timesheet giờ dùng để tính lợi nhuận client của em. Của em.'],
-          ['hong', 'Tuần này em làm Răng Xinh 52 giờ. Hợp đồng chỉ trả cho 30. Em ghi bao nhiêu?'],
+          ['hong', 'Chị ước tính: tuần này em sẽ làm Răng Xinh 52 giờ. Hợp đồng chỉ trả cho 30. Em định ghi bao nhiêu?'],
           { c: 'ag_off_ts', o: [
             { t: 'Ghi 52, kèm báo cáo phần việc ngoài phạm vi.', fx: { uy: 3, rel: { hong: 2 }, set: { off_ts_true: true } }, then: [
               ['hong', 'Đúng. Có số này, tháng sau em mới có cớ đàm phán.'],
@@ -202,11 +203,11 @@ export const OFFICIAL_EPISODES = [
         ],
       },
     ],
-    diary: (s) => `Ngày đầu chính thức. Mười bốn nhóm Zalo. ${s.flags.off_wrong_group ? 'Mình gửi nhầm nhóm. Anh Tuấn nói "Ok em". Đáng sợ nhất năm.' : 'Suýt gửi nhầm nhóm. Kịp.'} Bin muốn có rồng.`,
+    diary: (s) => `Tuần đầu chính thức. Mười bốn nhóm Zalo. ${s.flags.off_wrong_group ? 'Mình gửi nhầm nhóm. Anh Tuấn nói "Ok em". Đáng sợ nhất năm.' : 'Suýt gửi nhầm nhóm. Kịp.'} Bin muốn có rồng.`,
   },
   {
     id: 'off_scope', official: true, title: 'Tiện làm giùm anh',
-    intro: 'Tuần thứ hai chính thức. Anh Tuấn nhắn: "Em ơi, tiện làm giùm anh cái thiệp cưới nha. Của em gái anh. Nhanh thôi."\n\nCùng lúc đó, lương tháng này trễ ba ngày vì một client khác chưa trả tiền.',
+    intro: 'Chính thức được vài ngày. Anh Tuấn nhắn: "Em ơi, tiện làm giùm anh cái thiệp cưới nha. Của em gái anh. Nhanh thôi."\n\nCùng lúc đó, lương tháng này trễ ba ngày vì một client khác chưa trả tiền.',
     steps: [
       {
         who: 'vy', obj: 'Vỹ nghe tin thiệp cưới', time: '10:00',
@@ -260,7 +261,7 @@ export const OFFICIAL_EPISODES = [
       {
         who: 'diep', obj: 'Chị Diệp: "Em ơi" (bản chính thức)', time: '17:30',
         scene: [
-          ['diep', 'Em ơi… chị không giao việc. Chị chỉ nói: chị nhận offer agency khác. Cuối tháng chị đi.'],
+          ['diep', 'Em ơi… chị không giao việc. Chị chỉ nói: chị nhận offer agency khác. Xong mùa Tết chị đi.'],
           ['diep', 'Em sẽ là người lớn nhất team account. Chị xin lỗi. Chị ở lại tám năm vì những người như em. Lần này chị đi vì chính chị.'],
           { c: 'ag_off_diep', o: [
             { t: '"Chị đi đi. Chị xứng đáng."', fx: { rel: { diep: 3 } }, then: [
@@ -277,7 +278,7 @@ export const OFFICIAL_EPISODES = [
   },
   {
     id: 'off_burnout', official: true, title: 'Tuần lễ sức khỏe tinh thần',
-    intro: 'Chị Diệp đã nghỉ. Bạn giờ ôm Răng Xinh, một nửa Ông Táo và 22 nhóm Zalo.\n\nĐêm qua chị Hồng gửi email toàn công ty: "Tuần lễ sức khỏe tinh thần: mỗi ngày 5 phút thiền." Gửi lúc 23:40.',
+    intro: 'Chị Diệp đang bàn giao dần trước khi đi. Bạn giờ ôm Răng Xinh, một nửa Ông Táo và 22 nhóm Zalo.\n\nĐêm qua chị Hồng gửi email toàn công ty: "Tuần lễ sức khỏe tinh thần: mỗi ngày 5 phút thiền." Gửi lúc 23:40.',
     steps: [
       {
         who: 'hong', obj: 'Chị Hồng phát "bộ quà sức khỏe tinh thần"', time: '09:45',
@@ -314,13 +315,13 @@ export const OFFICIAL_EPISODES = [
         who: 'suong', obj: 'Sương không ổn', time: '15:00',
         scene: [
           ['suong', 'Em ơi. Chị ngủ ba tiếng một đêm, sáu tháng rồi. Hôm qua chị mơ thấy comment chửi. Chị trả lời nó trong mơ.'],
-          ['suong', 'Chị xin nghỉ một tuần. Anh Tùng nói "tuần lễ sức khỏe tinh thần mà nghỉ thì kỳ lắm".'],
+          ['suong', 'Chị xin nghỉ một tuần, sau đợt chạy Tết. Anh Tùng nói "tuần lễ sức khỏe tinh thần mà nghỉ thì kỳ lắm".'],
           { c: 'ag_off_suong', o: [
-            { t: 'Nhận canh fanpage thay Sương một tuần.', fx: { nl: -10, rel: { suong: 3 }, set: { off_cover_suong: true } }, then: [
+            { t: 'Nhận canh fanpage thay Sương tuần đó.', fx: { nl: -10, rel: { suong: 3 }, set: { off_cover_suong: true } }, then: [
               ['suong', '…Thật hả? Cảm ơn bé. Mật khẩu chị gửi riêng. Đừng hỏi vì sao nó có chữ "ngungu".'],
             ] },
             { t: 'Đi cùng Sương gặp anh Tùng.', fx: { uy: 2, rel: { suong: 2, tung: -2 } }, then: [
-              ['tung', '…Ok. Nghỉ đi. Anh không biết là ngủ ba tiếng sáu tháng. Anh tưởng Sương là… chatbot.'],
+              ['tung', '…Ok. Xong Tết nghỉ đi. Anh không biết là ngủ ba tiếng sáu tháng. Anh tưởng Sương là… chatbot.'],
             ] },
           ] },
         ],
@@ -351,7 +352,7 @@ export const OFFICIAL_EPISODES = [
     steps: [
       {
         who: 'tung', obj: 'Họp toàn công ty', time: '10:00',
-        pos: { tung: 'coach', khai: 'su1', thi: 'su2', vy: 'su3', quan: 'su4', loc: 'su5', suong: 'su6', kieu: 'su7', linh: 'su8', phat: 'su9', hong: 'su10' },
+        pos: { tung: 'coach', diep: 'scrum', khai: 'su1', thi: 'su2', vy: 'su3', quan: 'su4', loc: 'su5', suong: 'su6', kieu: 'su7', linh: 'su8', phat: 'su9', hong: 'su10' },
         scene: [
           ['tung', 'Mọi người… Ông Táo đi rồi. Mình phải "right-size". Tiếng Anh nghe cho nhẹ. Tiếng Việt là cắt tám người.'],
           ['nar', 'Không ai nói gì. Mèo Insight nhảy lên bàn, nằm đúng giữa. Lần này không ai đuổi nó.'],
@@ -394,6 +395,9 @@ export const OFFICIAL_EPISODES = [
             { t: 'Đi cùng anh Khải.', when: (r) => !r.flags.fin_client, fx: { rel: { khai: 3 }, set: { fin_khai: true } }, then: [
               ['khai', 'Không có Đà Lạt. Không có ly POP. Có ý tưởng, và một cái bàn hơi lung lay.'],
             ] },
+            { t: '"Em qua bên client. Anh pitch thì em hứa đọc brief kỹ ạ."', when: f('fin_client'), fx: { rel: { khai: 2 } }, then: [
+              ['khai', 'Client hứa đọc brief kỹ. Lời hứa lãng mạn nhất anh từng nghe.'],
+            ] },
             { t: '"Em có hướng riêng ạ."', fx: { rel: { khai: 1 }, set: { fin_alone: true } }, then: [
               ['khai', 'Tốt. Ai rồi cũng phải có agency của riêng mình. Kể cả khi agency đó chỉ có một người.'],
             ] },
@@ -426,7 +430,7 @@ export const OFFICIAL_EPISODES = [
     ],
     diary: (s) => (s.flags.fin_client ? 'Ông Táo đi. Mình cũng đi, qua chính Ông Táo. Phía bên kia chiến tuyến.'
       : s.flags.fin_khai ? 'Ông Táo đi. Mình theo anh Khải qua "Đủ Đau". Cái bàn hơi lung lay.'
-        : 'Ông Táo đi. Mình có tên trong danh sách. Một tháng trợ cấp, một thư giới thiệu thật.'),
+        : 'Ông Táo đi. Mình có tên trong danh sách. Trợ cấp theo luật, một thư giới thiệu thật.'),
   },
 ];
 
@@ -454,7 +458,7 @@ export const ENDINGS = {
 // ---------- pantry (max 1 extra option) ----------
 export const FOOD = [
   { t: 'Nấu mì Ông Táo sample (miễn phí, +18, mất 10 phút)', fx: { nl: 18, clock: 10 }, then: [
-    ['nar', 'Mì Ông Táo vị "Tết sum vầy". Nấu bằng ấm siêu tốc, ăn trong ly giấy, khỏi rửa nồi. Insight sống động nhất bạn từng trải nghiệm.'],
+    ['nar', 'Mì Ông Táo vị "Tết sum vầy". Nấu bằng ấm siêu tốc, ăn trong ly giấy, khỏi rửa nồi. Hình như có một insight nằm đâu đó trong ly này.'],
   ] },
 ];
 

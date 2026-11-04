@@ -62,7 +62,7 @@ const TS_MINI = {
   prompt: 'Ghi giờ cho đúng client. Chị Hồng đang đứng sau lưng.', time: 35, pass: 0.66,
   questions: [
     { q: 'Nghe voice 6 phút của chị Nguyệt + 1 tiếng ghi ý chính', options: ['Mì Ông Táo', 'Khác', 'Nội bộ – học hỏi'], correct: 0 },
-    { q: '2 tiếng họp WIP sáng thứ Hai', options: ['Chia đều cho mọi client', 'Nội bộ (không tính phí)', 'Ông Táo vì được nhắc nhiều nhất'], correct: 1 },
+    { q: '40 phút họp WIP sáng thứ Hai', options: ['Chia đều cho mọi client', 'Nội bộ (không tính phí)', 'Ông Táo vì được nhắc nhiều nhất'], correct: 1 },
     { q: '45 phút tìm bản v1 giữa sáu bản v1', options: ['Mì Ông Táo', 'Vỹ', 'Thiên tai'], correct: 0 },
   ],
 };
@@ -72,7 +72,7 @@ const INSIGHT_MINI = {
   questions: [
     { q: '"Người ta ăn mì gói vì tiện."', options: ['Observation', 'Insight'], correct: 0 },
     { q: '"Người ta không ngại nấu mì. Người ta ngại rửa nồi."', options: ['Observation', 'Insight'], correct: 1 },
-    { q: '"Gói mì là thứ duy nhất trong ngày không đổi ý với mình."', options: ['Observation', 'Insight', 'Thơ của Thi'], correct: 1 },
+    { q: '"Mì gói rẻ hơn cơm hàng."', options: ['Observation', 'Insight', 'Framework 2x2 của anh Quân'], correct: 0 },
   ],
 };
 const PROD_MINI = {
@@ -210,7 +210,7 @@ export const EPISODES = [
           ['diep', '{ten}, em ghi call report buổi này nha. Chị cần ba thứ: ai làm gì, deadline, ai chịu trách nhiệm.'],
           { mini: WIP_MINI,
             good: [['diep', 'Call report gọn. Có người phụ trách, có deadline. Chị forward cả team luôn.'], { fx: { uy: 3, rel: { diep: 2 }, set: { callreport_ok: true } } }],
-            bad: [['diep', 'Em ghi "CPM đang cao" vào call report hả? …Anh Lộc chắc vui lắm.'], ['loc', 'Vui thật.'], { fx: { rel: { diep: -1, loc: 1 } } }],
+            bad: [['diep', 'Call report thiếu việc, thừa chuyện. Chị cần ai làm gì, deadline nào. Không cần chị có mấy điện thoại.'], ['loc', 'Có ghi "CPM đang cao" không? Ghi đi, cho đủ.'], { fx: { rel: { diep: -1, loc: 1 } } }],
           },
           ['nar', 'WIP "mười lăm phút" kết thúc sau bốn mươi phút. Không ai hết cháy.'],
         ],
@@ -222,7 +222,7 @@ export const EPISODES = [
           ['vy', 'Mà khoan, đừng mở cái nào có chữ "Fonts". Anh có 47 font, mở là máy em đứng tới trưa.'],
           { mini: FILE_MINI,
             good: [['vy', 'Đúng nó. Bản gửi client là bản có chữ "GUI_CLIENT". Hệ thống đặt tên hoàn hảo, chỉ mỗi anh hiểu.'], { fx: { uy: 3, rel: { vy: 2 }, set: { file_found: true } } }],
-            bad: [['vy', 'Không phải… bản này anh Khải đổi chữ thành màu tím. Gửi nhầm là client hỏi "sao chữ tím". Để anh tìm lại.'], { fx: { nl: -4, rel: { vy: -1 } } }],
+            bad: [['vy', 'Không phải bản đó… Bản gửi client là bản có chữ "GUI_CLIENT". Gửi nhầm là client hỏi "sao chữ tím". Để anh tự tìm.'], { fx: { nl: -4, rel: { vy: -1 } } }],
           },
         ],
       },
@@ -346,7 +346,7 @@ export const EPISODES = [
           { mini: BS_MINI,
             good: [
               ['khai', 'Menu size theo tâm trạng. …"Tâm trạng gì cũng có size". Ai nói câu đó?'],
-              { if: f('size_line'), then: [['thi', 'Hôm qua bạn intern viết "Hôm nay buồn, size L". Từ đó ra đó anh.']] },
+              { if: f('size_line'), then: [['thi', 'Hôm qua bạn intern viết "Hôm nay buồn, size L". Từ đó ra đó anh.']], else: [['me', 'Dạ… em ạ. Em vừa nghĩ ra lúc lọc ý.']] },
               ['khai', 'Ừ. Ghi lên bảng.'],
               { fx: { uy: 4, rel: { khai: 2 }, set: { size_idea: true } } },
             ],
@@ -373,7 +373,7 @@ export const EPISODES = [
               ['khai', 'Tốt. Ở đây ý tưởng không có bố mẹ. Chỉ có người chịu trách nhiệm khi nó chết.'],
             ] },
             { t: 'Nhắn riêng chị Diệp: "Ý đó em nghĩ ra ạ."', fx: { dr: 2, rel: { diep: 1 }, set: { tagline_told_diep: true } }, then: [
-              { chat: [['diep', 'chị biết rồi 😌 chị nhớ. nhưng đừng nói anh Khải là em nhắn chị nha', true]] },
+              { chat: [['diep', 'chị biết rồi 😌 phòng brainstorm vách mỏng lắm. nhưng đừng nói anh Khải là em nhắn chị nha', true]] },
             ] },
           ] },
         ],
@@ -430,7 +430,7 @@ export const EPISODES = [
           ['vy', 'Được. Nhưng phải tìm ra v1 thật. Anh có… nhiều v1 lắm.'],
           { mini: V1_MINI,
             good: [['vy', 'Đúng nó! Gửi lúc 14:02, ba tuần trước. Anh nhớ vì hôm đó anh còn tin vào cuộc đời.'], { fx: { uy: 3, rel: { vy: 2 }, set: { v1_found: true } } }],
-            bad: [['vy', 'Bản này bị lưu đè hôm qua. Mất mười phút lục email cũ mới ra bản gốc.'], { fx: { nl: -4, set: { v1_found: true } } }],
+            bad: [['vy', 'Không phải bản này. Mất mười phút lục email cũ mới ra bản gốc: KV_v1_goc, gửi lúc 14:02.'], { fx: { nl: -4, set: { v1_found: true } } }],
           },
         ],
       },
@@ -488,8 +488,8 @@ export const EPISODES = [
           ['hong', 'Timesheet tuần này. Mỗi giờ một client. 17:00 khóa sổ.'],
           ['hong', 'Nhắc trước: ô "Khác" không phải chỗ để giấu sáu tiếng nghe voice client.'],
           { mini: TS_MINI,
-            good: [['hong', 'Đúng gần hết. Em là người đầu tiên tuần này không ghi "Khác: 14 giờ".'], { fx: { uy: 2, rel: { hong: 2 } } }],
-            bad: [['hong', 'Ghi "Vỹ" là một client hả em? Vỹ có trả tiền đâu. Sửa lại.'], { fx: { nl: -3 } }],
+            good: [['hong', 'Ổn. Em là người đầu tiên tuần này không ghi "Khác: 14 giờ".'], { fx: { uy: 2, rel: { hong: 2 } } }],
+            bad: [['hong', 'Sai client rồi em. Tuần trước có bạn ghi "Vỹ" là một client. Vỹ có trả tiền đâu. Sửa lại.'], { fx: { nl: -3 } }],
           },
         ],
       },
@@ -568,7 +568,8 @@ export const EPISODES = [
           ['suong', 'Em ơi, 11:15 rồi. Story Bông Bơ đang… ăn lẩu. Không có ly trà sữa nào.'],
           ['suong', 'Kênh bạn ấy vừa đăng clip khác: review nồi chiên không dầu. Gắn tag một brand khác.'],
           { c: 'ag_kol_first', o: [
-            { t: 'Nhắn anh Ken ngay.', fx: { uy: 1, nl: -2 }, then: [
+            { t: 'Nhắn anh Ken (quản lý Bông Bơ) ngay.', fx: { uy: 1, nl: -2 }, then: [
+              { if: (r) => !r.flags.kol_backup, then: [['nar', 'Bạn chưa có số anh Ken. Mất mười phút lục nhóm Zalo "Trà Sữa x Bông Bơ" mới thấy.']] },
               { chat: [['ken', 'bạn ấy đang bận show em, tối mới check brief', true]] },
               ['think', 'Brief? Clip lẽ ra đã lên từ 11:00. Brief cái gì nữa?'],
             ] },
@@ -607,10 +608,10 @@ export const EPISODES = [
           ['diep', 'Client hỏi rồi đó em. Ảnh chụp màn hình đâu?'],
           { if: f('kol_firm'), then: [['nar', '14:52 Bông Bơ đăng clip. Caption còn nguyên dòng "[CHÈN HASHTAG CHIẾN DỊCH]". Sương sửa bằng một comment ghim trong 40 giây.']] },
           { c: 'ag_kol_client', o: [
-            { t: 'Báo thật với client, đề xuất 3 KOC thay thế, agency bù phí.', fx: { uy: 4, rel: { diep: 2 }, set: { kol_honest: true } }, then: [
+            { t: 'Báo thật với client: KOL trễ hẹn. Đề xuất thêm 3 KOC bù, agency chịu phí.', fx: { uy: 4, rel: { diep: 2 }, set: { kol_honest: true } }, then: [
               ['diep', 'Client hơi giận, nhưng thích việc mình nói trước khi họ tự phát hiện. Họ hỏi tên em đó.'],
             ] },
-            { t: 'Đợi KOL đăng rồi gửi, coi như trễ chút thôi.', fx: { dr: 2, nl: -4 }, then: [
+            { t: 'Có clip thì gửi ảnh, không giải thích gì. Coi như trễ chút thôi.', fx: { dr: 2, nl: -4 }, then: [
               ['diep', 'Ok… client hỏi sao trễ. Chị nói "thuật toán". Anh Lộc dạy chị câu đó.'],
               ['loc', 'Thuật toán đổi rồi. Lúc nào cũng đúng.'],
             ] },
@@ -622,7 +623,7 @@ export const EPISODES = [
         ],
       },
     ],
-    diary: (s) => `KOL bùng. ${s.flags.kieu_commission ? 'Mình biết chuyện "hoa hồng" của chị Kiều. Không biết nên vui hay sợ.' : 'Anh Ken nói "tối mới check brief". Clip lẽ ra lên lúc 11:00.'} ${s.flags.kol_honest ? 'Mình báo thật với client. Họ hỏi tên mình.' : 'Client nhận ảnh chụp màn hình trễ. Lý do: thuật toán.'}`,
+    diary: (s) => `KOL bùng. ${s.flags.kieu_commission ? 'Mình biết chuyện "hoa hồng" của chị Kiều. Không biết nên vui hay sợ.' : 'Anh Ken nói "bạn ấy đang quay show". Clip lẽ ra lên lúc 11:00.'} ${s.flags.kol_honest ? 'Mình báo thật với client. Họ hỏi tên mình.' : s.flags.told_diep_kol ? 'Mình kể chuyện "thêm 30%" với chị Diệp. Chị nói: em đừng nói ai.' : 'Client nhận ảnh chụp màn hình trễ. Lý do: thuật toán.'}`,
   },
 
   // ---------------------------------------------------------------- 6
@@ -737,7 +738,7 @@ export const EPISODES = [
           ['phat', 'Anh nói hoài: hứa gì với client thì hỏi production trước. Không ai nghe. Như hét vào bể bơi.'],
           { mini: PROD_MINI,
             good: [['phat', 'Đúng thứ tự. Em đưa cái này cho chị Diệp, may ra chị ấy hiểu vì sao anh tóc bạc.'], { fx: { uy: 2, rel: { phat: 2 } } }],
-            bad: [['phat', 'Quay trước khi client duyệt kịch bản hả? Em sẽ hợp với nghề này. Theo nghĩa xấu.'], { fx: { nl: -3 } }],
+            bad: [['phat', 'Sai thứ tự là sai tiền. Quay trước khi có PO thì ai trả? Em sẽ hợp với nghề này. Theo nghĩa xấu.'], { fx: { nl: -3 } }],
           },
         ],
       },
@@ -750,7 +751,7 @@ export const EPISODES = [
           ['nar', 'Hai người cùng quay sang nhìn bạn. Bạn đang đứng đúng giữa. Như luôn luôn.'],
           { c: 'ag_moto', o: [
             { t: 'Đứng về phía chị Diệp: tìm freelancer 3D giá rẻ.', fx: { dr: 2, rel: { diep: 2, khai: -2 }, set: { moto_duck: true } }, then: [
-              ['nar', 'Freelancer gửi demo lúc 17:00. Chiếc xe máy bay qua cầu, hơi giống một con vịt. Rất giống.'],
+              ['nar', 'Freelancer gửi demo lúc 15:30. Chiếc xe máy bay qua cầu, hơi giống một con vịt. Rất giống.'],
             ] },
             { t: 'Đứng về phía anh Khải: chị Diệp nên nói lại với client.', fx: { rel: { khai: 2, diep: -2 }, set: { moto_refuse: true } }, then: [
               ['diep', '…Ok. Chị đi xin lỗi anh Tuấn. Một mình.'],
@@ -817,6 +818,7 @@ export const EPISODES = [
         who: 'linh', obj: 'Linh kéo bạn ra cửa sổ nói nhỏ', time: '11:00', pos: { linh: 'window' },
         scene: [
           ['linh', 'Bạn ơi… tối qua mẹ mình nói bên Bia Hơi Phố chọn agency rồi. Pitch hôm nay là "cho đủ quy trình".'],
+          { if: (r) => !r.flags.linh_mom, then: [['linh', '(nhỏ hơn nữa) Mẹ mình là Marketing Director bên đó. Đừng nói ai nha.']] },
           ['linh', 'Nói với anh Tùng thì lộ mẹ mình. Không nói thì cả công ty thức ba đêm cho vui.'],
           { c: 'ag_pitch_leak', o: [
             { t: '"Bạn nói với chị Diệp đi, mình đi cùng."', fx: { rel: { linh: 3, diep: 1 }, set: { pitch_leak_told: true } }, then: [
@@ -933,7 +935,7 @@ export const EPISODES = [
           ['suong', 'Giờ ra thông cáo. Ngắn, rõ, có bằng chứng. Em chọn câu giúp chị.'],
           { mini: STATEMENT_MINI,
             good: [['suong', 'Ba câu: bằng chứng, không đổ lỗi, có kênh liên hệ. Chị gửi chị Diệp duyệt.'], { fx: { uy: 3, rel: { suong: 2 }, set: { statement_ok: true } } }],
-            bad: [['suong', 'Câu "kiện tới cùng" làm khủng hoảng sống thêm ba ngày. Để chị sửa.'], { fx: { dr: 2 } }],
+            bad: [['suong', 'Có câu đọc lên là khủng hoảng sống thêm ba ngày. Đổ lỗi, quảng cáo, đi ngủ… Để chị sửa.'], { fx: { dr: 2 } }],
           },
         ],
       },
@@ -941,13 +943,13 @@ export const EPISODES = [
         who: 'call:nguyet', obj: 'Chị Nguyệt gọi khẩn! (nghe máy)', time: '11:00',
         call: { title: 'Ông Táo × Trend Trễ · KHẨN', people: ['nguyet', 'diep', 'suong', 'me'] },
         scene: [
-          ['nguyet', 'Chị cần biết: ai phát hiện, lúc mấy giờ, và tại sao sếp chị biết trước chị.'],
+          ['nguyet', 'Chị cần biết: ai phát hiện, lúc mấy giờ, ai báo ai.'],
           { if: f('crisis_hero'), then: [
             ['diep', 'Dạ, bạn {ten} phát hiện cùng Sương lúc 23:07, gọi em lúc 23:31. Em gọi chị lúc 23:40 ạ.'],
             ['nguyet', '…Cảm ơn em. Chị nhớ tên em. Lần đầu chị cảm ơn agency lúc 11 giờ sáng.'],
             { fx: { rel: { nguyet: 2 }, set: { client_praised: true } } },
           ], else: [
-            ['nguyet', 'Lần sau chị cần biết trước sếp chị. Một tiếng thôi cũng được.'],
+            ['nguyet', 'Sếp chị biết trước chị. Lần sau chị cần biết trước sếp chị. Một tiếng thôi cũng được.'],
           ] },
           { c: 'ag_crisis_call', o: [
             { t: 'Đề xuất: liên hệ người đăng, gửi ảnh so sánh, mời tham quan nhà máy.', fx: { uy: 4, rel: { nguyet: 1 }, set: { crisis_plan: true } }, then: [
@@ -1011,7 +1013,7 @@ export const EPISODES = [
           ['vy', 'Logo bị kéo dãn. Ảnh nền còn watermark. Và có hiệu ứng lửa. Kem đánh răng. Lửa.'],
           { mini: BIN_MINI,
             good: [['vy', 'Watermark, logo, sai tên. Ba cái này mà lên sóng là ra tòa, ra báo, ra đường. Em soi giỏi.'], { fx: { uy: 3, rel: { vy: 2 }, set: { bin_checked: true } } }],
-            bad: [['vy', 'Em soi màu hồng? Màu hồng là lỗi nhỏ nhất. Cái watermark mới là cái kéo mình ra tòa.'], { fx: { nl: -3 } }],
+            bad: [['vy', 'Màu hồng, bảy font, lửa: xấu, nhưng sửa được. Watermark, logo méo, sai tên mới là thứ kéo mình ra tòa.'], { fx: { nl: -3 } }],
           },
         ],
       },
@@ -1037,7 +1039,7 @@ export const EPISODES = [
       },
       {
         who: 'call:tuan', obj: 'Anh Tuấn gọi, có cả Bin (nghe máy)', time: '14:00',
-        call: { title: 'Răng Xinh · "Bin muốn góp ý"', people: ['tuan', 'bin', 'diep', 'me'] },
+        call: { title: 'Răng Xinh · "Bin muốn góp ý"', people: ['tuan', 'bin', 'diep', 'vy', 'me'] },
         scene: [
           ['tuan', 'Anh cho Bin vào call luôn nha, cho cháu học hỏi.'],
           ['bin', 'Dạ em chào anh chị. Em thấy KV của bên mình hơi… cũ. Em nghĩ phải có lửa. Gen Z thích lửa.'],
@@ -1053,7 +1055,7 @@ export const EPISODES = [
               { chat: [['diep', 'em vừa mở khóa con rồng. chúc mừng 🐉', true]] },
             ] },
             { t: 'Mời Bin qua agency thực tập một tuần "học nghề".', fx: { rel: { tuan: 3, vy: -1 }, set: { bin_intern: true } }, then: [
-              ['tuan', 'Ý hay! Thứ Hai Bin qua nha!'],
+              ['tuan', 'Ý hay! Bin thi xong học kỳ là qua liền nha em!'],
               { chat: [['vy', 'em vừa mời một con rồng vào nhà.', true]] },
             ] },
           ] },
@@ -1156,7 +1158,7 @@ export const EPISODES = [
         ],
       },
     ],
-    diary: (s) => `Một số 0 thừa, 4,8 triệu. ${s.flags.media_honest ? 'Mình nhận lỗi ngay. Client tăng ngân sách. Ngành này kỳ lạ thật.' : s.flags.media_hidden ? 'Mình đề nghị "chia đều". Chị Diệp nói khách hàng là người đếm tiền chuyên nghiệp.' : 'CPA tốt hơn 40%. Sai, nhưng có bài học.'}`,
+    diary: (s) => `Một số 0 thừa, 4,3 triệu tiền ads tiêu lố. ${s.flags.media_honest ? 'Mình nhận lỗi ngay. Client tăng ngân sách. Ngành này kỳ lạ thật.' : s.flags.media_hidden ? 'Mình đề nghị "chia đều". Chị Diệp nói khách hàng là người đếm tiền chuyên nghiệp.' : 'CPA tốt hơn 40%. Sai, nhưng có bài học.'}`,
   },
 
   // ---------------------------------------------------------------- 12
@@ -1170,7 +1172,7 @@ export const EPISODES = [
           ['hong', 'Răng Xinh nghiệm thu mà hồ sơ thiếu. Không bằng chứng, không hóa đơn. Không hóa đơn, không tiền.'],
           { mini: PROOF_MINI,
             good: [['hong', 'Đủ bộ. Hóa đơn đi chiều nay. Em vừa cứu lương tháng sau của chị.'], { fx: { uy: 3, rel: { hong: 2 }, set: { acceptance_ok: true } } }],
-            bad: [['hong', 'Sticker 👍 không phải chữ ký, em ạ. Dù chị ước nó là vậy.'], { fx: { nl: -3 } }],
+            bad: [['hong', 'Thiếu rồi em. Ảnh ăn mừng, "ok em", sticker 👍… không cái nào là chữ ký. Dù chị ước là vậy.'], { fx: { nl: -3 } }],
           },
         ],
       },
@@ -1238,13 +1240,14 @@ export const EPISODES = [
         scene: [
           ['suong', 'Tiêu cực 78%. Người ta nói clip "cổ xúy bất bình đẳng". Có bài báo mạng rồi.'],
           ['suong', 'Lần này không phải ảnh giả. Lần này là… mình làm thật.'],
-          ['think', 'Kịch bản Thi viết. Anh Khải duyệt. Cảnh chồng nằm xem TV là client thêm vào vì "cho đời".'],
+          ['suong', 'Và người ta nói đúng. Một người lo hết Tết, cả nhà nằm xem TV: chuyện đó có thật, nhưng không phải chuyện để cười.'],
+          ['think', 'Kịch bản Thi viết. Anh Khải duyệt. Cảnh chồng nằm xem TV là client đòi thêm vì "cho đời". Không ai cản.'],
           { c: 'ag_vw_first', o: [
             { t: '"Ai duyệt không quan trọng bằng: mình xin lỗi sao cho đúng."', fx: { uy: 3, rel: { suong: 2 } }, then: [
               ['suong', 'Ừ. Tìm người đổ lỗi để sau. Trước tiên là dập lửa.'],
             ] },
             { t: '"Cảnh đó client thêm vào mà!"', fx: { dr: 2, rel: { diep: 1 } }, then: [
-              ['suong', 'Đúng. Nhưng cư dân mạng không đọc biên bản họp. Họ chỉ thấy logo.'],
+              ['suong', 'Đúng. Nhưng cư dân mạng không đọc biên bản họp, họ thấy logo. Mà ai thêm thì cảnh đó vẫn sai.'],
             ] },
           ] },
         ],
@@ -1275,7 +1278,7 @@ export const EPISODES = [
           ['diep', 'Client đồng ý xin lỗi. Em với Sương soạn. Ngắn, rõ, nhận trách nhiệm. Chị nhắc: đừng viết "nếu có".'],
           { mini: APOLOGY_MINI,
             good: [['suong', 'Ba câu. Không "nếu có", không "hiểu lầm". Đăng trong 15 phút.'], { fx: { uy: 4, rel: { suong: 2, diep: 1 }, set: { apology_good: true } } }],
-            bad: [['suong', 'Em chọn "nếu có làm ai tổn thương"… Câu đó là xăng. Đăng bản này là bị chửi lần hai.'], { fx: { dr: 4, set: { apology_bad: true } } }],
+            bad: [['suong', 'Bản này còn câu kiểu "nếu có", "hiểu lầm", "giải trí thôi"… Mấy câu đó là xăng. Đăng là bị chửi lần hai.'], { fx: { dr: 4, set: { apology_bad: true } } }],
           },
         ],
       },
@@ -1320,7 +1323,7 @@ export const EPISODES = [
               ['khai', 'Ba triệu. Nghe như số của một agency nhỏ. …Mà mình là agency nhỏ thật.'],
             ] },
             { t: 'Xin client số bán hàng thật, để có số "đau" mà đúng.', when: (r) => !!(r.flags.client_praised || r.flags.kol_honest || r.flags.vw_fix), fx: { uy: 5, rel: { khai: 2 }, set: { award_real: true } }, then: [
-              ['diep', 'Client Trà Sữa gửi số rồi: ly size L tăng 37% trong 6 tuần. Họ nói "vì bên em làm ăn đàng hoàng".'],
+              ['diep', 'Client Trà Sữa gửi số rồi: ly size L tăng 37% trong bốn tuần. Họ nói "vì bên em làm ăn đàng hoàng".'],
               ['khai', 'Ba mươi bảy phần trăm. Số thật. Đau thật. Anh… không quen.'],
             ] },
           ] },
@@ -1334,12 +1337,17 @@ export const EPISODES = [
           { if: f('tagline_named'), then: [['think', 'Cỡ chữ 8 trong slide nội bộ. Không có trong case study.']] },
           { c: 'ag_award_credit', o: [
             { t: 'Hỏi riêng: "Anh ơi, ý ban đầu là của em. Em xin một dòng credit."', fx: { uy: 3, set: { credit_asked: true } }, then: [
-              { if: (r) => !!(r.flags.tagline_named || r.flags.tagline_told_diep), then: [
-                ['khai', '…Anh nhớ. Cỡ chữ 8. Lần này anh ghi cỡ chữ bình thường: "Idea: {ten} (intern)".'],
+              { if: f('tagline_named'), then: [
+                ['khai', '…Anh nhớ. Cỡ chữ 8. Lần này anh ghi cỡ chữ bình thường: "Idea: {ten}".'],
                 { fx: { rel: { khai: 1 }, set: { credit_name: true } } },
               ], else: [
+                { if: f('tagline_told_diep'), then: [
+                  ['khai', 'Diệp có kể với anh. …Ừ. "Idea: {ten}". Cỡ chữ bình thường.'],
+                  { fx: { rel: { khai: 1 }, set: { credit_name: true } } },
+                ], else: [
                 ['khai', 'Ý ban đầu? Ở đây ý tưởng không có bố mẹ. Nhưng… thôi được. "Additional ideas: {ten}". Dòng cuối.'],
-                { fx: { set: { credit_name: true } } },
+                  { fx: { set: { credit_name: true } } },
+                ] },
               ] },
             ] },
             { t: 'Đăng LinkedIn kể "tôi đã nghĩ ra…" trước khi nộp.', fx: { dr: 6, rel: { khai: -4 }, set: { linkedin_rant: true } }, then: [
@@ -1409,7 +1417,7 @@ export const EPISODES = [
         who: 'linh', obj: 'Linh tới, mặt tái', time: '10:30',
         scene: [
           ['linh', 'Mình xin lỗi… Mẹ mình nói bên đó "lấy cảm hứng từ nhiều nguồn". Mẹ mình ngồi trong buổi pitch.'],
-          ['linh', 'Mình chỉ muốn được đánh giá thật. Mà giờ mình là con của người duyệt cái ý lấy của bạn.'],
+          ['linh', 'Mình chỉ muốn được đánh giá thật. Mà giờ mình là con của người duyệt cái ý lấy của tụi mình.'],
           { c: 'ag_st_linh', o: [
             { t: '"Không phải lỗi của Linh."', fx: { rel: { linh: 3 } }, then: [
               ['linh', '…Cảm ơn. Lần đầu có người ở đây nói chuyện với mình mà không nhắc tới mẹ mình.'],
@@ -1457,7 +1465,7 @@ export const EPISODES = [
         ],
       },
     ],
-    diary: (s) => `"Một ly cho người ở lại" lên sóng. Không phải của mình nữa. ${s.flags.nda_process ? 'Mình viết quy trình NDA cho pitch. Anh Tùng nói "make it legal".' : s.flags.rant_post ? 'Bài Facebook của mình có 3.000 share. Anh Tùng nói đúng kiểu này tốn tiền.' : 'Mình ghi nó vào portfolio. Dòng đó không ai lấy được.'}`,
+    diary: (s) => `"Một ly cho người ở lại" lên sóng. ${s.flags.pitch_idea_mine ? 'Không phải của mình nữa.' : 'Ý trong deck của team mình, giờ mang tên agency khác.'} ${s.flags.nda_process ? 'Mình viết quy trình NDA cho pitch. Anh Tùng nói "make it legal".' : s.flags.rant_post ? 'Bài Facebook của mình có 3.000 share. Anh Tùng nói đúng kiểu này tốn tiền.' : 'Mình ghi nó vào portfolio. Dòng đó không ai lấy được.'}`,
   },
 
   // ---------------------------------------------------------------- 16
@@ -1469,6 +1477,7 @@ export const EPISODES = [
         who: 'hong', obj: 'Chị Hồng nhờ "nhắc khéo" bên Sen Hồng', time: '10:00',
         scene: [
           ['hong', 'Ba tháng. Bốn trăm hai mươi triệu. Em gọi kế toán Sen Hồng nhắc khéo giúp chị. Khéo thôi. Ngân hàng nhạy cảm.'],
+          { if: f('scope_fee'), then: [['hong', 'Cái email đòi phí phát sinh em soạn hồi tuần đầu: Sen Hồng "đã xem". Gần một tháng rồi.']] },
           { if: f('tie_hong_diep'), then: [['hong', 'Diệp là em ruột chị. Lương nó trễ là mẹ chị gọi chị. Nên… khéo nhưng nhanh nha em.']] },
           { c: 'ag_debt_way', o: [
             { t: 'Gọi nhắc khéo ngay.', fx: { nl: -3, set: { debt_called: true } }, then: [
@@ -1489,7 +1498,7 @@ export const EPISODES = [
               ['hong', 'Biên bản tháng 8 chưa ký vì… chưa ai gửi. Hóa đơn tháng 9 sai một số. Ba tháng nợ, một nửa là tại mình.'],
               { fx: { uy: 4, rel: { hong: 3 }, set: { debt_fixed: true } } },
             ],
-            bad: [['hong', 'Ảnh KV khổ A0 không giúp đòi tiền, em ạ. Để chị soi lại. Mất buổi chiều.'], { fx: { nl: -4 } }],
+            bad: [['hong', 'Chưa trúng chỗ thiếu. Ảnh KV hay timesheet không giúp đòi tiền, em ạ. Để chị soi lại. Mất buổi chiều.'], { fx: { nl: -4 } }],
           },
         ],
       },
@@ -1543,7 +1552,7 @@ export const EPISODES = [
 
   // ---------------------------------------------------------------- 17
   {
-    id: 'poach', minDay: 38, maxDay: 40, title: 'Phía bên kia chiến tuyến',
+    id: 'poach', minDay: 38, maxDay: 40, internOnly: true, title: 'Phía bên kia chiến tuyến',
     intro: 'Chị Nguyệt (Mì Ông Táo) nhắn riêng lúc 7:12 sáng:\n\n"Em ơi, bên chị đang tuyển Brand Executive. Lương gấp đôi agency. Em có muốn qua không? Đừng nói ai nha."',
     steps: [
       {

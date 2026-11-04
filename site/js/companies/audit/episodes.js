@@ -906,7 +906,7 @@ const AVALANCHE = {
 };
 
 const TIMESHEET = {
-  id: 'timesheet', minDay: 18, maxDay: 22, title: 'Ghi 8, làm 14',
+  id: 'timesheet', minDay: 18, maxDay: 30, title: 'Ghi 8, làm 14',
   intro: 'Job Phúc Lộc đã vượt budget giờ 140%. Thứ duy nhất chưa vượt budget là timesheet, vì chưa ai dám ghi thật.\n\nSáng nay chị Huệ trả lại timesheet của bạn. Lý do: "sai mã job". Mã job đúng là mã chưa ai từng cho bạn biết.',
   steps: [
     { who: 'hue', obj: 'Chị Huệ trả lại timesheet', time: '09:00', scene: [

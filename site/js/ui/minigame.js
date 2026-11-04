@@ -122,13 +122,22 @@ export function runMinigame(cfg) {
       const seq = [];
       body.innerHTML = items.map((it, k) => `<button class="mini-opt" data-k="${k}"><span class="num">${k + 1}</span><span>${esc(it.text)}</span><em class="pos"></em></button>`).join('');
       foot.innerHTML = '<button class="btn mini-undo">↺ Làm lại</button>';
-      evaluate = () => seq.reduce((a, k, pos) => a + (items[k].order === pos ? 1 : 0), 0) / items.length;
-      reveal = () => body.querySelectorAll('.mini-opt').forEach((b) => {
-        const k = Number(b.dataset.k), pos = seq.indexOf(k);
-        b.classList.remove('on'); b.classList.add(pos === items[k].order ? 'right' : 'wrong');
-        b.querySelector('.pos').textContent = `#${pos + 1}${pos === items[k].order ? '' : ` → #${items[k].order + 1}`}`;
+      // score = longest run of items already in the right relative order (one misplaced item costs one point, not two)
+      const inOrder = () => {
+        const vals = seq.map((k) => items[k].order);
+        const len = vals.map(() => 1), prev = vals.map(() => -1);
+        vals.forEach((v, i) => { for (let j = 0; j < i; j++) if (vals[j] < v && len[j] + 1 > len[i]) { len[i] = len[j] + 1; prev[i] = j; } });
+        let best = -1; len.forEach((l, i) => { if (best < 0 || l > len[best]) best = i; });
+        const keep = new Set(); for (let i = best; i >= 0; i = prev[i]) keep.add(seq[i]);
+        return keep;
+      };
+      evaluate = () => (seq.length ? inOrder().size : 0) / items.length;
+      reveal = () => { const keep = inOrder(); body.querySelectorAll('.mini-opt').forEach((b) => {
+        const k = Number(b.dataset.k), pos = seq.indexOf(k), ok = keep.has(k);
+        b.classList.remove('on'); b.classList.add(ok ? 'right' : 'wrong');
+        b.querySelector('.pos').textContent = pos < 0 ? `→ #${items[k].order + 1}` : `#${pos + 1}${ok ? '' : ` → #${items[k].order + 1}`}`;
         b.disabled = true;
-      });
+      }); };
       if (window.__miniDebug !== undefined) window.__miniDebug = { type: 'order', answer: items.map((it, k) => [it.order, k]).sort((a, b) => a[0] - b[0]).map((x) => x[1]) };
       const paint = () => body.querySelectorAll('.mini-opt').forEach((b) => { const k = Number(b.dataset.k); const p = seq.indexOf(k); b.classList.toggle('on', p >= 0); b.querySelector('.pos').textContent = p >= 0 ? `#${p + 1}` : ''; });
       const tap = (k) => {

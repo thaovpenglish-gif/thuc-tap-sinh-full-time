@@ -41,7 +41,7 @@ Main menu ──Solo──► Hồ sơ sự nghiệp (career runs + cloud save) 
 
 - **Day 0 – interview** (company-specific): includes the **salary deal** — 4 cards: 0 đồng (Easy) · 1 triệu (Normal) ·
   3 triệu (Hard) · 5 triệu (Consulting Hell). Tier sets side tasks per day, deadline multiplier, mini-game review bar
-  (`qa` .34/.5/.67/.84) and money (`game/difficulty.js`).
+  (`qa` .33/.5/.66/.8: 1/3, half, 2/3, 4/5 right) and money (`game/difficulty.js`).
 - **Calendar** (`game/career.js`): day 1 = Monday; weekends auto-skip with a weekend card; Friday = weekly review.
   45 calendar days ≈ 33 workdays.
 - **Workday types**: *episode* (scripted drama day, played in 3D) scheduled from each episode's `day` / `minDay–maxDay`

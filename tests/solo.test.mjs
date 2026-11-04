@@ -28,7 +28,9 @@ test('10% withholding only above the threshold and only without a commitment for
 
 test('review bar and deadlines follow the tier', () => {
   assert.equal(passes('t0', 0.4), true);
-  assert.equal(passes('t5', 0.8), false);
+  assert.equal(passes('t5', 0.75), false);   // 3/4 fails at Consulting Hell
+  assert.equal(passes('t5', 5 / 6), true);    // 5/6 passes
+  assert.equal(passes('t3', 2 / 3), true);    // 2/3 passes at 3 triệu
   assert.equal(deadlineFor('t0', 60), 90);
   assert.equal(deadlineFor('t5', 60), 48);
 });

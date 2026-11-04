@@ -190,7 +190,5 @@ export const LIFE_EVENTS = [
 // ---------------------------------------------------------------- hidden ties (2 drawn per run → flags tie_<id>)
 export const TIES = [
   { id: 'vy_khai', text: 'Vy thích anh Khải (anh Khải không biết, hoặc it depends)' },
-  { id: 'chau_victor', text: 'Châu là cháu ruột anh Victor của quỹ Hạt Giống' },
-  { id: 'thao_kevin', text: 'Chị Thảo và anh Kevin là bạn cấp ba, cùng vay tiền nhà mở công ty' },
-  { id: 'tung_freelance', text: 'Tùng đang nhận freelance cho một startup đối thủ' },
+  // Châu–Victor and Tùng's freelancing are part of the main story (not random); only real secrets are drawn.
 ];

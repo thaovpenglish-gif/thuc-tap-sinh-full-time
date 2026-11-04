@@ -9,7 +9,7 @@ export const TAX_RATE = 0.10;
 export const TIERS = {
   t0: {
     id: 't0', salary: 0, label: '0 đồng', name: 'Easy', emoji: '🌱',
-    sideTasks: 1, deadlineMult: 1.5, qa: 0.34, otPressure: 0,
+    sideTasks: 1, deadlineMult: 1.5, qa: 0.33, otPressure: 0,
     expectation: 'Không ai nhớ tên em. Cũng không ai giao việc khó.',
     perks: ['Giấy xác nhận thực tập', 'Cơm trưa miễn phí ở pantry', 'Về đúng giờ'],
     costs: ['Không có phụ cấp', 'Ít cơ hội được ghi nhận'],
@@ -23,14 +23,14 @@ export const TIERS = {
   },
   t3: {
     id: 't3', salary: 3_000_000, label: '3 triệu', name: 'Hard', emoji: '🔥',
-    sideTasks: 3, deadlineMult: 1.0, qa: 0.67, otPressure: 1,
+    sideTasks: 3, deadlineMult: 1.0, qa: 0.66, otPressure: 1,
     expectation: 'Em được giao việc độc lập. Sai thì em chịu.',
     perks: ['Phụ cấp 3 triệu/tháng', 'Được ghi tên trên deck gửi khách', 'Được dự họp khách'],
     costs: ['"Em ở lại xíu được không?"', 'Sai thì em tự chịu'],
   },
   t5: {
     id: 't5', salary: 5_000_000, label: '5 triệu', name: 'Consulting Hell', emoji: '💀',
-    sideTasks: 5, deadlineMult: 0.8, qa: 0.84, otPressure: 2,
+    sideTasks: 5, deadlineMult: 0.8, qa: 0.8, otPressure: 2,
     expectation: 'Em là gương mặt của đợt intern này. Chị Tuyết sẽ nhớ tên em.',
     perks: ['Phụ cấp 5 triệu/tháng', 'Laptop mới (không phải đời 2015)', 'Được đi gặp khách', 'Xét chính thức sớm'],
     costs: ['Bị khấu trừ 10% thuế nếu không nộp tờ cam kết', '"OT tự nguyện bắt buộc"', 'Duyệt việc rất khắt khe'],

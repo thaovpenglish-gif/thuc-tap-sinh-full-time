@@ -21,7 +21,7 @@ const D1_STANDUP_MINI = {
 };
 const PROCESS_MINI = {
   type: 'order', title: 'Từ con gà tới gói khô', icon: '🐔',
-  prompt: 'Anh Dũng chỉ một lần. Xếp đúng thứ tự quy trình xưởng.', time: 35, pass: 0.7,
+  prompt: 'Anh Dũng chỉ một lần. Xếp lại đúng thứ tự quy trình xưởng.', time: 40, pass: 0.7,
   items: [
     { text: 'Sơ chế, luộc và xé gà', order: 0 },
     { text: 'Tẩm ướp (công thức của Ba)', order: 1 },
@@ -80,30 +80,29 @@ const PACK_MINI = {
   items: [
     { text: 'In bill', order: 0 },
     { text: 'Nhặt hàng theo bill', order: 1 },
-    { text: 'Cân, đối chiếu khối lượng', order: 2 },
-    { text: 'Quay video lúc đóng gói', order: 3 },
-    { text: 'Dán bill lên thùng', order: 4 },
-    { text: 'Giao chú Bảy gom cho shipper', order: 5 },
+    { text: 'Bật camera, đóng gói trước camera', order: 2 },
+    { text: 'Cân thùng, dán bill lên thùng', order: 3 },
+    { text: 'Giao chú Bảy gom cho shipper', order: 4 },
   ],
 };
 const WAGE_MINI = {
   type: 'quiz', title: 'Má bấm máy tính', icon: '🧮',
   prompt: 'Má hỏi một câu thôi. Trả lời trong lúc Má bấm máy tính.', time: 25, pass: 1,
   questions: [
-    { q: 'Tăng 30 nghìn/ngày cho 6 chị thời vụ, chạy 20 ngày tới Tết. Tốn thêm bao nhiêu?', options: ['360.000đ', '3.600.000đ', '36.000.000đ'], correct: 1 },
+    { q: 'Tăng 30 nghìn/ngày cho 6 chị thời vụ, hợp đồng 20 ngày công. Tốn thêm bao nhiêu?', options: ['360.000đ', '3.600.000đ', '36.000.000đ'], correct: 1 },
   ],
 };
 
 // ---------- intern episodes ----------
 const EP_D1 = {
   id: 'bm_d1', day: 1, title: 'Ngày đầu làm "con"',
-  intro: 'Thứ Hai, 7:45. Bạn tới sớm mười lăm phút. Má đã ngồi trước cửa từ 7:30.\n\nNhóm chat công ty có ba tấm hình hoa sen mới. Ngoài việc chính, các cô chú anh chị sẽ nhờ bạn vài việc vặt. Xem góc màn hình, làm kịp thì được ghi nhận.',
+  intro: 'Thứ Hai. Bạn tới trước giờ làm. Má đã ngồi trước cửa từ 7:30, nhìn đồng hồ, rồi nhìn bạn.\n\nNhóm chat công ty có ba tấm hình hoa sen mới. Ngoài việc chính, các cô chú anh chị sẽ nhờ bạn vài việc vặt. Xem góc màn hình, làm kịp thì được ghi nhận.',
   steps: [
     { who: 'hang', obj: 'Chào Má ở phòng kế toán (Má thấy con rồi)', time: '08:30', scene: [
-      ['hang', 'Sao giờ mới tới?'],
-      { if: F('early_bird'), then: [['think', 'Mình tới 7 giờ 40 như đã hứa. Má vẫn hỏi.']], else: [['think', 'Giờ làm là 8 giờ. Bây giờ là 7 giờ 50.']] },
+      ['hang', 'Sao giờ mới qua chào Má?'],
+      { if: F('early_bird'), then: [['think', 'Mình tới 7 giờ 40 như đã hứa, cất đồ xong mới qua. Má vẫn hỏi.']], else: [['think', 'Giờ làm là 8 giờ. Mình tới trước 8 giờ. Chỉ là chưa kịp qua chào Má.']] },
       { c: 'bm_d1_late', o: [
-        { t: '"Dạ con tới lúc 7 giờ 45 ạ. Con chào Má."', fx: { rel: { hang: 1 } }, then: [['hang', 'Ừ. Mai 7 giờ 40.'], ['think', 'Mục tiêu này sẽ lùi dần cho tới khi mình ngủ luôn ở đây.']] },
+        { t: '"Dạ con tới từ sớm, cất đồ xong mới qua chào Má ạ."', fx: { rel: { hang: 1 } }, then: [['hang', 'Ừ. Mai tới là qua chào Má trước. Mai 7 giờ 40.'], ['think', 'Mục tiêu này sẽ lùi dần cho tới khi mình ngủ luôn ở đây.']] },
         { t: 'Đưa điện thoại có giờ chấm công.', fx: { uy: 2, rel: { hang: -1 } }, then: [['hang', 'Con chấm công cho Má coi hả? Ừ. Má thấy rồi. Má nhớ luôn.']] },
         { t: '"Dạ con xin lỗi Má, mai con tới sớm hơn."', fx: { dr: 1, rel: { hang: 1 } }, then: [['hang', 'Biết lỗi là tốt. Mà con có lỗi gì đâu. Thôi kệ, biết lỗi trước cho quen.']] },
       ] },
@@ -130,17 +129,18 @@ const EP_D1 = {
       ['hung', 'Parking lot hả? Chú Bảy biết chỗ.'],
       { mini: D1_STANDUP_MINI,
         good: [['son', 'PERFECT format! Mọi người thấy chưa, intern còn chuẩn hơn cả… gia đình.'], ['hang', 'Ngắn. Má thích người nói ngắn.'], { fx: { uy: 3, rel: { son: 2, hang: 1 } } }],
-        bad: [['nar', 'Bạn nói "Vướng" trước "Hôm nay". Anh Sơn nhăn mặt như thấy một con gà không có acceptance criteria.'], ['son', 'Không sao, lần sau theo format nha. Format là văn hóa.'], { fx: { rel: { son: -1, hung: 1 } } }],
+        bad: [['nar', 'Bạn báo cáo lộn thứ tự. Anh Sơn nhăn mặt như thấy một con gà không có acceptance criteria.'], ['son', 'Không sao, lần sau theo format nha. Format là văn hóa.'], { fx: { rel: { son: -1, hung: 1 } } }],
       },
       ['nar', '"Họp sáng 8:15" kết thúc lúc 9:55. Anh Sơn ghi lên bảng: "Velocity: lá chanh".'],
     ] },
     { who: 'dung', obj: 'Anh Dũng dẫn xuống xưởng một vòng', time: '10:30', scene: [
       ['dung', 'Ừ. Chào em. Mặc áo vô. Đội nón. Khẩu trang. Xưởng là chỗ duy nhất ở đây có quy trình. Do anh viết.'],
       ['nar', 'Phía sau cửa: tám công nhân, ba máy sấy, một rổ lá chanh to bằng cái giường, và mùi tỏi phi đủ làm ai cũng nhớ nhà.'],
-      ['dung', 'Anh chỉ một lần. Sáng mai Ba hỏi mà trả lời sai là Ba kể lại từ năm 2004.'],
+      ['dung', 'Anh chỉ một lần: luộc xé gà, ướp, sấy, để nguội, phân loại, đóng gói hút chân không, rồi in date dán tem.'],
+      ['dung', 'Sáng mai Ba hỏi mà trả lời sai là Ba kể lại từ năm 2004.'],
       { mini: PROCESS_MINI,
         good: [['dung', 'Đúng. Mười lăm năm mới có intern nhớ được bước "để nguội". Ai cũng muốn bỏ bước đó.'], { fx: { uy: 3, rel: { dung: 2 }, set: { knows_process: true } } }],
-        bad: [['dung', 'Sấy trước khi ướp thì ra… dép. Không sao. Mai em xé gà với các chị là nhớ.'], { fx: { nl: -4, rel: { dung: 1 } } }],
+        bad: [['dung', 'Lộn một bước là khô thành… dép. Không sao. Mai em xé gà với các chị là nhớ.'], { fx: { nl: -4, rel: { dung: 1 } } }],
       },
       { c: 'bm_d1_xuong', o: [
         { t: 'Xắn tay phụ các chị xé gà "ba mươi phút".', fx: { nl: -12, rel: { dung: 1, tu: 1 } }, then: [['nar', 'Ba mươi phút thành hai tiếng. Tay bạn thơm lá chanh. Các chị thời vụ gọi bạn là "con bé/thằng nhỏ văn phòng".']] },
@@ -154,7 +154,7 @@ const EP_D1 = {
       ['mai', '(nhỏ) Câu hỏi nhập môn đó em. Ai mới vô cũng bị.'],
       { c: 'bm_d1_lunch', o: [
         { t: 'Trả lời thật, rồi hỏi lại Ba chuyện hồi xưa bán chợ.', fx: { rel: { hung: 2 }, nl: -3 }, then: [['hung', 'Hồi xưa ba gánh khô ra chợ…'], ['nar', 'Cả bàn đồng loạt múc canh. Họ đã nghe chuyện này mười lần. Ba kể lần thứ mười một, mắt sáng rỡ.']] },
-        { t: '"Dạ con chưa có người yêu, chỉ có deadline ạ."', fx: { rel: { mai: 1, hang: 1 }, dr: 1 }, then: [['hang', 'Chưa có hả? Ừ…'], ['nar', 'Má liếc sang Kevin. Kevin đang đeo tai nghe. Út Mi cười khúc khích.']] },
+        { t: '"Dạ con chưa có người yêu, chỉ có deadline ạ."', fx: { rel: { mai: 1, hang: 1 }, dr: 1 }, then: [['hang', 'Chưa có hả? Ừ…'], ['nar', 'Má liếc về phía bàn Kevin. Kevin đang đeo tai nghe. Ở góc live, Út Mi cười khúc khích.']] },
         { t: 'Hỏi Ngân hôm nay làm gì.', fx: { rel: { ngan: 2 } }, then: [['ngan', 'Má giao mình đối soát COD. Mình học thiết kế. Chắc Má nghĩ hai cái giống nhau vì đều có… số.']] },
       ] },
       { fx: { nl: 25 } },
@@ -244,11 +244,11 @@ const EP_TROLIVE = {
     ] },
     { who: 'hang', obj: 'Má hỏi: "Live bao nhiêu đơn?"', time: '16:00', scene: [
       ['hang', 'Live trưa nay bao nhiêu đơn?'],
-      { if: F('live_warned'), then: [['me', 'Dạ… 41 đơn ạ. Bị giới hạn hiển thị.']], else: [['me', 'Dạ 86 đơn, 1.200 người xem ạ.']] },
+      { if: F('live_warned'), then: [['me', 'Dạ… 41 đơn, 1.200 người xem ạ. Bị giới hạn hiển thị.']], else: [['me', 'Dạ 86 đơn, 1.200 người xem ạ.']] },
       ['hang', 'Một ngàn hai người coi mà mấy chục đơn? Còn lại coi chùa hả?'],
       { c: 'bm_tl_ma', o: [
         { t: 'Báo đủ: đơn, đơn hoàn dự kiến, phí sàn, tiền 4G.', fx: { uy: 3, rel: { hang: 2 } }, then: [['hang', 'Có trừ phí. Có trừ hoàn. Đứa đầu tiên báo cho Má con số thật.'], ['tuan', '(xa xa) Mom, GMV mới là…'], ['hang', 'GMV không trả tiền điện.']] },
-        { t: 'Báo GMV theo cách của Kevin: "Tăng trưởng 300% so với tuần trước ạ!"', fx: { rel: { tuan: 2, hang: -1 } }, then: [['hang', 'Tuần trước bao nhiêu?'], ['me', 'Dạ… 21 đơn.'], ['hang', 'Ừ. Ba trăm phần trăm của hai mươi mốt. Má hiểu rồi.']] },
+        { t: 'Báo GMV theo cách của Kevin: "Tăng trưởng 300% so với tuần trước ạ!"', fx: { rel: { tuan: 2, hang: -1 } }, then: [['hang', 'Tuần trước bao nhiêu?'], { if: F('live_warned'), then: [['me', 'Dạ… 10 đơn.']], else: [['me', 'Dạ… 21 đơn.']] }, ['hang', 'Ừ. Ba trăm phần trăm của một con số bé xíu. Má hiểu rồi.']] },
       ] },
     ] },
   ],
@@ -316,7 +316,7 @@ const EP_THIT = {
   intro: 'Thứ Hai. Sáng nay cậu Tám chở về bốn thùng xốp thịt bò đông lạnh. "Rẻ hơn mối cũ 40%. Bên khác ai cũng xài."\n\nGiấy kiểm dịch dán trên thùng mờ tới mức chỉ đọc được chữ "dịch".',
   steps: [
     { who: 'cautam', obj: 'Cậu Tám nhờ ký nhận hàng', time: '08:45', scene: [
-      ['cautam', 'Con ký nhận giùm cậu vô sổ nhập hàng. Anh Dũng đi đại lý rồi. Ký cho có người ký thôi.'],
+      ['cautam', 'Con ký nhận giùm cậu vô sổ nhập hàng. Anh Dũng ghé đại lý, chút mới về. Ký cho có người ký thôi.'],
       ['nar', 'Sổ nhập: "Thịt bò đông lạnh · 200kg · giá: (để trống)".'],
       { c: 'bm_thit_ky', o: [
         { t: '"Dạ con chưa có quyền ký ạ. Để anh Dũng về ký."', fx: { uy: 2, rel: { cautam: -1 } }, then: [['cautam', 'Cẩn thận ghê. Giống Má con.'], ['think', 'Má không phải má mình. Nhưng thôi.']] },
@@ -414,7 +414,8 @@ const EP_1111 = {
         { t: 'Từ chối lên hình, chỉ trợ live, để Út Mi thì thào.', fx: { rel: { tuan: -2, mi: -1 }, nl: 5 }, then: [['nar', 'Út Mi thì thào chốt đơn suốt ba tiếng. Khách tưởng là ASMR. 600 đơn.'], ['tuan', 'Hôm nay số thấp vì trợ live không support.']] },
       ] },
     ] },
-    { who: 'hang', obj: 'Má đứng chờ: "Bao nhiêu đơn?"', time: '17:55', scene: [
+    { who: 'hang', obj: 'Hết live, Má đứng chờ: "Bao nhiêu đơn?"', time: '17:55', scene: [
+      { if: F('live_locked'), then: [['nar', 'Màn hình đen từ phút thứ bảy. Má đi xuống, chưa kịp về.']], else: [['nar', 'Chín giờ tối, live tắt. Má vẫn ngồi chờ, chưa ăn cơm.']] },
       ['hang', 'Bao nhiêu đơn?'],
       { if: F('live_locked'), then: [['me', 'Dạ… live bị khóa 24 tiếng ạ.'], ['hang', 'Khóa? Đêm 11.11? Ai viết câu đó?'], ['tuan', '…Data.'], ['hang', 'Data là ai? Kêu nó lên đây.'], { fx: { rel: { hang: -1 } } }] },
       { if: F('honest_live'), then: [['me', 'Dạ, 2.400 đơn, đang tăng ạ. Có clip bị share nhiều.'], ['hang', 'Bị share là tốt hay xấu?'], ['mi', '(thì thào) Tốt… Má.'], ['hang', 'Vậy mai đóng hàng. Ai đóng? Con.'], { fx: { rel: { hang: 2 }, nl: -5 } }] },
@@ -447,7 +448,7 @@ const EP_CONGNO = {
       ['cosau', 'Con của Hằng hả? Ngồi đi con. Ăn miếng xoài.'],
       { if: F('bay_tip'), then: [['think', 'Nhìn kệ hàng. Khô gà Ba & Má: còn ít, bám bụi. Bên cạnh: một hàng khô gà bao bì y chang, tên "BA & MẸ", giá rẻ hơn 15 nghìn.'], { fx: { set: { saw_copycat: true } } }] },
       { c: 'bm_cn_deal', o: [
-        { t: 'Từ chối xoài, ngồi lì tới chiều.', fx: { nl: -15, rel: { hang: 1 }, set: { debt_sit: true } }, then: [['cosau', 'Con này lì giống Hằng hồi trẻ.'], ['nar', '4 giờ chiều, cô Sáu đưa mười triệu và một bịch xoài. Bạn không ăn. Chú Bảy ăn.']] },
+        { t: 'Từ chối xoài, ngồi lì tới khi được trả.', fx: { nl: -15, rel: { hang: 1 }, set: { debt_sit: true } }, then: [['cosau', 'Con này lì giống Hằng hồi trẻ.'], ['nar', 'Một giờ trưa, cô Sáu đưa mười triệu và một bịch xoài. Bạn không ăn. Chú Bảy ăn.']] },
         { t: 'Thương lượng: trả góp 3 đợt, lấy lại hàng cận date đổi hàng mới.', fx: { uy: 5, rel: { hang: 1 }, set: { debt_deal: true } }, then: [['cosau', 'Trả góp hả? Được. Hàng cũ đổi hàng mới thì cô bán được. Con biết làm ăn ghê.'], ['nar', 'Cô Sáu ký giấy hẹn và chuyển luôn đợt một: mười lăm triệu.']] },
         { t: 'Hỏi thẳng về hàng "BA & MẸ" trên kệ.', when: F('saw_copycat'), fx: { dr: 3, uy: 3, set: { asked_copycat: true } }, then: [['cosau', 'Tụi nó mới tới mời, rẻ hơn mười lăm nghìn. Cô lấy thử. Ai cũng phải sống mà con.'], ['think', 'Bao bì chép y chang. Chỉ đổi một chữ.']] },
       ] },
@@ -475,7 +476,7 @@ const EP_CONGNO = {
       { if: (r) => !r.flags.debt_deal && !r.flags.debt_sit, then: [['hang', 'Con hỏi chuyện hàng nhái mà quên đòi tiền hả?'], ['me', 'Dạ cô Sáu hứa thứ Hai chuyển mười triệu ạ.'], ['hang', 'Hứa. Má nghe chữ "hứa" ba mươi năm rồi.'], { fx: { rel: { hang: -1 } } }] },
     ] },
   ],
-  diary: (s) => `Đi đòi nợ cô Sáu. ${s.flags.debt_deal ? 'Mình thương lượng trả góp và đổi hàng cận date. Má cất giấy hẹn vào két.' : s.flags.debt_sit ? 'Mình ngồi lì tới chiều, thu được mười triệu. Chú Bảy ăn hết xoài.' : 'Mình chưa thu được đồng nào.'} ${s.flags.saw_copycat ? 'Trên kệ có hàng "BA & MẸ" chép bao bì mình.' : ''} Ba kể chuyện cái chợ năm 2004, lần này mình nghe hết.`,
+  diary: (s) => `Đi đòi nợ cô Sáu. ${s.flags.debt_deal ? 'Mình thương lượng trả góp và đổi hàng cận date. Má cất giấy hẹn vào két.' : s.flags.debt_sit ? 'Mình ngồi lì tới trưa, thu được mười triệu. Chú Bảy ăn hết xoài.' : 'Mình chưa thu được đồng nào.'} ${s.flags.saw_copycat ? 'Trên kệ có hàng "BA & MẸ" chép bao bì mình.' : ''} Ba kể chuyện cái chợ năm 2004, lần này mình nghe hết.`,
 };
 
 const EP_FAMILY = {
@@ -562,7 +563,7 @@ const EP_5SAO = {
       ['mai', 'Mà nè, ba cái 1 sao: một cái là đối thủ, một cái là khách khó. Còn cái "dai như dép" là… thiệt. Chị ăn rồi.'],
       { c: 'bm_5s_mai', o: [
         { t: '"Vậy mình xin lỗi công khai cái thật, còn hai cái kia báo sàn."', fx: { uy: 3, rel: { mai: 1 } }, then: [['mai', 'Ừ. Em nói giống chị nghĩ. Chị chỉ chưa nói vì chưa ai hỏi.']] },
-        { t: '"Chị Mai biết vụ gì mới không?"', fx: { rel: { mai: 2 }, dr: 2 }, then: [['mai', 'Biết chớ. Kevin xài ads vượt ngân sách Má duyệt. Ba lần. Chị không nói đâu. Chị chỉ "share insight".']] },
+        { t: '"Chị Mai biết vụ gì mới không?"', fx: { rel: { mai: 2 }, dr: 2, set: { mai_ads_tip: true } }, then: [['mai', 'Biết chớ. Kevin xài ads vượt ngân sách Má duyệt. Ba lần. Chị không nói đâu. Chị chỉ "share insight".']] },
       ] },
     ] },
     { who: 'tu', obj: 'Đem gói "dai như dép" cho cô Tư nếm', time: '14:00', scene: [
@@ -600,8 +601,9 @@ const EP_PHISAN = {
     ] },
     { who: 'tuan', obj: 'Kevin có "chiến lược"', time: '10:00', scene: [
       ['tuan', 'Không tăng giá. Tăng ads. Volume sẽ cover fee. Scale, bro.'],
+      { if: (r) => !!r.flags.tie_kevin_loan && !r.flags.ads_gap && !r.flags.mai_ads_tip, then: [['nar', 'Điện thoại Kevin sáng lên trên bàn: "Bro, tháng này trả được chưa? Ads của mày ăn hết tiền tao rồi." Kevin úp điện thoại xuống.']] },
       { c: 'bm_fee_kevin', o: [
-        { t: '"Tiền ads tháng rồi lấy từ đâu vậy anh? Má duyệt mười triệu mà."', when: (r) => !!(r.flags.ads_gap || r.flags.tie_kevin_loan), fx: { dr: 4, set: { kevin_loan_known: true } }, then: [['tuan', '…Who told you?'], ['tuan', 'Anh vay. Bạn anh ở Úc. Anh sẽ trả khi ROAS lên. Đừng nói Má. Please.']] },
+        { t: '"Tiền ads vượt ngân sách Má duyệt, anh lấy từ đâu vậy anh?"', when: (r) => !!(r.flags.ads_gap || r.flags.mai_ads_tip || r.flags.tie_kevin_loan), fx: { dr: 4, set: { kevin_loan_known: true } }, then: [['tuan', '…Who told you?'], ['tuan', 'Anh vay. Bạn anh ở Úc. Anh sẽ trả khi ROAS lên. Đừng nói Má. Please.']] },
         { t: '"Volume tăng thì phí cũng tăng theo mà anh."', fx: { uy: 2, rel: { tuan: -1 } }, then: [['tuan', 'Ugh. You sound like my mom.'], ['think', 'Đó là lời khen hay lời chê, chính Kevin cũng không biết.']] },
         { t: '"Dạ anh nói đúng ạ. Scale."', fx: { rel: { tuan: 2 } }, then: [['tuan', 'Finally, someone gets it.']] },
       ] },
@@ -686,8 +688,9 @@ const EP_MOC = {
         ['nar', 'Phần 2: "Shop đòi mua chuộc". 900 nghìn lượt xem.'],
         { fx: { dr: 8, uy: -4 } },
       ], else: [
-        ['khach', 'Chị thấy shop xin lỗi rồi. Chị chỉ muốn biết sao lại mốc.'],
-        ['me', 'Dạ, lô đó sấy lúc máy bị hư nhiệt kế, kho xuất sai thứ tự. Tụi em đã sửa máy và xếp kho theo hạn. Em gửi chị hoàn tiền và gói mới.'],
+        { if: F('mold_public'), then: [['khach', 'Chị thấy shop xin lỗi công khai rồi. Chị chỉ muốn biết sao lại mốc.']], else: [['khach', 'Shop gọi chị chi? Chị chỉ muốn biết sao lại mốc.']] },
+        ['me', 'Dạ, lô đó sấy lúc máy bị hư nhiệt kế, kho lại xuất sai thứ tự. Em gửi chị hoàn tiền và gói mới.'],
+        { if: (r) => !!(r.flags.dryer_fixed && r.flags.fefo_fixed), then: [['me', 'Máy đã sửa nhiệt kế, kho đã xếp lại theo hạn rồi ạ.']], else: [{ if: F('dryer_fixed'), then: [['me', 'Máy đã sửa nhiệt kế rồi ạ. Kho tụi em đang xếp lại.']], else: [{ if: F('fefo_fixed'), then: [['me', 'Kho đã xếp lại theo hạn rồi ạ. Máy tụi em đang sửa.']], else: [['me', 'Tụi em đang sửa máy và xếp lại kho ạ.']] }] }] },
         ['khach', 'Nói thật vậy thì được. Chị đăng cập nhật cho mọi người biết.'],
         { fx: { uy: 4, dr: -2, set: { mold_ok: true } } },
       ] },
@@ -714,7 +717,7 @@ const EP_CANDATE = {
       ['nar', '(Thông tin giải trí, không phải tư vấn pháp lý.)'],
       ['vy', 'Nếu Má bắt làm, chị nghỉ. Chị nói thiệt. Chief Happiness Officer cũng có giới hạn hạnh phúc.'],
       { c: 'bm_cd_vy', o: [
-        { t: '"Chị đừng nghỉ. Để em tìm cách khác."', fx: { rel: { vy: 2 } }, then: [['vy', 'Ừ. Em có hai tiếng. Sau đó chị viết đơn.']] },
+        { t: '"Chị đừng nghỉ. Để em tìm cách khác."', fx: { rel: { vy: 2 } }, then: [['vy', 'Ừ. Em có tới trưa. Sau đó chị viết đơn.']] },
         { t: '"Chị nói với Má giùm em được không?"', fx: { rel: { vy: 1 } }, then: [['vy', 'Chị nói rồi. Ba lần. Má nghe chị như nghe radio.']] },
       ] },
     ] },
@@ -729,7 +732,7 @@ const EP_CANDATE = {
     { who: 'hang', obj: 'Trưa: báo Má phương án', time: '13:30', scene: [
       ['hang', 'Sao? Phương án của con đâu?'],
       { c: 'bm_cd_decide', o: [
-        { t: 'Làm theo Má: đóng túi mới, in date mới.', fx: { rel: { hang: 2 }, dr: 8, nl: -10, set: { relabel_done: true } }, then: [['hang', 'Vậy đó. Có gì đâu.'], ['nar', 'Chiều đó chị Vy dọn bàn. Chị Vy không nói gì. Chị Vy để lại cho bạn cây bút.'], { fx: { rel: { vy: -3 } } }] },
+        { t: 'Làm theo Má: đóng túi mới, in date mới.', fx: { rel: { hang: 2 }, dr: 8, nl: -10, set: { relabel_done: true } }, then: [['hang', 'Vậy đó. Có gì đâu.'], ['nar', 'Chiều đó chị Vy viết đơn nghỉ việc, đọc lại, rồi cất vô ngăn kéo. Chị không nói với bạn câu nào nữa.'], { fx: { rel: { vy: -3 } } }] },
         { t: 'Live "xả cận date": ghi rõ hạn, giá một nửa.', when: F('clearance_plan'), fx: { uy: 6, rel: { hang: 1, mi: 2, vy: 2 }, set: { clearance_live: true } }, then: [['hang', 'Bán nửa giá? Mười sáu triệu.'], ['me', 'Dạ, mười sáu triệu, không ai bị phạt, khách khen mình thật thà ạ.'], ['hang', '…Còn hơn bán cho chuột. Ừ.']] },
         { t: 'Giảm giá, ghi rõ hạn, bán cho đại lý bán lẻ nhanh.', when: (r) => !r.flags.clearance_plan, fx: { uy: 4, rel: { hang: 1, dung: 1 }, set: { clearance_live: true } }, then: [['dung', 'Mấy đại lý chợ lấy hết. Họ bán trong tuần. Ghi rõ hạn, không ai chửi.'], ['hang', 'Ừ. Đỡ hơn bỏ.']] },
         { t: 'Nói Má: chị Vy sẽ nghỉ nếu làm.', fx: { rel: { hang: -3, vy: 2 }, dr: 3, set: { vy_threat: true } }, then: [['hang', 'Vy dọa Má hả? …Thôi. Không làm. Bỏ.'], ['think', 'Má rút lệnh. Nhưng Má ghi một dòng vô sổ đỏ. Dòng đó có tên mình.']] },
@@ -742,7 +745,7 @@ const EP_CANDATE = {
       { if: (r) => !r.flags.relabel_done && !r.flags.clearance_live && !r.flags.vy_threat, then: [['bay', 'Tám trăm gói vẫn nằm đó. Má nói "để tính". Để tính là để tới hết hạn luôn.']] },
     ] },
   ],
-  diary: (s) => `800 gói cận date. ${s.flags.relabel_done ? 'Mình đã in date mới. Chị Vy để lại cho mình cây bút.' : s.flags.clearance_live ? 'Mình đề xuất bán xả, ghi rõ hạn. Hết sạch, không ai bị phạt.' : s.flags.vy_threat ? 'Má rút lệnh vì chị Vy. Má ghi tên mình vào sổ đỏ.' : 'Chưa ai quyết gì.'}`,
+  diary: (s) => `800 gói cận date. ${s.flags.relabel_done ? 'Mình đã in date mới. Chị Vy viết đơn nghỉ rồi cất vô ngăn kéo.' : s.flags.clearance_live ? 'Mình đề xuất bán xả, ghi rõ hạn. Hết sạch, không ai bị phạt.' : s.flags.vy_threat ? 'Má rút lệnh vì chị Vy. Má ghi tên mình vào sổ đỏ.' : 'Chưa ai quyết gì.'}`,
 };
 
 const EP_KIEMTRA = {
@@ -750,46 +753,46 @@ const EP_KIEMTRA = {
   intro: 'Thứ Năm, 8:40. Ba người áo sơ mi trắng, kẹp hồ sơ, đứng ở quầy lễ tân: "Đoàn kiểm tra liên ngành về an toàn thực phẩm."\n\nPhiếu kiểm nghiệm khô bò hết hạn hai tuần. Chị Vy đã nhắc ba lần.',
   steps: [
     { who: 'vy', obj: 'Ra quầy lễ tân: đoàn kiểm tra tới', time: '08:40', scene: [
-      ['doan', 'Chào em. Đoàn kiểm tra định kỳ. Cho anh xem giấy chứng nhận cơ sở đủ điều kiện, hồ sơ tự công bố, phiếu kiểm nghiệm.'],
+      ['nar', 'Trưởng đoàn: "Chào em. Đoàn kiểm tra định kỳ. Cho anh xem giấy chứng nhận cơ sở đủ điều kiện, hồ sơ tự công bố, phiếu kiểm nghiệm."'],
       ['vy', '(thì thào) Phiếu khô bò hết hạn hai tuần. Chị nhắc ba lần. Ba lần!'],
       ['nar', 'Trong phòng kế toán, Má đứng dậy. Má đứng dậy rất ít khi.'],
     ] },
     { who: 'hang', obj: 'Má ra hiệu gọi vô phòng', time: '08:50', scene: [
       ['hang', '(nhỏ) Con ra nói Vy đi vắng, hồ sơ Vy giữ, chiều quay lại. Đi.'],
       { c: 'bm_kt_lie', o: [
-        { t: 'Làm theo Má.', fx: { rel: { hang: 1 }, dr: 6, set: { inspect_lie: true } }, then: [['doan', 'Chị Vy đi vắng? Chị Vy đang đứng sau em mà.'], ['vy', '…Dạ em đây.'], ['doan', 'Ghi biên bản: cơ sở không hợp tác. Em mở hồ sơ ra cho anh.']] },
-        { t: 'Đưa hồ sơ thật, nhận thiếu sót, xin gia hạn bổ sung.', fx: { uy: 5, rel: { vy: 3, hang: -2 }, set: { inspect_honest: true } }, then: [['doan', 'Phiếu hết hạn hai tuần. Có thiếu sót, ghi biên bản nhắc nhở, yêu cầu bổ sung. Em làm việc rõ ràng, anh ghi nhận.'], ['hang', '(trong phòng) …']] },
+        { t: 'Làm theo Má.', fx: { rel: { hang: 1 }, dr: 6, set: { inspect_lie: true } }, then: [['nar', 'Trưởng đoàn: "Chị Vy đi vắng? Chị Vy đang đứng sau em mà."'], ['vy', '…Dạ em đây.'], ['nar', 'Trưởng đoàn: "Ghi biên bản: cơ sở không hợp tác. Em mở hồ sơ ra cho anh."']] },
+        { t: 'Đưa hồ sơ thật, nhận thiếu sót, xin gia hạn bổ sung.', fx: { uy: 5, rel: { vy: 3, hang: -2 }, set: { inspect_honest: true } }, then: [['nar', 'Trưởng đoàn: "Phiếu hết hạn hai tuần. Có thiếu sót, ghi biên bản nhắc nhở, yêu cầu bổ sung. Em làm việc rõ ràng, anh ghi nhận."'], ['hang', '(trong phòng) …']] },
         { t: 'Đi pha trà mời đoàn, câu giờ.', fx: { nl: -6, rel: { tu: 1 } }, then: [
           ['tu', 'Để cô. Trà cô pha, ai uống cũng ngồi thêm ba mươi phút.'],
           ['nar', 'Đoàn uống trà. Ba mươi phút. Rồi trưởng đoàn đặt ly xuống: "Giờ mình xem hồ sơ nha."'],
           { c: 'bm_kt_lie2', o: [
-            { t: 'Đưa hồ sơ thật.', fx: { uy: 4, rel: { vy: 2, hang: -1 }, set: { inspect_honest: true } }, then: [['doan', 'Có thiếu sót, ghi nhắc nhở. Trà ngon.']] },
-            { t: 'Nói chị Vy đi vắng.', fx: { dr: 6, set: { inspect_lie: true } }, then: [['doan', 'Chị Vy vừa rót trà cho anh mà em.']] },
+            { t: 'Đưa hồ sơ thật.', fx: { uy: 4, rel: { vy: 2, hang: -1 }, set: { inspect_honest: true } }, then: [['nar', 'Trưởng đoàn: "Có thiếu sót, ghi nhắc nhở. Trà ngon."']] },
+            { t: 'Nói chị Vy đi vắng.', fx: { dr: 6, set: { inspect_lie: true } }, then: [['nar', 'Trưởng đoàn: "Chị Vy vừa rót trà cho anh mà em."']] },
           ] },
         ] },
       ] },
     ] },
     { who: 'tu', obj: 'Đoàn kiểm tra bếp và mẫu lưu', time: '09:30', scene: [
-      ['doan', 'Mẫu lưu đâu? Sổ theo dõi nhiệt độ máy sấy đâu?'],
+      ['nar', 'Trưởng đoàn: "Mẫu lưu đâu? Sổ theo dõi nhiệt độ máy sấy đâu?"'],
       ['tu', 'Mẫu lưu tủ này. Có nhãn ngày. Bếp này cô lau hai mươi sáu năm.'],
-      { if: F('dryer_fixed'), then: [['doan', 'Máy sấy số hai có biên bản sửa nhiệt kế. Tốt.'], { fx: { uy: 2 } }], else: [['doan', 'Nhiệt kế máy sấy số hai hư? Ghi.'], { fx: { dr: 2 } }] },
+      { if: F('dryer_fixed'), then: [['nar', 'Trưởng đoàn: "Máy sấy số hai có biên bản sửa nhiệt kế. Tốt."'], { fx: { uy: 2 } }], else: [['nar', 'Trưởng đoàn: "Nhiệt kế máy sấy số hai hư? Ghi."'], { fx: { dr: 2 } }] },
       { if: F('relabel_done'), then: [
-        ['doan', 'Gói khô heo này, túi mới, date mới, mà số lô in dưới đáy là lô tháng Năm. Giải thích giùm anh.'],
+        ['nar', 'Trưởng đoàn: "Gói khô heo này, túi mới, date mới, mà số lô in dưới đáy là lô tháng Năm. Giải thích giùm anh."'],
         ['nar', 'Không ai giải thích được. Chú Bảy nhìn xuống đất. Má nhìn lên trần.'],
         { fx: { dr: 12, uy: -6, set: { caught_relabel: true } } },
       ] },
     ] },
     { who: 'dung', obj: 'Đoàn xuống xưởng xem nguyên liệu', time: '11:00', scene: [
-      ['doan', 'Hóa đơn, chứng từ nguồn gốc thịt nhập tháng này.'],
+      ['nar', 'Trưởng đoàn: "Hóa đơn, chứng từ nguồn gốc thịt nhập tháng này."'],
       { if: F('meat_reported'), then: [
         ['dung', 'Mối cũ, hóa đơn đầy đủ, giấy kiểm dịch bản rõ. Anh giữ bản sao mười năm.'],
-        ['doan', 'Đầy đủ. Tốt.'],
+        ['nar', 'Trưởng đoàn: "Đầy đủ. Tốt."'],
         { fx: { uy: 3, rel: { dung: 1 } } },
       ], else: [
         ['nar', 'Trong góc tủ đông có hai thùng xốp, giấy kiểm dịch mờ tới mức chỉ đọc được chữ "dịch".'],
-        ['doan', 'Hai thùng này giấy tờ đâu?'],
+        ['nar', 'Trưởng đoàn: "Hai thùng này giấy tờ đâu?"'],
         ['cautam', 'Dạ… mối gửi sau ạ.'],
-        ['doan', 'Niêm phong. Lấy mẫu. Ghi biên bản.'],
+        ['nar', 'Trưởng đoàn: "Niêm phong. Lấy mẫu. Ghi biên bản."'],
         { fx: { dr: 10, uy: -3, set: { caught_meat: true } } },
       ] },
     ] },
@@ -850,7 +853,7 @@ const EP_BOCPHOT = {
         ] },
         { t: 'Đăng bài đanh đá chửi lại "Ba Và Mẹ".', fx: { dr: 10, rel: { mi: 1, hang: -1 }, set: { bp_fight: true } }, then: [['nar', 'Hai shop chửi nhau ba ngày. Báo mạng viết bài "Drama khô gà". Đơn của cả hai shop đều tăng. Ba không vui.']] },
         { t: 'Báo cáo sàn vi phạm và nộp hồ sơ nhãn hiệu.', fx: { uy: 3, nl: -5, set: { bp_report: true } }, then: [
-          { if: F('trademark'), then: [['nar', 'Hồ sơ nhãn hiệu đã nộp từ tuần trước nhờ vụ cô Sáu. Sàn gỡ bài và gỡ luôn gian hàng "Ba Và Mẹ" vì chép bao bì.'], { fx: { uy: 5 } }],
+          { if: F('trademark'), then: [['nar', 'Hồ sơ nhãn hiệu đã nộp từ mấy tuần trước nhờ vụ cô Sáu. Sàn gỡ bài và gỡ luôn gian hàng "Ba Và Mẹ" vì chép bao bì.'], { fx: { uy: 5 } }],
             else: [['nar', 'Sàn trả lời: "Đã tiếp nhận, xử lý trong 7–15 ngày làm việc." Bài vẫn được chia sẻ.']] },
         ] },
         { t: 'Nói thật với Ba Má về lô thịt cậu Tám trước, rồi mới tính.', when: F('twist_meat'), fx: { uy: 6, dr: 5, rel: { hung: 2, hang: 1, cautam: -4 }, set: { told_meat: true } }, then: [['nar', 'Phòng họp im lặng một phút. Má gỡ kính ra. Ba đứng dậy.'], ['hung', 'Thu hồi lô B19. Hoàn tiền hết. Ba tự quay clip xin lỗi.'], ['hang', 'Thu hồi… bao nhiêu tiền? …Thôi. Làm đi.']] },
@@ -868,7 +871,7 @@ const EP_BOCPHOT = {
       ] },
     ] },
   ],
-  diary: (s) => `Bị bóc phốt "thịt trâu". ${s.flags.told_meat ? 'Mình nói thật lô thịt của cậu Tám. Ba thu hồi lô B19.' : s.flags.bp_transparent ? 'Mình đề xuất đưa hết giấy tờ ra.' : s.flags.bp_fight ? 'Hai shop chửi nhau ba ngày. Báo gọi là "Drama khô gà".' : 'Mình báo sàn.'} ${s.flags.ba_clip ? 'Clip "hồi xưa" của Ba được 1,2 triệu lượt xem.' : ''} Ba nói ông học công thức ở Sa Đéc.`,
+  diary: (s) => `Bị bóc phốt "thịt trâu". ${s.flags.told_meat ? 'Mình nói thật lô thịt của cậu Tám. Ba thu hồi lô B19.' : s.flags.bp_transparent ? 'Mình đề xuất đưa hết giấy tờ ra.' : s.flags.bp_fight ? 'Hai shop chửi nhau ba ngày. Báo gọi là "Drama khô gà".' : 'Mình báo sàn.'} ${s.flags.ba_clip ? 'Clip "hồi xưa" của Ba được 1,2 triệu lượt xem.' : ''} ${(s.flags.iv_mientay || s.flags.tie_recipe_sadec) ? 'Ba nói ông học công thức ở Sa Đéc.' : 'Ba ngồi trước dĩa khô gà, không ăn.'}`,
 };
 
 const EP_DUNG = {
@@ -901,7 +904,7 @@ const EP_DUNG = {
     { who: 'hang', obj: 'Má hỏi: "Thằng Dũng dạo này sao?"', time: '15:00', scene: [
       ['hang', 'Con thấy thằng Dũng dạo này sao? Nó đổi hình núi. Ba nói người sắp đi hay đổi hình núi.'],
       { c: 'bm_dg_ma', o: [
-        { t: 'Báo Má chuyện anh Dũng in danh sách đại lý.', fx: { rel: { hang: 2, dung: -4 }, nl: -10, dr: 4, set: { told_dung: true } }, then: [['hang', 'In danh sách? …Kêu nó lên đây.'], ['nar', 'Hai mươi phút sau, anh Dũng ra khỏi phòng Má, ôm một thùng carton. Thùng carton là của công ty. Má bắt trả lại.']] },
+        { t: 'Báo Má chuyện anh Dũng in danh sách đại lý.', fx: { rel: { hang: 2, dung: -4 }, nl: -10, dr: 4, set: { told_dung: true } }, then: [['hang', 'In danh sách? …Kêu nó lên đây.'], ['nar', 'Hai mươi phút sau, anh Dũng ra khỏi phòng Má, cầm một thùng carton rỗng để dọn đồ dần. Thùng là của công ty. Má dặn dùng xong trả lại.']] },
         { t: 'Đề xuất Má giữ anh Dũng: chức danh rõ, hợp đồng thật, lương xứng.', fx: { uy: 4, rel: { dung: 2 }, set: { dung_pitch: true } }, then: [
           { if: (r) => !!(r.flags.family_bridge || (r.rel.hang || 0) >= 5), then: [['hang', 'Người ngoài mà đòi chức… Con nói thì Má nghe. Lần trước con nói, nhà này êm được ba tuần.'], { fx: { set: { dung_stays: true }, rel: { hang: 1 } } }],
             else: [['hang', 'Chức là cho người nhà. Lương thì… để Má tính.'], ['think', '"Để Má tính." Ai ở đây lâu đều biết câu đó nghĩa là gì.']] },
@@ -910,12 +913,12 @@ const EP_DUNG = {
       ] },
     ] },
     { who: 'dung', obj: 'Cuối ngày: anh Dũng', time: '17:00', scene: [
-      { if: F('dung_stays'), then: [['dung', 'Má gọi anh vô. "Phó quản lý xưởng, hợp đồng không thời hạn, tăng lương." Không phải phó giám đốc. Nhưng có tên anh.'], ['dung', 'Mười lăm năm. Một intern làm được. Anh không biết nên vui hay nên buồn.'], { fx: { rel: { dung: 3 } } }] },
+      { if: F('dung_stays'), then: [['dung', 'Má gọi anh vô. "Phó quản lý xưởng, hợp đồng không thời hạn, tăng lương." Không phải phó giám đốc. Nhưng có tên anh.'], ['dung', 'Mười lăm năm. Một đứa mới vô làm được. Anh không biết nên vui hay nên buồn.'], { fx: { rel: { dung: 3 } } }] },
       { if: F('told_dung'), then: [['dung', 'Anh không giận em. Em làm đúng việc của người làm cho Má. Anh chỉ… làm cho Ba & Má lâu quá.'], ['nar', 'Anh Dũng còn hai tuần bàn giao. Cái ly cà phê vẫn để trên bàn.']] },
       { if: (r) => !r.flags.dung_stays && !r.flags.told_dung, then: [['dung', 'Anh chưa quyết. Cảm ơn em đã không nói gì. Ở nhà này, im lặng đúng lúc là một kiểu tử tế.']] },
     ] },
   ],
-  diary: (s) => `Anh Dũng và ngọn núi. ${s.flags.dung_stays ? 'Má cho anh Dũng hợp đồng thật. Anh nói một intern làm được điều mười lăm năm không làm được.' : s.flags.told_dung ? 'Mình báo Má. Anh Dũng ôm thùng carton, Má bắt trả lại thùng.' : 'Mình không nói gì. Anh Dũng chưa quyết.'}`,
+  diary: (s) => `Anh Dũng và ngọn núi. ${s.flags.dung_stays ? 'Má cho anh Dũng hợp đồng thật. Anh nói một đứa mới vô làm được điều mười lăm năm không làm được.' : s.flags.told_dung ? 'Mình báo Má. Anh Dũng còn hai tuần bàn giao, với một thùng carton Má dặn phải trả.' : 'Mình không nói gì. Anh Dũng chưa quyết.'}`,
 };
 
 const EP_NGAN = {
@@ -954,12 +957,12 @@ const EP_NGAN = {
       ['ngan', 'Dạ…'],
       ['nar', 'Ngân nhìn bạn. Ánh mắt của người đứng trên mép hồ bơi lần đầu.'],
       { c: 'bm_ng_free', o: [
-        { t: 'Gật đầu với Ngân: nói đi.', fx: { rel: { ngan: 3 }, set: { ngan_free: true } }, then: [['ngan', 'Má ơi… con không muốn làm kế toán. Con muốn làm bao bì. Con vẽ cái hộp đó.'], ['hang', '…'], ['hang', 'Vẽ hộp có ra tiền không?'], ['me', 'Dạ, hộp mới của Ngân vừa giữ được đơn năm trăm hộp ạ.'], ['hang', '…Ừ. Để Má nói mẹ con.']] },
+        { t: 'Gật đầu với Ngân: nói đi.', fx: { rel: { ngan: 3 }, set: { ngan_free: true } }, then: [['ngan', 'Má ơi… con không muốn làm kế toán. Con muốn làm bao bì. Con vẽ cái hộp đó.'], ['hang', '…'], ['hang', 'Vẽ hộp có ra tiền không?'], { if: F('ngan_box'), then: [['me', 'Dạ, hộp mới của Ngân vừa giữ được đơn năm trăm hộp ạ.']], else: [['me', 'Dạ, hộp đẹp thì khô bán được giá hơn. Chị Tâm cũng khen mẫu của Ngân ạ.']] }, ['hang', '…Ừ. Để Má nói mẹ con.']] },
         { t: 'Đứng ngoài, chuyện riêng của Ngân.', fx: { nl: 2 }, then: [['ngan', 'Dạ con cảm ơn Má.'], ['think', 'Ngân vừa cảm ơn một cái tương lai Ngân không muốn.']] },
       ] },
     ] },
     { who: 'ngan', obj: 'Ngân ở bàn, cuối ngày', time: '16:00', scene: [
-      { if: F('ngan_free'), then: [['ngan', 'Mình nói rồi. Tay mình còn run. Chưa ai hỏi mình thật sự muốn làm gì. Cậu là người đầu tiên.'], ['ngan', 'Mà nè… vậy là suất "người nhà" Má hứa, giờ trống rồi đó. Cậu lấy đi.']], else: [['ngan', 'Mình sẽ làm kế toán. Mẹ mình vui. Má vui. Mình… cũng sẽ vui. Chắc vậy.']] },
+      { if: F('ngan_free'), then: [['ngan', 'Mình nói rồi. Tay mình còn run. Chưa ai hỏi mình thật sự muốn làm gì. Cậu là người đầu tiên.'], { if: official, then: [['ngan', 'Mà nè… cậu chính thức rồi. Giữ cái tên của cậu nha. Đừng để ai vẽ đè lên.']], else: [['ngan', 'Mà nè… vậy là suất "người nhà" Má hứa, giờ trống rồi đó. Cậu lấy đi.']] }], else: [['ngan', 'Mình sẽ làm kế toán. Mẹ mình vui. Má vui. Mình… cũng sẽ vui. Chắc vậy.']] },
       ['nar', 'Mèo Khô Gà nằm lên xấp giấy vẽ của Ngân, ngủ ngon lành.'],
     ] },
   ],
@@ -968,7 +971,7 @@ const EP_NGAN = {
 
 const EP_TET = {
   id: 'bm_tet', day: 36, title: 'Mùa Tết: 1.800 đơn',
-  intro: 'Thứ Hai. Mùa Tết bắt đầu thật sự. Đêm 12.12 về 1.800 đơn. Xưởng chạy hai ca. Bảng trắng ghi "x3".\n\n8 giờ sáng, sáu chị thời vụ đứng ở cửa xưởng: "Tăng 50 nghìn một ngày, không thì tụi chị về quê."',
+  intro: 'Thứ Hai. Mùa Tết bắt đầu thật sự. Cuối tuần qua đơn quà Tết về 1.800 đơn. Xưởng chạy hai ca. Bảng trắng ghi "x3".\n\n8 giờ sáng, sáu chị thời vụ đứng ở cửa xưởng: "Tăng 50 nghìn một ngày, không thì tụi chị về quê."',
   steps: [
     { who: 'dung', obj: 'Cửa xưởng: thời vụ đòi tăng lương', time: '08:30', scene: [
       ['dung', 'Sáu chị thời vụ. Đóng gói nhanh nhất xưởng. Đòi thêm năm chục một ngày. Má nói "cho về hết".'],
@@ -981,7 +984,7 @@ const EP_TET = {
     ] },
     { who: 'hang', obj: 'Má bấm máy tính', time: '09:30', scene: [
       { if: F('tv_offer'), then: [
-        ['hang', 'Ba chục một ngày. Sáu người. Tới Tết. Bao nhiêu? Con nói, Má bấm.'],
+        ['hang', 'Ba chục một ngày. Sáu người. Hai chục ngày công. Bao nhiêu? Con nói, Má bấm.'],
         { mini: WAGE_MINI,
           good: [['hang', 'Ba triệu sáu. Ít hơn tiền in lại năm trăm hộp. Được. Giữ.'], { fx: { uy: 4, rel: { hang: 2 }, set: { kept_seasonal: true } } }],
           bad: [['hang', 'Sai. Ba triệu sáu. …Mà ba triệu sáu thì được. Giữ.'], { fx: { rel: { hang: 1 }, set: { kept_seasonal: true } } }],
@@ -997,7 +1000,7 @@ const EP_TET = {
       ['bay', 'Xe lấy hàng tới 11 giờ. Còn hai trăm đơn chưa đóng. Máy in bill kẹt lúc 10 giờ 55 như mọi ngày. Lẹ con!'],
       { mini: PACK_MINI,
         good: [['bay', 'Kịp! Có video đóng gói, khách nào nói thiếu là mình có bằng chứng.'], { fx: { uy: 3, rel: { bay: 2 }, set: { pack_pro: true } } }],
-        bad: [['bay', 'Dán bill trước khi nhặt hàng hả con? …Thôi, đóng lại. Trễ xe này, đi xe chiều.'], { fx: { nl: -6, dr: 2 } }],
+        bad: [['bay', 'Lộn thứ tự rồi con. …Thôi, đóng lại. Trễ xe này, đi xe chiều.'], { fx: { nl: -6, dr: 2 } }],
       },
     ] },
     { who: 'tu', obj: 'Giờ cơm: cô Tư nấu cho 30 người', time: '12:30', scene: [
@@ -1022,7 +1025,7 @@ const EP_TET = {
 // ---------- official-only episodes (promotion arc) ----------
 const EP_O1 = {
   id: 'bm_o_nguoinha', official: true, title: 'Người nhà',
-  intro: 'Thứ Hai đầu tiên là nhân viên chính thức. Không có buổi lễ. Không có email. Chỉ có cái tên bạn trong nhóm chat "GIA ĐÌNH MÌNH ❤️".\n\nVà một chùm chìa khóa kho trên bàn.',
+  intro: 'Tuần đầu tiên là nhân viên chính thức. Không có buổi lễ. Không có email. Chỉ có cái tên bạn trong nhóm chat "GIA ĐÌNH MÌNH ❤️".\n\nVà một chùm chìa khóa kho trên bàn.',
   steps: [
     { who: 'hang', obj: 'Má gọi vô phòng: "chính thức"', time: '08:30', scene: [
       ['hang', 'Chìa khóa kho. Đừng làm mất. Mất là thay ổ, thay ổ là tốn.'],
@@ -1040,7 +1043,7 @@ const EP_O1 = {
       ] },
     ] },
     { who: 'dung', obj: 'Anh Dũng đứng ở cửa xưởng', time: '14:00', scene: [
-      ['dung', 'Chúc mừng em. Nhân viên chính thức. Đi đám giỗ chưa?'],
+      ['dung', 'Chúc mừng em. Nhân viên chính thức. Ba mời đi đám giỗ chưa?'],
       ['dung', 'Anh mời em vô nhóm "Hội anh chị em ngoài". Không có Ba Má. Chỗ duy nhất người ta nói thật.'],
       { c: 'bm_o1_group', o: [
         { t: 'Vô nhóm.', fx: { rel: { dung: 2, mai: 1 }, set: { outsider_group: true } }, then: [{ chat: [['mai', 'welcome em vô hội 🥲 ở đây toàn người bị trừ lương', true], ['khoa', '👍', true], ['vy', 'Chief Happiness Officer xin báo: ở đây không happy nhưng thật 🫠', true]] }] },
@@ -1097,11 +1100,11 @@ const EP_O2 = {
 
 const EP_O3 = {
   id: 'bm_o_tranguong', official: true, title: 'Trần kính gia đình',
-  intro: 'Thứ Hai. Kevin chiếu sơ đồ tổ chức mới, vẽ bằng app thiết kế, lên tường phòng họp sáng.\n\nỞ ô "Trưởng phòng Online" có một cái tên. Không phải tên bạn.',
+  intro: 'Họp sáng. Kevin chiếu sơ đồ tổ chức mới, vẽ bằng app thiết kế, lên tường phòng họp sáng.\n\nỞ ô "Trưởng phòng Online" có một cái tên. Không phải tên bạn.',
   steps: [
     { who: 'son', obj: 'Họp sáng: sơ đồ tổ chức mới', time: '08:30', pos: STANDUP_POS, scene: [
       ['son', 'Team ơi, mình có org chart mới! Rất Agile. Có cả swimlane.'],
-      { if: F('ngan_free'), then: [['tuan', 'Trưởng phòng Online: Bo. Con cậu Tám. Vừa ra trường. Rất high potential.'], ['think', 'Bo. Người mình chưa gặp bao giờ. Đang ngủ ở nhà.']], else: [['tuan', 'Trưởng phòng Online: Ngân. Má đã hứa với mẹ Ngân.'], ['ngan', '(nhỏ) Mình không xin. Thật.']] },
+      { if: F('ngan_free'), then: [['tuan', 'Trưởng phòng Online: Bo. Con cậu Tám. Vừa ra trường. Rất high potential.'], ['think', 'Bo. Người mình chưa gặp bao giờ. Đang ngủ ở nhà.']], else: [['tuan', 'Trưởng phòng Online kiêm kế toán: Ngân. Má đã hứa với mẹ Ngân.'], ['ngan', '(nhỏ) Mình không xin. Thật.']] },
       ['tuan', 'Còn em, {ten}: "Nhân viên văn phòng". Tức là sàn, CSKH, kho, trợ live. Tùy hôm.'],
       { c: 'bm_o3_chart', o: [
         { t: '"Dạ, vậy con báo cáo cho ai ạ?"', fx: { uy: 2, dr: 2 }, then: [['son', 'Câu hay! Mình đưa vô parking lot.'], ['hang', 'Báo cáo cho Má. Như cũ. Sơ đồ là của Kevin, công ty là của Má.']] },
@@ -1119,7 +1122,7 @@ const EP_O3 = {
     ] },
     { who: 'hang', obj: 'Hỏi Má về vai trò, lương', time: '14:00', scene: [
       ['hang', 'Con giỏi hơn nó nhiều. Mà nó là người nhà.'],
-      ['think', 'Mình cũng là "người nhà". Từ lúc 8:30 thứ Hai tuần trước.'],
+      ['think', 'Mình cũng là "người nhà". Từ cái ngày Má đưa chùm chìa khóa kho.'],
       { c: 'bm_o3_ask', o: [
         { t: 'Đưa bảng việc mình làm, xin chức danh rõ và thang lương.', fx: { uy: 3, rel: { hang: -2 }, set: { asked_scale: true } }, then: [['hang', 'Thang lương? Nhà mình không có thang. Nhà mình có Má.'], ['hang', 'Để Má tính.']] },
         { t: '"Dạ con hiểu ạ."', fx: { rel: { hang: 1 }, nl: -8 }, then: [['hang', 'Con hiểu chuyện. Má thương con.'], ['think', 'Thương thì có. Thang thì không.']] },
@@ -1136,7 +1139,7 @@ const EP_O3 = {
 
 const EP_O4 = {
   id: 'bm_o_chunhat', official: true, end: (r) => (r.flags.end_pushed ? 'layoff' : 'quit'), title: 'Chủ nhật ở xưởng',
-  intro: 'Thứ Hai trước Tết. Trên bảng trắng có thêm một dòng chữ Má viết: "Từ giờ tới Tết: Chủ nhật cả nhà xuống xưởng."\n\n"Cả nhà" có bạn. Bảng lương thì không có chữ "Chủ nhật".',
+  intro: 'Một buổi sáng trước Tết. Trên bảng trắng có thêm một dòng chữ Má viết: "Từ giờ tới Tết: Chủ nhật cả nhà xuống xưởng."\n\n"Cả nhà" có bạn. Bảng lương thì không có chữ "Chủ nhật".',
   steps: [
     { who: 'hang', obj: 'Má: "Chủ nhật cả nhà xuống xưởng"', time: '08:30', scene: [
       ['hang', 'Bảy Chủ nhật nữa là Tết. Chủ nhật nào cũng xuống. Người nhà mà, tính chi.'],
