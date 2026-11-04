@@ -21,6 +21,7 @@ export async function validateCompany(id) {
   const bodies = new Set(Object.entries(cast).filter(([, c]) => c.body !== false && c.look).map(([k]) => k));
   const known = (who) => SPECIAL.has(who) || !!cast[who];
   if (!bodies.has(co.manager)) E(`manager "${co.manager}" must be a cast member with a body`);
+  if (co.reviewer && typeof co.reviewer !== 'function') E('reviewer must be a function (run) => castId|null');
   if (!(co.officialSalary >= 5_000_000)) E('officialSalary missing');
   const usedSpots = {};
   for (const [cid, c] of Object.entries(cast)) {

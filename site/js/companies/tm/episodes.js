@@ -67,7 +67,7 @@ const LIT_MINI = {
 
 const SPRINT_MINI = {
   type: 'quiz', title: 'Sprint 0: còn bao nhiêu giờ làm thật?', icon: '⏱️',
-  prompt: 'Tuần 40 giờ. Daily "15 phút" thực tế 45 phút × 5. Planning 3h, Refinement 2h, Retro 1,5h, Demo 1h, họp "sync về ritual" 1h.', time: 45, pass: 0.66,
+  prompt: 'Tuần 40 giờ. Daily "15 phút" thực tế 45 phút × 5. Planning 3h, Refinement 2h, Retro 1,5h, Review 1h, họp "sync về ritual" 1h.', time: 45, pass: 0.66,
   questions: [
     { q: 'Tổng thời gian họp nghi thức mỗi tuần?', options: ['12,25 giờ', '8,5 giờ', '4,25 giờ'], correct: 0 },
     { q: 'Vậy còn bao nhiêu giờ làm thật?', options: ['27,75 giờ', '35 giờ', '38,75 giờ'], correct: 0 },
@@ -176,7 +176,7 @@ export const INTERN_EPISODES = [
             { chat: [['mai', 'Chị tới sau 6 phút. Em mời khách ngồi sofa, hỏi họ thích nệm cứng hay mềm. Họ sẽ nói 20 phút.', true]] },
             ['nar', 'Bạn hỏi. Họ nói hai mươi hai phút.'],
           ] },
-          { t: 'Đưa khách vào thẳng phòng họp.', fx: { dr: 4, rel: { linh: -2 } }, then: [
+          { t: 'Đưa khách vào thẳng phòng họp.', fx: { dr: 4, rel: { linh: -2 }, set: { ghost_barged: true } }, then: [
             ['nar', 'Bạn mở cửa phòng họp. Trên bảng trắng, chị Linh vừa viết "TEAM CHỈ CÓ 1.5 NGƯỜI". Khách đọc to dòng đó.'],
             ['linh', '…Chào anh chị. Đây là… một bài tập tình huống.'],
           ] },
@@ -188,10 +188,12 @@ export const INTERN_EPISODES = [
           ['an', 'Số một: đang trễ. Số hai: trễ hơn. Số ba: em là người duy nhất.'],
           { fx: { rel: { linh: 1, an: 1 } } },
         ], else: [
-          ['linh', 'Khách đến rồi? Chị đặt phòng từ thứ Sáu tuần trước mà.'],
+          { if: F('ghost_barged'), then: [['linh', 'Lần sau mở cửa phòng họp thì gõ trước nhé em. Chị đặt phòng từ thứ Sáu tuần trước mà.']],
+            else: [['linh', 'Khách đến rồi? Chị đặt phòng từ thứ Sáu tuần trước mà.']] },
           ['an', 'Chị Gấm ghi bút chì đó chị. Bút chì thì… tẩy được.'],
         ] },
-        ['think', 'Trên bảng trắng: "TEAM CHỈ CÓ 1.5 NGƯỜI". Khách mà đọc được thì khó giải thích.'],
+        { if: F('ghost_barged'), then: [['think', 'Khách đọc dòng "TEAM CHỈ CÓ 1.5 NGƯỜI" rồi. Giờ chỉ mong họ không đọc thêm dòng nào nữa.']],
+          else: [['think', 'Trên bảng trắng: "TEAM CHỈ CÓ 1.5 NGƯỜI". Khách mà đọc được thì khó giải thích.']] },
         { c: 'ep_ghost_room', o: [
           { t: 'Xóa bảng, dọn ly, mời họp nội bộ sang pantry.', fx: { nl: -5, uy: 2, rel: { linh: 1 } }, then: [
             ['linh', 'Pantry cũng được. Ít nhất ở đó có bánh.'],
@@ -390,7 +392,7 @@ export const INTERN_EPISODES = [
         ['han', 'Morning em! Chị nghĩ lại rồi. Big pitcher giờ phải là cái roadmap "three horizon". Mình cần think big hơn nha.'],
         ['think', 'Hạn là 16:00. Hôm nay. Bây giờ là 08:30.'],
         { if: F('brief_clarified'), then: [
-          ['me', 'Dạ, thứ Hai em có hỏi lại chị và ghi: "slide tổng quan, chiến lược và KPI đi kèm". Em gửi lại chị ghi chú nhé.'],
+          ['me', 'Dạ, thứ Hai em có hỏi lại chị, chị nói: "Tổng quan. Có KPI. Đẹp." Em có ghi lại. Em gửi chị ghi chú nhé.'],
           ['han', 'Ơ… chị nói vậy hả? Ừ đúng, chị nói vậy. Vậy giữ nguyên, thêm MỘT slide horizon thôi. Một thôi.'],
           ['think', 'Ghi chú thứ Hai vừa cứu mình nguyên một ngày.'],
           { fx: { uy: 3, set: { pitcher_exempt: true } } },
@@ -664,7 +666,7 @@ export const INTERN_EPISODES = [
     id: 'sprint_zero', day: 12, title: 'Sprint 0 vô tận',
     intro: 'Thứ Sáu. Anh Đạt công bố "Sprint 0": bốn nghi thức mỗi sprint cho team chị Linh, cộng daily stand-up.\n\nTeam chị Linh có một người full-time. Giờ người đó có bốn cuộc họp để báo cáo rằng mình không có thời gian.',
     steps: [
-      { who: 'dat', obj: '9:00 Sprint 0 ở bảng Scrum', time: '08:30', pos: { dat: 'su_dat', an: 'su1', linh: 'su2', long: 'su3', khang: 'su5' }, scene: [
+      { who: 'dat', obj: '9:00 Sprint 0 ở bảng Scrum', time: '09:00', pos: { dat: 'su_dat', an: 'su1', linh: 'su2', long: 'su3', khang: 'su5' }, scene: [
         ['dat', 'Team! Chào mừng Sprint 0. Từ tuần sau team chị Linh có: Planning, Refinement, Review, Retro. Cộng daily. Agile là văn hóa!'],
         ['linh', 'Đạt, team chị có một người rưỡi. Bốn nghi thức là bốn buổi sáng.'],
         ['dat', 'Chị Linh, đó là impediment. Mình đưa vào parking lot. Parking lot sẽ được review ở… Retro.'],
@@ -686,7 +688,7 @@ export const INTERN_EPISODES = [
         { if: F('final_found'), then: [['an', 'Em là đứa tìm ra FINAL_REAL hôm đầu. Anh tin con số của em.']] },
         { mini: SPRINT_MINI,
           good: [['an', '27 tiếng 45 phút. Anh in to cỡ chữ 48.'], { fx: { uy: 3, rel: { an: 2, linh: 1 }, set: { hours_calc: true } } }],
-          bad: [['an', 'Ơ, em ra 35 tiếng à? Anh mong là vậy. Nhưng không phải.'], { fx: { nl: -3 } }],
+          bad: [['an', 'Ơ, số của em đẹp hơn số của anh. Anh mong em đúng. Nhưng không phải.'], { fx: { nl: -3 } }],
         },
       ] },
       { who: 'linh', obj: 'Mang con số cho chị Linh', time: '11:00', scene: [
@@ -838,7 +840,7 @@ export const INTERN_EPISODES = [
         ] },
       ] },
     ],
-    diary: (r) => `Ngày 15. ${r.flags.tb_friday ? 'Team building dời sang chiều thứ Sáu. Long sẽ được về quê.' : 'Thứ Bảy thứ tám liên tiếp. Mẹ Long sẽ nhận thêm một ảnh team building.'} ${r.flags.tie_phuong_friend ? 'Chị Phương là con gái bạn thân chị Tuyết. Mọi thứ Bảy giờ đều có lời giải thích.' : ''}`,
+    diary: (r) => `Ngày 15. ${r.flags.tb_friday ? 'Team building dời sang chiều thứ Sáu. Long sẽ được về quê.' : 'Thứ Bảy thứ bảy liên tiếp. Mẹ Long sẽ nhận thêm một ảnh team building.'} ${r.flags.tie_phuong_friend ? 'Chị Phương là con gái bạn thân chị Tuyết. Mọi thứ Bảy giờ đều có lời giải thích.' : ''}`,
   },
 
   // 8 · When I was overseas ✱ khang_han
@@ -852,7 +854,7 @@ export const INTERN_EPISODES = [
         ['think', 'Câu này nghe như câu cuối trong phim, ngay trước khi có chuyện.'],
         { c: 'ep_ovs_an', o: [
           { t: 'Soát số liệu cùng An.', fx: { nl: -4, rel: { an: 1 } }, then: [
-            ['an', 'Sai đúng một chỗ: anh gõ "bố mẹ" thành "bố mẹ mẹ". Em cứu anh lần thứ hai.'],
+            ['an', 'Sai đúng một chỗ: anh gõ "bố mẹ" thành "bố mẹ mẹ". Em cứu anh một bàn thua.'],
           ] },
           { t: 'Lưu một bản 90% kèm ngày giờ.', fx: { uy: 1, set: { ovs_backup: true } }, then: [
             { if: F('bao_tips'), then: [['think', 'Lời anh Bảo hôm phỏng vấn: lưu file luôn kèm ngày giờ.']], else: [['think', 'Cảm giác bảo mình nên làm vậy.']] },
@@ -1072,7 +1074,7 @@ export const INTERN_EPISODES = [
         ['an', 'Đếm nguồn lực thật đi em. Anh đếm hoài ra một con số buồn.'],
         { mini: HALF_MINI,
           good: [['an', 'Thiếu đúng một người. Con số buồn, nhưng là con số thật.'], { fx: { uy: 3, rel: { an: 1 }, set: { half_numbers: true } } }],
-          bad: [['an', 'Em ra 1,8 người à? Đó là con số trên sơ đồ. Sơ đồ không đi thi, Minh thì có.'], { fx: { nl: -4 } }],
+          bad: [['an', 'Em đếm theo sơ đồ rồi. Sơ đồ không đi thi, Minh thì có.'], { fx: { nl: -4 } }],
         },
       ] },
       { who: 'call:minh', obj: 'Minh gọi từ hành lang phòng thi (nghe máy)', time: '11:00',
@@ -1110,6 +1112,9 @@ export const INTERN_EPISODES = [
           { t: '"Không thêm người hoặc lùi hạn thì trễ Êm Ru đợt 3, khách đang chuẩn bị trả tiền ạ."', when: F('half_numbers'), fx: { uy: 4, rel: { tuyet: 2, linh: 2 }, set: { linh_win: true } } },
           { t: '"Team chị Linh đang làm hết sức ạ."', fx: { dr: 1, rel: { linh: 1 } }, then: [
             ['tuyet', 'Hết sức không phải là một chỉ số.'],
+          ] },
+          { t: '"Thiếu người thì Êm Ru trễ hạn ạ. Em chưa có số chính xác."', when: NOT('half_numbers'), fx: { uy: 1, rel: { linh: 1 } }, then: [
+            ['tuyet', 'Thật thà. Nhưng không có số thì chị không ký được gì.'],
           ] },
           { t: '"Chị Linh cần nửa người. Em là nửa đó, và em sắp hết thực tập ạ."', when: (r) => r.status !== 'official', fx: { dr: 2, rel: { tuyet: 1, linh: 2 }, set: { linh_win: true } }, then: [
             ['tuyet', 'Lý lẽ kém. Nhưng sự thật thì đúng.'],
@@ -1196,9 +1201,13 @@ export const INTERN_EPISODES = [
           { fx: { uy: 1, rel: { tuyet: 1, mai: 1 }, set: { mai_stays: true } } },
         ], else: [
           ['tuyet', 'Mai nghỉ. Nó báo trước bốn mươi lăm ngày, đúng luật, bàn giao đàng hoàng. Bốn Phương mời ba lần, chị chỉ giữ được hai.'],
+          ['nar', '(Hợp đồng không xác định thời hạn: báo trước ít nhất 45 ngày. Thông tin giải trí, không phải tư vấn pháp lý.)'],
           ['tuyet', 'Nó giới thiệu em tiếp quản liên lạc với Êm Ru. Nó nói: "Em ấy biết hỏi khách cần gì." Em làm được không?'],
         ] },
         { c: 'ep_mai_end', o: [
+          { t: '"Chị Mai xứng đáng cả ba điều đó ạ."', when: F('mai_negotiate'), fx: { rel: { tuyet: 1, mai: 1 } }, then: [
+            ['tuyet', 'Chị biết. Chị chỉ cần ai đó viết nó ra thành ba dòng.'],
+          ] },
           { t: '"Dạ được ạ."', when: NOT('mai_negotiate'), fx: { uy: 3, rel: { tuyet: 1 }, set: { mai_left: true, mai_handover: true, mai_vouch: true } }, then: [
             ['tuyet', 'Tốt. Đừng hứa với khách điều em không làm được. Mai chưa từng làm vậy.'],
           ] },
@@ -1518,7 +1527,7 @@ export const INTERN_EPISODES = [
   // 15 · Đánh giá cuối kỳ — the client returns; Tuyết sums up the six weeks
   {
     id: 'final_review', day: 40, title: 'Đánh giá cuối kỳ',
-    intro: 'Thứ Sáu tuần thứ sáu. Đợt thực tập của bạn sắp hết.\n\nSáng nay Êm Ru đến nghe bản trình bày cuối. Chiều nay chị Tuyết có lịch "Đánh giá cuối kỳ". Lịch ghi: "15 phút (ý nhỏ)".',
+    intro: 'Thứ Sáu tuần thứ sáu. Sáu tuần kể từ ngày bạn bước vào T&M.\n\nSáng nay Êm Ru đến nghe bản trình bày cuối. Chiều nay chị Tuyết có lịch "Đánh giá cuối kỳ". Lịch ghi: "15 phút (ý nhỏ)".',
     steps: [
       { who: 'mai', obj: 'Chuẩn bị trình bày cuối với chị Mai', time: '08:30', scene: [
         ['mai', 'Hôm nay Êm Ru nghe bản cuối. Khách cũ, câu hỏi cũ: "Vậy chúng tôi làm gì trước?"'],
@@ -1579,7 +1588,7 @@ export const INTERN_EPISODES = [
             ['tuyet', '…Chị sẽ coi đó là một ý nhỏ. Một ý đúng.'],
           ] },
           { t: '"Em cảm ơn chị đã cho em ở đây sáu tuần ạ."', fx: { rel: { tuyet: 2 } }, then: [['tuyet', 'Sáu tuần ở T&M bằng sáu tháng ở chỗ khác. Chị không biết đó là khen hay chê.']] },
-          { t: '"Sau này em có thể quay lại T&M không ạ?"', fx: { rel: { gam: 1, tuyet: 1 }, set: { want_back: true } }, then: [
+          { t: '"Sau này em có thể quay lại T&M không ạ?"', when: (r) => r.status !== 'official', fx: { rel: { gam: 1, tuyet: 1 }, set: { want_back: true } }, then: [
             ['tuyet', 'Cửa không khóa. Nhưng Gấm giữ chìa. Em biết rồi đấy.'],
           ] },
         ] },

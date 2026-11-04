@@ -32,6 +32,7 @@ reference examples — read them first.
 export default {
   id: 'bama',                       // folder name; matches site/js/companies/index.js
   manager: 'hang',                  // cast id doing the Friday review (must have a body)
+  reviewer: (run) => 'dung' | null, // optional: who reviews this Friday instead (e.g. after the manager leaves)
   officialSalary: 10_000_000,       // monthly salary if promoted
   catName: 'Mèo Khô Gà',            // the office cat (optional; default 'Mèo KPI')
   cast: { ... },                    // §3
@@ -130,13 +131,15 @@ whiteboard) · `coffee` (pantry; when not a story target it opens the food menu)
 - `obj` is the objective text shown in the HUD ("Qua kho kiểm hàng với chú Bảy").
 - Episodes need a clear arc: setup → complication → a choice that matters → consequence that may come back later
   (set flags, read them with `when`/`if` in later episodes and in `promotion.when`).
+- Intern episodes can still play after a promotion. If an episode only makes sense for an intern, add
+  `internOnly: true` (it becomes a routine day for official employees).
 - Day 1 must be the onboarding episode (`day: 1`). Spread the rest over days 2–40. 10–20 intern episodes.
 
 ## 7. Routine beats (ordinary days)
 
 Same shape as one step, plus an `id`. The engine picks 2 (3 at high salary tiers) per ordinary day and does not
 repeat until the pool runs out. `time` optional (defaults 10:00 / 14:00 / 15:30). `official: true` = only for
-official employees. `when(run)` to gate. Keep them short (3–8 lines + one choice), funny, varied:
+official employees. `when(run)` to gate. `once: true` = never repeats in a run (birthdays, one-off events). Keep them short (3–8 lines + one choice), funny, varied:
 small requests, gossip, a process absurdity, a customer call, a mini-game (use sparingly), a kindness.
 
 ## 8. Side tasks

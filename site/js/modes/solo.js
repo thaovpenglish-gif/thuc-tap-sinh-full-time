@@ -105,6 +105,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     if (id === 'giao') return GIAO;
     return (CO && CO.cast[id]) || { name: id, role: '', emoji: '❔', color: '#ccc' };
   }
+  const reviewer = () => { try { return (CO.reviewer && CO.reviewer(R)) || CO.manager; } catch { return CO.manager; } };
   const mood = () => C.moodInfo(R && R.today ? R.today.mood : 'meh');
   const hungry = () => !!R && R.day > 0 && C.hungerState(R.st.nl) !== 'ok';
 
@@ -119,7 +120,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     else steps = (t.beats || []).map((id) => (CO.routine || []).find((b) => b.id === id)).filter(Boolean).map((b, i) => ({ ...b, time: b.time || ['10:00', '14:00', '15:30'][i] }));
     if (!ep) steps.sort((a, b) => toMin(a.time) - toMin(b.time));
     if (C.isFriday(R.day) && !(ep && ep.noReview)) {
-      const mgr = CO.manager;
+      const mgr = reviewer();
       const rv = { who: mgr, obj: `16:30 Review tuần với ${charInfo(mgr).name}`, time: '16:30', review: true, scene: [] };
       const k = steps.findIndex((s) => toMin(s.time || '00:00') > toMin('16:30'));
       if (k < 0) steps.push(rv); else steps.splice(k, 0, rv);
@@ -336,7 +337,7 @@ export function startSolo({ scene, camera, input, onExit }) {
 
   // ---------- weekly review (Friday) ----------
   async function runReview() {
-    const mgr = CO.manager;
+    const mgr = reviewer();
     const wk = R.week || C.emptyWeek(R);
     const { grade, score } = C.gradeWeek(wk, R, R.rel[mgr] || 0);
     const r = rng(hash(R.id) + R.day);
@@ -519,7 +520,8 @@ export function startSolo({ scene, camera, input, onExit }) {
       if (epDef && !epDef.official && epDef.internOnly && R.status === 'official') epId = null;
       const beats = [];
       if (!epId) {
-        const pool = (CO.routine || []).filter((b) => (!b.when || b.when(R)) && (!b.official || R.status === 'official'));
+        const seen = R.seen || [];
+        const pool = (CO.routine || []).filter((b) => { try { return (!b.when || b.when(R)) && (!b.official || R.status === 'official') && !(b.once && seen.includes(b.id)); } catch { return false; } });
         const fresh = pool.filter((b) => !(R.seen || []).includes(b.id));
         const src = fresh.length >= 2 ? fresh : pool;
         const r = rng(seed);
