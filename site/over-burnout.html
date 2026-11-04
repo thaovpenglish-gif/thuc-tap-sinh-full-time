@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Over-burnout and deadline · T&M Partners (Technical Preview)</title>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<style>
+:root{--ink:#252231;--paper:#fff8ef;--mint:#c7f2df;--lilac:#e2d3ff;--pink:#ffd6e6}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:var(--paper);color:var(--ink);overflow:hidden}button,input{font:inherit}button{cursor:pointer;font-weight:800;border:3px solid var(--ink);border-radius:12px;background:#fff;padding:11px 15px;box-shadow:3px 3px 0 var(--ink)}button:disabled{opacity:.45;cursor:not-allowed}button.primary{background:var(--mint)}input{min-width:0;padding:10px 12px;border:3px solid var(--ink);border-radius:10px;width:100%}[hidden]{display:none!important}a{color:var(--ink);font-weight:700}#game{position:fixed;inset:0;width:100%;height:100%;display:block}
+.panel{position:fixed;z-index:20;background:var(--paper);border:3px solid var(--ink);border-radius:20px;box-shadow:7px 7px 0 var(--ink);padding:24px}.center{left:50%;top:50%;transform:translate(-50%,-50%);width:min(540px,calc(100vw - 28px));max-height:calc(100vh - 24px);overflow:auto}.kicker{font-size:11px;letter-spacing:1.4px;font-weight:900}
+h1{font-size:clamp(35px,6vw,58px);margin:8px 0 6px;line-height:1.04}h1 em{font-style:normal;color:#9a6be2}p{line-height:1.45}.actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}.join{display:flex;gap:8px;margin-top:12px}.join input{flex:1;text-transform:uppercase;font-weight:900;letter-spacing:3px}.small{font-size:12px;color:#626172}.message{min-height:1.3em;font-size:13px;font-weight:700;color:#7b3879}.peer{padding:9px 12px;background:#fff;border:2px solid #b3adba;border-radius:12px;margin:7px 0}
+#hud{position:fixed;inset:0;pointer-events:none}#top{position:absolute;top:12px;left:12px;right:12px;display:flex;gap:12px;align-items:start;justify-content:space-between}#top>div,#top>strong{border:2px solid var(--ink);border-radius:13px;padding:9px 12px;background:rgba(255,248,239,.93);box-shadow:3px 3px 0 var(--ink)}#top span{display:block;font-size:11px}#top strong{font-size:25px;font-variant-numeric:tabular-nums}#tasks{position:absolute;top:93px;right:12px;width:min(285px,42vw);background:rgba(255,248,239,.94);border:2px solid var(--ink);border-radius:14px;padding:10px;font-size:12px}.task{padding:6px;border-bottom:1px solid #d0c5cf}.task:last-child{border-bottom:0}#bottom{position:absolute;bottom:12px;left:12px;right:12px;display:flex;gap:10px;justify-content:space-between;align-items:end}#hint{background:rgba(255,248,239,.95);border:2px solid var(--ink);padding:10px;border-radius:12px;font-size:13px;font-weight:700;max-width:68vw}#bottom button{pointer-events:auto;font-size:12px}
+#quiz{z-index:30}#choices{display:grid;gap:10px;margin:16px 0}#choices button{text-align:left;box-shadow:none}#choices button:hover{background:var(--mint)}
+#mobile{position:absolute;inset:0;pointer-events:none}#joy{position:absolute;bottom:85px;left:27px;width:115px;height:115px;border-radius:50%;background:rgba(234,221,255,.65);border:3px solid var(--ink);pointer-events:auto;touch-action:none}#joyKnob{width:45px;height:45px;border-radius:50%;background:var(--lilac);border:3px solid var(--ink);position:absolute;top:32px;left:32px}#touchAction{position:absolute;bottom:92px;right:28px;border-radius:50%;width:94px;height:94px;background:var(--pink);pointer-events:auto;touch-action:manipulation}
+#loading{position:fixed;z-index:40;inset:0;display:grid;place-items:center;background:var(--paper);font-weight:900}
+@media(max-width:650px){#top{top:6px;left:6px;right:6px;gap:5px}#top>div,#top>strong{padding:6px;font-size:10px}#top strong{font-size:19px}#tasks{top:67px;right:6px;width:160px;font-size:11px;padding:6px}#bottom{bottom:6px;left:6px;right:6px}#hint{font-size:10px;max-width:58vw}.center{padding:17px}}
+</style></head><body>
+<canvas id="game" aria-label="Over-burnout 3D office preview"></canvas>
+<main id="menu" class="panel center">
+<span class="kicker">T&M PARTNERS · MULTIPLAYER TECHNICAL PREVIEW</span>
+<h1>Over-burnout<br><em>and deadline</em></h1>
+<p>Chạy deadline · chuyền tài liệu · cố đừng in nhầm file FINAL.</p>
+<label>Tên intern<input id="name" maxlength="18" autocomplete="nickname" value="Intern"></label>
+<div class="actions"><button id="practice" class="primary">Tập thử 1 người</button><button id="create">Tạo phòng online</button></div>
+<div class="join"><input id="code" aria-label="Mã phòng" maxlength="7" placeholder="Mã phòng 7 ký tự"><button id="join">Vào phòng</button></div>
+<p id="message" class="message" role="status"></p>
+<p class="small">Bản thử nghiệm kỹ thuật. Phòng Realtime chưa lưu tiến độ, chưa xác thực thành viên và chưa có kịch bản project chính thức. Không sử dụng để chia sẻ thông tin nhạy cảm.</p>
+<a href="./">← Về game chính</a>
+</main>
+<div id="lobby" class="panel center" hidden><span class="kicker">PHÒNG THỬ NGHIỆM</span>
+<h2>Mã phòng: <strong id="roomCode"></strong></h2><p>Gửi mã cho bạn bè; cần 2–4 người để bắt đầu.</p>
+<div id="roster"></div><div class="actions"><button id="start" class="primary" disabled>Start deadline</button><button id="leave">Rời phòng</button></div><p id="lobbyMessage" class="message" role="status"></p></div>
+<div id="hud" hidden><div id="top"><div><b>Over-burnout and deadline</b><span id="roomLabel">Practice</span></div><strong id="timer">05:00</strong><div id="count">1 intern</div></div><div id="tasks" aria-live="polite"></div><div id="bottom"><span id="hint">WASD di chuyển · E tương tác · Shift chạy</span><button id="exit">Thoát bản thử</button></div><div id="mobile" hidden><div id="joy"><div id="joyKnob"></div></div><button id="touchAction">E · Tương tác</button></div></div>
+<div id="quiz" class="panel center" hidden><h2 id="quizTitle"></h2><p id="question"></p><div id="choices"></div><button id="closeQuiz">Đóng</button></div>
+<div id="result" class="panel center" hidden><h2 id="resultTitle"></h2><p id="resultDescription"></p><button id="back" class="primary">Về menu</button></div>
+<div id="loading">Đang dựng văn phòng…</div><script type="module" src="js/modes/overburnout.js"></script>
+</body></html>
