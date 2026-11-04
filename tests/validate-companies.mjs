@@ -120,7 +120,8 @@ export async function validateCompany(id) {
     if (!Array.isArray(e.steps) || e.steps.length < 2) E(`${at}: needs ≥2 steps`);
     if (e.day !== undefined && !(e.day >= 1 && e.day <= 45)) E(`${at}: day must be 1..45`);
     if (e.minDay !== undefined && e.maxDay !== undefined && e.minDay > e.maxDay) E(`${at}: minDay > maxDay`);
-    if (e.end && !['quit', 'layoff'].includes(e.end)) E(`${at}: end must be quit|layoff`);
+    if (e.end && typeof e.end !== 'function' && !['quit', 'layoff'].includes(e.end)) E(`${at}: end must be quit|layoff or (run) => 'quit'|'layoff'|null`);
+    if (e.when && typeof e.when !== 'function') E(`${at}: when must be a function`);
     if (e.diary && typeof e.diary !== 'function') E(`${at}: diary must be a function (run) => string`);
     if (e.pos) for (const [k, v] of Object.entries(e.pos)) if (!SPOTS[v] || !bodies.has(k)) E(`${at}: pos ${k}→${v} invalid`);
     let t = null;

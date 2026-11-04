@@ -605,7 +605,7 @@ const FRIDAY_DEPLOY = {
             ['nar', 'Tùng bấm deploy lúc 17:02 và biến mất lúc 17:03. Bot báo: "Deploy succeeded 🙏".'],
           ] },
           { t: 'Nhắn anh Thạc hỏi trước.', fx: { uy: 1, rel: { thac: 1, tung: -1 } }, then: [
-            { chat: [['thac', 'pipeline xanh thì bấm. tôi đang theo dõi.', true]] },
+            { chat: [['thac', 'pipeline xanh thì bấm. anh đang theo dõi.', true]] },
             ['nar', 'Tùng bấm deploy lúc 17:02 rồi chạy ra thang máy. Bot báo: "Deploy succeeded 🙏".'],
           ] },
         ] },
@@ -1073,11 +1073,11 @@ const IDEA_STOLEN = {
       scene: [
         ['nar', 'Bài viết: 3.912 reaction. Bình luận top: "Thiên tài! Anh nghĩ ra ý tưởng này thế nào ạ?" Anh Kevin trả lời: "Nhờ gia đình 🙏".'],
         { c: 'tech_linkedin', o: [
-          { t: 'Comment: "Rất vui khi ý tưởng từ Lúa Hack của team em được anh đưa vào sản phẩm 🙌"', fx: { uy: 4, dr: 2, rel: { kevin: -1 }, set: { idea_tagged: true } }, then: [
-            ['nar', 'Comment của bạn được 214 like. Anh Kevin thả tim. Rồi sửa bài: "…và ý tưởng ban đầu từ hackathon nội bộ". Không ghi tên.'],
+          { t: 'Comment: "Rất vui khi ý tưởng Giỏ Chung em đề xuất được anh đưa vào sản phẩm 🙌"', fx: { uy: 4, dr: 2, rel: { kevin: -1 }, set: { idea_tagged: true } }, then: [
+            ['nar', 'Comment của bạn được 214 like. Anh Kevin thả tim. Rồi sửa bài: "…và ý tưởng ban đầu từ một bạn trong team". Không ghi tên.'],
           ] },
           { t: 'Im lặng. Jira nhớ là đủ.', fx: { nl: 3, rel: { thac: 1 }, set: { idea_silent: true } }, then: [['think', 'Mình im lặng. Nhưng mình sẽ nhớ. Và anh Thạc nhớ.']] },
-          { t: 'Đăng bài riêng kể chuyện hackathon, kèm ảnh nhóm.', fx: { dr: 8, uy: 2, rel: { kevin: -3, vy: 1 }, set: { idea_viral: true } }, then: [
+          { t: 'Đăng bài riêng kể chuyện Giỏ Chung ra đời, kèm ảnh bản nháp có ngày giờ.', fx: { dr: 8, uy: 2, rel: { kevin: -3, vy: 1 }, set: { idea_viral: true } }, then: [
             ['nar', 'Bài của bạn được 11.000 reaction. Nhiều hơn bài anh Kevin. Đó là vấn đề.'],
           ] },
         ] },
@@ -1102,7 +1102,7 @@ const IDEA_STOLEN = {
     },
   ],
   diary: (s) => s.flags.idea_viral ? 'Bài của mình viral hơn bài anh Kevin. Đó là một chiến thắng. Và có lẽ là một sai lầm.'
-    : s.flags.idea_tagged ? 'Mình comment dưới bài anh Kevin. Anh sửa thành "hackathon nội bộ". Không tên, nhưng không còn là "một đêm mất ngủ".'
+    : s.flags.idea_tagged ? 'Mình comment dưới bài anh Kevin. Anh sửa thành "một bạn trong team". Không tên, nhưng không còn là "một đêm mất ngủ".'
     : 'Mình im lặng. Anh Thạc nói anh biết là của mình. Jira ghi tên mình. Jira không có nút like.',
 };
 
@@ -1722,6 +1722,7 @@ const OFF_HANDOVER = {
           { t: 'Nhận bàn giao bằng emoji.', fx: { rel: { loc: 1 } }, then: [['think', '🔑 dưới bàn phím. 🔥 gọi Thạc. 🙏 luôn luôn. Ok. Mình là DevOps rồi.']] },
         ] },
         ['loc', '🫡 ✌️'],
+        { fx: { set: { loc_left: true } } },
       ],
     },
     {
@@ -1785,8 +1786,8 @@ const OFF_SALARY_LATE = {
         ['tung', 'Anh nghỉ rồi. Cái app freelance thành công ty nhỏ. Lương gấp rưỡi, trả đúng ngày. Không có ring light.'],
         ['tung', 'Bên anh đang cần một người. Không cần giỏi nhất. Cần người đọc trang Rollback trước khi cần nó. Em muốn không?'],
         { c: 'tech_off_tung', o: [
-          { t: '"Anh gửi em JD. Em cân nhắc."', fx: { rel: { tung: 2 }, set: { cv_sent: true } }, then: [['tung', 'Ok. Kentou shimasu hả? Đùa. Anh gửi rồi. Phỏng vấn tối thứ Năm, online, không take-home.']] },
-          { t: '"Em ở lại. Em muốn thấy Giỏ Chung đi tới đâu."', fx: { rel: { tung: 1, diep: 1 } }, then: [['tung', 'Ừ. Tôn trọng. Nhưng lưu số anh nha. Startup không có chữ "mãi mãi".']] },
+          { t: '"Anh gửi em JD. Em cân nhắc."', fx: { rel: { tung: 2 }, set: { cv_sent: true, tung_left: true } }, then: [['tung', 'Ok. Kentou shimasu hả? Đùa. Anh gửi rồi. Phỏng vấn tối thứ Năm, online, không take-home.']] },
+          { t: '"Em ở lại. Em muốn thấy Giỏ Chung đi tới đâu."', fx: { rel: { tung: 1, diep: 1 }, set: { tung_left: true } }, then: [['tung', 'Ừ. Tôn trọng. Nhưng lưu số anh nha. Startup không có chữ "mãi mãi".']] },
         ] },
         ['nar', 'Trên bàn Tùng còn lại sticker "It works on my machine". Tùng bóc nó ra, dán lên bàn bạn.'],
       ],

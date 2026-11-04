@@ -110,7 +110,10 @@ whiteboard) · `coffee` (pantry; when not a story target it opens the food menu)
 { id: 'livestream_fail', title: 'Livestream 3 tiếng', intro: 'Thứ Năm. …',      // intro shown on the day card
   day: 8 | minDay: 6, maxDay: 14,     // fixed day (1–45; weekends move to Monday) or a range; omit for "any"
   official: true,                     // only after promotion (then list it in promotion.arc)
-  end: 'quit' | 'layoff',             // the run ends after this day (last arc episode)
+  end: 'quit' | 'layoff' | (run) => 'quit'|'layoff'|null,  // the run ends after this day (last arc episode);
+                                      // a function lets the player's choices decide (null = the run continues)
+  when: (run) => bool,                // optional: checked the morning of its day; false → a routine day instead
+  internOnly: true,                   // optional: skipped (routine day) if the player is already official
   noReview: true,                     // optional: skip the Friday review on this day
   pos: { tam: 'x1' },                 // where people stand all day (optional)
   chatStart: [['tam', 'tin nhắn', true]],  // optional: messages at 08:30

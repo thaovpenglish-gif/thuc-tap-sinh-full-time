@@ -33,7 +33,7 @@ export const INTERVIEW = {
   title: 'Buổi đầu tiên',
   subtitle: 'Vòng phỏng vấn (sau bài take-home "nhỏ thôi")',
   intro: 'Chiều thứ Sáu, 14:00. Một coworking ở quận 1. Cửa kính dán decal: "NỢ KỸ THUẬT LABS · Flat. Fast. Fun."\n\nTuần trước bạn nhận bài take-home "nhỏ thôi, làm 2 tiếng". Đề bài: dựng lại toàn bộ app Lúa, có thanh toán.\n\nHôm nay là vòng phỏng vấn. Và cũng hôm nay, bạn sẽ phải deal phụ cấp.',
-  pos: { diep: 'meeting_head', khai: 'mr_n1' },
+  pos: { diep: 'meeting_head', khai: 'mr_n1', ngan: 'mr_n2' },
   steps: [
     {
       who: 'hoa', obj: 'Tới quầy lễ tân báo chị Hoa em đến phỏng vấn', time: '14:00',

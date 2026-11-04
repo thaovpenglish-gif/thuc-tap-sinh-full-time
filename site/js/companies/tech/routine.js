@@ -72,7 +72,7 @@ export const ROUTINE = [
       { t: 'Mute thread, làm việc tiếp.', fx: { nl: 2, uy: 1 }, then: [['think', 'Kỹ năng quan trọng nhất ở startup: biết thread nào cần mute.']] },
     ] },
   ] },
-  { id: 'r_loc_emoji', who: 'loc', obj: 'Anh Lộc trả lời ticket bằng emoji', time: '11:30', scene: [
+  { id: 'r_loc_emoji', who: 'loc', obj: 'Anh Lộc trả lời ticket bằng emoji', time: '11:30', when: (r) => !r.flags.loc_left, scene: [
     ['loc', '🔥🔥🔥 · 👀 · 🙏⏪'],
     { mini: EMOJI_MINI,
       good: [['loc', '👍👍'], ['nar', 'Anh Lộc giơ hai ngón cái. Bạn vừa đạt chứng chỉ "Lộc-ngữ" cấp 1.'], { fx: { uy: 2, rel: { loc: 2 } } }],
@@ -162,7 +162,7 @@ export const ROUTINE = [
       { t: 'Đoán: "FixLater2!"', fx: { dr: 1, rel: { hoa: 1 } }, then: [['nar', 'Đúng. Cả văn phòng vỗ tay. Bảo mật của công ty phụ thuộc vào khả năng đoán của một intern.']] },
     ] },
   ] },
-  { id: 'r_cake', who: 'tung', obj: 'Bánh kem bí ẩn ở pantry', time: '15:45', pos: { tung: 'pantry' }, scene: [
+  { id: 'r_cake', who: 'tung', obj: 'Bánh kem bí ẩn ở pantry', time: '15:45', pos: { tung: 'pantry' }, when: (r) => !r.flags.tung_left, scene: [
     ['tung', 'Có bánh kem trong tủ lạnh. Không ghi tên. Không ai biết sinh nhật ai. Theo luật startup: bánh không tên là bánh của công ty.'],
     { c: '_r_tech_cake', o: [
       { t: 'Ăn một miếng.', fx: { nl: 12, rel: { tung: 1 } }, then: [['nar', 'Mười phút sau chị Hoa hỏi trong #general: "Ai ăn bánh sinh nhật của Mèo 404?"']] },
@@ -219,7 +219,7 @@ export const ROUTINE = [
       { t: 'Pha cà phê, rồi hỏi về dashboard.', fx: { uy: 2, rel: { thac: 1 } }, then: [['thac', 'Đường đỏ là độ trễ thanh toán. Nó đỏ thì anh không ngủ. Nó xanh thì anh cũng không ngủ, vì sợ nó đỏ.']] },
     ] },
   ] },
-  { id: 'r_typing', who: 'obj:desk', obj: 'Slack: "Tùng is typing…"', time: '16:15', scene: [
+  { id: 'r_typing', who: 'obj:desk', obj: 'Slack: "Tùng is typing…"', time: '16:15', when: (r) => !r.flags.tung_left, scene: [
     ['nar', 'Bạn hỏi Tùng: "Anh ơi API đổi format rồi hả?". "Tùng is typing…" hiện suốt năm phút.'],
     ['nar', 'Rồi tin nhắn tới: "ok".'],
     { c: '_r_tech_typing', o: [

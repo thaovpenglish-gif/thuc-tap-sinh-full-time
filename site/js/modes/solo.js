@@ -510,7 +510,10 @@ export function startSolo({ scene, camera, input, onExit }) {
     // decide today's content once (stable across reloads)
     if (R.day > 0 && (!R.today || R.today.day !== R.day)) {
       const seed = hash(R.id) + R.day * 101;
-      const epId = (R.plan || {})[R.day] || null;
+      let epId = (R.plan || {})[R.day] || null;
+      const epDef = epId && CO.episodes.find((e) => e.id === epId);
+      if (epDef && epDef.when) { try { if (!epDef.when(R)) epId = null; } catch (err) { console.error(err); epId = null; } }
+      if (epDef && !epDef.official && epDef.internOnly && R.status === 'official') epId = null;
       const beats = [];
       if (!epId) {
         const pool = (CO.routine || []).filter((b) => (!b.when || b.when(R)) && (!b.official || R.status === 'official'));
@@ -624,7 +627,8 @@ export function startSolo({ scene, camera, input, onExit }) {
       R.accrued = C.accrue(R);
       R.money -= C.COMMUTE_COST;
       if (R.week) R.week.late += R.tasks.filter((t) => t.status === 'open').length;
-      if (d.ep && d.ep.end) ended = d.ep.end;
+      if (d.ep && d.ep.end) { try { ended = typeof d.ep.end === 'function' ? d.ep.end(R) : d.ep.end; } catch (err) { console.error(err); ended = 'quit'; } }
+      if (ended && !['quit', 'layoff'].includes(ended)) ended = null;
       const ev = C.pickLifeEvent(R, hash(R.id) + R.day * 13, CO.lifeEvents || []);
       if (ev) { pending.push({ type: 'life', id: ev.id }); R.flags.last_life = ev.id; }
       const next = C.nextWorkday(R.day);
