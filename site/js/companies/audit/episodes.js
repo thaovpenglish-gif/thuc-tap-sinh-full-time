@@ -1264,7 +1264,7 @@ const LOSTFILE = {
     ] },
     { who: 'thao', obj: 'Chị Thảo hỏi chuyện file', time: '15:30', scene: [
       { if: F('redo_silent'), then: [
-        ['thao', 'Em làm lại cả file phải thu trong một ngày? Sao phải làm lại?'],
+        ['thao', 'Em làm lại cả file phải thu trong một buổi? Sao phải làm lại?'],
         { c: 'au_lf_thao', o: [
           { t: 'Kể thật, đưa ảnh audit trail.', fx: { uy: 1, rel: { thao: 1, khoa: -1 } }, then: [
             ['thao', 'Em chịu oan cả ngày rồi mới nói. Lần sau nói sớm. Chị không có thời gian để đoán ai oan.'],
@@ -1280,7 +1280,7 @@ const LOSTFILE = {
       ] },
     ] },
   ],
-  diary: (s) => `File Vạn Thịnh biến mất. Audit trail: khoa.n, 02:14. ${s.flags.khoa_owes ? 'Mình gửi riêng anh Khoa. Anh nợ mình một lần.' : s.flags.khoa_shamed ? 'Mình gửi vào group. Đúng, nhưng anh Khoa úp mặt xuống bàn.' : 'Mình làm lại cả file trong tám tiếng.'}`,
+  diary: (s) => `File Vạn Thịnh biến mất. Audit trail: khoa.n, 02:14. ${s.flags.khoa_owes ? 'Mình gửi riêng anh Khoa. Anh nợ mình một lần.' : s.flags.khoa_shamed ? 'Mình gửi vào group. Đúng, nhưng anh Khoa úp mặt xuống bàn.' : 'Mình làm lại cả file trong ba tiếng, bỏ bữa trưa.'}`,
 };
 
 const HOTPOT = {
@@ -1376,7 +1376,7 @@ const ADVISORY = {
       ] },
       { mini: EXCEL_QUIZ,
         good: [['ngan', 'Không hard-code, có tra cứu, có lọc. Em làm Excel như người có tương lai.'], { fx: { uy: 3, rel: { ngan: 2 }, set: { excel_skill: true } } }],
-        bad: [['ngan', 'Em vừa cộng thêm một tỷ vào công thức "cho tròn". Chị coi như chưa thấy. Một lần.'], { fx: { rel: { ngan: -1 } } }],
+        bad: [['ngan', 'Chưa ổn. Chị chỉ xin em một điều: đừng bao giờ cộng một tỷ vào công thức "cho tròn". Lần này chị coi như chưa thấy. Một lần.'], { fx: { rel: { ngan: -1 } } }],
       },
     ] },
     { who: 'ngan', obj: 'Chị Ngân rủ ra pantry nói chuyện', time: '14:30', scene: [
@@ -1392,7 +1392,7 @@ const ADVISORY = {
       ] },
     ] },
   ],
-  diary: (s) => `Hai ngày ở Advisory với chị Ngân. ${s.flags.excel_skill ? 'Mình học Power Query, 400.000 dòng còn 12.000.' : 'File 400.000 dòng thắng mình một hiệp.'} Chị Ngân nhớ kho lạnh. Ai cũng nhớ thứ mình từng ghét.`,
+  diary: (s) => `Ngày đầu trong "hai hôm" ở Advisory với chị Ngân. ${s.flags.excel_skill ? 'Mình học Power Query, 400.000 dòng còn 12.000.' : 'File 400.000 dòng thắng mình một hiệp.'} Chị Ngân nhớ kho lạnh. Ai cũng nhớ thứ mình từng ghét.`,
 };
 
 const OWNERROR = {
