@@ -1126,7 +1126,7 @@ const SIGNOFF = {
           { t: 'Nhắn chị Thảo kể thật về mẫu 17.', fx: { uy: 1, rel: { thao: 1 }, set: { ghost_hidden: false, ghost_reported: true, late_honest: true } }, then: [
             { chat: [['thao', 'Cảm ơn em đã nói trước giờ ký. Sau giờ ký thì chị không cứu được.', true]] },
           ] },
-          { t: 'Không nói gì.', fx: { dr: 2 }, then: [['think', 'Còn sáu tiếng nữa anh Phong ký.']] },
+          { t: 'Không nói gì.', fx: { dr: 2 }, then: [['think', 'Còn bảy tiếng nữa anh Phong ký.']] },
         ] },
       ] },
     ] },
@@ -1149,7 +1149,7 @@ const SIGNOFF = {
         ] },
       ] },
     ] },
-    { who: 'phong', obj: 'Anh Phong đến! Vào phòng họp', time: '16:00', pos: MEET_POS, scene: [
+    { who: 'phong', obj: 'Anh Phong đến! Vào phòng họp', time: '17:00', pos: MEET_POS, scene: [
       ['phong', 'Chào cả nhà. Anh có mười lăm phút. À, em là… Tâm phải không?'],
       ['me', 'Dạ em là {ten} ạ.'],
       ['nar', 'Anh Phong gật đầu như đã nhớ. Anh không nhớ.'],
@@ -1166,7 +1166,7 @@ const SIGNOFF = {
         ],
         bad: [
           ['nar', 'Bạn nói hai câu. Câu thứ hai có chữ "thị trường". Anh Phong nhìn sang anh Khoa.'],
-          ['khoa', 'Dạ em bổ sung: khách tích trữ trước Tết, có hợp đồng mua, bọn em đã đánh giá dự phòng ạ.'],
+          ['khoa', 'Dạ em bổ sung: công ty trữ hàng cho đơn Tết, có hợp đồng bán đã ký, bọn em đã đánh giá dự phòng ạ.'],
           ['phong', 'Ừ. Lần sau để em ấy nói hết.'],
           { fx: { rel: { khoa: 1 } } },
         ],
@@ -1178,12 +1178,12 @@ const SIGNOFF = {
         { fx: { uy: -5, rel: { thao: -2, phong: -1 }, set: { partner_noticed: false } } },
       ] },
     ] },
-    { who: 'phong', obj: 'Anh Phong cầm bút. Ký hay không?', time: '17:30', pos: MEET_POS, scene: [
+    { who: 'phong', obj: 'Anh Phong cầm bút. Ký hay không?', time: '17:10', pos: MEET_POS, scene: [
       { if: F('ghost_reported'), then: [
         ['phong', 'Khoản 2,1 tỷ. Ai là người tra hoá đơn này?'],
         ['me', 'Dạ, em ạ.'],
         { c: 'au_so_ghost', o: [
-          { t: '"Dạ em tra trên cổng hoá đơn, có ảnh chụp kết quả, và thiếu hợp đồng, biên bản nghiệm thu ạ."', fx: { uy: 4, rel: { phong: 2 }, set: { stood_ghost: true } }, then: [
+          { t: '"Dạ em tra trên cổng hoá đơn: người bán đã ngừng hoạt động. Thiếu hợp đồng, biên bản nghiệm thu ạ."', fx: { uy: 4, rel: { phong: 2 }, set: { stood_ghost: true } }, then: [
             ['phong', 'Đủ. Điều chỉnh vẫn giữ. Khách không đồng ý thì ý kiến ngoại trừ. Anh sẽ nói chuyện với anh Quang.'],
             ['nar', 'Anh Phong ký. Bút máy, mực xanh đen. Anh Khoa thở ra như vừa được thả khỏi kho lạnh.'],
           ] },
@@ -1237,8 +1237,8 @@ const LOSTFILE = {
         { t: 'Gửi riêng cho anh Khoa, nhờ anh Lộc khôi phục file.', fx: { rel: { khoa: 4, loc: 1 }, set: { khoa_owes: true } }, then: [
           ['nar', 'Anh Khoa đọc tin nhắn riêng. Năm phút sau, file trở lại. Anh không nói gì. Anh đặt chậu xương rồng lên bàn bạn.'],
         ] },
-        { t: 'Không nói gì, lặng lẽ làm lại từ bản lưu hôm trước.', fx: { nl: -25, set: { redo_silent: true } }, then: [
-          ['nar', 'Bạn làm lại ba ngày việc trong tám tiếng. File mới tốt hơn file cũ. Không ai biết bạn bị oan, trừ anh Lộc và audit trail.'],
+        { t: 'Không nói gì, lặng lẽ làm lại từ bản nháp trên máy mình.', fx: { nl: -25, set: { redo_silent: true } }, then: [
+          ['nar', 'Bạn làm lại ba ngày việc trong ba tiếng, bỏ bữa trưa. File mới tốt hơn file cũ. Không ai biết bạn bị oan, trừ anh Lộc và audit trail.'],
         ] },
       ] },
     ] },
