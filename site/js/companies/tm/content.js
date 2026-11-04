@@ -67,12 +67,12 @@ export const REVIEW = {
     'Em cần nhìn vấn đề này ở góc độ chiến lược hơn. Và đúng giờ hơn.',
     'Chị không cần em có mặt. Chị cần em có kết quả.',
     'Đây là phân tích. Nhưng đâu là business implication? Chị hỏi câu này hơi nhiều với em rồi đấy.',
-    'Việc vặt trễ hạn là việc nhỏ. Việc nhỏ trễ hạn nhiều lần là tính cách.',
+    'Một việc nhỏ làm chưa tới là việc nhỏ. Việc nhỏ làm chưa tới nhiều lần là tính cách.',
     'Em làm như người đang chờ ai đó bảo phải làm gì. Ở đây không ai bảo đâu, em phải hỏi.',
   ],
   D: [
     'Em có muốn tiếp tục ở T&M không? Chị hỏi thật, không phải câu tu từ.',
-    'Ba việc trễ hạn trong một tuần. Kỷ lục này trước đây là của Bảo.',
+    'Kỷ lục tuần tệ nhất ở T&M trước đây là của Bảo. Em đang tranh chức.',
     'Chị sẽ ghi nhận. Theo nghĩa xấu.',
     'Chị không có ý nhỏ nào cho tuần này. Đó là tin xấu, em ạ.',
     'Tuần này Mèo KPI hoàn thành nhiều việc hơn em. Nó ngủ mười tám tiếng một ngày.',
@@ -88,7 +88,7 @@ const quitText = (r) => {
   else if ((rel.tuyet || 0) >= 5) bits.push('Chị Tuyết trả lời email: "Chị có vài ý nhỏ." Rồi gửi kèm thư giới thiệu.');
   else bits.push('Chị Tuyết trả lời email lúc 23:47: "Ok em." Bạn chưa bao giờ hiểu hết hai chữ đó.');
   if (f.mai_stays) bits.push('Chị Mai hẹn bạn cà phê tuần sau: "Chị có một khách cần người biết hỏi đúng câu."');
-  else if (f.mai_handover) bits.push('Chị Mai, giờ ở Bốn Phương, nhắn: "Bên chị đang tuyển. View sông. Lần này em là người được mời ba lần."');
+  else if (f.mai_handover) bits.push('Chị Mai, sắp sang Bốn Phương, nhắn: "Bên chị đang tuyển. View sông. Lần này em là người được mời ba lần."');
   if (f.off_kind) bits.push('Bạn intern mới gửi bạn tin nhắn: "Em về đúng giờ được hai tuần rồi ạ. Cảm ơn anh/chị."');
   if (f.tie_khang_han) bits.push('Khang thả tim email nghỉ việc của bạn. Dì Khang thì không.');
   return { title: 'Bạn nghỉ việc ở T&M', text: bits.join(' ') };

@@ -8,11 +8,8 @@ const tie = (id) => { const key = `tie_${id}`; return (r) => !!r.flags[key]; };
 const countA = (r) => (r.reviews || []).filter((x) => x.grade === 'A').length;
 
 // The final arc episode ends the run as 'quit' or 'layoff' depending on the player's choice (flag tm_final).
-// The engine reads `episode.end` (a static field) when the day ends; it has no access to the run there, so each
-// step of the final episode remembers the run in its `when`, and `end` is a getter over that run.
+// The engine calls `episode.end(run)` when the day ends (contract §6), so `end` reads the flag directly.
 // endings.quit / endings.layoff also read tm_final, so the ending text always matches the choice.
-const FINAL = { run: null };
-const keep = (r) => { FINAL.run = r; return true; };
 
 export const PROMOTION = {
   salary: 15_000_000,
@@ -53,7 +50,7 @@ export const PROMOTION = {
 export const OFFICIAL_EPISODES = [
   {
     id: 'off_honeymoon', official: true, title: 'Tuần trăng mật',
-    intro: 'Ngày đầu tiên làm nhân viên chính thức.\n\nVẫn cái bàn đó, cái laptop đó, phím Shift lỏng đó. Nhưng hôm nay bạn có hợp đồng lao động, có bảo hiểm, và một cảm giác rất lạ: được tin.',
+    intro: 'Tuần đầu tiên làm nhân viên chính thức.\n\nVẫn cái bàn đó, cái laptop đó, phím Shift lỏng đó. Nhưng hôm nay bạn có hợp đồng lao động, có bảo hiểm, và một cảm giác rất lạ: được tin.',
     chatStart: [['phuong', 'Chào mừng thành viên CHÍNH THỨC của gia đình T&M 💖🎉🎂', false]],
     steps: [
       { who: 'gam', obj: 'Chị Gấm có quà cho bạn', time: '08:30', scene: [
@@ -91,7 +88,7 @@ export const OFFICIAL_EPISODES = [
         ] },
       ] },
       { who: 'tuyet', obj: 'Chị Tuyết giao việc đầu tiên', time: '14:00', scene: [
-        ['tuyet', 'Giờ em không còn là intern. Nghĩa là không ai tha lỗi cho em vì là intern nữa.'],
+        ['tuyet', 'Tuần này người ta còn gọi em là "người mới". Tận hưởng đi, nó hết hạn nhanh hơn sữa chua.'],
         ['tuyet', 'Chị giao em Êm Ru giai đoạn 2. Và từ mai có một bạn intern mới. Em hướng dẫn nó.'],
         ['think', 'Tuần trước mình còn là người được hướng dẫn.'],
         { c: 'off_hm_task', o: [
@@ -104,7 +101,7 @@ export const OFFICIAL_EPISODES = [
         ] },
       ] },
     ],
-    diary: () => 'Ngày đầu làm chính thức. Danh thiếp ghi "Intern Chính Thức". Lương 15 triệu, thực nhận khoảng 13,4. Mười bốn group chat. Một bạn intern mới sắp vào. Tuần trăng mật kéo dài khoảng… một ngày.',
+    diary: () => 'Tuần đầu làm chính thức. Danh thiếp ghi "Intern Chính Thức". Lương 15 triệu, thực nhận khoảng 13,4. Mười bốn group chat. Một bạn intern mới sắp vào. Tuần trăng mật kéo dài khoảng… một ngày.',
   },
 
   {
@@ -112,22 +109,22 @@ export const OFFICIAL_EPISODES = [
     intro: 'Làm chính thức chưa được bao lâu, chức danh trên email của bạn tự nhiên dài ra: "Consultant kiêm điều phối Êm Ru kiêm hướng dẫn intern kiêm…"\n\nLương thì không dài ra.',
     chatStart: [['han', 'Em ơi, giờ em official rồi, em ôm giúp chị phần "change management" cho Êm Ru nha ✨', true], ['linh', 'Em hỗ trợ team chị thêm 2 buổi/tuần được không? Minh lại thi.', true]],
     steps: [
-      { who: 'obj:desk', obj: 'Hộp thư sáng thứ Hai: 9 việc mới', time: '08:30', scene: [
+      { who: 'obj:desk', obj: 'Hộp thư buổi sáng: 9 việc mới', time: '08:30', scene: [
         ['nar', 'Hộp thư: 47 email, 9 việc mới, 3 người cùng ghi "GẤP". Một người ghi "GẤP (không gấp lắm)".'],
         { if: F('mai_handover'), then: [['nar', 'Trong đó có ba việc chị Mai bàn giao, kèm ghi chú: "Em làm được. Nhưng đừng làm một mình."']] },
         { mini: {
           type: 'order', title: 'Sắp việc theo thứ tự làm', icon: '📥',
           prompt: 'Gấp và quan trọng trước. Không gấp, không quan trọng: cuối cùng (hoặc không bao giờ).', time: 35, pass: 0.6,
           items: [
-            { text: 'Gửi Êm Ru biên bản họp (khách chờ từ thứ Sáu)', order: 0 },
-            { text: 'Sửa số liệu sai trong deck chị Linh nộp lúc 14:00', order: 1 },
-            { text: 'Hướng dẫn intern mới đăng nhập máy', order: 2 },
+            { text: 'Gửi Êm Ru biên bản họp (khách chờ từ hôm qua, hạn 9:30)', order: 0 },
+            { text: 'Sửa số liệu sai trong deck chị Linh (hạn 11:00)', order: 1 },
+            { text: 'Hướng dẫn intern mới đăng nhập máy (bạn ấy vào lúc 13:00)', order: 2 },
             { text: 'Slide "change management" cho chị Hân (chưa có hạn)', order: 3 },
             { text: 'Chọn màu áo team building', order: 4 },
           ],
         },
         good: [['think', 'Năm việc, đúng thứ tự. Màu áo team building xếp cuối, như số phận của nó.'], { fx: { uy: 3, set: { off_prioritized: true } } }],
-        bad: [['nar', 'Bạn chọn màu áo team building trước. Màu hồng. Biên bản Êm Ru gửi lúc 16:40.'], { fx: { nl: -6, dr: 1 } }],
+        bad: [['nar', 'Bạn xếp lộn thứ tự. Màu áo team building chốt xong từ sáng: màu hồng. Biên bản Êm Ru gửi lúc 16:40.'], { fx: { nl: -6, dr: 1 } }],
         },
       ] },
       { who: 'han', obj: 'Chị Hân giao "change management"', time: '10:30', scene: [
@@ -144,12 +141,12 @@ export const OFFICIAL_EPISODES = [
         ] },
       ] },
       { who: 'quynh', obj: 'Chị Quỳnh gọi về bảng chấm công', time: '14:00', scene: [
-        ['quynh', 'Em ơi, bảng chấm công tháng này của em: 52 giờ làm thêm.'],
+        ['quynh', 'Em ơi, bảng chấm công của em: mới làm chính thức mấy ngày mà đã 14 giờ làm thêm.'],
         ['quynh', 'Luật giới hạn làm thêm 40 giờ một tháng, ngày thường trả ít nhất 150%. (Thông tin giải trí, không phải tư vấn pháp lý.)'],
         ['quynh', 'Nhưng không ai duyệt phiếu làm thêm cho em. Vì không ai yêu cầu em làm thêm. Trên giấy.'],
         { c: 'off_mw_ot', o: [
           { t: 'Làm phiếu làm thêm, xin chị Tuyết ký.', fx: { uy: 1, dr: 2, rel: { quynh: 1 }, set: { off_claim_ot: true } }, then: [
-            { chat: [['tuyet', 'Ai yêu cầu em làm thêm?', true], ['tuyet', '…Việc yêu cầu. Ừ. Chị ký. Lần sau làm ít đi.', true]] },
+            { chat: [['tuyet', 'Ai yêu cầu em làm thêm?', true], ['tuyet', '…Việc yêu cầu. Ừ. Chị ký bốn giờ. Lần sau làm ít đi.', true]] },
             { fx: { money: 450_000 } },
           ] },
           { t: '"Thôi chị, em tự nguyện mà."', fx: { nl: -3, rel: { quynh: -1 }, set: { off_free_ot: true } }, then: [
@@ -171,7 +168,7 @@ export const OFFICIAL_EPISODES = [
         ] },
       ] },
     ],
-    diary: (r) => `Vài ngày làm chính thức. Chín việc mới, một mức lương cũ. ${r.flags.off_claim_ot ? 'Mình xin được phiếu làm thêm. Chị Tuyết ký, kèm "lần sau làm ít đi".' : 'Mình làm thêm 52 giờ, "tự nguyện".'}`,
+    diary: (r) => `Vài ngày làm chính thức. Chín việc mới, một mức lương cũ. ${r.flags.off_claim_ot ? 'Mình xin được phiếu làm thêm. Chị Tuyết ký bốn giờ, kèm "lần sau làm ít đi".' : 'Mình làm thêm 14 giờ, "tự nguyện".'}`,
   },
 
   {
@@ -262,10 +259,11 @@ export const OFFICIAL_EPISODES = [
 
   {
     id: 'off_final', official: true, title: 'Right-sizing',
-    get end() { return FINAL.run && FINAL.run.flags.tm_final === 'layoff' ? 'layoff' : 'quit'; },
+    end: (r) => ((r.flags || {}).tm_final === 'layoff' ? 'layoff' : 'quit'),
+    noReview: true, // the run ends today: no weekly review after being right-sized
     intro: 'Lịch Teams có một cuộc họp mới: "1:1 · Hành trình mới 🌱 · chị Hân, chị Phương, bạn". 15:00. Không có agenda.\n\nỞ T&M, cuộc họp không có agenda luôn là cuộc họp quan trọng nhất.',
     steps: [
-      { who: 'phuong', obj: 'Chị Phương nhắn "chiều gặp em nha"', time: '08:30', when: keep, scene: [
+      { who: 'phuong', obj: 'Chị Phương nhắn "chiều gặp em nha"', time: '08:30', scene: [
         ['phuong', 'Em ơi… à không có gì. Chiều gặp em nha.'],
         ['nar', 'Chị Phương không gửi kèm emoji nào. Chị Phương luôn gửi ba emoji.'],
         { c: 'off_fin_phuong', o: [
@@ -275,7 +273,7 @@ export const OFFICIAL_EPISODES = [
           { t: 'Gật đầu, quay về bàn.', fx: { nl: -3 }, then: [['think', 'Không emoji. Mình biết rồi.']] },
         ] },
       ] },
-      { who: 'long', obj: 'Long có tin đồn', time: '10:00', when: keep, scene: [
+      { who: 'long', obj: 'Long có tin đồn', time: '10:00', scene: [
         ['long', 'Tin đồn: chị Hân "right-size" ba vị trí. Ưu tiên người vào sau cùng, lương cao hơn intern, chưa đủ mười hai tháng. Mày đoán xem là ai.'],
         ['long', 'Chưa đủ mười hai tháng thì không có trợ cấp mất việc. Tao tra rồi. (Thông tin giải trí, không phải tư vấn pháp lý.)'],
         { if: F('off_cv'), then: [['long', 'Mày cập nhật CV rồi đúng không? Tốt. Tao tự hào về mày như tự hào về CV của tao.']] },
@@ -289,7 +287,7 @@ export const OFFICIAL_EPISODES = [
           { t: 'Pha cà phê, nhìn ra cửa sổ.', fx: { nl: 8 }, then: [['nar', 'Ngoài cửa sổ, tòa Bốn Phương Global sáng đèn. Có view sông.']] },
         ] },
       ] },
-      { who: 'han', obj: '15:00 Phòng họp: "Hành trình mới 🌱"', time: '15:00', when: keep, pos: { han: 'mr_head', phuong: 'mr_n1' }, scene: [
+      { who: 'han', obj: '15:00 Phòng họp: "Hành trình mới 🌱"', time: '15:00', pos: { han: 'mr_head', phuong: 'mr_n1' }, scene: [
         ['han', 'Em ngồi đi. Chị share nha: T&M đang right-sizing for the future. Mình cần lean hơn, agile hơn, synergy hơn.'],
         ['phuong', '(nhỏ) Nghĩa là công ty cắt giảm nhân sự, em ạ.'],
         { if: F('off_under_khang'), then: [['han', 'Khang đánh giá em "chưa đủ overseas mindset". Chị rất tiếc.']] },
@@ -310,7 +308,7 @@ export const OFFICIAL_EPISODES = [
           ] },
         ] },
       ] },
-      { who: 'tuyet', obj: 'Chị Tuyết gọi bạn vào phòng', time: '16:00', when: keep, scene: [
+      { who: 'tuyet', obj: 'Chị Tuyết gọi bạn vào phòng', time: '16:00', scene: [
         ['tuyet', 'Chị nghe Hân nói rồi.'],
         { if: F('off_credit'), then: [['tuyet', 'Chị biết phân tích đó là của em. Chị đã nói với Hân. Hân nói "để em align lại". Chị mệt với chữ align rồi.']] },
         { if: (r) => r.flags.tm_final === 'quit', then: [
@@ -329,7 +327,7 @@ export const OFFICIAL_EPISODES = [
           ] },
         ] },
       ] },
-      { who: 'obj:desk', obj: 'Dọn bàn', time: '17:30', when: keep, scene: [
+      { who: 'obj:desk', obj: 'Dọn bàn', time: '17:30', scene: [
         ['nar', 'Bạn dọn bàn. Cây xương rồng, tờ giấy nhớ "Đừng tin chữ FINAL", danh thiếp "Intern Chính Thức" còn 97 cái.'],
         ['nar', 'Mèo KPI nhảy lên bàn, nằm đúng chỗ laptop vừa để. Employee of the Month. Tháng nào cũng vậy.'],
         { c: 'off_fin_last', o: [

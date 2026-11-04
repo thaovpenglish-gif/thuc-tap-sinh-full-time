@@ -118,7 +118,8 @@ whiteboard) · `coffee` (pantry; when not a story target it opens the food menu)
   when: (run) => bool,                // optional: checked the morning of its day; false → a routine day instead
   internOnly: true,                   // optional: skipped (routine day) if the player is already official
   noReview: true,                     // optional: skip the Friday review on this day
-  pos: { tam: 'x1' },                 // where people stand all day (optional)
+  pos: { tam: 'x1', duy: 'away' },    // where people stand all day (optional); 'away' = out of the office
+                                      // (people on a Teams call step are hidden automatically while it plays)
   chatStart: [['tam', 'tin nhắn', true]],  // optional: messages at 08:30
   sideTasks: true,                    // default true
   steps: [ { who, obj, time, pos, seat, call, scene, when } ... ],

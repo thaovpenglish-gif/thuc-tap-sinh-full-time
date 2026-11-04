@@ -94,7 +94,7 @@ export async function validateCompany(id) {
     if (s.who.startsWith('obj:')) { if (!INTERACTABLE_IDS.includes(s.who.slice(4))) E(`${at}: unknown object "${s.who}"`); }
     else if (s.who.startsWith('call:')) { if (!cast[s.who.slice(5)]) E(`${at}: unknown caller "${s.who}"`); if (!s.call || !s.call.title || !Array.isArray(s.call.people)) E(`${at}: call steps need call:{title, people[]}`); else s.call.people.forEach((p) => { if (!known(p)) E(`${at}: call person "${p}" unknown`); }); }
     else if (!bodies.has(s.who)) E(`${at}: who "${s.who}" must be a cast member with a body (or obj:/call:)`);
-    if (s.pos) for (const [k, v] of Object.entries(s.pos)) { if (!bodies.has(k)) E(`${at}: pos for unknown/bodiless "${k}"`); if (!SPOTS[v]) E(`${at}: pos "${v}" is not a slot`); }
+    if (s.pos) for (const [k, v] of Object.entries(s.pos)) { if (!bodies.has(k)) E(`${at}: pos for unknown/bodiless "${k}"`); if (!SPOTS[v] && v !== 'away') E(`${at}: pos "${v}" is not a slot`); if (v === 'away' && s.who === k) E(`${at}: "${k}" is away but is the step target`); }
     if (s.seat && s.seat !== 'mr_seat') E(`${at}: seat must be "mr_seat"`);
     walk(s.scene, `${at}.scene`, {});
     return s.time || prevTime;
@@ -124,7 +124,7 @@ export async function validateCompany(id) {
     if (e.end && typeof e.end !== 'function' && !['quit', 'layoff'].includes(e.end)) E(`${at}: end must be quit|layoff or (run) => 'quit'|'layoff'|null`);
     if (e.when && typeof e.when !== 'function') E(`${at}: when must be a function`);
     if (e.diary && typeof e.diary !== 'function') E(`${at}: diary must be a function (run) => string`);
-    if (e.pos) for (const [k, v] of Object.entries(e.pos)) if (!SPOTS[v] || !bodies.has(k)) E(`${at}: pos ${k}→${v} invalid`);
+    if (e.pos) for (const [k, v] of Object.entries(e.pos)) if ((!SPOTS[v] && v !== 'away') || !bodies.has(k)) E(`${at}: pos ${k}→${v} invalid`);
     let t = null;
     (e.steps || []).forEach((s, k) => { t = checkStep(s, `${at}.steps[${k}]`, t); });
   });

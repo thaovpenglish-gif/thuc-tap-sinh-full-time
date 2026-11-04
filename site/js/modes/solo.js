@@ -281,10 +281,10 @@ export function startSolo({ scene, camera, input, onExit }) {
   async function playStep(step) {
     startDialogMode();
     if (step.seat === 'mr_seat') fp.teleport(MEETING_SEAT[0], MEETING_SEAT[1], 0, 1.05);
-    if (step.call) openCallFrame(step.call);
+    if (step.call) { openCallFrame(step.call); placeNPCs(true); }
     if (step.review) await runReview();
     else await dialogue.run(step.scene || []);
-    if (step.call) closeCallFrame();
+    if (step.call) { closeCallFrame(); for (const id of step.call.people) if (npcs[id]) npcs[id].mesh.visible = isPresent(id) && spotFor(id) !== 'away'; }
     if (step.seat) player.eye = 1.38;
     R.step++;
     if (R.day > 0) applyFx({ nl: -3 });
@@ -315,8 +315,10 @@ export function startSolo({ scene, camera, input, onExit }) {
   }
   const isPresent = (id) => { const def = CO && CO.cast[id]; if (!def || !def.present || !R) return true; try { return !!def.present(R); } catch { return true; } };
   function placeNPCs(instant) {
+    const step = R && CO ? currentStep() : null;
+    const onCall = new Set(step && step.call && mode !== 'play' ? step.call.people : []);
     for (const [id, n] of Object.entries(npcs)) {
-      n.mesh.visible = isPresent(id);
+      n.mesh.visible = isPresent(id) && spotFor(id) !== 'away' && !onCall.has(id);
       const sp = SPOTS[spotFor(id)] || SPOTS[(CO && CO.cast[id] && CO.cast[id].spot) || id];
       if (!sp) continue;
       n.target.set(sp[0], 0, sp[1]); n.rest = sp[2];
