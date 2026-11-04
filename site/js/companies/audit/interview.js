@@ -123,7 +123,8 @@ export const INTERVIEW = {
         { mini: CONTRACT_MINI,
           good: [
             ['me', 'Chị ơi, em hỏi ba chỗ: kiểm kê "khi cần", giờ làm "theo budget", và phụ cấp "sau khi khách thanh toán" nghĩa là sao ạ?'],
-            ['hue', 'Ơ… em soi như soi chứng từ. Phụ cấp thì chị sửa: trả ngày 10 hằng tháng. Giờ làm thì… ghi đúng. Chị ghi tay nhé.'],
+            { if: isTier('t0'), then: [['hue', 'Ơ… em soi như soi chứng từ. Phụ cấp của em 0 đồng, nhưng chị vẫn sửa: 0 đồng cũng không chờ khách trả phí. Giờ làm thì… ghi đúng. Chị ghi tay nhé.']],
+              else: [['hue', 'Ơ… em soi như soi chứng từ. Phụ cấp thì chị sửa: trả theo tháng, không chờ khách trả phí. Giờ làm thì… ghi đúng. Chị ghi tay nhé.']] },
             ['thao', 'Đọc kỹ trước khi ký. Tốt. Khách hàng của mình mà như em thì đỡ bao nhiêu thư quản lý.'],
             { fx: { uy: 4, rel: { thao: 1 }, set: { contract_fixed: true } } },
             ['nar', 'Ngoài cửa, Tuấn thì thầm: "Điều khoản kiểm kê thì không sửa được đâu. Kho không biết đọc hợp đồng."'],

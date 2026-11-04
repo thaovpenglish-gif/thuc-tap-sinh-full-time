@@ -580,7 +580,7 @@ const VYCOPY = {
           ['think', 'Một WP có chữ ký của người đã rời công ty. Hồn ma trong ổ chung.'],
           { fx: { uy: 2, rel: { diep: 2 }, set: { vy_evidence: true } } },
         ],
-        bad: [['diep', 'Em không thấy gì à? Thôi được. Chị tự xem. Chị chỉ có cảm giác thôi.'], { fx: { rel: { diep: -1 } } }],
+        bad: [['diep', 'Em chưa thấy hết à? Thôi được. Chị tự xem. Chị chỉ có cảm giác thôi.'], { fx: { rel: { diep: -1 } } }],
       },
     ] },
     { who: 'tuan', obj: 'Tuấn kéo bạn ra cửa sổ nói chuyện', time: '13:30', scene: [
@@ -701,7 +701,7 @@ const CONFIRM = {
       ['lua', 'Thư về phải qua cô. Đây, sáu thư mới. Một thư ghi "Kính gửi Công ty Cân Đổ". Thiếu chữ "i". Nghe như công ty sắp sập.'],
       { mini: CONFIRM_MINI,
         good: [['lua', 'Cháu nhìn phong bì giỏi đấy. Cô làm văn thư ba mươi năm, cô tin phong bì hơn tin người.'], { fx: { uy: 2, rel: { lua: 1 }, set: { confirm_eye: true } } }],
-        bad: [['lua', 'Cái email gửi từ chính khách hàng mà cháu cũng tính à? Cháu cần trà gừng.'], { fx: { rel: { lua: 1 } } }],
+        bad: [['lua', 'Thư nào đi qua tay khách rồi mới về thì không còn là thư xác nhận nữa, cháu ạ. Cháu cần trà gừng.'], { fx: { rel: { lua: 1 } } }],
       },
     ] },
     { who: 'call:hong', obj: 'Chị Hồng gọi lại về thư xác nhận', time: '11:30',

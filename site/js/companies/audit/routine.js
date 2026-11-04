@@ -71,7 +71,7 @@ export const ROUTINE = [
       { text: 'TB_final', sub: 'Trống' },
     ] },
       good: [['diep', 'Đúng. Sheet tên "Đừng dùng" là sheet duy nhất đúng. Kế toán khách có khiếu hài hước.'], { fx: { uy: 2, rel: { diep: 1 } } }],
-      bad: [['diep', 'Em vừa lấy số tháng trước. Chị biết vì tháng trước chị cũng lấy nhầm.'], { fx: { nl: -3 } }],
+      bad: [['diep', 'Sai sheet rồi em. Chị biết vì tháng trước chị cũng lấy nhầm.'], { fx: { nl: -3 } }],
     },
   ] },
   { id: 'au_r_fruit', who: 'tuan', obj: 'Tuấn có câu hỏi về… xoài', time: '11:30', scene: [
