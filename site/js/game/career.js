@@ -46,24 +46,26 @@ export function scheduleEpisodes(episodes, seed = 1, maxDay = MAX_DAYS) {
     const free = [];
     for (let d = lo; d <= hi; d++) if (!isWeekend(d) && !taken.has(d)) free.push(d);
     if (!free.length) continue;
-    // prefer leaving gaps: pick from the earliest third of the free slots, a bit randomly
-    const k = Math.floor(r() * Math.max(1, Math.ceil(free.length / 3)));
-    const d = free[k];
+    const d = free[Math.floor(r() * free.length)];
     plan[d] = e.id; taken.add(d);
   }
   return plan;
 }
 
-/** Schedule the post-promotion arc: one episode every `gap` workdays starting after `fromDay`. */
+/**
+ * Schedule the post-promotion arc after `fromDay`: one episode every `gap` workdays. The arc has priority over intern
+ * episodes on those days. If there are not enough workdays left, the gap shrinks to 1; if still not enough, the middle
+ * episodes are dropped but the first and the final one (the ending) always play.
+ */
 export function scheduleArc(arcIds, fromDay, plan, gap = 2, maxDay = MAX_DAYS) {
   const out = { ...plan };
-  let d = fromDay;
-  for (const id of arcIds) {
-    for (let k = 0; k < gap; k++) d = nextWorkday(d);
-    while (out[d] && d < maxDay) d = nextWorkday(d);
-    if (d > maxDay) d = maxDay;
-    out[d] = id;
-  }
+  const free = [];
+  for (let d = fromDay + 1; d <= maxDay; d++) if (!isWeekend(d)) free.push(d);
+  if (!free.length || !arcIds.length) return out;
+  let ids = [...arcIds];
+  if (ids.length > free.length) ids = free.length >= 2 ? [...ids.slice(0, free.length - 1), ids[ids.length - 1]] : [ids[ids.length - 1]];
+  const g = Math.max(1, Math.min(gap, Math.floor(free.length / ids.length)));
+  ids.forEach((id, i) => { out[free[Math.min(free.length - 1, (i + 1) * g - 1)]] = id; });
   return out;
 }
 

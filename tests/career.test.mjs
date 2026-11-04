@@ -30,12 +30,18 @@ test('episodes land on workdays, fixed days first, no collisions', () => {
   assert.deepEqual(C.scheduleEpisodes(eps, 42), plan); // deterministic
 });
 
-test('promotion arc is placed after the promotion day on free workdays', () => {
-  const plan = C.scheduleArc(['x', 'y', 'z'], 19, { 22: 'busy' }, 2);
-  const days = Object.entries(plan).filter(([, v]) => ['x', 'y', 'z'].includes(v)).map(([d]) => Number(d));
-  assert.equal(days.length, 3);
+test('promotion arc is placed after the promotion day, in order, and always keeps the ending', () => {
+  const plan = C.scheduleArc(['x', 'y', 'z'], 19, { 22: 'busy', 40: 'later' }, 2);
+  const days = ['x', 'y', 'z'].map((id) => Number(Object.keys(plan).find((d) => plan[d] === id)));
   assert.ok(days.every((d) => d > 19 && !C.isWeekend(d)));
-  assert.equal(plan[22], 'busy');
+  assert.ok(days[0] < days[1] && days[1] < days[2]);
+  assert.equal(plan[40], 'later');
+  // promoted at the day-40 review: 3 workdays left (43, 44, 45) → gap shrinks to 1, all four cannot fit → first + ending kept
+  const late = C.scheduleArc(['a', 'b', 'c', 'end'], 40, {}, 2);
+  const vals = Object.values(late);
+  assert.ok(vals.includes('a') && vals.includes('end'));
+  assert.equal(late[45], 'end');
+  assert.equal(Object.keys(late).length, 3);
 });
 
 test('moods respect their conditions', () => {

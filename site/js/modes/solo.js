@@ -312,8 +312,10 @@ export function startSolo({ scene, camera, input, onExit }) {
     const step = currentStep();
     return (step && step.pos && step.pos[id]) || (day().pos && day().pos[id]) || (def && def.spot) || id;
   }
+  const isPresent = (id) => { const def = CO && CO.cast[id]; if (!def || !def.present || !R) return true; try { return !!def.present(R); } catch { return true; } };
   function placeNPCs(instant) {
     for (const [id, n] of Object.entries(npcs)) {
+      n.mesh.visible = isPresent(id);
       const sp = SPOTS[spotFor(id)] || SPOTS[(CO && CO.cast[id] && CO.cast[id].spot) || id];
       if (!sp) continue;
       n.target.set(sp[0], 0, sp[1]); n.rest = sp[2];
@@ -750,7 +752,7 @@ export function startSolo({ scene, camera, input, onExit }) {
   // ---------- interaction ----------
   let currentInteract = null;
   const candidates = () => [
-    ...Object.entries(npcs).map(([id, n]) => ({ kind: 'npc', id, pos: n.mesh.position, label: id === 'giao' ? '☕ Nói chuyện với Chị Giáo (người làm game)' : `Nói chuyện với ${CO.cast[id].name}` })),
+    ...Object.entries(npcs).filter(([, n]) => n.mesh.visible).map(([id, n]) => ({ kind: 'npc', id, pos: n.mesh.position, label: id === 'giao' ? '☕ Nói chuyện với Chị Giáo (người làm game)' : `Nói chuyện với ${CO.cast[id].name}` })),
     ...(world ? world.interactables.map((it) => ({ kind: 'obj', id: it.id, pos: it.pos, label: it.label })) : []),
     { kind: 'npc', id: 'kpi', pos: cat.position, label: `Vuốt ve ${(CO && CO.catName) || 'Mèo KPI'}` },
   ];
@@ -939,7 +941,7 @@ export function startSolo({ scene, camera, input, onExit }) {
       if (taskAcc > 1) { taskAcc = 0; taskTick(); }
     }
 
-    const others = Object.values(npcs).map((n) => n.mesh.position);
+    const others = Object.values(npcs).filter((n) => n.mesh.visible).map((n) => n.mesh.position);
     fp.update(dt, { colliders: world ? world.colliders : [], others, bounds: BOUNDS, canMove: mode === 'play', idleSpin: mode === 'menu' || mode === 'companies' || mode === 'away', speed: hungry() ? 0.72 : 1 });
 
     for (const [id, n] of Object.entries(npcs)) {

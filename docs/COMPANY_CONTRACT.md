@@ -61,6 +61,8 @@ cast: {
 }
 ```
 
+- Optional `present: (run) => bool` on a cast member: false = they are no longer in the office (e.g. after quitting).
+  Do not use them as a step `who` / side-task leg after that (gate those with `when`).
 - 8–16 people with a body. Each has a unique `spot` (a slot in the office, see §5). `body: false` = never in the
   office (calls, chat only), no spot.
 - `look` keys: `shirt, pants, skin, hair ('short'|'long'|'bun'|'pony'|'curly'|'wavy'|'quiff'|'side'|'cap'|'beanie'|'bald'), hairColor,
