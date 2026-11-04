@@ -1,4 +1,4 @@
-// Pastel, sticker-outlined 3D office for "Intern Ơi!" — built from primitives + canvas textures.
+// Pastel, sticker-outlined 3D office for "Thực Tập Sinh Full-Time" — built from primitives + canvas textures.
 import * as THREE from 'three';
 
 // Named spots: [x, z, rotY]  (rotY 0 = facing +z / south, PI = facing north)

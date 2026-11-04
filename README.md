@@ -1,6 +1,6 @@
-# Intern Ơi! 🐱
+# Thực Tập Sinh Full-Time 🐱
 
-Game 3D góc nhìn thứ nhất chơi trên trình duyệt: tuần đầu làm intern ở **Ba Mẹ & Partners**, một công ty tư vấn quản lý (management consulting) gia đình 10 người vô cùng drama. Phong cách pastel, nét viền đen kiểu sticker.
+Game 3D góc nhìn thứ nhất chơi trên trình duyệt về một sự nghiệp đi qua nhiều công ty. Không có game over: hết công ty này thì sang công ty khác. Công ty #1: tuần đầu làm intern ở **Ba Mẹ & Partners**, một công ty tư vấn quản lý (management consulting) gia đình 10 người vô cùng drama. Phong cách pastel, nét viền đen kiểu sticker.
 
 - Level 1: 5 ngày (thứ Hai → Sprint Retro thứ Sáu), 12 nhân vật + Mèo KPI, mỗi lựa chọn ảnh hưởng Uy tín / Drama / Năng lượng và quan hệ.
 - Daily stand-up mỗi sáng quanh bảng Scrum, Teams call từ sếp (nghe hoặc từ chối), group chat Teams.

@@ -1,4 +1,4 @@
-// Story data for "Intern Ơi!" — Level 1: Tuần thực tập tại Ba Mẹ & Partners (management consulting, 10 người, 100 drama)
+// Story data for "Thực Tập Sinh Full-Time" — Công ty #1: Tuần thực tập tại Ba Mẹ & Partners (management consulting, 10 người, 100 drama)
 // Scene node formats:
 //   ['speakerId', 'text']                      a line ('me' = player, 'think' = inner voice, 'nar' = narrator)
 //   { c:'vote_id', o:[{ t, fx, then:[...], when:(s)=>bool }] }   a choice (vote_id → global stats)
@@ -8,7 +8,7 @@
 // Step `who`: npc id · 'obj:<interactable>' · 'call:<npc>' (incoming Teams call)
 
 export const COMPANY = 'Ba Mẹ & Partners';
-export const GAME = 'Intern Ơi!';
+export const GAME = 'Thực Tập Sinh Full-Time';
 
 export const CHARS = {
   hung: { name: 'Bác Hùng', role: 'Managing Partner · "Ba"', emoji: '👨‍💼', color: '#9fb4ff', shirt: '#9fb4ff', pants: '#5d6a9a', hair: 'side', hairColor: '#c9c9c9', glasses: true, tie: '#ff8fa3' },
@@ -714,21 +714,29 @@ export const MEETING = [
   ['nar', 'Chị Vy mở phong bì. Ngân nắm chặt tay. Chú Bảy ngừng chơi cờ tướng. Mèo KPI ngừng liếm chân.'],
 ];
 
+// No game over: every ending closes this company's chapter and points to where the career goes next.
 export const ENDINGS = {
-  fired: { idx: 0, emoji: '🔥', title: '"Not a culture fit"',
-    text: (s) => `Drama của bạn: ${s.st.dr}/100. Bạn trở thành case study mà chị Mai sẽ kể cho mọi intern khóa sau.\n\nNgân được convert. Chú Bảy vẫn ngồi ở cổng, và không nhìn bạn khi bạn bước ra.\n\nLesson learned: ở công ty gia đình, tin đồn chạy nhanh hơn Exciter.` },
+  fired: { idx: 0, emoji: '📦', title: '"Not a culture fit" · Ôm thùng carton đi tiếp',
+    text: (s) => `Drama của bạn: ${s.st.dr}/100. Bạn trở thành case study mà chị Mai sẽ kể cho mọi intern khóa sau.\n\nBạn ôm thùng carton bước ra cửa. Chú Bảy không nhìn bạn. Nhưng Mèo KPI đi theo tới tận thang máy.\n\nLesson learned: ở công ty gia đình, tin đồn chạy nhanh hơn Exciter. Không sao. LinkedIn của bạn vừa có thêm một dòng "Open to work".`,
+    next: 'Một công ty mới đang tuyển intern… và nghe nói ở đó còn drama hơn.' },
   dung: { idx: 1, emoji: '🕴️', title: 'Spin-off cùng anh Dũng',
-    text: () => 'Hai tuần sau, "Dũng & Associates" ra đời trong một co-working space 12m². Bạn là Senior Analyst, kiêm lễ tân, kiêm sale, kiêm IT.\n\nBạn chợt hiểu chị Vy.\n\nNgày khai trương, anh Dũng lặng lẽ đặt lên bàn… một bàn thờ Thần Tài nhỏ.\n\n(Level 2: Ba Mẹ & Partners giờ là đối thủ của bạn.)' },
+    text: () => 'Hai tuần sau, "Dũng & Associates" ra đời trong một co-working space 12m². Bạn là Senior Analyst, kiêm lễ tân, kiêm sale, kiêm IT.\n\nBạn chợt hiểu chị Vy.\n\nNgày khai trương, anh Dũng lặng lẽ đặt lên bàn… một bàn thờ Thần Tài nhỏ.',
+    next: 'Công ty tiếp theo: Dũng & Associates, startup 2 người. Đối thủ: Ba Mẹ & Partners.' },
   tu: { idx: 2, emoji: '🍵', title: 'Silent Partner\'s Apprentice · ENDING BÍ MẬT',
-    text: () => 'Chiều thứ Sáu, cô Tư gọi bạn ra pantry, rót cho bạn một chén trà.\n\n"Năm 1998, anh Hùng mượn cô 200 triệu mở công ty. Cô giữ 30% cổ phần. Cả nhà này không ai biết, trừ anh ấy."\n\n"Cô cần một người biết nghe, biết im, và biết góp tiền cơm. Từ thứ Hai, con làm trợ lý… của cô."\n\nBạn được convert. Không ai trong công ty hiểu vì sao.' },
+    text: () => 'Chiều thứ Sáu, cô Tư gọi bạn ra pantry, rót cho bạn một chén trà.\n\n"Năm 1998, anh Hùng mượn cô 200 triệu mở công ty. Cô giữ 30% cổ phần. Cả nhà này không ai biết, trừ anh ấy."\n\n"Cô cần một người biết nghe, biết im, và biết góp tiền cơm. Từ thứ Hai, con làm trợ lý… của cô."\n\nBạn được convert. Không ai trong công ty hiểu vì sao.',
+    next: 'Chương tiếp theo ở Ba Mẹ & Partners: cuộc chiến kế nghiệp, và bạn cầm lá phiếu của cô Tư.' },
   tuan: { idx: 3, emoji: '🚀', title: 'Co-founder Innovation Lab của Kevin',
-    text: () => 'Bác Hùng cho Kevin sáu tháng và một budget nhỏ (lần này có chữ ký duyệt của cô Hằng) để mở "BM&P Innovation Lab".\n\nBạn là thành viên đầu tiên. Anh Sơn được ký hợp đồng thật. Video đầu tiên: "POV: bạn là intern ở công ty tư vấn gia đình" đạt 1,2 triệu view.\n\nCô Hằng vào comment: "Mẹ đây".' },
+    text: () => 'Bác Hùng cho Kevin sáu tháng và một budget nhỏ (lần này có chữ ký duyệt của cô Hằng) để mở "BM&P Innovation Lab".\n\nBạn là thành viên đầu tiên. Anh Sơn được ký hợp đồng thật. Video đầu tiên: "POV: bạn là intern ở công ty tư vấn gia đình" đạt 1,2 triệu view.\n\nCô Hằng vào comment: "Mẹ đây".',
+    next: 'Chương tiếp theo: dự án Trà Sữa Tâm Trạng, chạy theo kiểu Kevin. Sprint 1 bắt đầu thứ Hai.' },
   ngan: { idx: 4, emoji: '🤝', title: 'Hai intern cùng ở lại',
-    text: () => 'Bạn đứng lên propose: Ngân làm Design Lead, bạn làm Analyst. Công ty đi tư vấn chuyển đổi số thì cần cả hai.\n\nCô Hằng định phản đối, nhưng template slide của Ngân đẹp quá. Bác Hùng xem tuổi: "Hai đứa tam hợp!" (không phải).\n\nCả hai được convert. Tối đó, Ngân nói với mẹ: "Con làm designer." Mẹ Ngân… vẫn cho về ăn cơm.' },
+    text: () => 'Bạn đứng lên propose: Ngân làm Design Lead, bạn làm Analyst. Công ty đi tư vấn chuyển đổi số thì cần cả hai.\n\nCô Hằng định phản đối, nhưng template slide của Ngân đẹp quá. Bác Hùng xem tuổi: "Hai đứa tam hợp!" (không phải).\n\nCả hai được convert. Tối đó, Ngân nói với mẹ: "Con làm designer." Mẹ Ngân… vẫn cho về ăn cơm.',
+    next: 'Chương tiếp theo: bạn và Ngân làm dự án đầu tay. Mẹ Ngân bắt đầu ghé văn phòng "thăm con".' },
   staff: { idx: 5, emoji: '🏠', title: 'Business Analyst chính thức (và con nuôi)',
-    text: () => 'Chị Vy đọc tên bạn. Cô Hằng gật đầu. Bác Hùng nói: "Con có tướng làm Partner." (Ai cũng biết câu đó không có nghĩa gì.)\n\nBạn được add vào group Teams thứ hai: "BM&P Family Only 🔒", nơi drama thật sự diễn ra.\n\nWelcome home.' },
+    text: () => 'Chị Vy đọc tên bạn. Cô Hằng gật đầu. Bác Hùng nói: "Con có tướng làm Partner." (Ai cũng biết câu đó không có nghĩa gì.)\n\nBạn được add vào group Teams thứ hai: "BM&P Family Only 🔒", nơi drama thật sự diễn ra.\n\nWelcome home.',
+    next: 'Chương tiếp theo: group "Family Only" có 400 tin nhắn chưa đọc. Và Big4 vừa nhắn LinkedIn cho bạn.' },
   extend: { idx: 6, emoji: '⏳', title: 'Gia hạn intern thêm 3 tháng',
-    text: () => '"Công ty đánh giá rất cao potential của em," chị Vy nói. Nghĩa là: chưa.\n\nNgân được convert. Bạn được thêm ba tháng thực tập, một chiếc ghế hướng Tây, và vô số chuyện để kể.\n\nHẹn gặp lại ở daily stand-up sáng thứ Hai.' },
+    text: () => '"Công ty đánh giá rất cao potential của em," chị Vy nói. Nghĩa là: chưa.\n\nNgân được convert. Bạn được thêm ba tháng thực tập, một chiếc ghế hướng Tây, và vô số chuyện để kể.',
+    next: 'Ba tháng nữa ở Ba Mẹ & Partners… hoặc nộp CV chỗ khác. Lựa chọn là của bạn.' },
 };
 
 export function computeEnding(s) {

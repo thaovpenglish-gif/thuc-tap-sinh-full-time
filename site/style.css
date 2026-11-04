@@ -180,7 +180,7 @@ kbd { display: inline-block; min-width: 1.6em; padding: 1px 6px; margin: 0 2px; 
 .badge-name { font-weight: 900; font-size: 19px; text-transform: uppercase; word-break: break-word; }
 .badge-role { font-weight: 800; font-size: 12.5px; margin-top: 6px; display: inline-block; background: var(--mint); border: 2px solid var(--ink); border-radius: 99px; padding: 1px 10px; }
 .kicker { display: inline-block; background: var(--butter); border: 2px solid var(--ink); border-radius: 99px; padding: 3px 12px; font-weight: 900; font-size: 12px; letter-spacing: .1em; margin-bottom: 10px; }
-.title-text h1 { margin: 0; font-size: clamp(46px, 8vw, 84px); font-weight: 900; letter-spacing: -.02em; line-height: 1; color: #fff; -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; text-shadow: 5px 5px 0 var(--ink); }
+.title-text h1 { margin: 0; font-size: clamp(40px, 6.6vw, 74px); font-weight: 900; letter-spacing: -.02em; line-height: 1; color: #fff; -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; text-shadow: 5px 5px 0 var(--ink); }
 .tagline { font-size: 19px; margin: 18px 0 6px; font-weight: 600; }
 .tagline b { background: var(--butter); padding: 0 4px; border-radius: 6px; }
 .title-text .muted { margin: 0 0 18px; line-height: 1.5; font-weight: 600; }
@@ -232,3 +232,6 @@ kbd { display: inline-block; min-width: 1.6em; padding: 1px 6px; margin: 0 2px; 
   .hud-tl { width: 172px; }
   .bar { grid-template-columns: 54px 1fr; }
 }
+.title-text h1 span { display: block; font-size: .62em; color: var(--butter); margin-top: 4px; }
+.next-card { background: var(--lilac-2); border: 2px solid var(--ink); border-radius: 16px; padding: 12px 14px; font-weight: 700; line-height: 1.5; box-shadow: var(--pop); margin: 4px 0 14px; }
+.next-k { font-size: 11px; font-weight: 900; letter-spacing: .12em; margin-bottom: 4px; }

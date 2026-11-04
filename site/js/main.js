@@ -480,20 +480,21 @@ async function finishGame() {
   const list = Object.entries(ENDINGS).map(([k, e]) => got.includes(k) ? `<div>${e.emoji} ${esc(e.title)}</div>` : '<div class="locked">🔒 ???</div>').join('');
   overlay(`
     <div class="ending-emoji">${E.emoji}</div>
-    <div class="ov-kicker">KẾT THÚC · ${got.length}/${Object.keys(ENDINGS).length} ĐÃ MỞ</div>
+    <div class="ov-kicker">HẾT CHƯƠNG: CÔNG TY #1 · ${got.length}/${Object.keys(ENDINGS).length} KẾT THÚC ĐÃ MỞ</div>
     <h2>${esc(E.title)}</h2>
     <p class="ov-text">${esc(fmt(E.text(S)))}</p>
+    <div class="next-card"><div class="next-k">CHƯƠNG TIẾP THEO · COMING SOON</div><div>${esc(E.next)}</div></div>
     <div class="pct" id="endPct">📊 Đang đếm xem bao nhiêu người chơi có cùng kết thúc…</div>
     ${statGrid()}
     <div class="rels">${relChips()}</div>
     <div class="endings-list">${list}</div>
-    <div class="btns"><button class="btn primary" id="againBtn">Chơi lại, chọn khác đi 🔁</button><button class="btn" id="endPhone">👻 Hội Intern ẩn danh</button><button class="btn" id="shareBtn">Chia sẻ</button></div>
+    <div class="btns"><button class="btn primary" id="againBtn">Chơi lại công ty này, chọn khác đi 🔁</button><button class="btn" id="endPhone">👻 Hội Intern ẩn danh</button><button class="btn" id="shareBtn">Chia sẻ</button></div>
   `);
   $('#againBtn').onclick = () => { const name = S.name; S = newState(name); save(); hideOverlay(); showDayIntro(); };
   $('#endPhone').onclick = () => { openPhone('tts'); };
   $('#shareBtn').onclick = async () => {
-    const text = `Mình vừa đạt kết thúc "${E.title}" trong game Intern Ơi! ở Ba Mẹ & Partners. Còn bạn sống sót tới Sprint Retro không?`;
-    try { if (navigator.share) await navigator.share({ title: 'Intern Ơi!', text, url: location.href }); else { await navigator.clipboard.writeText(text + ' ' + location.href); toast('Đã copy link!', 'good'); } } catch { /* cancelled */ }
+    const text = `Mình vừa đạt kết thúc "${E.title}" trong game Thực Tập Sinh Full-Time. Còn bạn sống sót tới Sprint Retro không?`;
+    try { if (navigator.share) await navigator.share({ title: 'Thực Tập Sinh Full-Time', text, url: location.href }); else { await navigator.clipboard.writeText(text + ' ' + location.href); toast('Đã copy link!', 'good'); } } catch { /* cancelled */ }
   };
   const rows = await net.vote('ending', E.idx);
   if (rows && rows.length) {
