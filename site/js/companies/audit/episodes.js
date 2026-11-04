@@ -1042,9 +1042,14 @@ const QC = {
           ] },
         ] },
       ], else: [
-        ['my', 'Có kết quả tra, ngày tra, ảnh chụp. Đây là cách một WP nên trông. Chị không có note.'],
-        ['think', '"Chị không có note." Lời khen cao nhất của phòng QC.'],
-        { fx: { uy: 3, rel: { my: 1 } } },
+        { if: F('ghost_shot'), then: [
+          ['my', 'Có kết quả tra, ngày tra, ảnh chụp. Đây là cách một WP nên trông. Chị không có note.'],
+          ['think', '"Chị không có note." Lời khen cao nhất của phòng QC.'],
+          { fx: { uy: 3, rel: { my: 1 } } },
+        ], else: [
+          ['my', 'Có kết quả tra, nhưng không có ảnh chụp màn hình. Chị tra lại, khớp. Lần sau chụp. Chị chỉ có một note.'],
+          { fx: { uy: 1 } },
+        ] },
       ] },
     ] },
     { who: 'thao', obj: 'Chị Thảo tổng kết vòng QC', time: '14:30', scene: [
