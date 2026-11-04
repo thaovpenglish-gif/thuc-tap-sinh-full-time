@@ -15,13 +15,18 @@ site/                       web tĩnh, deploy thẳng lên GitHub Pages (không 
   index.html, style.css
   js/main.js                điểm vào: renderer, vòng lặp, chọn chế độ
   js/flags.js               cờ tính năng (?legacy=1 mở cốt truyện cũ đang ẩn)
-  js/core/                  util, audio, input (phím + joystick), physics, camera nhìn từ trên (cho Multiplayer; Solo dùng góc nhìn thứ nhất)
+  js/core/                  util, audio, input (phím + joystick), physics, fpcontrols (góc nhìn thứ nhất cho Solo), camera nhìn từ trên (cho Multiplayer)
   js/art/                   kit.js (vật liệu toon, viền sticker), people.js (nhân vật chibi)
   js/maps/                  bản đồ văn phòng
   js/game/sim.js            mô phỏng thuần (item, cầm/đặt/chuyền đồ) dùng chung Solo + host multiplayer
+  js/game/difficulty.js     mức lương = độ khó (0 / 1 / 3 / 5 triệu), thuế khấu trừ 10%
+  js/game/save.js           hồ sơ sự nghiệp: nhiều lượt chơi lưu song song
+  js/game/tasks.js          việc vặt có deadline theo đồng hồ trong game
   js/story/dialogue.js      engine hội thoại
-  js/story/legacy/          cốt truyện cũ "Ba Mẹ & Partners" (đang ẩn)
-  js/ui/                    toast, overlay, điện thoại
+  js/story/tm/              Solo T&M Partners: nhân vật, Buổi đầu tiên (phỏng vấn + deal lương), Ngày 1
+  js/story/legacy/          cốt truyện cũ "Ba Mẹ & Partners" (mở bằng ?legacy=1)
+  js/ui/                    toast, overlay, điện thoại, mini-game
+  js/modes/solo.js          Solo T&M (góc nhìn thứ nhất)
   js/modes/legacy.js        chế độ cốt truyện cũ
   js/net/                   kết nối Supabase
 supabase/schema.sql         cấu trúc database
@@ -40,6 +45,9 @@ Mở http://localhost:8000 (thêm `?legacy=1` để mở cốt truyện cũ).
 
 ```bash
 npm test
+# test tự chơi (cần server ở cổng 8765): mức lương t0|t1|t3|t5, chiến lược first|last|rand, thêm "tasks" để làm việc vặt
+node tests/e2e/solo-tm-playthrough.cjs t5 last tasks
+node tests/e2e/legacy-playthrough.cjs first
 ```
 
 ## Kiểm duyệt confession
