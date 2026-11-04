@@ -5,7 +5,7 @@ const isTier = (...ids) => (s) => ids.includes(s.tier);
 
 export const NDA_MINI = {
   type: 'pick', title: 'NDA + Thỏa thuận thực tập (v7_final)', icon: '📄',
-  prompt: 'Tìm 3 điều khoản "có vấn đề" trước khi ký. Chị Ngân đang mỉm cười rất rộng.', pick: 3, time: 35, pass: 0.66,
+  prompt: 'Tìm 3 điều khoản "có vấn đề" trước khi ký. Chị Ngân đang mỉm cười rất rộng.', pick: 3, time: 40, pass: 0.66,
   items: [
     { text: 'Bảo mật mã nguồn và dữ liệu người dùng của app Lúa.' },
     { text: 'Mọi ý tưởng thực tập sinh nghĩ ra, kể cả ngoài giờ và trong mơ, thuộc sở hữu công ty.', correct: true },

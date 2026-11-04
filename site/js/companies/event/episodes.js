@@ -727,7 +727,7 @@ export const EPISODES = [
               ['duy', 'Copy. Nếu không mưa, mình mất cọc. Nếu mưa, mình là anh hùng. Anh chọn làm anh hùng nghèo.'],
               ['toan', '(bộ đàm) Rạp 30 x 20 mét, bên anh Tư, 14:00 dựng. Anh gọi rồi.'],
             ] },
-            { t: 'Theo ý khách, nhưng mua sẵn 350 áo mưa và dặn Plan B dời bàn.', fx: { uy: 1, money: 0, rel: { thao: 1 }, set: { rain_tent: 'raincoats' } }, then: [
+            { t: 'Theo ý khách, nhưng mua sẵn 350 áo mưa và dặn Plan B dời bàn.', fx: { uy: 1, rel: { thao: 1 }, set: { rain_tent: 'raincoats' } }, then: [
               ['duy', 'Áo mưa thì rẻ. Nhưng 300 khách mặc áo mưa nâng ly… Ừ. Cũng là kỷ niệm.'],
             ] },
             { t: 'Gọi chị Hường đề xuất dời tiệc vào ballroom khách sạn kế bên.', fx: { uy: 3, rel: { huong: 1 }, set: { rain_tent: 'indoor' } }, then: [
@@ -866,7 +866,7 @@ export const EPISODES = [
           ['think', '40 khách. Xe 29 chỗ. "Nhồi tí". Chở quá số người quy định là bị phạt, và nguy hiểm. (thông tin giải trí, không phải tư vấn pháp lý)'],
           { c: 'e15_bus', o: [
             { t: '(Có xe dự phòng) "Anh cho xe 29 chỗ về. Bên em có xe 45 chỗ rồi, anh chịu phần chênh."', when: F('bus_found'), fx: { uy: 4, rel: { toan: 1, loc: -1 }, set: { bus_saved: true } }, then: [['loc', 'Ờ… ừ, anh chịu. Lần sau anh báo sớm.'], ['toan', 'Lần sau anh báo trước 5 giờ sáng, không phải sau 9 giờ.']] },
-            { t: 'Nhận xe 29 chỗ + gọi thêm 2 xe 7 chỗ cho 11 người còn lại.', fx: { money: 0, uy: 2, rel: { hai: 1 }, set: { bus_saved: true } }, then: [['hai', 'Xe 29 chỗ ĐỦ GHẾ! Mười một người đi xe nhỏ! Không ai đứng! Đi!'], ['bich', '(sau đó, nhắn) Hai xe 7 chỗ ghi vào phát sinh nhà xe chịu. Giữ hóa đơn.']] },
+            { t: 'Nhận xe 29 chỗ + gọi thêm 2 xe 7 chỗ cho 11 người còn lại.', fx: { uy: 2, rel: { hai: 1 }, set: { bus_saved: true } }, then: [['hai', 'Xe 29 chỗ ĐỦ GHẾ! Mười một người đi xe nhỏ! Không ai đứng! Đi!'], ['bich', '(sau đó, nhắn) Hai xe 7 chỗ ghi vào phát sinh nhà xe chịu. Giữ hóa đơn.']] },
             { t: '"Nhồi tí cũng được ạ, đi cho kịp."', fx: { dr: 5, uy: -4, rel: { thang: -2 } }, then: [['nar', 'Bốn mươi người lên xe 29 chỗ. Tới trạm thu phí, một chú CSGT giơ tay. Xe dừng 50 phút. Phạt. Anh Thắng nhìn đồng hồ.']] },
           ] },
         ],
@@ -1536,7 +1536,7 @@ export const EPISODES = [
         scene: [
           ['quan', 'Show 1 lấy bộ âm thanh tốt nhất. Show 2 lấy bộ thứ hai. Show 3 của em lấy… bộ còn lại. Bộ có cái micro hay rè.'],
           { c: 'eo2_gear', o: [
-            { t: 'Thuê thêm 2 micro không dây ngoài, chấp nhận vượt ngân sách.', fx: { money: 0, uy: 2, rel: { quan: 1, bich: -1 } }, then: [['bich', '(nhắn) Hai micro ngoài ngân sách. Ai duyệt? À, em duyệt. Em là chính thức rồi. Cô ghi tên em.']] },
+            { t: 'Thuê thêm 2 micro không dây ngoài, chấp nhận vượt ngân sách.', fx: { uy: 2, rel: { quan: 1, bich: -1 } }, then: [['bich', '(nhắn) Hai micro ngoài ngân sách. Ai duyệt? À, em duyệt. Em là chính thức rồi. Cô ghi tên em.']] },
             { t: 'Mượn micro dự phòng từ show 1 (anh Duy) lúc 20:00.', fx: { rel: { duy: -1 }, dr: 1 }, then: [['duy', '(bộ đàm) Lấy micro của anh lúc 20:00 là lúc anh trao giải. Em… thôi được. Copy.']] },
           ] },
         ],
@@ -1565,7 +1565,7 @@ export const EPISODES = [
               ['nar', 'Bạn chạy show 3 trong 4 tiếng. Micro rè hai lần. Màn cầu hôn thành công. Ăn cơm hộp lúc 23:40 trong cánh gà.'],
               ['duy', '(bộ đàm, 00:15) Ba show. Không ai phàn nàn. Em biết đó là lời khen cao nhất trong nghề này không.'],
             ] },
-            { t: '"Show 3… cần hỗ trợ." (gọi thêm CTV ngay)', fx: { uy: 1, nl: -8, money: 0, rel: { kieu: -1 } }, then: [
+            { t: '"Show 3… cần hỗ trợ." (gọi thêm CTV ngay)', fx: { uy: 1, nl: -8, rel: { kieu: -1 } }, then: [
               ['nar', 'Hai CTV tới lúc 19:00. Show chạy ổn. Hôm sau chị Kiều hỏi: "Ai duyệt thêm hai CTV? Tiền đâu?"'],
             ] },
           ] },

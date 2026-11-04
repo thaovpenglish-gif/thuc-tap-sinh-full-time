@@ -98,7 +98,7 @@ export const REVIEW = {
 };
 
 // ---------------------------------------------------------------- promotion: the ONE way to become official
-// Cần: ≥ 2 tuần loại A, từ ngày 26 (sau đợt layoff), quan hệ tốt với chị Diệp và anh Thạc, Uy tín ≥ 65,
+// Cần: ≥ 2 tuần loại A, review ngày 26 hoặc 33 (sau đợt layoff, còn đủ ngày cho arc), quan hệ tốt với chị Diệp và anh Thạc, Uy tín ≥ 65,
 // ít nhất 3 "khoảnh khắc đáng tin" (rollback/nhận deploy, MAU trung thực, cứu on-call, script đi đày, blameless, cứu App Store)
 // và KHÔNG thổi phồng MAU (anh Thạc không ký cho người làm đẹp số liệu).
 export const trustCount = (r) => [
@@ -113,7 +113,7 @@ export const trustCount = (r) => [
 
 export const PROMOTION = {
   salary: 15_000_000,
-  when: (r) => r.day >= 26
+  when: (r) => r.day >= 26 && r.day <= 33
     && (r.reviews || []).filter((x) => x.grade === 'A').length >= 2
     && (r.rel.diep || 0) >= 4 && (r.rel.thac || 0) >= 4
     && r.st.uy >= 65

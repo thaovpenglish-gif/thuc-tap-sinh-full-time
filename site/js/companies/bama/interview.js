@@ -3,7 +3,7 @@ const isTier = (...ids) => (s) => ids.includes(s.tier);
 
 export const CONTRACT_MINI = {
   type: 'pick', title: 'Thỏa thuận thực tập (Má soạn)', icon: '📄',
-  prompt: 'Tìm 3 điều khoản "có vấn đề" trước khi ký. Má đang nhìn.', pick: 3, time: 35, pass: 0.66,
+  prompt: 'Tìm 3 điều khoản "có vấn đề" trước khi ký. Má đang nhìn.', pick: 3, time: 45, pass: 0.66,
   items: [
     { text: 'Bảo mật công thức ướp và thông tin khách hàng.' },
     { text: 'Hỗ trợ xưởng khi cần, kể cả Chủ nhật (người nhà mà).', correct: true },

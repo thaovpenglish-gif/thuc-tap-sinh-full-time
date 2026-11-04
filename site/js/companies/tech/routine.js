@@ -5,7 +5,7 @@ const f = (k) => (r) => !!r.flags[k];
 
 const EMOJI_MINI = {
   type: 'quiz', title: 'Dịch tiếng anh Lộc', icon: '🔥',
-  prompt: 'Anh Lộc trả lời ticket của bạn bằng emoji. Dịch cho đúng.', time: 25, pass: 0.66,
+  prompt: 'Anh Lộc trả lời ticket của bạn bằng emoji. Dịch cho đúng.', time: 30, pass: 0.66,
   questions: [
     { q: '"🔥🔥🔥"', options: ['Tuyệt vời', 'Prod đang cháy', 'Anh đang ăn lẩu'], correct: 1 },
     { q: '"👀"', options: ['Anh đang xem', 'Anh không quan tâm', 'Anh bị đau mắt'], correct: 0 },

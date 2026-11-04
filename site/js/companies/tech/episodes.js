@@ -33,7 +33,7 @@ const CONFLUENCE_MINI = {
 };
 const TICKET_MINI = {
   type: 'pick', title: 'NKT-1337: "Fix everything before launch"', icon: '🎫',
-  prompt: 'Anh Kevin vừa nói 9 thứ. Chọn 4 việc tách được thành ticket làm xong trước launch.', pick: 4, time: 35, pass: 0.75,
+  prompt: 'Anh Kevin vừa nói 9 thứ. Chọn 4 việc tách được thành ticket làm xong trước launch.', pick: 4, time: 40, pass: 0.75,
   items: [
     { text: 'Sửa crash khi bấm "Thanh toán" bằng ví', correct: true },
     { text: 'Giảm thời gian load trang chủ từ 3 giây', correct: true },
@@ -1108,7 +1108,7 @@ const IDEA_STOLEN = {
 
 const JP_MINI = {
   type: 'quiz', title: 'Tiếng Nhật công sở cấp tốc (của anh Hiếu)', icon: '🗾',
-  prompt: 'Đọc mail của Tanaka-san cho đúng ý. Sai một chữ là sai một hợp đồng.', time: 35, pass: 0.75,
+  prompt: 'Đọc mail của Tanaka-san cho đúng ý. Sai một chữ là sai một hợp đồng.', time: 40, pass: 0.75,
   questions: [
     { q: '"お世話になっております" ở đầu mail nghĩa là…', options: ['Lời chào công việc lịch sự, mail nào cũng có', 'Khách đang rất giận', 'Khách mời đi nhậu'], correct: 0 },
     { q: 'Tanaka-san nói "検討します" (kentou shimasu: sẽ cân nhắc). Thường nghĩa là…', options: ['Đồng ý', 'Không, nhưng lịch sự', 'Mai trả lời'], correct: 1 },

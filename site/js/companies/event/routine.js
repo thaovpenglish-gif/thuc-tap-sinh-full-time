@@ -156,7 +156,7 @@ export const ROUTINE = [
   { id: 'r_weather', who: 'obj:okr', obj: 'Kiểm tra dự báo thời tiết cho show cuối tuần', scene: [
     ['nar', 'Bạn mở dự báo. Nắng. Refresh. Mưa dông. Refresh. Nắng có mưa. Refresh. "Thời tiết thay đổi."'],
     { c: '_r_weather', o: [
-      { t: 'Giữ chỗ rạp và 50 áo mưa "cho chắc".', fx: { uy: 2, rel: { duy: 1 }, money: 0 }, then: [['duy', 'Có Plan B. Copy. Em bắt đầu suy nghĩ giống anh. Anh xin lỗi.']] },
+      { t: 'Giữ chỗ rạp và 50 áo mưa "cho chắc".', fx: { uy: 2, rel: { duy: 1 } }, then: [['duy', 'Có Plan B. Copy. Em bắt đầu suy nghĩ giống anh. Anh xin lỗi.']] },
       { t: 'Hỏi Mèo Plan B.', fx: { nl: 2 }, then: [['nar', 'Mèo Plan B nằm giữa văn phòng, không vào kho. Theo kinh nghiệm cả công ty: cuối tuần nắng.']] },
     ] },
   ] },
