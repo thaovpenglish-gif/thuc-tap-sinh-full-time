@@ -33,8 +33,16 @@ function frame() {
   renderer.render(scene, camera);
 }
 
+async function startSolo() {
+  // Solo currently plays the existing story (Chương 1). The T&M Solo campaign plugs in here later.
+  $('#mainMenu').hidden = true;
+  const { startLegacy } = await import('./modes/legacy.js');
+  active = startLegacy({ scene, rig, input });
+}
+
 function showMainMenu() {
   $('#mainMenu').hidden = false;
+  $('#soloBtn').onclick = () => startSolo();
   document.querySelectorAll('[data-soon]').forEach((b) => {
     b.onclick = () => { $('#menuNote').hidden = false; };
   });
@@ -43,8 +51,7 @@ function showMainMenu() {
 async function boot() {
   try { await Promise.race([document.fonts.load('900 40px "Be Vietnam Pro"'), sleep(2500)]); } catch { /* fonts optional */ }
   if (FLAGS.legacyStory) {
-    const { startLegacy } = await import('./modes/legacy.js');
-    active = startLegacy({ scene, rig, input });
+    await startSolo();
   } else {
     showMainMenu();
   }
