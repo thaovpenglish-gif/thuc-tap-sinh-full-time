@@ -275,7 +275,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     getName: () => (R ? R.name : ''),
     onReadChat: () => { if (R) { R.unread = 0; updateHUD(); } },
     onOpen: () => { if (mode === 'play' || mode === 'pause') mode = 'phone'; fp.unlock(); $('#pause').hidden = true; },
-    onClose: () => { if (mode === 'phone') { mode = 'play'; fp.lock(); } },
+    onClose: () => { if (mode === 'phone') { mode = 'play'; $('#crosshair').hidden = isTouch; fp.lock(); } },
   });
   function pushChat(list, delayStart = 400) {
     const runId = R.id;
@@ -463,14 +463,16 @@ export function startSolo({ scene, camera, input, onExit }) {
   $('#soloBack').onclick = () => { $('#soloMenu').hidden = true; mode = 'away'; onExit && onExit(); };
 
   // ---------- controls ----------
-  function pause() { if (mode === 'play') { fp.unlock(); mode = 'pause'; $('#pause').hidden = false; } }
-  function resume() { $('#pause').hidden = true; if (mode === 'pause') { mode = 'play'; fp.lock(); } }
+  function pause() { if (mode === 'play') { mode = 'pause'; fp.unlock(); $('#pause').hidden = false; $('#crosshair').hidden = true; } }
+  function resume() { $('#pause').hidden = true; if (mode === 'pause') { mode = 'play'; $('#crosshair').hidden = isTouch; fp.lock(); } }
   $('#resumeBtn').onclick = resume;
   $('#pause').addEventListener('click', (e) => { if (e.target.id === 'pause') resume(); });
-  $('#pausePhone').onclick = () => { resume(); phone.open(); };
-  $('#menuBtn').onclick = pause;
-  $('#restartBtn').textContent = 'Về menu Solo (tiến trình đã lưu)';
-  $('#restartBtn').onclick = () => { save(); $('#pause').hidden = true; clearTimeout(ringTimer); showMenu(); };
+  $('#pausePhone').onclick = () => phone.open(); // the phone takes over from pause; closing it returns to play
+  $('#menuBtn').onclick = () => { if (mode === 'pause') resume(); else pause(); };
+  const leaveRun = () => { save(); $('#pause').hidden = true; clearTimeout(ringTimer); stopRing(); };
+  $('#restartBtn').textContent = '📋 Hồ sơ sự nghiệp (đổi lượt chơi)';
+  $('#restartBtn').onclick = () => { leaveRun(); showMenu(); };
+  $('#homeBtn').onclick = () => { leaveRun(); showMenu(); $('#soloMenu').hidden = true; mode = 'away'; onExit && onExit(); };
   $('#phoneBtn').onclick = () => { if (mode === 'play' || mode === 'pause') phone.open(); };
   $('#soundBtn').onclick = () => { setSound(!isSoundOn()); $('#soundBtn').textContent = isSoundOn() ? '🔊' : '🔇'; };
   $('#soundBtn').textContent = isSoundOn() ? '🔊' : '🔇';

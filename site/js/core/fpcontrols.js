@@ -23,6 +23,8 @@ export function createFPControls({ camera, input, getMode, onPause, start = [0, 
 
   document.addEventListener('pointerlockchange', () => {
     if (!document.pointerLockElement && getMode() === 'play' && !isTouch) onPause();
+    // a lock that lands after we already left play mode (e.g. a phone opened from the pause card) hides the cursor: drop it
+    else if (document.pointerLockElement && getMode() !== 'play') document.exitPointerLock();
   });
   document.addEventListener('mousemove', (e) => {
     if (document.pointerLockElement !== canvas || getMode() !== 'play') return;
