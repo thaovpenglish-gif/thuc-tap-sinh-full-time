@@ -6,7 +6,7 @@ export const COMPANY_LIST = [
   { id: 'bama', name: 'Ba & Má', emoji: '🍖', color: '#ffd3b8', industry: 'Sản xuất & bán khô gà, khô bò, trái cây sấy', scale: '~20 người + xưởng',
     blurb: 'Công ty gia đình. Ba là CEO, Má giữ két, con trai làm "Head of Innovation". Livestream mỗi tối.', toxic: 4, ready: true },
   { id: 'tech', name: 'Nợ Kỹ Thuật Labs', emoji: '💻', color: '#bfe3ff', industry: 'Công nghệ · startup app', scale: '~80 người',
-    blurb: 'Văn hóa "flat", deploy chiều thứ Sáu, on-call cuối tuần và một vòng gọi vốn "sắp xong".', toxic: 3, ready: false },
+    blurb: 'Văn hóa "flat", deploy chiều thứ Sáu, on-call cuối tuần và một vòng gọi vốn "sắp xong".', toxic: 3, ready: true },
   { id: 'agency', name: 'Trend Trễ Agency', emoji: '📣', color: '#ffc8dd', industry: 'Marketing agency', scale: '~30 người',
     blurb: 'Khách sửa "lần cuối" lần thứ 14. KOL bùng. Viral thì có, nhưng viral ngược.', toxic: 4, ready: false },
   { id: 'audit', name: 'Cân Đối & Cộng Sự', emoji: '🧮', color: '#b8f0d8', industry: 'Kế toán · kiểm toán', scale: '~300 người',

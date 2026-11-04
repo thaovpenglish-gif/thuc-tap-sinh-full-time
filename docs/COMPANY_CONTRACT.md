@@ -145,6 +145,7 @@ small requests, gossip, a process absurdity, a customer call, a mini-game (use s
 ```
 
 `base` = minutes before the deadline (30–120; the engine scales it by salary tier). 2–3 legs. ≥ 8 templates.
+Optional `when: (run) => bool` — e.g. hide a colleague's errands after they quit.
 
 ## 9. Scene language
 

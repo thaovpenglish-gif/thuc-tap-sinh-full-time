@@ -440,7 +440,8 @@ export function startSolo({ scene, camera, input, onExit }) {
     const d = day();
     if (!d.sideTasks || !R.tier || !CO.sideTasks || !CO.sideTasks.length) { R.tasks = []; return; }
     const count = R.status === 'official' ? Math.min(5, tier(R.tier).sideTasks + 1) : tier(R.tier).sideTasks;
-    R.tasks = planTasks({ templates: CO.sideTasks, count, tierId: R.tier, startMin: 9 * 60 + 15, endMin: 16 * 60 + 30, seed: hash(R.id) + R.day * 7, scale: TASK_SCALE });
+    const templates = CO.sideTasks.filter((t) => { try { return !t.when || t.when(R); } catch { return false; } });
+    R.tasks = planTasks({ templates, count, tierId: R.tier, startMin: 9 * 60 + 15, endMin: 16 * 60 + 30, seed: hash(R.id) + R.day * 7, scale: TASK_SCALE });
   }
   function taskTick() {
     if (!R || !R.tasks.length) return;

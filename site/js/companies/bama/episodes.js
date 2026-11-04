@@ -1135,7 +1135,7 @@ const EP_O3 = {
 };
 
 const EP_O4 = {
-  id: 'bm_o_chunhat', official: true, end: 'quit', title: 'Chủ nhật ở xưởng',
+  id: 'bm_o_chunhat', official: true, end: (r) => (r.flags.end_pushed ? 'layoff' : 'quit'), title: 'Chủ nhật ở xưởng',
   intro: 'Thứ Hai trước Tết. Trên bảng trắng có thêm một dòng chữ Má viết: "Từ giờ tới Tết: Chủ nhật cả nhà xuống xưởng."\n\n"Cả nhà" có bạn. Bảng lương thì không có chữ "Chủ nhật".',
   steps: [
     { who: 'hang', obj: 'Má: "Chủ nhật cả nhà xuống xưởng"', time: '08:30', scene: [

@@ -117,7 +117,7 @@ export const ENDINGS = {
     if (f.end_dung) return { title: 'Ra riêng với anh Dũng', text: 'Ba tháng sau, một shop khô nhỏ lên sàn: không có chữ "Ba", không có chữ "Má". Đại lý đầu tiên đặt hàng là cô Sáu. Cô vẫn trả chậm.' };
     return { title: 'Bạn nghỉ việc ở Ba & Má', text: 'Bạn bàn giao chìa khóa kho cho chú Bảy. Ba gửi tấm hình hoa sen lúc 5 giờ 47: "Con đi mạnh giỏi." Lần đầu tiên bạn thả tim mà mắt cay. Không phải tại tỏi phi.' };
   },
-  layoff: { title: 'Ba & Má "thu gọn"', text: 'Sàn tăng phí, Tết qua, Má nói "công ty thu gọn lại cho người nhà làm". Bạn là người ngoài đầu tiên được thu gọn. Kèm hai ký khô gà.' },
+  layoff: (r) => ((r.flags || {}).end_pushed ? { title: 'Nghỉ "tự nguyện" ở Ba & Má', text: 'Đơn ghi "tự nguyện". Bạn không đuổi ai, Má cũng không đuổi ai. Không ai đuổi ai mà bạn vẫn đứng ngoài cổng, ôm một bịch khô vụn. Gia đình là vậy.' } : { title: 'Ba & Má "thu gọn"', text: 'Sàn tăng phí, Tết qua, Má nói "công ty thu gọn lại cho người nhà làm". Bạn là người ngoài đầu tiên được thu gọn. Kèm hai ký khô gà.' }),
 };
 
 // Hidden relationships: 2 drawn per run → flags tie_<id>. Used by routine beats and episodes.

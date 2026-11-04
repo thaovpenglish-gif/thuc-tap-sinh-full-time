@@ -2,7 +2,7 @@
 
 // ---------------------------------------------------------------- side tasks ("việc vặt")
 export const SIDE_TASKS = [
-  { id: 'charge_phones', title: 'Mượn cáp sạc ở góc IT cho 7 điện thoại test của chị Nguyệt', from: 'nguyet', base: 60, legs: [
+  { id: 'charge_phones', title: 'Mượn cáp sạc ở góc IT cho 7 điện thoại test của chị Nguyệt', from: 'nguyet', base: 60, when: (r) => !r.flags.loc_left, legs: [
     { npc: 'nguyet', line: ['nguyet', 'Ba máy test hết pin rồi em. Qua anh Lộc mượn giúp chị cáp. Loại cổng cũ. Máy số 5 kén cáp lắm.'] },
     { npc: 'loc', line: ['loc', '🔌🔌🔌 ↩️'] },
     { npc: 'nguyet', line: ['nguyet', 'Ba cáp, có cả cáp cho máy số 5. Anh Lộc dặn gì không? …"↩️" là phải trả. Ok.'] },
@@ -12,7 +12,7 @@ export const SIDE_TASKS = [
     { obj: 'printer', line: ['nar', 'Máy in kẹt ở trang 117. Bạn rút giấy, máy in hiện "Báo lỗi qua Jira". Bạn tắt đi bật lại. Nó chạy tiếp.'] },
     { npc: 'hieu', line: ['hieu', 'Đủ 200 trang. Arigatou. Em vừa cứu anh khỏi Q&A dòng 149.'] },
   ] },
-  { id: 'wifi_pw', title: 'Hỏi chị Hoa mật khẩu wifi mới cho Tùng', from: 'tung', base: 50, legs: [
+  { id: 'wifi_pw', title: 'Hỏi chị Hoa mật khẩu wifi mới cho Tùng', from: 'tung', base: 50, when: (r) => !r.flags.tung_left, legs: [
     { npc: 'tung', line: ['tung', 'Wifi lại đổi mật khẩu. Em hỏi chị Hoa giúp anh. Anh đang phát 4G cho ba người, điện thoại nóng như bếp từ.'] },
     { npc: 'hoa', line: ['hoa', 'Mật khẩu mới là "FixLater3!". Đừng nói ai. Mà thôi, nói cả công ty luôn đi, đỡ hỏi chị.'] },
     { npc: 'tung', line: ['tung', '"FixLater3". Công ty này có triết lý nhất quán ghê.'] },
@@ -32,7 +32,7 @@ export const SIDE_TASKS = [
     { obj: 'coffee', line: ['nar', 'Pantry không có cold brew. Bạn pha cà phê gói, thêm đá, đổ vào ly thủy tinh cho trông đắt tiền.'] },
     { npc: 'kevin', line: ['kevin', 'Cold brew ngon! Thấy chưa, mình là startup nhưng chất lượng như Silicon Valley.'] },
   ] },
-  { id: 'nudge_pr', title: 'Nhắc Tùng sửa PR cho anh Khải review', from: 'khai', base: 75, legs: [
+  { id: 'nudge_pr', title: 'Nhắc Tùng sửa PR cho anh Khải review', from: 'khai', base: 75, when: (r) => !r.flags.tung_left, legs: [
     { npc: 'khai', line: ['khai', 'PR của Tùng mở 6 ngày. Anh comment rồi. Em nhắc Tùng giúp anh. Anh nhắc ba lần, Tùng "seen".'] },
     { npc: 'tung', line: ['tung', 'Sửa rồi mà! Trên máy anh… à chưa push. Ok, push rồi đó.'] },
     { npc: 'khai', line: ['khai', 'Push rồi. Ok. Approve. It depends… không, approve thật.'] },
@@ -57,7 +57,7 @@ export const SIDE_TASKS = [
     { obj: 'plant', line: ['nar', 'Bạn tưới ba muỗng nước. Chậu xương rồng có thẻ: "Uptime 99,9%. Downtime: lần anh Kevin tưới nước tăng lực".'] },
     { npc: 'hoa', line: ['hoa', 'Ba muỗng? Chuẩn. Em có tố chất DevOps.'] },
   ] },
-  { id: 'old_server', title: 'Báo anh Lộc: server cũ kêu như máy giặt', from: 'thac', base: 50, legs: [
+  { id: 'old_server', title: 'Báo anh Lộc: server cũ kêu như máy giặt', from: 'thac', base: 50, when: (r) => !r.flags.loc_left, legs: [
     { npc: 'thac', line: ['thac', 'Server cũ ở góc kêu to hơn bình thường. Em báo Lộc giúp anh. Đừng ai chạm vào nó.'] },
     { npc: 'loc', line: ['loc', '😨 → 🧹 → 🙏'] },
     { npc: 'thac', line: ['thac', 'Lộc thổi bụi rồi hả? Tốt. Server đó chạy từ 2021. Không ai biết nó chạy cái gì. Nhưng tắt nó thì ví sập.'] },

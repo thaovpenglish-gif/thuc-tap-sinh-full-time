@@ -148,6 +148,7 @@ export async function validateCompany(id) {
       if (l.line && !known(l.line[0])) E(`${at}.legs[${k}]: line speaker unknown`);
     });
     if (!(t.legs || []).length) E(`${at}: needs legs`);
+    if (t.when && typeof t.when !== 'function') E(`${at}: when must be a function`);
   });
   // review
   for (const g of ['A', 'B', 'C', 'D']) if (!co.review || !Array.isArray(co.review[g]) || co.review[g].length < 3) W(`review.${g}: needs ≥3 lines`);

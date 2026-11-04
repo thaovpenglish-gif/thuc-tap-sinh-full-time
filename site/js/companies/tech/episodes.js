@@ -1862,7 +1862,7 @@ const OFF_PIVOT = {
 };
 
 const OFF_FINAL = {
-  id: 'off_final', official: true, end: 'layoff', noReview: true, title: '"Quick sync 15 phút" (lần này là bạn)',
+  id: 'off_final', official: true, end: (r) => (r.flags.resigned_first ? 'quit' : 'layoff'), noReview: true, title: '"Quick sync 15 phút" (lần này là bạn)',
   intro: 'Thứ Tư, 8:47. Lịch của bạn có một cuộc họp mới: "Quick sync 15 phút" với chị Ngân. 9:00. Phòng "Cơm Tấm".\n\nLần này bạn biết. Ai ở đây cũng biết.',
   steps: [
     {

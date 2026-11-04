@@ -106,7 +106,10 @@ export const ENDINGS = {
       text: 'Bạn trả lại bộ đàm số 4 cho chị Lan. Chị ghi vào sổ: "Đã trả. Hiếm." Lúc bạn bước ra cửa, Mèo Plan B chui vào kho. Chiều đó trời mưa. Lần đầu tiên, đó không còn là việc của bạn.',
     };
   },
-  layoff: (r) => ({
+  layoff: (r) => ((r && r.flags && r.flags.final === 'ctv') ? {
+    title: 'Bạn bị cho nghỉ (và được gọi đúng tên)',
+    text: 'Thấp điểm sau Tết. Công ty "chuyển em sang cộng tác viên". Bạn không ký đơn tự nguyện. Cô Bích làm quyết định đúng tên, đủ từng đồng. Ba tháng sau, chị Kiều gọi: "Tháng 12 em chạy show 3 giúp chị không? Theo show." Bạn báo giá. Không bớt chút nào.',
+  } : {
     title: 'Bạn được "chuyển sang cộng tác viên theo show"',
     text: (r && r.flags && r.flags.dirty_invoice)
       ? 'Công ty "tái cấu trúc sau mùa cao điểm". Cô Bích nhắc lại chuyện hóa đơn trong biên bản. Không ai cãi. Bạn ôm áo đồng phục chữ STAFF về, mặc đi ngủ.'

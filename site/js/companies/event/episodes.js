@@ -1622,7 +1622,7 @@ export const EPISODES = [
   },
 
   {
-    id: 'off_final', official: true, end: 'quit', noReview: true, title: 'Đêm tất niên của chính mình',
+    id: 'off_final', official: true, end: (r) => (r.flags.final === 'ctv' ? 'layoff' : 'quit'), noReview: true, title: 'Đêm tất niên của chính mình',
     intro: 'Cuối mùa cao điểm. 23 show đã chạy. Hôm nay là tất niên của chính công ty Đi Đâu Cũng Được.\n\nNgười tổ chức: bạn. Ngân sách: "tùy em, miễn đừng tốn".\n\nBạn đã nghĩ suốt tuần về một quyết định.',
     steps: [
       {
