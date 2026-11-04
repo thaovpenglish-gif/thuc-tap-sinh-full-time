@@ -16,6 +16,7 @@ export const SPOTS = {
   minh: [0.8, -9.1, 0],
   // free standing spots
   x1: [8.2, 0.5, -Math.PI / 2], x2: [8.2, -1.8, -Math.PI / 2], x3: [2.0, 6.8, Math.PI],
+  giao: [-2.3, 8.7, Math.PI], // reserved: Chị Giáo (developer, donations) near the entrance — not for company cast
   // scenes
   reception_side: [-1.6, 6.6, -Math.PI / 2],
   pantry_bao: [12.6, 3.4, -Math.PI / 2],

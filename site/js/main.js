@@ -56,8 +56,7 @@ function showLetter(thenPlay) {
   $('#mainMenu').hidden = true;
   $('#devLetter').hidden = false;
   $('#devLetter').scrollTop = 0;
-  const coffee = $('#letterCoffee');
-  coffee.hidden = !SUPPORT_URL; if (SUPPORT_URL) coffee.href = SUPPORT_URL;
+  $('#letterGiao').hidden = !(SUPPORT_URL || FLAGS.giao);
   $('#letterGo').textContent = thenPlay ? 'Đã hiểu, vào chơi →' : 'Vào chơi Solo →';
   const close = () => { $('#devLetter').hidden = true; try { localStorage.setItem(LETTER_KEY, '1'); } catch { /* private mode */ } };
   $('#letterGo').onclick = () => { close(); startSolo(); };

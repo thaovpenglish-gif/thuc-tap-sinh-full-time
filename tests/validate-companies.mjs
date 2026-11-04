@@ -27,6 +27,7 @@ export async function validateCompany(id) {
     if (!c.name || !c.role || !c.emoji || !c.color) E(`cast.${cid}: needs name, role, emoji, color`);
     if (c.body !== false) {
       if (!c.look) E(`cast.${cid}: needs look (or body:false)`);
+      if (c.spot === 'giao' || cid === 'giao') E(`cast.${cid}: "giao" is reserved for Chị Giáo (engine NPC)`);
       if (!c.spot || !SPOTS[c.spot]) E(`cast.${cid}: spot "${c.spot}" is not a known slot`);
       else if (usedSpots[c.spot]) E(`cast.${cid}: spot "${c.spot}" already used by ${usedSpots[c.spot]}`);
       else usedSpots[c.spot] = cid;

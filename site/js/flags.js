@@ -4,4 +4,6 @@ const params = new URLSearchParams(typeof location !== 'undefined' ? location.se
 
 export const FLAGS = {
   legacyStory: params.get('legacy') === '1',
+  // preview Chị Giáo (the developer's donation corner) even when SUPPORT_URL is empty
+  giao: params.get('giao') === '1',
 };

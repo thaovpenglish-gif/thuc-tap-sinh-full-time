@@ -22,6 +22,8 @@ import * as C from '../game/career.js';
 import { COMPANY_LIST, companyMeta, companyName, loadCompany } from '../companies/index.js';
 import { net, clean } from '../net/legacy-net.js';
 import { createCloudPanel } from '../ui/cloudpanel.js';
+import { SUPPORT_URL } from '../config.js';
+import { FLAGS } from '../flags.js';
 
 const PROFILE_KEY = 'tm_profile_v1'; // key kept from v1 so existing saves carry over (the data itself is migrated)
 const BOUNDS = { minX: -14.7, maxX: 14.7, minZ: -9.7, maxZ: 9.85 };
@@ -44,6 +46,16 @@ const WEEKEND_LINES = [
   'Thứ Bảy có "team building tự nguyện". Bạn tự nguyện vắng mặt. Chủ nhật bạn đi chợ và nấu cơm cho cả tuần.',
   'Cuối tuần bạn về nhà. Mẹ hỏi lương. Bố hỏi bao giờ chính thức. Bà hỏi có người yêu chưa.',
   'Group chat công ty im lặng suốt cuối tuần. Đến 21:58 tối Chủ nhật thì sếp gửi một file "để thứ Hai mình bàn".',
+];
+
+// Chị Giáo: the developer, standing by the entrance of every company. Talk to her to buy her a coffee (donation).
+const GIAO = { name: 'Chị Giáo', role: 'Người làm game · khách mời', emoji: '☕', color: '#ffd6a5', spot: 'giao',
+  look: { shirt: '#ffd6a5', pants: '#6b5a7a', hair: 'long', hairColor: '#2b1b14', glasses: true, mug: true } };
+const GIAO_ON = !!SUPPORT_URL || FLAGS.giao;
+const GIAO_LINES = [
+  ['giao', 'Ơ, bạn tìm ra chị rồi à? Chị là Giáo, người làm ra cái game này. Chị đứng đây, không thuộc phòng ban nào cả.'],
+  ['giao', 'Cảm ơn bạn đã chơi tới đây. Thật đấy. Mỗi lần có người deal lương 0 đồng là chị lại thấy mình có ích.'],
+  ['giao', 'Nếu bạn thấy vui, cho chị xin một cốc cà phê nhé. Không có cũng không sao, chị không trừ lương ai cả.'],
 ];
 
 export function startSolo({ scene, camera, input, onExit }) {
@@ -72,7 +84,8 @@ export function startSolo({ scene, camera, input, onExit }) {
     npcs = {};
     world = buildWorld(scene, co.theme || {});
     worldCo = co.id;
-    for (const [id, def] of Object.entries(co.cast)) {
+    const people = { ...co.cast, ...(GIAO_ON ? { giao: GIAO } : {}) };
+    for (const [id, def] of Object.entries(people)) {
       if (def.body === false || !def.look) continue;
       const mesh = makePerson(def.look);
       mesh.add(nameTag(def.name, String(def.role || '').split('·')[0].trim(), { color: def.color }));
@@ -89,6 +102,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     if (id === 'think') return { name: R ? R.name : 'Bạn', role: 'nghĩ thầm…', emoji: '💭', color: '#e3d9ff' };
     if (id === 'nar') return { name: '', role: '', emoji: '📖', color: '#fff1b8' };
     if (id === 'kpi') return { name: (CO && CO.catName) || 'Mèo KPI', role: 'Employee of the Month', emoji: '🐱', color: '#d9d9d9' };
+    if (id === 'giao') return GIAO;
     return (CO && CO.cast[id]) || { name: id, role: '', emoji: '❔', color: '#ccc' };
   }
   const mood = () => C.moodInfo(R && R.today ? R.today.mood : 'meh');
@@ -231,6 +245,7 @@ export function startSolo({ scene, camera, input, onExit }) {
       else if (npcs[spk] && npcs[spk].mesh.position.distanceTo(player.pos) < 10) { fp.focus(npcs[spk].mesh.position); npcs[spk].talking = true; }
     },
     async extra(node, run) {
+      if (node.donate) { if (SUPPORT_URL) { try { window.open(SUPPORT_URL, '_blank', 'noopener'); } catch { /* popup blocked */ } } return; }
       if (node.salary) {
         $('#dialog').hidden = true;
         R.tier = await salaryPick();
@@ -291,6 +306,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     placeNPCs(false); updateHUD(); save(); maybeScheduleCall();
   }
   function spotFor(id) {
+    if (id === 'giao') return 'giao';
     const def = CO && CO.cast[id];
     if (!R || !day()) return (def && def.spot) || id;
     const step = currentStep();
@@ -447,6 +463,23 @@ export function startSolo({ scene, camera, input, onExit }) {
     }
     save();
     return true;
+  }
+
+  // ---------- Chị Giáo (donation corner) ----------
+  async function giaoTalk() {
+    const met = !!R.flags.giao_met;
+    R.flags.giao_met = true;
+    await dialogue.run([
+      ...(met ? [['giao', 'Lại là bạn à? Hôm nay ở công ty này thế nào, có ai "vài ý nhỏ" với bạn không?']] : GIAO_LINES),
+      { c: '_giao', o: [
+        { t: '☕ Mời chị Giáo một cốc cà phê', then: [
+          ['giao', SUPPORT_URL ? 'Cảm ơn bạn nhiều lắm! Cốc cà phê này sẽ biến thành… thêm một công ty mới để bạn bị bóc lột.' : 'Quầy nhận cà phê của chị chưa mở. Nhưng chị nhận lời cảm ơn của bạn rồi nhé!'],
+          { donate: true },
+        ] },
+        { t: 'Để lần sau nhé chị', then: [['giao', 'Ok luôn. Đi làm tiếp đi, hình như sếp đang tìm bạn kìa 🙂']] },
+        { t: '"Chị ơi, game có bug…"', then: [['giao', 'Chị biết. Chị đang sửa. Như mọi công ty khác thôi: "để chị check lại nhé".']] },
+      ] },
+    ]);
   }
 
   // ---------- food (pantry) ----------
@@ -712,7 +745,7 @@ export function startSolo({ scene, camera, input, onExit }) {
   // ---------- interaction ----------
   let currentInteract = null;
   const candidates = () => [
-    ...Object.entries(npcs).map(([id, n]) => ({ kind: 'npc', id, pos: n.mesh.position, label: `Nói chuyện với ${CO.cast[id].name}` })),
+    ...Object.entries(npcs).map(([id, n]) => ({ kind: 'npc', id, pos: n.mesh.position, label: id === 'giao' ? '☕ Nói chuyện với Chị Giáo (người làm game)' : `Nói chuyện với ${CO.cast[id].name}` })),
     ...(world ? world.interactables.map((it) => ({ kind: 'obj', id: it.id, pos: it.pos, label: it.label })) : []),
     { kind: 'npc', id: 'kpi', pos: cat.position, label: `Vuốt ve ${(CO && CO.catName) || 'Mèo KPI'}` },
   ];
@@ -735,7 +768,8 @@ export function startSolo({ scene, camera, input, onExit }) {
     const progressed = await handleTaskVisit(it.kind === 'npc' ? { npc: it.id } : { obj: it.id });
     if (isTargetOf(step, it)) { mode = 'play'; runStep(step); return; }
     if (!progressed) {
-      if (it.id === 'kpi') await dialogue.run([['nar', `${(CO && CO.catName) || 'Mèo KPI'} mở một mắt, nhìn bạn như nhìn một slide không có executive summary, rồi ngủ tiếp.`], { fx: { nl: 3 } }]);
+      if (it.id === 'giao') await giaoTalk();
+      else if (it.id === 'kpi') await dialogue.run([['nar', `${(CO && CO.catName) || 'Mèo KPI'} mở một mắt, nhìn bạn như nhìn một slide không có executive summary, rồi ngủ tiếp.`], { fx: { nl: 3 } }]);
       else if (it.id === 'coffee') await pantry();
       else if (it.kind === 'npc') {
         const lines = (CO.idle && CO.idle[it.id]) || ['…'];

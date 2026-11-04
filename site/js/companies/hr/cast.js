@@ -36,6 +36,7 @@ export const CAST = {
   trinh: { name: 'Chị Trinh', role: 'Ứng viên · CFO', emoji: '💼', color: '#d9d9d9', body: false },
   hanh: { name: 'Chị Hạnh', role: 'Headhunter · Săn Đầu Pro (đối thủ)', emoji: '🦈', color: '#d9d9d9', body: false },
   banhmi: { name: 'Cô Bánh Mì', role: 'Số gọi nhầm · đầu hẻm 42', emoji: '🥖', color: '#d9d9d9', body: false },
+  ungvien: { name: 'Ứng viên', role: 'Một trong 14.000 dòng của ATS', emoji: '🙋', color: '#d9d9d9', body: false },
 };
 
 export const IDLE = {
