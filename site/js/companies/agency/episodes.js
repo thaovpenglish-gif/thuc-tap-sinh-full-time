@@ -403,7 +403,7 @@ export const EPISODES = [
   // ---------------------------------------------------------------- 3
   {
     id: 'rev14', minDay: 3, maxDay: 4, title: 'Vòng sửa thứ 14',
-    intro: 'KV Tết Mì Ông Táo đang ở bản 13.\n\nTrong nhóm Zalo có client, chị Nguyệt vừa gửi một tin nhắn thoại dài 6 phút. Mọi người nhìn nhau. Không ai muốn bấm nghe trước.',
+    intro: 'KV Tết Mì Ông Táo vừa gửi bản 14.\n\nTrong nhóm Zalo có client, chị Nguyệt vừa gửi một tin nhắn thoại dài 6 phút. Mọi người nhìn nhau. Không ai muốn bấm nghe trước.',
     steps: [
       {
         who: 'diep', obj: 'Chị Diệp nhờ nghe voice 6 phút của client', time: '10:00',
