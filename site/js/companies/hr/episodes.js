@@ -33,7 +33,7 @@ export const JD_MINI = {
 
 export const CHIP_MINI = {
   type: 'pick', title: 'Shortlist: Kỹ sư thiết kế vi mạch, tiếng Nhật N2', icon: '🔬',
-  prompt: 'Tám hồ sơ từ ATS. Chọn 3 hồ sơ thật sự phù hợp.', pick: 3, time: 35, pass: 0.66,
+  prompt: 'Tám hồ sơ từ ATS. Chọn 3 hồ sơ thật sự phù hợp.', pick: 3, time: 40, pass: 0.66,
   items: [
     { text: 'Kỹ sư thiết kế vi mạch 4 năm, JLPT N2', correct: true },
     { text: 'Kỹ sư điện lạnh 10 năm', sub: '"Cũng là mạch"' },
@@ -105,7 +105,7 @@ export const TIMELINE_MINI = {
 
 export const PAYSLIP_MINI = {
   type: 'pick', title: 'Phiếu lương (bản nháp, vẽ bằng Excel)', icon: '🧾',
-  prompt: 'Tìm 3 lỗi trên phiếu phụ cấp của bạn.', pick: 3, time: 30, pass: 0.66,
+  prompt: 'Tìm 3 lỗi trên phiếu phụ cấp của bạn.', pick: 3, time: 35, pass: 0.66,
   items: [
     { text: 'Họ tên: "Thực Tập Sinh 2"', correct: true },
     { text: 'Phụ cấp: "theo thỏa thuận"', sub: '(không có con số)', correct: true },
@@ -1093,9 +1093,9 @@ export const EPISODES = [
         ],
       },
       {
-        who: 'obj:desk', obj: '18:30 Về bàn viết JD cho chính mình', time: '18:30', when: (s) => !!s.flags.culture_honest,
+        who: 'obj:desk', obj: 'Sau workshop: về bàn viết JD cho chính mình', time: '17:50', when: (s) => !!s.flags.culture_honest,
         scene: [
-          ['nar', 'Bạn mở một file trắng: "JD_ThucTapSinh_NguoiDungCho_v1.docx". Lần đầu tiên công ty này có JD cho chính mình.'],
+          ['nar', 'Workshop tan lúc 19:00. Bạn mở một file trắng: "JD_ThucTapSinh_NguoiDungCho_v1.docx". Lần đầu tiên công ty này có JD cho chính mình.'],
           { mini: ONBOARD_MINI,
             good: [['ngan', '(nhắn) chị đọc rồi. đúng thứ tự, đủ ý. chị sửa hai chữ. gửi anh Duy đi.'], { fx: { uy: 4, rel: { ngan: 2 }, set: { wrote_own_jd: true } } }],
             bad: [['ngan', '(nhắn) em để "giao việc" trước "ký hợp đồng" kìa. y như công ty mình. chị sửa lại thứ tự, vẫn để tên em.'], { fx: { nl: -8, rel: { ngan: 1 }, set: { wrote_own_jd: true } } }],
@@ -1104,7 +1104,7 @@ export const EPISODES = [
         ],
       },
       {
-        who: 'obj:desk', obj: '18:30 Workshop xong: về bàn', time: '18:30', when: (s) => !s.flags.culture_honest,
+        who: 'obj:desk', obj: 'Workshop xong: về bàn', time: '17:50', when: (s) => !s.flags.culture_honest,
         scene: [
           ['nar', '19:00. Workshop kết thúc. Trên bảng trắng còn dòng chữ: "Hạnh phúc là một lựa chọn".'],
           { c: '_hr_d17_home', o: [
@@ -1542,7 +1542,7 @@ export const EPISODES = [
             { t: 'Không có tiền, nhưng chia nửa gói mì.', fx: { nl: -2, rel: { phat: 2 } }, then: [
               ['phat', 'Mì tôm chua cay, hai người một gói. Tình đồng chí thời "trong tuần".'],
             ] },
-            { t: '"Mình cũng chưa có lương, xin lỗi nhé."', then: [
+            { t: '"Mình cũng chưa có lương, xin lỗi nhé."', fx: { dr: 1 }, then: [
               ['phat', 'Ừ, hiểu mà. Mình hỏi anh Tuấn. Anh ấy có nửa cái xe.'],
             ] },
           ] },
@@ -1791,7 +1791,9 @@ export const EPISODES = [
         who: 'phat', obj: 'Phát có chuyện muốn nói', time: '09:00',
         scene: [
           ['phat', 'Bạn thấy viền xanh rồi hả. Ừ. Mình đang tìm việc. Sáu tháng không hợp đồng. Mình mệt.'],
-          { if: (s) => !!s.flags.contract_email, then: [['phat', 'Nhờ email của bạn, hợp đồng của mình đã được in. Chưa ký. Nhưng đã in. Tiến bộ.']] },
+          { if: (s) => !!s.flags.contract_email, then: [['phat', 'Nhờ email của bạn, hợp đồng của mình đã được in. Chưa ký. Nhưng đã in. Tiến bộ.']], else: [
+            { if: (s) => !!s.flags.duy_nudged, then: [['phat', 'Anh Duy hứa "thứ Sáu này" ký hợp đồng cho mình. Thứ Sáu đó đã qua ba lần.']] },
+          ] },
           ['phat', 'Chiều nay 14:00 mình đi phỏng vấn bên Săn Đầu Pro. Bạn nói với mọi người là mình đi khám răng giúp nhé.'],
           { c: 'hr_ph_cover', o: [
             { t: 'Đồng ý giữ bí mật cho Phát.', fx: { rel: { phat: 2 }, set: { cover_phat: true } }, then: [
@@ -2099,7 +2101,7 @@ export const OFFICIAL_EPISODES = [
       : 'CVinator 3000 sàng một nghìn CV trong ba giây. Mình sàng ba mươi trong một ngày. Anh Duy nói "tối ưu cơ cấu".'),
   },
   {
-    id: 'off_restructure', official: true, end: 'layoff', noReview: true, title: 'Tái cấu trúc "vì con người"',
+    id: 'off_restructure', official: true, end: (r) => (r.flags.layoff_jump ? 'quit' : 'layoff'), noReview: true, title: 'Tái cấu trúc "vì con người"',
     intro: 'Thị trường đóng băng: ứng viên chờ thưởng Tết, khách cắt ngân sách tuyển, hai khách lớn chưa trả phí.\n\nAnh Duy hẹn bạn 1:1 ở Talent Room. Trên bàn có một hộp khăn giấy. Hộp khăn giấy chưa bao giờ có trên bàn đó.',
     steps: [
       {

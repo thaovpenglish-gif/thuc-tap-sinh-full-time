@@ -28,7 +28,7 @@ export const SIDE_TASKS = [
     { npc: 'diep', line: ['diep', 'Hồng. Ok. Sprint này mình gọi là "Pink Sprint". Chị ghi vào Confluence.'] },
   ] },
   { id: 'cold_brew', title: 'Pha cold brew cho anh Kevin trước call với quỹ', from: 'kevin', base: 45, legs: [
-    { npc: 'kevin', line: ['kevin', 'Em pha giúp anh ly cold brew. Không đường, ít đá. Anh có call với quỹ lúc 3 giờ, cần năng lượng founder.'] },
+    { npc: 'kevin', line: ['kevin', 'Em pha giúp anh ly cold brew. Không đường, ít đá. Anh sắp có call với quỹ, cần năng lượng founder.'] },
     { obj: 'coffee', line: ['nar', 'Pantry không có cold brew. Bạn pha cà phê gói, thêm đá, đổ vào ly thủy tinh cho trông đắt tiền.'] },
     { npc: 'kevin', line: ['kevin', 'Cold brew ngon! Thấy chưa, mình là startup nhưng chất lượng như Silicon Valley.'] },
   ] },
@@ -90,9 +90,9 @@ export const REVIEW = {
   ],
   D: [
     'Em có muốn tiếp tục ở Nợ Kỹ Thuật không? Chị hỏi thật, không phải câu tu từ, cũng không phải framework.',
-    'Ba việc trễ hạn trong một tuần. Velocity của em đang âm. Chị không biết velocity âm được.',
+    'Velocity tuần này của em đang âm. Chị không biết velocity âm được. Giờ thì biết.',
     'Chị sẽ ghi nhận. Theo nghĩa xấu. Có kèm timestamp.',
-    'Anh Kevin hỏi chị "bạn intern đó làm gì vậy". Chị không có câu trả lời. Đó là vấn đề.',
+    'Anh Kevin hỏi chị "bạn đó làm gì vậy". Chị không có câu trả lời. Đó là vấn đề.',
     'Tuần sau em và chị có 1:1 mỗi ngày. Mười lăm phút. Thật sự mười lăm phút.',
   ],
 };
@@ -150,13 +150,18 @@ export const ENDINGS = {
     if (r.flags.mau_inflated) return { title: 'Hết 45 ngày ở Nợ Kỹ Thuật Labs', text: 'Giấy xác nhận thực tập về đúng hạn. Một tuần sau, quỹ due diligence gửi email hỏi về "1.000.000 MAU". Người nhận CC: bạn.' };
     return { title: 'Hết 45 ngày ở Nợ Kỹ Thuật Labs', text: 'Giấy xác nhận thực tập ghi: "Hoàn thành tốt nhiệm vụ: Fix everything." Ticket NKT-1337 vẫn In Progress. Nó sẽ sống lâu hơn công ty.' };
   },
-  quit: { title: 'Bạn nghỉ việc ở Nợ Kỹ Thuật Labs', text: 'Bạn gửi email nghỉ việc lúc 17:59 thứ Sáu. Anh Kevin trả lời lúc 18:00: "Em đã cân nhắc kỹ chưa? Mình là một gia đình." Bạn đã cân nhắc. Gia đình thì không trả lương trễ.' },
+  // OFF_FINAL ends with 'quit' when the player resigned first (path_cto / path_tokyo / path_cv), else 'layoff'.
+  quit: (r) => {
+    const f = (r && r.flags) || {};
+    if (f.path_cto) return { title: 'Bạn rời Nợ Kỹ Thuật Labs: theo anh Thạc ra riêng', text: 'Công ty mới có sáu người, một cái router và không có ring light. Lương trả đúng ngày 5. Anh Thạc ngủ đủ tám tiếng. Trang đầu tiên trên wiki: "Rollback".' };
+    if (f.path_tokyo) return { title: 'Bạn rời Nợ Kỹ Thuật Labs: "đi đày" Tokyo', text: 'Sáu tháng onsite với Tanaka-san. Họp 30 phút kết thúc ở phút thứ 30. Bạn học được một chữ quý giá: "otsukaresama". Vất vả rồi.' };
+    if (f.path_cv && f.cv_sent) return { title: 'Bạn rời Nợ Kỹ Thuật Labs: nhảy việc', text: 'Bạn qua công ty của Tùng. Lương gấp rưỡi, không take-home, không LinkedIn. Trên bàn mới có một sticker: "It works on my machine".' };
+    if (f.path_cv) return { title: 'Bạn rời Nợ Kỹ Thuật Labs: nhảy việc', text: 'Bạn nhận offer qua headhunter. Lương trả đúng ngày, không ring light. Ngày đầu, bạn hỏi: "Trang Rollback ở đâu ạ?" Cả team quay lại nhìn bạn, đầy tôn trọng.' };
+    return { title: 'Bạn nghỉ việc ở Nợ Kỹ Thuật Labs', text: 'Bạn nộp đơn nghỉ ngay trong buổi quick sync. Chị Thảo vẫn ghi "tái cấu trúc" để bạn đủ quyền lợi. Gia đình thì không trả lương trễ.' };
+  },
   layoff: (r) => {
     const f = (r && r.flags) || {};
-    if (f.resigned_first && f.path_cto) return { title: 'Bạn rời Nợ Kỹ Thuật Labs: theo anh Thạc ra riêng', text: 'Công ty mới có sáu người, một cái router và không có ring light. Lương trả đúng ngày 5. Anh Thạc ngủ đủ tám tiếng. Trang đầu tiên trên wiki: "Rollback".' };
-    if (f.resigned_first && f.path_tokyo) return { title: 'Bạn rời Nợ Kỹ Thuật Labs: "đi đày" Tokyo', text: 'Sáu tháng onsite với Tanaka-san. Họp 30 phút kết thúc ở phút thứ 30. Bạn học được một chữ quý giá: "otsukaresama". Vất vả rồi.' };
-    if (f.resigned_first && f.path_cv) return { title: 'Bạn rời Nợ Kỹ Thuật Labs: nhảy việc', text: 'Bạn qua công ty của Tùng. Lương gấp rưỡi, không take-home, không LinkedIn. Trên bàn mới có một sticker: "It works on my machine".' };
-    if (f.path_ai) return { title: 'Nợ Kỹ Thuật Labs "right-size" lần hai', text: 'Bạn xin vào squad AI. Squad AI bị cắt một tuần sau. Anh Kevin đăng LinkedIn: "Những quyết định khó khăn nhất làm nên founder." Bạn bấm "unfollow".' };
+    if (f.path_ai) return { title: 'Nợ Kỹ Thuật Labs "right-size" lần hai', text: 'Bạn đã xin vào squad AI. Squad AI không cứu được bạn, và một tuần sau chính nó cũng bị cắt. Anh Kevin đăng LinkedIn: "Những quyết định khó khăn nhất làm nên founder." Bạn bấm "unfollow".' };
     return { title: 'Nợ Kỹ Thuật Labs "tái cấu trúc"', text: 'Anh Kevin gọi đây là "right-sizing for the future". Bạn gọi đây là thất nghiệp. Mèo 404 cọ vào chân bạn lần cuối, rồi biến mất. Như mọi khi.' };
   },
 };

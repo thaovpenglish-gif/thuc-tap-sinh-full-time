@@ -2,6 +2,8 @@
 import { STANDUP_POS, LUNCH_POS } from './episodes.js';
 
 const f = (k) => (r) => !!r.flags[k];
+const nf = (k) => (r) => !r.flags[k];
+const isWed = (r) => (r.day - 1) % 7 === 2;
 
 const EMOJI_MINI = {
   type: 'quiz', title: 'Dịch tiếng anh Lộc', icon: '🔥',
@@ -14,7 +16,7 @@ const EMOJI_MINI = {
 };
 const OKR_MINI = {
   type: 'pick', title: 'Viết Key Result cho "Siêu app số 1 Việt Nam"', icon: '🎯',
-  prompt: 'Quý còn 6 tuần, team còn 66 người. Chọn 2 KR đo được và làm được.', pick: 2, time: 30, pass: 0.5,
+  prompt: 'Quý còn 6 tuần, team thì mỏng. Chọn 2 KR đo được và làm được.', pick: 2, time: 30, pass: 0.5,
   items: [
     { text: 'Tăng tỉ lệ quay lại sau 30 ngày từ 18% lên 22%', correct: true },
     { text: 'Giảm crash trên Android cũ xuống dưới 1%', correct: true },
@@ -76,14 +78,14 @@ export const ROUTINE = [
     ['loc', '🔥🔥🔥 · 👀 · 🙏⏪'],
     { mini: EMOJI_MINI,
       good: [['loc', '👍👍'], ['nar', 'Anh Lộc giơ hai ngón cái. Bạn vừa đạt chứng chỉ "Lộc-ngữ" cấp 1.'], { fx: { uy: 2, rel: { loc: 2 } } }],
-      bad: [['loc', '🫠'], ['nar', 'Bạn tưởng anh Lộc đang ăn lẩu. Prod đã cháy 12 phút.'], { fx: { dr: 2 } }],
+      bad: [['loc', '🫠'], ['nar', 'Bạn dịch sai emoji của anh Lộc. Prod đã cháy 12 phút trước khi bạn hiểu ra.'], { fx: { dr: 2 } }],
     },
   ] },
-  { id: 'r_nguyet_late_bug', who: 'nguyet', obj: 'Chị Nguyệt tìm ra bug 30 phút trước release', time: '15:30', scene: [
+  { id: 'r_nguyet_late_bug', who: 'nguyet', obj: 'Chị Nguyệt tìm ra bug 30 phút trước release', time: '15:30', when: nf('tung_left'), scene: [
     ['nguyet', 'Em ơi, còn 30 phút release, chị tìm ra bug: thanh toán xong mà đơn vẫn "đang chờ". Chị reproduce được. Có video.'],
     ['tung', '(từ xa) Không phải bug, đó là "trạng thái trung gian".'],
     { c: '_r_tech_latebug', o: [
-      { t: 'Ủng hộ chị Nguyệt: dời release một tiếng.', fx: { uy: 2, rel: { nguyet: 2, tung: -1 } }, then: [['nguyet', 'Cảm ơn em. Dòng 215 trong file Excel: "trạng thái trung gian". Cột cuối: chắc chắn "Có".']] },
+      { t: 'Ủng hộ chị Nguyệt: dời release một tiếng.', fx: { uy: 2, rel: { nguyet: 2, tung: -1 } }, then: [['nguyet', 'Cảm ơn em. Chị ghi vào file "Không phải bug": dòng 215, "trạng thái trung gian". Cột "Sau này có phải bug": chắc chắn "Có".']] },
       { t: 'Giữ lịch release, ghi "known issue".', fx: { dr: 2, rel: { tung: 1 } }, then: [['nar', 'Hai tiếng sau, CS nhận 40 cuộc gọi: "Tôi trả tiền rồi sao đơn chưa chạy?".']] },
     ] },
   ] },
@@ -128,7 +130,7 @@ export const ROUTINE = [
     ['nar', 'PR #812 của bạn: 47 comment. "nit: đổi tên biến". "nit: thừa dấu cách". "nit: anh không thích chữ data". Mở được 9 ngày.'],
     { c: '_r_tech_nit', o: [
       { t: 'Hẹn anh Khải 15 phút, đề xuất tách PR làm ba.', fx: { uy: 3, rel: { khai: 2 } }, then: [['khai', 'Tách ba. Ok. Ba PR nhỏ, anh review trong một buổi chiều. Sao không ai làm vậy trước đây nhỉ.']] },
-      { t: 'Nhờ Tùng approve "cho nhanh".', fx: { dr: 3, rel: { khai: -2, tung: 1 } }, then: [['tung', 'LGTM 🚀'], ['khai', '(một tiếng sau, trong channel) Ai approve PR #812 mà không đọc?']] },
+      { t: 'Nhờ Tùng approve "cho nhanh".', when: nf('tung_left'), fx: { dr: 3, rel: { khai: -2, tung: 1 } }, then: [['tung', 'LGTM 🚀'], ['khai', '(một tiếng sau, trong channel) Ai approve PR #812 mà không đọc?']] },
       { t: 'Sửa hết 47 cái, không cãi.', fx: { nl: -8, uy: 1, rel: { khai: 1 } }, then: [['khai', 'Approve. Nit cuối: lần sau đừng sửa hết. Một nửa là anh viết lúc buồn.']] },
     ] },
   ] },
@@ -150,11 +152,11 @@ export const ROUTINE = [
   { id: 'r_interview_senior', who: 'diep', obj: 'Bị kéo vào phỏng vấn ứng viên Senior', time: '14:15', pos: { diep: 'meeting_head' }, scene: [
     ['diep', 'Thiếu người, em vào ngồi phỏng vấn cùng chị. Ứng viên mười năm kinh nghiệm. Em ghi chú "culture fit" giúp chị.'],
     { mini: INTERVIEW_MINI,
-      good: [['nar', 'Ứng viên trả lời câu hỏi sự cố prod rất hay. Cuối buổi anh hỏi: "Em là intern à? Câu hỏi tốt đấy."'], { fx: { uy: 3, rel: { diep: 1 } } }],
-      bad: [['nar', 'Bạn hỏi "Anh có growth mindset không?". Ứng viên mười năm kinh nghiệm nhìn bạn rất lâu.'], { fx: { dr: 2 } }],
+      good: [['nar', 'Ứng viên trả lời rất hay. Cuối buổi anh hỏi: "Em vào công ty bao lâu rồi? Câu hỏi tốt đấy."'], { fx: { uy: 3, rel: { diep: 1 } } }],
+      bad: [['nar', 'Câu hỏi của bạn làm ứng viên mười năm kinh nghiệm nhìn bạn rất lâu. Chị Diệp ghi gì đó vào sổ.'], { fx: { dr: 2 } }],
     },
   ] },
-  { id: 'r_wifi', who: 'hoa', obj: 'Wifi đổi mật khẩu, chỉ chị Hoa biết', time: '09:15', scene: [
+  { id: 'r_wifi', who: 'hoa', obj: 'Wifi đổi mật khẩu, chỉ chị Hoa biết', time: '09:15', when: (r) => !r.flags.loc_left && !r.flags.tung_left, scene: [
     ['nar', 'Wifi "NoKyThuat_5G" từ chối mọi người. Cả văn phòng phát 4G từ điện thoại. Tùng phát cho ba người.'],
     ['hoa', 'Chị đổi mật khẩu vì bảo mật. Mật khẩu mới là… chị ghi trong sổ. Sổ ở nhà.'],
     { c: '_r_tech_wifi', o: [
@@ -169,7 +171,7 @@ export const ROUTINE = [
       { t: 'Hỏi trong #general bánh của ai trước đã.', fx: { uy: 1, rel: { hoa: 1 } }, then: [['hoa', 'Bánh sinh nhật Mèo 404! Ba tuổi. Ăn đi mọi người, mèo không ăn kem.']] },
     ] },
   ] },
-  { id: 'r_staging_off', who: 'thao', obj: 'Chị Thảo muốn "tối ưu chi phí server"', time: '11:45', scene: [
+  { id: 'r_staging_off', who: 'thao', obj: 'Chị Thảo muốn "tối ưu chi phí server"', time: '11:45', when: nf('loc_left'), scene: [
     ['thao', 'Hóa đơn cloud tháng này cao. Server staging chạy 24/7. Em tắt nó buổi tối được không? Cho đỡ tốn.'],
     { c: '_r_tech_staging', o: [
       { t: 'Hỏi anh Lộc, đề xuất hẹn giờ tắt 22:00 – 7:00, trừ ngày release.', fx: { uy: 3, rel: { thao: 2, loc: 1 } }, then: [['loc', '⏰👍'], ['thao', 'Tiết kiệm 30%. Không ai chết. Chị muốn khóc vì hạnh phúc.']] },
@@ -186,12 +188,12 @@ export const ROUTINE = [
   { id: 'r_okr', who: 'obj:okr', obj: 'Anh Kevin nhờ viết lại Key Result', time: '10:15', scene: [
     ['nar', 'Bảng OKR: "O: Trở thành siêu app số 1 Việt Nam". Phía dưới trống trơn. Anh Kevin dán sticky note: "Em viết KR giúp anh nha 🚀".'],
     { mini: OKR_MINI,
-      good: [['diep', '(đi ngang) Tỉ lệ quay lại và crash Android. Đo được, làm được. Chị chép vào Notion OKR luôn.'], { fx: { uy: 3, rel: { diep: 2 } } }],
-      bad: [['kevin', '(đi ngang) "Tăng MAU 500%"! Đó! Tham vọng!'], ['nguyet', '(thì thầm) 500% của MAU nào? Của anh hay của dashboard?'], { fx: { rel: { kevin: 1 }, dr: 2 } }],
+      good: [['diep', '(đi ngang) KR này đo được, làm được. Lần đầu bảng OKR có thứ để đo. Chị chép vào Notion luôn.'], { fx: { uy: 3, rel: { diep: 2 } } }],
+      bad: [['kevin', '(đi ngang) KR gì mà khiêm tốn vậy em? Ghi thêm "Tăng MAU 500%" cho anh! Tham vọng!'], ['nguyet', '(thì thầm) 500% của MAU nào? Của anh hay của dashboard?'], { fx: { rel: { kevin: 1 }, dr: 2 } }],
     },
   ] },
-  { id: 'r_wellness', who: 'ngan', obj: 'Wellness Wednesday: yoga 15 phút', time: '16:00', pos: { ngan: 'meeting_head' }, scene: [
-    ['ngan', 'Wellness Wednesday! Yoga mười lăm phút trong phòng "Cơm Tấm". Thở vào: biết ơn. Thở ra: deadline.'],
+  { id: 'r_wellness', who: 'ngan', obj: 'Wellness Wednesday: yoga 15 phút', time: '16:00', pos: { ngan: 'meeting_head' }, when: isWed, scene: [
+    ['ngan', 'Wellness Wednesday! Yoga mười lăm phút trong phòng "Bún Bò". Thở vào: biết ơn. Thở ra: deadline.'],
     { c: '_r_tech_yoga', o: [
       { t: 'Tham gia hết mình.', fx: { nl: 8, rel: { ngan: 2 } }, then: [['nar', 'Tư thế "chó úp mặt". Điện thoại rung: #incident. Bạn thở ra rất dài.']] },
       { t: 'Xin phép làm nốt ticket.', fx: { uy: 1, rel: { ngan: -1 } }, then: [['ngan', 'Ok em. Nhưng nhớ: burnout không có story point.']] },
@@ -248,7 +250,7 @@ export const ROUTINE = [
       { t: '"Vy hỏi thẳng anh ấy đi. Về design system."', fx: { rel: { vy: 1, khai: 1 } }, then: [['nar', 'Chiều đó anh Khải comment trên Figma của Vy lần đầu tiên: "đẹp". Vy chụp màn hình 4 lần.']] },
     ] },
   ] },
-  { id: 'r_coffee_machine', who: 'obj:coffee', obj: 'Máy pha cà phê có tờ giấy lạ', time: '09:50', scene: [
+  { id: 'r_coffee_machine', who: 'obj:coffee', obj: 'Máy pha cà phê có tờ giấy lạ', time: '09:50', when: nf('loc_left'), scene: [
     ['nar', 'Máy pha cà phê dán nhãn: "BEDROCK INFRASTRUCTURE · KHÔNG ĐƯỢC TẮT · Lộc". Bên dưới: "Nếu nó chết, công ty chết."'],
     { c: '_r_tech_machine', o: [
       { t: 'Pha một ly, rửa luôn bình cho mọi người.', fx: { nl: 12, rel: { loc: 1, hoa: 1 } }, then: [['loc', '☕❤️']] },
@@ -257,7 +259,7 @@ export const ROUTINE = [
   ] },
   // official-only beats
   { id: 'r_off_pager', who: 'obj:desk', obj: 'Pager kêu giữa giờ trưa', time: '12:30', official: true, scene: [
-    ['nar', 'Pager: "Độ trễ thanh toán 2,4 giây". Bạn đang ăn dở hộp cơm. Bạn là on-call. Không còn ai để gọi "🔥".'],
+    ['nar', 'Pager: "Độ trễ thanh toán 2,4 giây". Bạn đang ăn dở hộp cơm. Bạn là on-call. Giờ người nhận "🔥" là bạn.'],
     { c: '_r_tech_offpager', o: [
       { t: 'Bỏ cơm, xử lý theo runbook.', fx: { nl: -8, uy: 3, rel: { thac: 1 } }, then: [['nar', '12:51 ổn định. Cơm nguội. Đây là cảm giác "chính thức".']] },
       { t: 'Ăn nốt 3 phút rồi xử lý.', fx: { nl: 5, dr: 1 }, then: [['nar', 'Ba phút. Độ trễ lên 3,1 giây. Anh Kevin nhắn: "app chậm à em?". Bạn nuốt miếng cơm cuối như nuốt một ticket.']] },

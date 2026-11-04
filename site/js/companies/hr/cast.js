@@ -22,6 +22,7 @@ export const CAST = {
   bach: { name: 'Bách', role: 'Business Development · "chắc kèo"', emoji: '🤝', color: '#bfe3ff', spot: 'n1',
     look: { shirt: '#bfe3ff', pants: '#2d3e5a', hair: 'short', hairColor: '#1d1d1f', tie: '#2d3e8a', phone: true } },
   phat: { name: 'Phát', role: 'Consultant · kiêm "IT" của cái ATS', emoji: '🗂️', color: '#aeb7c9', spot: 'it',
+    present: (r) => !(r.flags && r.flags.phat_left),
     look: { shirt: '#aeb7c9', pants: '#3a3a4a', hair: 'beanie', hairColor: '#1d1d1f', pods: true } },
   quan: { name: 'Quân', role: 'Intern #2 · vào trước bạn một tuần', emoji: '⚡', color: '#a8dcc0', spot: 'c3',
     look: { shirt: '#a8dcc0', pants: '#5b6b9a', hair: 'cap', hairColor: '#1d1d1f', tote: true } },

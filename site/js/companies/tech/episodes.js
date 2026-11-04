@@ -33,7 +33,7 @@ const CONFLUENCE_MINI = {
 };
 const TICKET_MINI = {
   type: 'pick', title: 'NKT-1337: "Fix everything before launch"', icon: '🎫',
-  prompt: 'Anh Kevin vừa nói 9 thứ. Chọn 4 việc tách được thành ticket làm xong trước launch.', pick: 4, time: 40, pass: 0.75,
+  prompt: 'Anh Kevin vừa nói 8 thứ. Chọn 4 việc tách được thành ticket làm xong trước launch.', pick: 4, time: 40, pass: 0.75,
   items: [
     { text: 'Sửa crash khi bấm "Thanh toán" bằng ví', correct: true },
     { text: 'Giảm thời gian load trang chủ từ 3 giây', correct: true },
@@ -51,7 +51,7 @@ const POKER_MINI = {
   questions: [
     { q: 'Đổi màu nút "Đặt hàng". Không đụng logic.', options: ['1', '8', '13'], correct: 0 },
     { q: 'Thanh toán trả góp qua ví. Chưa có đối tác ngân hàng.', options: ['3', '5', '"?" — cần spike tìm hiểu trước'], correct: 2 },
-    { q: 'AI gợi ý thực đơn. Anh Kevin: "chừng hai tiếng".', options: ['2 (theo anh Kevin)', 'Tách nhỏ trước, chưa estimate được', '1, vì anh Kevin nhìn'], correct: 1 },
+    { q: 'AI gợi ý thực đơn. Anh Kevin: "chừng hai tiếng".', options: ['2 (theo anh Kevin)', '13: phải tách nhỏ trước, chưa estimate chắc được', '1, vì anh Kevin nhìn'], correct: 1 },
   ],
 };
 const BUGREPORT_MINI = {
@@ -90,7 +90,7 @@ const MAU_MINI = {
 };
 const UIBUG_MINI = {
   type: 'order', title: 'Checklist UI bug (có ưu tiên)', icon: '📐',
-  prompt: 'Sắp xếp từ quan trọng nhất đến "để sprint sau".', time: 30, pass: 0.75,
+  prompt: 'Xếp theo luật chị Diệp: chặn thanh toán > sai thông tin > sai màu thương hiệu > lệch pixel > trang trí.', time: 30, pass: 0.75,
   items: [
     { text: 'Nút "Thanh toán" bị che trên màn nhỏ', order: 0 },
     { text: 'Sai màu nút chính (#FF6B6C thay vì #FF6B6B)', order: 2 },
@@ -124,7 +124,7 @@ const HACK_MINI = {
 // ---------------------------------------------------------------- Day 1
 const ONBOARDING = {
   id: 'onboarding', day: 1, title: 'Onboarding (Confluence 2022)',
-  intro: 'Thứ Hai, 8:30. Ngày đầu tiên ở Nợ Kỹ Thuật Labs.\n\nTrong túi bạn có: một bản NDA, mật khẩu wifi "FixLater!", và lời dặn của Tùng: "Không deploy chiều thứ Sáu."\n\nNgoài việc chính, các anh chị sẽ nhờ bạn vài việc vặt. Xem danh sách ở góc màn hình, làm kịp giờ thì được ghi nhận.',
+  intro: 'Thứ Hai, 8:30. Ngày đầu tiên ở Nợ Kỹ Thuật Labs.\n\nTrong túi bạn có: một bản NDA, một sticker "Flat. Fast. Fun." từ buổi phỏng vấn, và lời dặn của Tùng: "Không deploy chiều thứ Sáu."\n\nNgoài việc chính, các anh chị sẽ nhờ bạn vài việc vặt. Xem danh sách ở góc màn hình, làm kịp giờ thì được ghi nhận.',
   steps: [
     {
       who: 'hoa', obj: 'Tới lễ tân nhận thẻ và chỗ ngồi', time: '08:30',
@@ -185,7 +185,7 @@ const ONBOARDING = {
         ['me', 'Dạ, có tài liệu kiến trúc hệ thống không anh?'],
         ['khai', 'It depends. Có một trang Confluence. Viết năm 2022. Một nửa đúng. Em tự đoán nửa nào.'],
         { mini: CONFLUENCE_MINI,
-          good: [['khai', 'Đúng ba cái còn sống. Trang Rollback là trang anh viết lúc 3 giờ sáng. Nó chưa bao giờ sai.'], { fx: { uy: 2, rel: { khai: 2 }, set: { read_runbook: true } } }],
+          good: [['khai', 'Em lọc ra được mấy cái còn sống. Trang Rollback là trang anh viết lúc 3 giờ sáng. Nó chưa bao giờ sai.'], { fx: { uy: 2, rel: { khai: 2 }, set: { read_runbook: true } } }],
           bad: [['khai', 'Anh Phong nghỉ năm 2023 rồi em. Lương tháng 13 cũng nghỉ cùng năm đó.'], { fx: { nl: -3 } }],
         },
         { c: 'tech_d1_mentor', o: [
@@ -273,7 +273,7 @@ const ONBOARDING = {
     b.push(s.flags.read_runbook ? 'Mình đã đọc trang Rollback. Anh Khải bảo nó chưa bao giờ sai.' : 'Confluence viết năm 2022. Mình chưa biết nửa nào còn đúng.');
     if (s.flags.idea_backlog) b.push('Ý tưởng "hai tiếng" của anh Kevin nằm yên trong backlog.');
     if (s.flags.idea_yes) b.push('Mình nhận làm AI gợi ý thực đơn. Hai tiếng. Chắc vậy.');
-    return `Ngày 1. ${b.join(' ')} Stand-up mười lăm phút kéo dài bốn mươi bảy phút. Anh Lộc nói với mình bốn emoji.`;
+    return `Ngày 1. ${b.join(' ')} Stand-up mười lăm phút kéo dài bốn mươi bảy phút. Anh Lộc nói chuyện với mình hoàn toàn bằng emoji.`;
   },
 };
 
@@ -302,9 +302,9 @@ const FIX_EVERYTHING = {
       scene: [
         ['kevin', 'Everything là everything em ạ! App chậm. Logo nhỏ. Nút đặt hàng chưa "wow". Dark mode. Và AI.'],
         ['kevin', 'Thanh toán bằng ví thỉnh thoảng crash. Chữ "Đặt hàg" thiếu chữ n. Và mình phải trở thành siêu app. Làm hết nha.'],
-        ['think', 'Chín việc. Ba việc là việc thật. Một việc là tầm nhìn. Một việc là chính tả.'],
+        ['think', 'Tám việc. Ba việc là việc thật. Một việc là tầm nhìn. Một việc là chính tả.'],
         { mini: TICKET_MINI,
-          good: [['think', 'Bốn ticket làm được trước launch. Phần còn lại là… cảm xúc của anh Kevin.'], { fx: { uy: 3, set: { ticket_clear: true } } }],
+          good: [['think', 'Mấy ticket làm được trước launch. Phần còn lại là… cảm xúc của anh Kevin.'], { fx: { uy: 3, set: { ticket_clear: true } } }],
           bad: [['think', 'Mình ghi "Làm app wow hơn" vào ticket. Không ai biết "wow" estimate bao nhiêu point.'], { fx: { nl: -4 } }],
         },
       ],
@@ -350,7 +350,7 @@ const FIX_EVERYTHING = {
       call: { title: 'Kevin <> Intern · "quick call 2 phút"', people: ['kevin', 'diep', 'me'] },
       scene: [
         { if: f('ticket_split'), then: [
-          ['kevin', 'Sao ticket của anh thành 6 ticket vậy em? Anh giao một việc thôi mà.'],
+          ['kevin', 'Sao ticket của anh thành 5 ticket vậy em? Anh giao một việc thôi mà.'],
           { c: 'tech_fix_kevin', o: [
             { t: '"Dạ để đo được tiến độ ạ. Anh sẽ thấy cái nào xong trước launch."', fx: { uy: 2, rel: { kevin: 1 } }, then: [
               ['kevin', 'Đo được tiến độ. Hmm. Anh thích chữ "đo được". Nghe như số liệu cho nhà đầu tư.'],
@@ -371,13 +371,13 @@ const FIX_EVERYTHING = {
       ],
     },
   ],
-  diary: (s) => s.flags.ticket_split ? 'Ticket "Fix everything" thành 6 ticket có tiêu chí xong. Chị Diệp gọi mình là "intern hiểu chuyện". Mình hiểu chuyện, nhưng chưa hiểu anh Kevin.'
+  diary: (s) => s.flags.ticket_split ? 'Ticket "Fix everything" thành 5 ticket có tiêu chí xong. Chị Diệp gọi mình là "intern hiểu chuyện". Mình hiểu chuyện, nhưng chưa hiểu anh Kevin.'
     : 'Ticket "Fix everything" vẫn nằm đó, assignee là mình. Chị Nguyệt nói crash ví là có thật. Hơi lo.',
 };
 
 const PLANNING_POKER = {
   id: 'planning_poker', day: 8, title: 'Sprint Planning & poker',
-  intro: 'Thứ Hai. Sprint mới. Sprint Planning dự kiến 2 tiếng, trong phòng "Phở", máy lạnh hỏng.\n\nTrên bàn có một bộ bài planning poker. Lá "13" bị mòn nhất. Lá "?" còn mới tinh.',
+  intro: 'Thứ Hai. Sprint mới. Sprint Planning dự kiến 2 tiếng, trong phòng "Bún Bò", máy lạnh hỏng.\n\nTrên bàn có một bộ bài planning poker. Lá "13" bị mòn nhất. Lá "?" còn mới tinh.',
   steps: [
     {
       who: 'diep', obj: '9:30 Sprint Planning ở phòng họp', time: '09:30', pos: { diep: 'meeting_head', khai: 'mr_n1', tung: 'mr_n2' },
@@ -386,13 +386,13 @@ const PLANNING_POKER = {
         ['khai', 'It depends.'],
         ['diep', 'Mình poker từng ticket. {ten}, em ngồi đây, giơ bài cùng mọi người nha. Không ai cười đâu.'],
         { mini: POKER_MINI,
-          good: [['khai', 'Em giơ "?" cho ticket trả góp. Đúng. Không biết thì nói không biết. Đa số senior không dám.'], { fx: { uy: 3, rel: { khai: 2 } } }],
-          bad: [['nar', 'Bạn giơ "2" cho ticket AI. Cả phòng nhìn bạn như nhìn một người vừa hứa hộ cả team.'], { fx: { dr: 2, rel: { tung: -1 } } }],
+          good: [['khai', 'Em dám giơ "?" và "13" khi chưa biết. Không biết thì nói không biết. Đa số senior không dám.'], { fx: { uy: 3, rel: { khai: 2 } } }],
+          bad: [['nar', 'Bài của bạn lệch cả bàn. Cả phòng nhìn bạn như nhìn một người vừa hứa hộ cả team.'], { fx: { dr: 2, rel: { tung: -1 } } }],
         },
         ['nar', 'Cửa mở. Anh Kevin bước vào, tay cầm ly cà phê cold brew.'],
         ['kevin', 'AI gợi ý thực đơn ai giơ 13 vậy? Hai tiếng thôi mà. Mình là startup, mình phải nhanh!'],
         { c: 'tech_poker', o: [
-          { t: 'Giữ lá 13, giải thích: chưa có dữ liệu, chưa có thiết kế.', fx: { uy: 4, rel: { kevin: -1, khai: 2, diep: 1 }, set: { poker_honest: true } }, then: [
+          { t: 'Bênh lá 13, giải thích: chưa có dữ liệu, chưa có thiết kế.', fx: { uy: 4, rel: { kevin: -1, khai: 2, diep: 1 }, set: { poker_honest: true } }, then: [
             ['kevin', 'Hmm. Em nói như CTO vậy. Ok, để anh nghĩ.'],
             ['khai', '(gõ vào Slack riêng cho bạn) cảm ơn.'],
           ] },
@@ -458,7 +458,7 @@ const PLANNING_POKER = {
       ],
     },
   ],
-  diary: (s) => `Sprint Planning hai tiếng thành ba tiếng mười phút. ${s.flags.poker_honest ? 'Mình giữ lá 13 trước mặt anh Kevin. Anh Khải nhắn "cảm ơn".' : s.flags.poker_spike ? 'Mình đề xuất "spike". Anh Kevin nghĩ đó là tên một con chó.' : 'Mình hạ xuống 3 point. Tùng nhìn mình hơi lâu.'} Lá "?" vẫn còn mới tinh.`,
+  diary: (s) => `Sprint Planning hai tiếng thành ba tiếng mười phút. ${s.flags.poker_honest ? 'Mình bênh lá 13 trước mặt anh Kevin. Anh Khải nhắn "cảm ơn".' : s.flags.poker_spike ? 'Mình đề xuất "spike". Anh Kevin nghĩ đó là tên một con chó.' : 'Mình hạ xuống 3 point. Tùng nhìn mình hơi lâu.'} Lá "?" vẫn còn mới tinh.`,
 };
 
 const CANNOT_REPRO = {
@@ -468,7 +468,7 @@ const CANNOT_REPRO = {
     {
       who: 'nguyet', obj: 'Qua bàn chị Nguyệt nhận việc QA', time: '09:00',
       scene: [
-        ['nguyet', 'Hôm nay em chạy regression cho bản release thứ Sáu. 140 test case. Chị tin em.'],
+        ['nguyet', 'Hôm nay em chạy regression cho bản release thứ Năm. 140 test case. Chị tin em.'],
         ['nar', 'Test case thứ 37. Máy số 5. Bạn chọn ví, bấm "Thanh toán". App tắt cái phụt, về màn hình chính.'],
         ['nguyet', 'Đó. Máy số 5. Lần thứ tư. Dev đóng ticket "Cannot reproduce" ba lần rồi.'],
         { if: f('know_crash'), then: [['think', 'Đúng cái crash ví chị Nguyệt nói hôm trước. Nó có thật.']] },
@@ -486,7 +486,7 @@ const CANNOT_REPRO = {
         ['nar', 'Bạn mở Jira. Ticket cũ NKT-882 đã bị đóng ba lần. Comment cuối của Tùng: "Cannot reproduce. Trên máy em chạy được."'],
         { mini: BUGREPORT_MINI,
           good: [['nguyet', '(đọc qua vai bạn) Có thiết bị, có bước, có video, có log. Ticket này không ai đóng được nữa.'], { fx: { uy: 3, rel: { nguyet: 2 }, set: { bug_report_ok: true } } }],
-          bad: [['nguyet', 'Thiếu thiết bị rồi em. Không ghi Android 9 là Tùng thử trên iPhone rồi đóng tiếp.'], { fx: { nl: -3 } }],
+          bad: [['nguyet', 'Lộn thứ tự rồi em. Report mà đọc không ra thiết bị với các bước là Tùng thử trên iPhone rồi đóng tiếp.'], { fx: { nl: -3 } }],
         },
       ],
     },
@@ -515,9 +515,9 @@ const CANNOT_REPRO = {
       ],
     },
     {
-      who: 'diep', obj: 'Chị Diệp chốt danh sách release thứ Sáu', time: '15:30',
+      who: 'diep', obj: 'Chị Diệp chốt danh sách release thứ Năm', time: '15:30',
       scene: [
-        ['diep', 'Release thứ Sáu gồm: giỏ hàng mới, logo to hơn 10%, và… em xác nhận giúp chị trạng thái crash ví.'],
+        ['diep', 'Release thứ Năm gồm: giỏ hàng mới, logo to hơn 10%, và… em xác nhận giúp chị trạng thái crash ví.'],
         { if: (r) => r.flags.crash_proved || r.flags.crash_escalated, then: [
           ['me', 'Đã có bản sửa, chị Nguyệt test lại sáng mai ạ.'],
           ['diep', 'Tốt. Ghi vào release note: "Sửa lỗi thanh toán trên một số thiết bị". Một số. Mình không nói tám phần trăm.'],
@@ -576,7 +576,7 @@ const FRIDAY_DEPLOY = {
       scene: [
         ['thac', 'Em là intern đang chạy regression đúng không. Chiều nay có gì thì em vào #incident. Và đọc trang Rollback.'],
         { if: (r) => r.flags.read_runbook || r.flags.tung_tips, then: [
-          ['me', 'Dạ em đọc rồi ạ. Trang của anh Khải viết lúc 3 giờ sáng.'],
+          ['me', 'Dạ em đọc rồi ạ. Trang viết năm 2022 mà vẫn đúng.'],
           ['thac', '…Em đọc rồi? Ok. Em là người thứ ba trong công ty đọc trang đó.'],
           { fx: { rel: { thac: 2 } } },
         ], else: [
@@ -629,13 +629,17 @@ const FRIDAY_DEPLOY = {
                 { fx: { uy: 7, rel: { thac: 3, khai: 1 }, set: { deploy_rollback: true } } },
               ],
               bad: [
-                ['nar', 'Bạn chọn nhầm bản. Mất thêm mười phút. Anh Lộc vào làm nốt, gửi một emoji 😮‍💨.'],
+                ['nar', 'Bạn làm lộn một bước, redeploy nhầm bản. Mất thêm mười phút. Anh Lộc vào làm nốt, gửi một emoji 😮‍💨.'],
                 ['thac', 'Có làm là tốt. Lần sau đọc kỹ tên bản.'],
-                { fx: { uy: 2, rel: { thac: 1 }, set: { deploy_owned: true } } },
+                { fx: { uy: 2, rel: { thac: 1 }, set: { deploy_owned: true, rollback_fail: true } } },
               ],
             },
           ] },
-          { t: '"Em bấm ạ. Log cho thấy bản này gồm code giỏ hàng mới."', fx: { uy: 4, rel: { thac: 2, tung: -1 }, set: { deploy_owned: true } }, then: [
+          { t: '"Em bấm ạ. Log cho thấy bản này gồm code giỏ hàng mới."', when: f('deploy_pressed'), fx: { uy: 4, rel: { thac: 2, tung: -1 }, set: { deploy_owned: true } }, then: [
+            ['thac', 'Cảm ơn. Nói thẳng là đỡ mất hai mươi phút tra log. Lộc, rollback.'],
+            ['loc', '👍 ⏪'],
+          ] },
+          { t: '"Tùng bấm lúc 17:02 ạ, em ở đó. Bản này gồm code giỏ hàng mới."', when: nf('deploy_pressed'), fx: { uy: 4, rel: { thac: 2, tung: -1 }, set: { deploy_owned: true } }, then: [
             ['thac', 'Cảm ơn. Nói thẳng là đỡ mất hai mươi phút tra log. Lộc, rollback.'],
             ['loc', '👍 ⏪'],
           ] },
@@ -660,13 +664,14 @@ const FRIDAY_DEPLOY = {
     },
   ],
   diary: (s) => s.flags.deploy_rollback ? 'Mình rollback prod lúc 17:31 thứ Sáu theo trang Confluence năm 2022. Anh Thạc nhắn "cảm ơn". Mình sẽ nhớ cảm giác này.'
-    : s.flags.deploy_owned ? 'Mình nhận là mình bấm deploy. Anh Thạc bảo nói thẳng đỡ mất hai mươi phút. Tùng nợ mình một ly trà sữa.'
+    : s.flags.rollback_fail ? 'Mình thử rollback theo Confluence, lộn một bước, anh Lộc làm nốt. Anh Thạc bảo có làm là tốt. Lần sau mình sẽ đọc kỹ tên bản.'
+    : s.flags.deploy_owned ? `${s.flags.deploy_pressed ? 'Mình nhận là mình bấm deploy.' : 'Mình nói thẳng ai bấm deploy.'} Anh Thạc bảo nói thẳng đỡ mất hai mươi phút. Tùng nợ mình một ly trà sữa.`
     : 'Mình im lặng trong #incident. Anh Thạc tự tra log. Mình học được: câu "ai deploy?" cần trả lời trong một phút.',
 };
 
 const MAU_RECALC = {
   id: 'mau_recalc', day: 15, title: 'Tính lại MAU',
-  intro: 'Thứ Hai. Sáng mai anh Kevin gặp quỹ Hạt Giống Ventures để chốt Series B.\n\nSlide số 3 ghi: "MAU: 1.000.000+". Dashboard của team Data ghi: 212.418.\n\nTuần này bạn được luân chuyển sang Data.',
+  intro: 'Thứ Hai. Demo sáng nay xong, anh Kevin hẹn quỹ Hạt Giống Ventures sáng mai để chốt Series B.\n\nSlide số 3 ghi: "MAU: 1.000.000+". Dashboard của team Data ghi: 212.418.\n\nTuần này bạn được luân chuyển sang Data.',
   steps: [
     {
       who: 'kevin', obj: 'Anh Kevin gọi vào phòng CEO', time: '09:00',
@@ -686,7 +691,7 @@ const MAU_RECALC = {
         ['nar', 'Bảng "users" có 3,4 triệu dòng. Bảng "events" có 900 triệu dòng. Bảng "definitions" có đúng một dòng: "MAU = (hỏi anh Kevin)".'],
         { mini: MAU_MINI,
           good: [['think', 'Định nghĩa chuẩn: 212.418. Nếu cộng cả người chỉ nhận push: 1.038.552. Hai con số. Một sự thật.'], { fx: { uy: 3, set: { mau_sql_ok: true } } }],
-          bad: [['think', 'Mình lỡ đếm cả 280 tài khoản test của chị Nguyệt. Ra 212.698. Gần đúng. Gần.'], { fx: { nl: -3 } }],
+          bad: [['think', 'Mình lỡ đếm lẫn một nhóm không được tính. Con số lệch đi. Gần đúng. Gần.'], { fx: { nl: -3 } }],
         },
         { if: f('poker_spike'), then: [['think', 'Bảng "events" này cũng chính là dữ liệu cho cái spike AI gợi ý món. Hai việc, một nỗi buồn.']] },
       ],
@@ -756,7 +761,7 @@ const FIGMA_WAR = {
       who: 'vy', obj: 'Vy gọi bạn qua xem màn checkout', time: '09:45',
       scene: [
         ['vy', 'Bạn nhìn đi. Nút thanh toán lệch 4px. Màu sai một mã hex. Chị Diệp bảo "không ai để ý". Mình để ý!'],
-        ['vy', 'Mình có tag bạn vì bạn là người duy nhất từng hỏi mình về vụ 2px. Bạn hiểu mà.'],
+        ['vy', 'Mình tag bạn vì bạn là người duy nhất chưa cãi với mình trong thread này. Bạn hiểu mà.'],
         { if: f('tie_vy_khai'), then: [['nar', 'Trên màn hình phụ của Vy là cửa sổ chat với anh Khải. Tin cuối: "anh thấy màu này ổn không ạ 🥺". Chưa xem.']] },
         { c: 'tech_figma_vy', o: [
           { t: '"Mình thấy rồi. Để mình gom hết lỗi lại cho rõ."', fx: { uy: 1, rel: { vy: 1 } }, then: [['vy', 'Gom lại? Ok… miễn là đừng gom mất cái animation của mình.']] },
@@ -768,8 +773,8 @@ const FIGMA_WAR = {
       who: 'diep', obj: 'Chị Diệp muốn "align" về thread Figma', time: '10:45',
       scene: [
         ['diep', 'Chị chấm theo RICE. Reach: mọi người. Impact: 0,3. Confidence: thấp. Effort: Vy muốn làm lại cả màn. Điểm: gần bằng không.'],
-        ['diep', 'Chị không ghét design. Chị ghét làm lại cả màn khi giỏ hàng còn crash.'],
-        { if: f('crash_ignored'), then: [['think', 'Giỏ hàng còn crash. Trên Android 9. Cái mình bỏ qua.']] },
+        ['diep', 'Chị không ghét design. Chị ghét làm lại cả màn khi checkout còn cả đống bug thật.'],
+        { if: f('crash_ignored'), then: [['think', 'Thanh toán bằng ví vẫn crash trên Android 9. Cái mình bỏ qua.']] },
         { c: 'tech_figma_diep', o: [
           { t: '"Có lỗi nào trong thread ảnh hưởng thanh toán không ạ? Mình ưu tiên mấy cái đó."', fx: { uy: 2, rel: { diep: 2 } }, then: [['diep', 'Câu hỏi đúng. Có. Nút bị che trên màn nhỏ. Cái đó chị không cãi.']] },
           { t: '"Chị nói đúng, 4px không ai thấy."', fx: { rel: { diep: 1, vy: -1 } }, then: [['diep', 'Cảm ơn. Đừng nói câu đó gần Vy. Ở gần Vy, 4px là vấn đề đạo đức.']] },
@@ -793,7 +798,7 @@ const FIGMA_WAR = {
           { t: 'Gom thành checklist UI bug có ưu tiên, gửi cả ba người.', fx: { nl: -4 }, then: [
             { mini: UIBUG_MINI,
               good: [['nar', 'Chị Diệp thả ❤️. Vy thả ❤️. Tùng thả 👍. Lần đầu tiên thread có ba emoji giống nhau.'], { fx: { uy: 5, rel: { diep: 2, vy: 1, tung: 1 }, set: { ui_checklist: true } } }],
-              bad: [['nar', 'Bạn để animation confetti lên đầu. Chị Diệp gửi một dấu chấm hỏi. Vy gửi mười trái tim.'], { fx: { rel: { vy: 2, diep: -1 } } }],
+              bad: [['nar', 'Checklist xếp lộn ưu tiên. Chị Diệp gửi một dấu chấm hỏi. Vy gửi mười trái tim, cho chắc.'], { fx: { rel: { vy: 2, diep: -1 } } }],
             },
           ] },
           { t: 'Đứng về phía Vy: làm lại pixel-perfect.', fx: { rel: { vy: 3, tung: -2, diep: -1 }, set: { side_vy: true } }, then: [
@@ -974,7 +979,7 @@ const HACKATHON = {
         ['nar', 'Bảng trắng ghi: "MVP: Minimum Viable Product". Ai đó sửa thành "Minimum Vừa đủ Pizza".'],
         { mini: HACK_MINI,
           good: [['nar', 'Bản demo chạy: mời người nhà bằng link, thêm món, một người thanh toán. Đơn giản. Ai cũng hiểu.'], { fx: { uy: 4, set: { hack_mvp: true } } }],
-          bad: [['nar', 'Bạn dành ba tiếng làm giỏ hàng 3D xoay được. Nó xoay rất đẹp. Nó không thanh toán được.'], { fx: { nl: -5 } }],
+          bad: [['nar', 'Bạn dành ba tiếng cho một tính năng "wow". Nó rất đẹp. Nó không thanh toán được.'], { fx: { nl: -5 } }],
         },
       ],
     },
@@ -1113,7 +1118,7 @@ const JP_MINI = {
     { q: '"お世話になっております" ở đầu mail nghĩa là…', options: ['Lời chào công việc lịch sự, mail nào cũng có', 'Khách đang rất giận', 'Khách mời đi nhậu'], correct: 0 },
     { q: 'Tanaka-san nói "検討します" (kentou shimasu: sẽ cân nhắc). Thường nghĩa là…', options: ['Đồng ý', 'Không, nhưng lịch sự', 'Mai trả lời'], correct: 1 },
     { q: '"残念です" (zannen desu) trong mail khách nghĩa là…', options: ['Hơi tiếc, không sao', 'Khách rất không hài lòng', 'Khách khen'], correct: 1 },
-    { q: '"Hourensou" là…', options: ['Một loại rau', 'Báo cáo, liên lạc, thảo luận', 'Cả hai'], correct: 2 },
+    { q: '"Hourensou" là…', options: ['Một kiểu cúi chào 45 độ', 'Báo cáo, liên lạc, thảo luận', 'Tên quán ramen gần văn phòng khách'], correct: 1 },
   ],
 };
 const BLAME_MINI = {
@@ -1124,7 +1129,7 @@ const BLAME_MINI = {
     { text: 'fix: typo trong comment', sub: 'Tùng · 3 tuần trước · 1 dòng' },
     { text: 'feat: áp voucher trước khi tính phí ship (tạm)', sub: 'Khải · 2022 · 3:12 sáng', correct: true },
     { text: 'chore: bump version', sub: 'Bot · tuần trước' },
-    { text: 'wip', sub: 'Khải · 2022 · 3:40 sáng' },
+    { text: 'wip', sub: 'Khải · 2022 · 3:40 sáng · chỉ sửa README' },
   ],
 };
 const STORE_MINI = {
@@ -1132,8 +1137,8 @@ const STORE_MINI = {
   prompt: 'App Store từ chối vì thiếu nút xóa tài khoản. KOL đăng lúc 20:00. Làm đúng thứ tự.', time: 30, pass: 0.8,
   items: [
     { text: 'Thêm nút "Xóa tài khoản" trong Cài đặt', order: 0 },
-    { text: 'Chị Nguyệt test luồng xóa trên 2 máy', order: 1 },
-    { text: 'Build bản mới, tăng số phiên bản', order: 2 },
+    { text: 'Chị Nguyệt test luồng xóa trên 2 máy (bản dev)', order: 1 },
+    { text: 'Build bản phát hành, tăng số phiên bản', order: 2 },
     { text: 'Nộp lại kèm ghi chú cho người duyệt', order: 3 },
     { text: 'Xin xét duyệt nhanh, báo Duy dời giờ KOL nếu cần', order: 4 },
   ],
@@ -1153,7 +1158,7 @@ const AI_MINI = {
 
 const QUICK_SYNC = {
   id: 'quick_sync', day: 24, title: '"Quick sync 15 phút"',
-  intro: 'Thứ Tư, 8:47. Lịch của bạn có một cuộc họp mới: "Quick sync 15 phút" với chị Ngân, 9:00, phòng "Cơm Tấm". Không mô tả.\n\nTrên Slack, avatar của 12 người trong #squad-growth vừa chuyển sang màu xám: "deactivated".',
+  intro: 'Thứ Tư, 8:47. Lịch của bạn có một cuộc họp mới: "Quick sync 15 phút" với chị Ngân, 9:00, phòng "Bún Bò". Không mô tả.\n\nTrên Slack, avatar của 12 người trong #squad-growth vừa chuyển sang màu xám: "deactivated".',
   noReview: true,
   steps: [
     {
@@ -1200,7 +1205,7 @@ const QUICK_SYNC = {
       scene: [
         ['nar', 'Dãy bàn Growth trống. Chỉ còn Duy, một cây xương rồng, và cái standee "We\'re hiring!".'],
         ['duy', 'Anh được giữ lại. Em biết vì sao không? Vì anh book 5 KOL cho Giỏ Chung rồi. Công ty giữ anh để… hủy KOL. Hoặc không hủy.'],
-        ['duy', 'Team anh 12 người. Giờ còn anh. "Ship nhanh, test sau". Họ ship luôn cả tụi anh.'],
+        ['duy', 'Team anh 13 người. Giờ còn anh. "Ship nhanh, test sau". Họ ship luôn cả tụi anh.'],
         { c: 'tech_duy_human', o: [
           { t: 'Ngồi xuống, giúp Duy gửi thư giới thiệu cho từng bạn trong team.', fx: { nl: -6, rel: { duy: 3 }, uy: 1 }, then: [
             ['duy', 'Em… ừ. Làm cái đó đi. Anh viết, em kiểm tra chính tả. Anh hay viết "Đặt hàg".'],
@@ -1252,8 +1257,8 @@ const OUTSOURCING = {
         ['hieu', 'Chào mừng em đến với "đày". Ở đây không có anh Kevin, không có LinkedIn. Chỉ có spec 200 trang và deadline là deadline.'],
         ['hieu', 'Mail sáng nay của Tanaka-san. Đọc giúp anh. Anh đọc rồi, nhưng anh muốn có người buồn cùng.'],
         { mini: JP_MINI,
-          good: [['hieu', 'Em đọc được "zannen desu" là khách không vui. Em hiểu tiếng Nhật công sở nhanh hơn anh hồi mới vào.'], { fx: { uy: 3, rel: { hieu: 2 }, set: { jp_ok: true } } }],
-          bad: [['hieu', '"Kentou shimasu" không phải là đồng ý đâu em. Năm 2022 có bạn tưởng vậy, rồi team code ba tuần cho một tính năng khách đã từ chối.'], { fx: { nl: -3 } }],
+          good: [['hieu', 'Em đọc ra ý khách thật, không đọc nghĩa đen. Em hiểu tiếng Nhật công sở nhanh hơn anh hồi mới vào.'], { fx: { uy: 3, rel: { hieu: 2 }, set: { jp_ok: true } } }],
+          bad: [['hieu', 'Đọc nghĩa đen là chết em. Năm 2022 có bạn tưởng "kentou shimasu" là đồng ý, rồi team code ba tuần cho tính năng khách đã từ chối.'], { fx: { nl: -3 } }],
         },
       ],
     },
@@ -1283,7 +1288,7 @@ const OUTSOURCING = {
     {
       who: 'hieu', obj: 'Anh Hiếu giao 1.200 test case', time: '13:30',
       scene: [
-        ['hieu', '1.200 test case thủ công. Nghiệm thu thứ Sáu tuần sau. Ba người làm. Hai người vừa bị quick sync. Còn em.'],
+        ['hieu', '1.200 test case thủ công. Nghiệm thu thứ Sáu tuần sau. Ba người làm. Hai người vừa bị kéo về làm Giỏ Chung. Còn em.'],
         { c: 'tech_exile', o: [
           { t: 'Viết script tự động hóa 300 case lặp lại, làm tay phần còn lại.', fx: { nl: -8 }, then: [
             ['hieu', 'Script? Khách Nhật không tin script. Họ tin con người. Người ngồi bấm.'],
@@ -1319,7 +1324,7 @@ const OUTSOURCING = {
 
 const PROD_BLAME = {
   id: 'prod_blame', minDay: 29, maxDay: 30, title: 'git blame (blameless)',
-  intro: 'Thứ Hai. Cuối tuần, voucher Giỏ Chung bị trừ hai lần cho 1.300 đơn. Bug P1.\n\nPostmortem "blameless" lúc 10:00. Trong file postmortem, dòng "Nguyên nhân" đã có sẵn một cái tên. Tên bạn.',
+  intro: 'Đầu tuần. Cuối tuần qua, voucher trên app Lúa bị trừ hai lần cho 1.300 đơn. Bug P1.\n\nPostmortem "blameless" lúc 14:30. Trong file postmortem, dòng "Nguyên nhân" đã có sẵn một cái tên. Tên bạn.',
   steps: [
     {
       who: 'diep', obj: '9:30 Daily: bug voucher P1', time: '09:30', pos: STANDUP_POS,
@@ -1337,7 +1342,7 @@ const PROD_BLAME = {
         ['nar', 'Bạn mở terminal. git log --follow. Lịch sử của voucher.js dài như một bộ phim truyền hình.'],
         { mini: BLAME_MINI,
           good: [['think', '"feat: áp voucher trước khi tính phí ship (tạm)". Khải. 2022. 3:12 sáng. Chữ "tạm" đã sống bốn năm.'], { fx: { uy: 2, set: { blame_found: true } } }],
-          bad: [['think', 'Mình mở nhầm commit "bump version". Bot. Bot không bao giờ chịu trách nhiệm.'], { fx: { nl: -3 } }],
+          bad: [['think', 'Mình mở nhầm commit. Đọc diff mười phút mới biết nó không đụng gì tới logic voucher.'], { fx: { nl: -3 } }],
         },
       ],
     },
@@ -1367,7 +1372,7 @@ const PROD_BLAME = {
       scene: [
         ['thac', 'Postmortem. Blameless. Tức là mình tìm nguyên nhân hệ thống, không tìm người để treo.'],
         { if: (r) => r.flags.blame_proved || r.flags.blame_fixed, then: [
-          ['khai', 'Nguyên nhân: logic tạm từ 2022, không có test. Không phải commit format của bạn intern. Anh sửa dòng "Nguyên nhân".'],
+          ['khai', 'Nguyên nhân: logic tạm từ 2022, không có test. Không phải commit format của {ten}. Anh sửa dòng "Nguyên nhân".'],
           ['thac', 'Cảm ơn Khải. Và cảm ơn em. Đây là lần đầu postmortem ở đây blameless thật.'],
           { fx: { rel: { thac: 2 } } },
         ], else: [
@@ -1428,8 +1433,8 @@ const APPSTORE = {
         { c: 'tech_store', o: [
           { t: 'Làm nhanh nút xóa tài khoản, test, nộp lại xin duyệt gấp.', fx: { nl: -8 }, then: [
             { mini: STORE_MINI,
-              good: [['nar', '19:40. Bản build được duyệt. Duy hét lên một tiếng mà cả coworking quay lại nhìn.'], { fx: { uy: 6, rel: { diep: 2, duy: 2, tung: 1 }, set: { store_fixed: true } } }],
-              bad: [['nar', 'Bạn nộp trước khi chị Nguyệt test. Bản build bị từ chối lần hai: nút xóa tài khoản… không xóa gì. Duyệt lúc 22:10.'], { fx: { uy: 2, dr: 3, set: { store_late: true } } }],
+              good: [['nar', 'Kế hoạch đúng thứ tự. Tùng code nút, chị Nguyệt chuẩn bị sẵn hai máy test. Còn thiếu màn hình từ Vy.'], { fx: { uy: 6, rel: { diep: 2, duy: 2, tung: 1 }, set: { store_fixed: true } } }],
+              bad: [['nar', 'Kế hoạch lộn thứ tự. Bản build sẽ được nộp trước khi chị Nguyệt kịp test. Bạn chưa biết điều đó.'], { fx: { uy: 2, dr: 3, set: { store_late: true } } }],
             },
           ] },
           { t: 'Xin KOL dời lịch sang tuần sau.', fx: { rel: { duy: -2, diep: 1 }, uy: 1, set: { kol_delayed: true } }, then: [
@@ -1460,10 +1465,10 @@ const APPSTORE = {
       who: 'obj:desk', obj: '17:50 Về bàn chờ kết quả', time: '17:50',
       scene: [
         { if: f('store_fixed'), then: [
-          ['nar', 'Bot #release: "Giỏ Chung · iOS · Ready for Sale 🙏". Duy gửi sticker con heo nhảy múa 14 lần.'],
+          ['nar', '(19:40) Bot #release: "Giỏ Chung · iOS · Ready for Sale 🙏". Duy hét lên một tiếng. Rồi gửi sticker con heo nhảy múa 14 lần.'],
           { chat: [['kevin', 'We shipped! Proud of the team 🚀', false], ['thac', 'cảm ơn em.', true]] },
         ] },
-        { if: f('store_late'), then: [['nar', 'KOL đăng lúc 20:00 với link chưa mở được. 22:10 app lên. Bình luận đầu tiên: "app đâu ạ?"']] },
+        { if: f('store_late'), then: [['nar', '(18:30) Bị từ chối lần hai: nút xóa tài khoản… không xóa gì. KOL đăng 20:00 với link chưa mở được. 22:10 app lên.'], ['nar', 'Bình luận đầu tiên dưới bài KOL: "app đâu ạ?"']] },
         { if: f('kol_delayed'), then: [['nar', 'Chị Thảo gửi Duy bảng tính phí dời KOL. Duy gửi bạn một emoji 💸. Ít nhất người dùng không vào một app trống.']] },
         { if: f('kol_web'), then: [['nar', 'Số liệu tối nay: 40.000 lượt vào web, 212 đơn, 0 giỏ chung. Anh Kevin đăng LinkedIn: "40K visits in one night".']] },
         ['nar', 'Mèo 404 nằm trên bàn phím của bạn. Màn hình hiện 4.000 chữ "j". Bạn không xóa. Hôm nay nó xứng đáng.'],
@@ -1503,7 +1508,7 @@ const AMA = {
       who: 'kevin', obj: '15:30 All-hands & AMA ở bảng Scrum', time: '15:30', pos: ALLHANDS_POS,
       scene: [
         ['kevin', 'Team! Tháng này: Giỏ Chung ra mắt, MAU tăng, runway 18 tháng. We\'re winning!'],
-        ['kevin', 'Tuần sau anh đi hội thảo công nghệ ở Singapore, đại diện công ty. Giờ là AMA. Hỏi gì cũng được. Flat mà!'],
+        ['kevin', 'Anh vừa được mời đi hội thảo công nghệ ở Singapore, đại diện công ty. Giờ là AMA. Hỏi gì cũng được. Flat mà!'],
         ['nar', 'Im lặng. Ba mươi giây. Ai đó ho. Mèo 404 đi ngang qua bảng Scrum.'],
         { c: 'tech_ama', o: [
           { t: 'Giơ tay: "Runway 18 tháng là đã tính Series B chưa ạ?"', fx: { uy: 4, dr: 4, rel: { kevin: -2, thac: 2, thao: 1 }, set: { ama_asked: true } }, then: [
@@ -1527,7 +1532,7 @@ const AMA = {
           ['thac', 'Câu hỏi hay. Anh định nói con số đó từ ba tháng trước. Anh cần một người hỏi.'],
           { fx: { rel: { thac: 2 }, set: { thac_noticed: true } } },
         ], else: [
-          ['thac', 'Hết pizza rồi. Ở đây intern luôn tới sau pizza. Anh cũng vậy, hồi mới mở công ty.'],
+          ['thac', 'Hết pizza rồi. Ở đây người làm thật luôn tới sau pizza. Anh cũng vậy, hồi mới mở công ty.'],
         ] },
         { c: 'tech_thac_beer', o: [
           { t: 'Chia anh Thạc một lon bia, hỏi chuyện năm 2021.', fx: { rel: { thac: 2 }, set: { drank_today: true } }, then: [
@@ -1563,7 +1568,7 @@ const SALARY_SHEET = {
       who: 'ngan', obj: 'Chị Ngân tìm bạn', time: '11:00',
       scene: [
         { if: f('sheet_reported'), then: [
-          ['ngan', 'Em ơi. Cảm ơn em. Thật. Nếu file đó lộ ra thì chị… chị không biết viết email xin lỗi kiểu gì cho tám mươi người.'],
+          ['ngan', 'Em ơi. Cảm ơn em. Thật. Nếu file đó lộ ra thì chị… chị không biết viết email xin lỗi cả công ty kiểu gì.'],
           ['ngan', 'Chị nợ em một lần. Chị không quên đâu. People & Culture cũng là người.'],
           { fx: { set: { ngan_owes: true } } },
         ] },
@@ -1587,7 +1592,7 @@ const SALARY_SHEET = {
         ['chau', 'Mình biết mình vào đây nhờ chú. Mình biết. Nhưng mình cũng muốn được đánh giá thật. Không ai cho mình cơ hội đó.'],
         { c: 'tech_chau_real', o: [
           { t: '"Vậy Châu tự xin chị Diệp review như mọi intern khác đi."', fx: { uy: 2, rel: { chau: 2, diep: 1 } }, then: [['chau', 'Review thật. Có điểm thật. Ừ. Mình sẽ xin. Kể cả nếu mình được C.']] },
-          { t: 'Ngồi im bên cạnh Châu một lúc.', fx: { rel: { chau: 3 } }, then: [['nar', 'Hai intern ngồi cạnh nhau. Một người lương 9 triệu, một người lương khác. Mèo 404 nằm giữa, không phân biệt ai.']] },
+          { t: 'Ngồi im bên cạnh Châu một lúc.', fx: { rel: { chau: 3 } }, then: [['nar', 'Hai người ngồi cạnh nhau. Một người lương 9 triệu, một người lương khác. Mèo 404 nằm giữa, không phân biệt ai.']] },
         ] },
       ],
     },
@@ -1597,7 +1602,7 @@ const SALARY_SHEET = {
         ['thao', 'Chuyện file lương chị biết rồi. Lương của Châu là do anh Kevin quyết, nằm ngoài khung. Chị đã phản đối. Bằng email.'],
         ['thao', 'Em nhớ: ở startup, cái gì không có trong email thì chưa từng xảy ra. Cái gì có trong email thì sẽ quay lại.'],
         { c: 'tech_thao_email', o: [
-          { t: '"Dạ em hiểu. Em sẽ ghi lại mọi việc quan trọng bằng email."', fx: { uy: 2, rel: { thao: 2 }, set: { email_trail: true } }, then: [['thao', 'Tốt. Đó là bảo hiểm thật của em. Bảo hiểm xã hội thì đợi lên chính thức.']] },
+          { t: '"Dạ em hiểu. Em sẽ ghi lại mọi việc quan trọng bằng email."', fx: { uy: 2, rel: { thao: 2 }, set: { email_trail: true } }, then: [['thao', 'Tốt. Đó là bảo hiểm thật của em.'], { if: (r) => r.status !== 'official', then: [['thao', 'Bảo hiểm xã hội thì đợi lên chính thức.']] }] },
           { t: '"Chị có định nghỉ không ạ?"', fx: { rel: { thao: 1 }, dr: 1 }, then: [['thao', 'Chị là người cuối cùng tắt đèn. Người cầm Excel không được bỏ chạy trước.']] },
         ] },
       ],
@@ -1610,14 +1615,14 @@ const SALARY_SHEET = {
 
 const AI_DEMO = {
   id: 'ai_demo', day: 36, title: 'Demo day: "AI" gợi ý thực đơn',
-  intro: 'Thứ Ba. 15:00 hôm nay anh Kevin demo "AI gợi ý thực đơn" với quỹ Hạt Giống Ventures, lần cuối trước khi quỹ quyết Series B.\n\nAnh Kevin đã hứa tính năng này "hai tuần". Team estimate hai tháng. Đã qua ba tuần.',
+  intro: 'Thứ Hai. 15:00 hôm nay anh Kevin demo "AI gợi ý thực đơn" với quỹ Hạt Giống Ventures, lần cuối trước khi quỹ quyết Series B.\n\nAnh Kevin đã hứa tính năng này "hai tuần". Team estimate hai tháng. Đã qua ba tuần.',
   steps: [
     {
       who: 'kevin', obj: 'Anh Kevin gọi vào phòng CEO', time: '09:00',
       scene: [
         ['kevin', 'Hôm nay là ngày quan trọng nhất của công ty. Anh cần AI gợi ý thực đơn chạy được lúc 3 giờ chiều. Chạy được là được.'],
         ['kevin', 'Anh tin em. Em là người hiểu Giỏ Chung nhất. Giỏ Chung cộng AI bằng Series B. Đơn giản.'],
-        { if: f('poker_honest'), then: [['think', 'Mình giơ lá 13 cho ticket này từ ngày 8. Hôm nay là ngày trả nợ.']] },
+        { if: f('poker_honest'), then: [['think', 'Mình bênh lá 13 cho ticket này từ ngày 8. Hôm nay là ngày trả nợ.']] },
         { c: 'tech_demo_kevin', o: [
           { t: '"Dạ em sẽ làm bản demo trung thực nhất có thể ạ."', fx: { uy: 1, rel: { kevin: 1 } }, then: [['kevin', 'Trung thực và ấn tượng. Cả hai. Nhưng ưu tiên ấn tượng.']] },
           { t: '"Anh có muốn em báo trước với quỹ là bản prototype không ạ?"', fx: { uy: 2, rel: { kevin: -1 } }, then: [['kevin', 'Prototype là từ của người thiếu tự tin. Mình nói "early access".']] },
@@ -1632,7 +1637,7 @@ const AI_DEMO = {
           { t: 'Làm bản nhỏ thật: gợi ý từ lịch sử mua và mùa vụ, không gọi là "AI thần kỳ".', fx: { nl: -6 }, then: [
             { mini: AI_MINI,
               good: [['diep', 'Gợi ý từ lịch sử mua + mua chung + mùa vụ. Chạy thật. Đo được. Chị gọi nó là "AI cấp 1". Trung thực mà vẫn sexy.'], { fx: { uy: 6, rel: { diep: 2, thac: 1 }, set: { demo_small: true } } }],
-              bad: [['diep', 'Em định đoán khẩu vị từ ảnh đại diện? Thôi. Mình dùng lịch sử mua. Chị làm cùng em.'], { fx: { uy: 2, nl: -4, set: { demo_small: true } } }],
+              bad: [['diep', 'Nguồn này chưa có, nguồn kia chưa xin phép. Thôi. Mình dùng lịch sử mua. Chị làm cùng em.'], { fx: { uy: 2, nl: -4, set: { demo_small: true } } }],
             },
           ] },
           { t: 'Hardcode kết quả cho tài khoản demo. Trơn tru 100%.', fx: { dr: 5, rel: { kevin: 2, khai: -1 }, set: { demo_hardcode: true } }, then: [
@@ -1677,7 +1682,8 @@ const AI_DEMO = {
       who: 'thac', obj: 'Anh Thạc ngồi ở pantry sau demo', time: '17:00', pos: { thac: 'pantry' },
       scene: [
         { if: f('demo_hardcode'), then: [['thac', 'Tháng sau. Cho tất cả người dùng. Anh vừa thêm một dòng vào danh sách "những lời hứa anh phải trả".']] },
-        { if: (r) => r.flags.demo_small || r.flags.demo_label, then: [['thac', 'Demo thật, hoặc ít nhất là nói thật. Anh Victor hỏi tên em. Anh Kevin trả lời "team". Anh trả lời tên em.']] },
+        { if: f('demo_small'), then: [['thac', 'Demo thật. Anh Victor hỏi ai làm. Anh Kevin trả lời "team". Anh trả lời tên em.']] },
+        { if: f('demo_label'), then: [['thac', 'Sticker che được dòng chữ, không che được câu trả lời của em. Anh Victor nhớ câu đó. Anh cũng nhớ.']] },
         ['thac', 'Em biết không, anh đang nghĩ một chuyện. Chưa nói được. Nhưng nếu anh nói, anh mong em là người nghe đầu tiên.'],
         { fx: { rel: { thac: 1 } } },
       ],
@@ -1713,7 +1719,7 @@ const OFF_HANDOVER = {
       scene: [
         ['loc', '📦➡️🫵'],
         ['nar', 'Tài liệu bàn giao của anh Lộc là một tin nhắn Slack: "🔑 = sticky note dưới bàn phím. 🔥 = gọi Thạc. 🙏 = luôn luôn."'],
-        { if: f('oncall_rotation'), then: [['loc', 'Lịch xoay vòng em đề xuất lần trước… anh dùng được ba tháng. Ba tháng anh được ngủ. Cảm ơn em.'], { fx: { rel: { loc: 2 } } }] },
+        { if: f('oncall_rotation'), then: [['loc', 'Lịch xoay vòng em đề xuất hôm postmortem… mấy tuần nay anh được ngủ. Lần đầu sau ba năm. Cảm ơn em.'], { fx: { rel: { loc: 2 } } }] },
         { c: 'tech_off_handover', o: [
           { t: 'Xin anh Lộc ngồi 2 tiếng, quay màn hình, viết runbook cùng nhau.', fx: { uy: 4, nl: -8, rel: { loc: 2, thac: 1 }, set: { handover_doc: true } }, then: [
             ['loc', 'Hai tiếng… ok. Anh nói, em gõ. Anh không gõ được nữa, tay anh chỉ còn emoji.'],
@@ -1752,27 +1758,28 @@ const OFF_HANDOVER = {
 
 const OFF_SALARY_LATE = {
   id: 'off_salary_late', official: true, title: 'Lương về trễ "vì gia đình"',
-  intro: 'Sáng nay có email từ anh Kevin gửi toàn công ty, tiêu đề: "Một gia đình ❤️".\n\nCùng lúc, LinkedIn anh Kevin đăng ảnh check-in hội thảo công nghệ ở Singapore, cầm ly cocktail, caption "Building the future".',
+  intro: 'Sáng nay có email từ anh Kevin gửi toàn công ty, tiêu đề: "Một gia đình ❤️".\n\nCùng lúc, LinkedIn anh Kevin đăng ảnh trên một rooftop bar, cầm ly cocktail, caption "Building the future".',
   steps: [
     {
       who: 'obj:desk', obj: 'Đọc email "Một gia đình ❤️"', time: '09:00',
       scene: [
         ['nar', '"Thưa cả nhà, vì vòng gọi vốn cần thêm thời gian, lương tháng này sẽ về trễ 7 ngày. Chúng ta là một gia đình. Xin cả nhà thông cảm."'],
-        ['nar', 'Phía dưới email, chữ ký anh Kevin: "CEO · Top 30 Under 30 (đề cử)". Ảnh đại diện mới: anh Kevin ở Marina Bay.'],
+        ['nar', 'Phía dưới email, chữ ký anh Kevin: "CEO · Top 30 Under 30 (đề cử)". Ảnh đại diện mới: anh Kevin cầm ly cocktail.'],
         { c: 'tech_off_email', o: [
           { t: 'Trả lời: "Anh cho em hỏi lương trễ có ảnh hưởng đóng bảo hiểm tháng này không ạ?"', fx: { uy: 2, dr: 3, rel: { kevin: -2, thao: 1 } }, then: [
             { chat: [['thao', 'bảo hiểm chị vẫn đóng đúng hạn. chị ưu tiên cái đó trước cả tiền điện.', true]] },
           ] },
           { t: 'Không trả lời. Mở Excel tính tiền nhà.', fx: { nl: -5, money: -100_000 }, then: [['think', 'Bảy ngày. Chủ trọ của mình không tin vào văn hóa gia đình.']] },
-          { t: 'Reply-all: "❤️"', fx: { rel: { kevin: 1 }, dr: 1 }, then: [['nar', '23 người reply-all "❤️". Chị Ngân reply-all "💐". Hộp thư của 80 người nổ tung.']] },
+          { t: 'Reply-all: "❤️"', fx: { rel: { kevin: 1 }, dr: 1 }, then: [['nar', '23 người reply-all "❤️". Chị Ngân reply-all "💐". Hộp thư cả công ty nổ tung.']] },
         ] },
       ],
     },
     {
       who: 'thao', obj: 'Chị Thảo đóng cửa phòng, gọi bạn vào', time: '10:30',
       scene: [
-        ['thao', 'Chị nói với em vì em là người từng hỏi runway. Quỹ Hạt Giống trả lời Series B: "cần cân nhắc thêm".'],
-        ['thao', 'Không có Series B thì runway còn ba tháng. Tiền bên Nhật nuôi được một nửa công ty. Một nửa.'],
+        { if: (r) => r.flags.asked_runway || r.flags.asked_runway_public || r.flags.ama_asked, then: [['thao', 'Chị nói với em vì em là người từng hỏi runway.']], else: [['thao', 'Chị nói với em vì giờ em là nhân viên chính thức. Em có quyền biết.']] },
+        ['thao', 'Quỹ Hạt Giống trả lời Series B: "cần cân nhắc thêm".'],
+        ['thao', 'Không có Series B thì runway thật còn ba tháng. Con số chín tháng là tính cả những khoản "sắp về". Tiền bên Nhật nuôi được một nửa công ty.'],
         { if: f('mau_inflated'), then: [['thao', 'Và họ hỏi lại con số một triệu MAU. Due diligence. Chị đã nói với em là nó sẽ quay lại.'], { fx: { dr: 4 } }] },
         { c: 'tech_off_thao', o: [
           { t: '"Chị có ổn không ạ?"', fx: { rel: { thao: 3 } }, then: [['thao', 'Không. Nhưng chị sẽ là người cuối cùng tắt đèn. Còn em thì đừng là người cuối cùng biết tin.']] },
@@ -1798,13 +1805,14 @@ const OFF_SALARY_LATE = {
         ['diep', 'Em… có thể làm người tham chiếu cho chị không? Chị đang phỏng vấn ở một sàn thương mại điện tử. Đừng nói ai.'],
         ['diep', 'Em biết vì sao chị nói toàn framework không? Vì framework không ai cãi được. Còn ý kiến của chị thì ai cũng cãi được.'],
         { c: 'tech_off_diep', o: [
-          { t: '"Dạ được ạ. Em sẽ kể vụ thread Figma 61 comment."', fx: { rel: { diep: 3 } }, then: [['diep', 'Cảm ơn em. Đó là ngày chị thấy mình làm PM có ích nhất. Nhờ một intern.']] },
+          { t: '"Dạ được ạ. Em sẽ kể vụ thread Figma 61 comment."', when: f('ui_checklist'), fx: { rel: { diep: 3 } }, then: [['diep', 'Cảm ơn em. Đó là ngày chị thấy mình làm PM có ích nhất. Nhờ một intern.']] },
+          { t: '"Dạ được ạ. Em sẽ kể chị chặn bao nhiêu ý tưởng "hai tiếng" cho team."', when: nf('ui_checklist'), fx: { rel: { diep: 3 } }, then: [['diep', 'Cảm ơn em. Chị chưa từng nghĩ "chặn" là một thành tích. Chắc là có.']] },
           { t: '"Chị đi rồi thì ai che cho team khỏi anh Kevin ạ?"', fx: { rel: { diep: 1 }, dr: 1 }, then: [['diep', '…Câu hỏi đó chị hỏi mình mỗi tối. Chưa có framework nào trả lời được.']] },
         ] },
       ],
     },
   ],
-  diary: (s) => `Lương trễ bảy ngày, anh Kevin ở Singapore. ${s.flags.cv_sent ? 'Mình nhận JD của Tùng.' : 'Tùng nghỉ. Mình ở lại.'} Chị Diệp cũng đang phỏng vấn chỗ khác. Startup không có chữ "mãi mãi".`,
+  diary: (s) => `Lương trễ bảy ngày, anh Kevin đăng ảnh cocktail. ${s.flags.cv_sent ? 'Mình nhận JD của Tùng.' : 'Tùng nghỉ. Mình ở lại.'} Chị Diệp cũng đang phỏng vấn chỗ khác. Startup không có chữ "mãi mãi".`,
 };
 
 const OFF_PIVOT = {
@@ -1816,7 +1824,7 @@ const OFF_PIVOT = {
       scene: [
         ['kevin', 'Team! Mình pivot. Từ hôm nay, Nợ Kỹ Thuật Labs là "AI agent cho doanh nghiệp nhỏ". Đi chợ là quá khứ. AI là tương lai.'],
         ['kevin', 'Squad Giỏ Chung giải thể từ thứ Hai. Không phải do các bạn. Do chiến lược.'],
-        ['think', 'Giỏ Chung. Ý tưởng của mình. Sống được bốn tuần. Một đêm mất ngủ, rồi một buổi sáng pivot.'],
+        ['think', 'Giỏ Chung. Ý tưởng của mình. Sống chưa tới một tháng. Một đêm mất ngủ, rồi một buổi sáng pivot.'],
         { c: 'tech_off_pivot', o: [
           { t: '"Người dùng Giỏ Chung hiện tại thì sao ạ?"', fx: { uy: 2, rel: { kevin: -1, nguyet: 1 } }, then: [['kevin', 'Họ sẽ được… chuyển đổi. Sang trải nghiệm AI. Mình sẽ gửi push notification: "Lúa nhớ bạn 🌾".']] },
           { t: 'Vỗ tay cùng mọi người.', fx: { nl: -3, rel: { kevin: 1 } }, then: [['nar', 'Tiếng vỗ tay nghe như tiếng mưa trên mái tôn. Thưa, và hơi buồn.']] },
@@ -1826,7 +1834,8 @@ const OFF_PIVOT = {
     {
       who: 'thac', obj: 'Anh Thạc rủ ra pantry', time: '11:00', pos: { thac: 'pantry' },
       scene: [
-        ['thac', 'Anh nói với em đầu tiên, như anh đã hứa. Anh nghỉ. Cuối tháng. Anh muốn làm một công ty nhỏ, có lãi, không có ring light.'],
+        { if: (r) => r.flags.demo_small || r.flags.demo_label || r.flags.demo_hardcode, then: [['thac', 'Anh nói với em đầu tiên, như anh đã hứa hôm demo.']], else: [['thac', 'Anh muốn em là người nghe đầu tiên.']] },
+        ['thac', 'Anh nghỉ. Cuối tháng. Anh muốn làm một công ty nhỏ, có lãi, không có ring light.'],
         ['thac', 'Anh cần hai người. Một người đọc runbook trước khi cần nó. Một người dám hỏi runway trước mặt CEO. Em là cả hai.'],
         { c: 'tech_off_cto', o: [
           { t: '"Em muốn nghe thêm ạ."', fx: { rel: { thac: 2 }, set: { cto_offer: true } }, then: [['thac', 'Lương thấp hơn ở đây một chút. Nhưng trả đúng ngày. Và anh sẽ ngủ đủ tám tiếng. Đó là văn hóa công ty.']] },
@@ -1858,12 +1867,12 @@ const OFF_PIVOT = {
       ],
     },
   ],
-  diary: (s) => `Pivot. Giỏ Chung sống bốn tuần. ${s.flags.path_cto ? 'Mình sẽ theo anh Thạc.' : s.flags.path_tokyo ? 'Mình sẽ đi Tokyo.' : s.flags.path_ai ? 'Mình xin vào squad AI. Hai tiếng thôi, anh Kevin bảo.' : 'Mình gửi CV. Lần đầu tiên viết "Rollback prod" vào phần thành tích.'}`,
+  diary: (s) => `Pivot. Giỏ Chung sống chưa tới một tháng. ${s.flags.path_cto ? 'Mình sẽ theo anh Thạc.' : s.flags.path_tokyo ? 'Mình sẽ đi Tokyo.' : s.flags.path_ai ? 'Mình xin vào squad AI. Hai tiếng thôi, anh Kevin bảo.' : 'Mình gửi CV. Lần đầu tiên viết "Rollback prod" vào phần thành tích.'}`,
 };
 
 const OFF_FINAL = {
   id: 'off_final', official: true, end: (r) => (r.flags.resigned_first ? 'quit' : 'layoff'), noReview: true, title: '"Quick sync 15 phút" (lần này là bạn)',
-  intro: 'Thứ Tư, 8:47. Lịch của bạn có một cuộc họp mới: "Quick sync 15 phút" với chị Ngân. 9:00. Phòng "Cơm Tấm".\n\nLần này bạn biết. Ai ở đây cũng biết.',
+  intro: 'Thứ Tư, 8:47. Lịch của bạn có một cuộc họp mới: "Quick sync 15 phút" với chị Ngân. 9:00. Phòng "Bún Bò".\n\nLần này bạn biết. Ai ở đây cũng biết.',
   steps: [
     {
       who: 'obj:desk', obj: '8:50 Về bàn lần cuối', time: '08:50',
@@ -1871,7 +1880,8 @@ const OFF_FINAL = {
         ['nar', 'Slack: 23 avatar chuyển xám trong đêm. Squad AI còn 2 người. Kênh #squad-gio-chung đã bị archive.'],
         { if: f('path_cto'), then: [['think', 'Thư mời của anh Thạc nằm trong email cá nhân. Ngày bắt đầu: thứ Hai tuần sau.']] },
         { if: f('path_tokyo'), then: [['think', 'Visa đang xử lý. Anh Hiếu nhắn: "Tanaka-san đã chọn em. Kentou shimasu không áp dụng."']] },
-        { if: f('path_cv'), then: [['think', 'Tối qua công ty của Tùng gửi offer. Mình chưa trả lời. Giờ thì chắc là trả lời rồi.']] },
+        { if: (r) => r.flags.path_cv && r.flags.cv_sent, then: [['think', 'Tối qua công ty của Tùng gửi offer. Mình chưa trả lời. Giờ thì chắc là trả lời rồi.']] },
+        { if: (r) => r.flags.path_cv && !r.flags.cv_sent, then: [['think', 'Tối qua một công ty nhỏ gửi offer, qua headhunter. Mình chưa trả lời. Giờ thì chắc là trả lời rồi.']] },
         ['nar', 'Bạn nhìn quanh. Tờ A4 "KHÔNG DEPLOY CHIỀU THỨ SÁU" vẫn còn trên tường pantry. Nó sẽ sống lâu hơn công ty này.'],
       ],
     },

@@ -14,7 +14,7 @@ export const COMPANY_LIST = [
   { id: 'event', name: 'Đi Đâu Cũng Được', emoji: '🎪', color: '#ffe9a0', industry: 'Tổ chức sự kiện & du lịch', scale: '~15 người',
     blurb: 'Mưa giữa sự kiện ngoài trời, khách đổi ý lúc 23h, team building bắt buộc vui.', toxic: 3, ready: true },
   { id: 'hr', name: 'Người Đúng Chỗ HR', emoji: '🧲', color: '#e3d9ff', industry: 'Tư vấn nhân sự · headhunt', scale: '~10 người',
-    blurb: 'Công ty tư vấn nhân sự có quy trình nhân sự nội bộ… tệ nhất mà bạn từng thấy.', toxic: 2, ready: false },
+    blurb: 'Công ty tư vấn nhân sự có quy trình nhân sự nội bộ… tệ nhất mà bạn từng thấy.', toxic: 2, ready: true },
 ];
 export const companyMeta = (id) => COMPANY_LIST.find((c) => c.id === id) || { id, name: id, emoji: '🏢', color: '#ddd', ready: false };
 export const companyName = (id) => companyMeta(id).name;

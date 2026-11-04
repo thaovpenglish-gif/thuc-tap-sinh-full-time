@@ -46,7 +46,7 @@ export const INTERVIEW = {
             ['nar', 'Ghế bi lắc không có lưng tựa. Bạn ngồi thẳng như đang thuyết trình trước hội đồng.'],
             ['hoa', 'Em ngồi chuẩn ghê. Nước tăng lực không? Free. Cái gì free ở đây là nước tăng lực.'],
           ] },
-          { t: 'Hỏi chị Hoa wifi để mở lại bài take-home.', fx: { uy: 1, rel: { hoa: 1 } }, then: [
+          { t: 'Hỏi chị Hoa wifi để mở lại bài take-home.', fx: { uy: 1, rel: { hoa: 1 }, set: { wifi_asked: true } }, then: [
             ['hoa', 'Wifi "NoKyThuat_5G", mật khẩu "ShipFirst!". Hôm qua đổi, nên chắc là "FixLater!".'],
             ['think', 'Mật khẩu là "FixLater!". Mình bắt đầu hiểu công ty này.'],
           ] },
@@ -116,8 +116,9 @@ export const INTERVIEW = {
         ['ngan', 'Chào em! Chị là Ngân, People & Culture. Ở đây mình là một gia đình. Em ký giúp chị nha, bản này là v7_final.'],
         { mini: NDA_MINI,
           good: [
-            ['me', 'Chị ơi, em hỏi ba chỗ: ý tưởng "trong mơ" thuộc công ty, on-call "tự nguyện 24/7", và cấm làm công ty công nghệ 24 tháng ạ?'],
-            ['ngan', 'Ơ… bản này copy từ template công ty Mỹ. Chị gạch ba dòng đó nha. Giấc mơ của em là của em.'],
+            ['me', 'Chị ơi, em đánh dấu mấy chỗ lạ ạ. Chị xem giúp em trước khi em ký.'],
+            ['ngan', 'Ơ… ý tưởng "trong mơ", on-call "tự nguyện 24/7", cấm làm công ty công nghệ 24 tháng… Bản này copy template nước ngoài. Chị gạch hết nha.'],
+            ['ngan', 'Giấc mơ của em là của em.'],
             ['khai', 'Đọc NDA kỹ hơn đọc code review. Tốt.'],
             { fx: { uy: 4, rel: { khai: 1 }, set: { nda_fixed: true } } },
           ],
@@ -199,5 +200,5 @@ export const INTERVIEW = {
       ],
     },
   ],
-  diary: (s) => `Buổi đầu tiên. Mình deal được mức ${({ t0: '0 đồng', t1: '1 triệu', t3: '3 triệu', t5: '5 triệu' })[s.tier] || '?'}. ${s.flags.nda_fixed ? 'Mình đọc kỹ NDA và giữ lại được giấc mơ của mình. ' : 'Mình ký NDA hơi nhanh. Từ giờ chắc mơ cũng phải có ticket. '}Anh Kevin nói "flat" ba lần. Mật khẩu wifi là "FixLater!".`,
+  diary: (s) => `Buổi đầu tiên. Mình deal được mức ${({ t0: '0 đồng', t1: '1 triệu', t3: '3 triệu', t5: '5 triệu' })[s.tier] || '?'}. ${s.flags.nda_fixed ? 'Mình đọc kỹ NDA và giữ lại được giấc mơ của mình. ' : 'Mình ký NDA hơi nhanh. Từ giờ chắc mơ cũng phải có ticket. '}Anh Kevin nói "flat" ba lần.${s.flags.wifi_asked ? ' Mật khẩu wifi là "FixLater!".' : ' Công ty này có nước tăng lực free và một ghế bi lắc không lưng tựa.'}`,
 };
