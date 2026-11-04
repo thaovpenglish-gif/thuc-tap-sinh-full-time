@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Thực Tập Sinh · Công ty gia đình 10 người, 100 drama</title>
-  <meta name="description" content="Game 3D góc nhìn thứ nhất: tuần đầu tiên làm thực tập sinh ở một công ty gia đình 10 người vô cùng drama. Chơi miễn phí trên trình duyệt.">
-  <meta property="og:title" content="Thực Tập Sinh · Tuần đầu tiên ở công ty gia đình">
-  <meta property="og:description" content="Một suất chính thức. Hai thực tập sinh. Két sắt hụt 50 triệu. Bạn sẽ sống sót qua thứ Sáu chứ?">
-  <meta name="theme-color" content="#1b2a4a">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪪</text></svg>">
+  <title>Intern Ơi! · Tuần thực tập ở Ba Mẹ & Partners</title>
+  <meta name="description" content="Game 3D góc nhìn thứ nhất: tuần đầu làm intern ở Ba Mẹ & Partners, công ty tư vấn quản lý gia đình 10 người, 100 drama. Daily stand-up, Teams call, Sprint Retro. Chơi miễn phí trên trình duyệt.">
+  <meta property="og:title" content="Intern Ơi! · Tuần thực tập ở Ba Mẹ & Partners">
+  <meta property="og:description" content="Một headcount. Hai intern. Quỹ team building bốc hơi 50 triệu. Bạn có sống sót tới Sprint Retro thứ Sáu?">
+  <meta name="theme-color" content="#fff8ef">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400;1,500&display=swap" rel="stylesheet">
@@ -33,13 +33,13 @@
     <div class="hud-obj card" id="hudObj">
       <div class="obj-arrow" id="objArrow">➤</div>
       <div class="obj-body">
-        <div class="obj-label">NHIỆM VỤ <span id="objDist"></span></div>
+        <div class="obj-label">TASK <span id="objDist"></span></div>
         <div id="objText"></div>
       </div>
     </div>
     <div class="hud-tr">
       <div id="online" class="pill" title="Người chơi đang online">👥 1</div>
-      <button id="phoneBtn" class="icon-btn" title="Điện thoại (Q)">📱<span id="badge" hidden>0</span></button>
+      <button id="phoneBtn" class="icon-btn" title="Teams (Q)">💬<span id="badge" hidden>0</span></button>
       <button id="soundBtn" class="icon-btn" title="Âm thanh">🔊</button>
       <button id="menuBtn" class="icon-btn" title="Tạm dừng">⏸</button>
     </div>
@@ -49,6 +49,27 @@
   <div id="prompt" hidden><kbd>E</kbd><span id="promptText"></span></div>
   <div id="toasts"></div>
 
+  <!-- Incoming Teams call -->
+  <div id="incoming" hidden>
+    <div class="inc-card">
+      <div class="inc-top"><span class="teams-logo">T</span> Microsoft Teams · Cuộc gọi đến</div>
+      <div class="inc-av" id="incAvatar">👨‍💼</div>
+      <div class="inc-name" id="incName"></div>
+      <div class="inc-title" id="incTitle"></div>
+      <div class="inc-btns">
+        <button id="incDecline" class="round red" title="Từ chối (Esc)">📵</button>
+        <button id="incAccept" class="round green" title="Nghe máy (E)">📞</button>
+      </div>
+      <div class="inc-hint">Nghe máy: <kbd>E</kbd> · Từ chối: <kbd>Esc</kbd> (sẽ bị gọi lại 🙂)</div>
+    </div>
+  </div>
+
+  <!-- In-call frame -->
+  <div id="callFrame" hidden>
+    <div class="call-bar"><span class="teams-logo">T</span><span id="callTitle"></span><span class="call-time" id="callTime">00:00</span></div>
+    <div id="callTiles"></div>
+  </div>
+
   <!-- Dialogue -->
   <div id="dialog" hidden>
     <div class="dlg-portrait" id="dlgPortrait"></div>
@@ -56,24 +77,24 @@
       <div class="dlg-head"><span id="dlgName"></span><span id="dlgRole"></span></div>
       <div id="dlgText"></div>
       <div id="choices"></div>
-      <div class="dlg-hint" id="dlgHint">Bấm chuột / Space để tiếp ▸</div>
+      <div class="dlg-hint" id="dlgHint">Bấm / Space để tiếp ▸</div>
     </div>
   </div>
 
   <!-- Phone -->
   <div id="phone" hidden>
     <div class="phone-frame">
-      <div class="phone-top"><span id="phoneClock">08:00</span><span>📶 PhatDatLoc@1975</span><button id="phoneClose" aria-label="Đóng">✕</button></div>
+      <div class="phone-top"><span id="phoneClock">08:00</span><span>📶 BaMe@1998</span><button id="phoneClose" aria-label="Đóng">✕</button></div>
       <div class="phone-tabs">
-        <button data-tab="zalo" class="active">💬 Zalo công ty</button>
-        <button data-tab="tts">👻 Hội TTS ẩn danh</button>
+        <button data-tab="zalo" class="active">💬 Teams</button>
+        <button data-tab="tts">👻 Hội Intern ẩn danh</button>
       </div>
       <div class="phone-pane" id="paneZalo">
-        <div class="chat-head">Phát Đạt Lộc Family 🏠 <small>12 thành viên</small></div>
+        <div class="chat-head">BM&P All Hands 🏠 <small>12 thành viên · 1 mèo</small></div>
         <div id="chatList" class="chat-list"></div>
       </div>
       <div class="phone-pane" id="paneTts" hidden>
-        <div class="chat-head">Hội Thực Tập Sinh Than Thở 👻 <small id="ttsCount">người chơi thật · realtime</small></div>
+        <div class="chat-head">Hội Intern Than Thở 👻 <small id="ttsCount">người chơi thật · realtime</small></div>
         <div id="ttsList" class="tts-list"></div>
         <form id="ttsForm">
           <textarea id="ttsBody" maxlength="280" rows="2" placeholder="Kể một drama công sở của bạn (ẩn danh, tối đa 280 ký tự)…"></textarea>
@@ -89,12 +110,12 @@
   <!-- Pause -->
   <div id="pause" class="overlay" hidden>
     <div class="ov-card small">
-      <h2>Tạm nghỉ giải lao ☕</h2>
+      <h2>Coffee break ☕</h2>
       <p class="muted">Bấm vào màn hình hoặc nút bên dưới để quay lại làm việc.</p>
-      <div class="btns"><button class="btn primary" id="resumeBtn">Tiếp tục làm việc</button><button class="btn" id="pausePhone">📱 Điện thoại</button></div>
+      <div class="btns"><button class="btn primary" id="resumeBtn">Quay lại làm việc</button><button class="btn" id="pausePhone">💬 Teams</button></div>
       <div class="help">
         <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> đi lại · <kbd>Shift</kbd> đi nhanh · Chuột: nhìn</div>
-        <div><kbd>E</kbd> nói chuyện / tương tác · <kbd>Q</kbd> điện thoại · <kbd>1</kbd>–<kbd>4</kbd> chọn câu trả lời</div>
+        <div><kbd>E</kbd> nói chuyện / tương tác · <kbd>Q</kbd> mở Teams · <kbd>1</kbd>–<kbd>4</kbd> chọn câu trả lời</div>
       </div>
       <button class="link" id="restartBtn">Chơi lại từ đầu</button>
     </div>
@@ -105,25 +126,26 @@
     <div class="title-card">
       <div class="badge-id">
         <div class="badge-clip"></div>
-        <div class="badge-top">PHÁT ĐẠT LỘC</div>
+        <div class="badge-top">BA MẸ & PARTNERS</div>
         <div class="badge-photo">🙂</div>
-        <div class="badge-name" id="badgeName">THỰC TẬP SINH</div>
-        <div class="badge-role">Intern · Marketing</div>
+        <div class="badge-name" id="badgeName">INTERN</div>
+        <div class="badge-role">Business Analyst Intern</div>
       </div>
       <div class="title-text">
-        <h1>THỰC TẬP SINH</h1>
-        <p class="tagline">Tuần đầu tiên ở một công ty gia đình <b>10 người</b>… và <b>100 drama</b>.</p>
-        <p class="muted">Một suất chính thức. Hai thực tập sinh. Két sắt hụt 50 triệu. Bạn có sống sót đến chiều thứ Sáu?</p>
+        <div class="kicker">LEVEL 1 · TUẦN THỰC TẬP</div>
+        <h1>Intern Ơi!</h1>
+        <p class="tagline">Tuần đầu làm intern ở <b>Ba Mẹ & Partners</b>: công ty tư vấn quản lý gia đình <b>10 người</b>… và <b>100 drama</b>.</p>
+        <p class="muted">Daily stand-up 15 phút kéo dài 47 phút. Sếp gọi Teams "5 phút". Quỹ team building bốc hơi 50 triệu. Và chỉ có một headcount.</p>
         <label class="name-field">Tên của bạn trên thẻ nhân viên
           <input id="nameInput" maxlength="16" placeholder="VD: Linh" autocomplete="off">
         </label>
         <div class="btns">
-          <button class="btn primary" id="startBtn">Bắt đầu đi làm →</button>
+          <button class="btn primary" id="startBtn">Onboard ngay →</button>
           <button class="btn" id="continueBtn" hidden></button>
         </div>
         <div class="title-meta"><span id="titleOnline">👥 đang kết nối…</span><span id="titleEndings"></span></div>
         <div class="help">
-          <div>💻 <kbd>WASD</kbd> đi · chuột nhìn · <kbd>E</kbd> nói chuyện · <kbd>Q</kbd> điện thoại</div>
+          <div>💻 <kbd>WASD</kbd> đi · chuột nhìn · <kbd>E</kbd> nói chuyện · <kbd>Q</kbd> Teams</div>
           <div>📱 Cần điều khiển bên trái · vuốt bên phải để nhìn · nút 💬 để nói chuyện</div>
         </div>
       </div>
@@ -137,7 +159,7 @@
     <button id="actBtn" hidden>💬</button>
   </div>
 
-  <div id="loading" class="overlay"><div class="loader">Đang mở cửa văn phòng…</div></div>
+  <div id="loading" class="overlay"><div class="loader">Đang mở cửa văn phòng… 🐱</div></div>
 
   <script type="module" src="js/main.js"></script>
 </body>

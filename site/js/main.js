@@ -30,7 +30,7 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPrefere
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 const scene = new THREE.Scene();
-scene.background = new THREE.Color('#cfe3ef');
+scene.background = new THREE.Color('#fff1e3');
 const camera = new THREE.PerspectiveCamera(72, 1, 0.05, 80);
 camera.rotation.order = 'YXZ';
 function resize() {
@@ -50,7 +50,8 @@ objMarker.visible = false;
 scene.add(objMarker);
 
 // ================= Player =================
-const player = { pos: new THREE.Vector3(PLAYER_START[0], 1.6, PLAYER_START[1]), yaw: PLAYER_START[2], pitch: 0, eye: 1.6, bob: 0 };
+const EYE = 1.38;
+const player = { pos: new THREE.Vector3(PLAYER_START[0], EYE, PLAYER_START[1]), yaw: PLAYER_START[2], pitch: 0, eye: EYE, bob: 0 };
 let mode = 'title'; // title | intro | play | dialog | phone | overlay | pause
 const keys = {};
 const isTouch = matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
@@ -107,9 +108,9 @@ function updateHUD() {
   b.hidden = !S.unread; b.textContent = S.unread > 9 ? '9+' : S.unread;
 }
 function charInfo(id) {
-  if (id === 'me') return { name: S.name, role: 'Thực tập sinh (bạn)', emoji: '🙂', color: '#2f7ae5' };
-  if (id === 'think') return { name: S.name, role: 'nghĩ thầm…', emoji: '💭', color: '#2f7ae5' };
-  if (id === 'nar') return { name: '', role: '', emoji: '📖', color: '#e7e1d3' };
+  if (id === 'me') return { name: S.name, role: 'Thực tập sinh (bạn)', emoji: '🙂', color: '#bfe3ff' };
+  if (id === 'think') return { name: S.name, role: 'nghĩ thầm…', emoji: '💭', color: '#e3d9ff' };
+  if (id === 'nar') return { name: '', role: '', emoji: '📖', color: '#fff1b8' };
   return CHARS[id] || { name: id, role: '', emoji: '❔', color: '#777' };
 }
 
@@ -148,11 +149,13 @@ function showDialog(spk, text) {
   $('#dlgName').textContent = info.name;
   $('#dlgRole').textContent = info.role;
   $('#choices').innerHTML = '';
-  // focus camera on the speaking NPC if they are close enough
-  if (npcs[spk]) {
+  // Teams call: highlight the speaking tile instead of moving the camera
+  if (callMode) {
+    document.querySelectorAll('#callTiles .tile').forEach((t) => t.classList.toggle('speaking', t.dataset.id === spk || (spk === 'think' && t.dataset.id === 'me')));
+  } else if (npcs[spk]) {
     const n = npcs[spk];
     if (n.mesh.position.distanceTo(player.pos) < 10) {
-      focusTarget = n.mesh.position.clone().setY(1.55);
+      focusTarget = n.mesh.position.clone().setY(1.12);
       n.talking = true;
     }
   }
@@ -274,7 +277,7 @@ function altarScene() {
 }
 const SLEEP_SCENE = [
   ['nar', 'Mắt bạn díp lại. Bạn gục xuống bàn phím. Màn hình hiện: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"'],
-  ['phat', 'Ngủ trưa là tốt. Nhưng ngủ lúc ba giờ chiều là… mất lộc.'],
+  ['hung', 'Ngủ trưa là tốt. Nhưng ngủ lúc ba giờ chiều là… mất lộc.'],
   ['think', 'Lần sau nhớ ghé pantry pha cà phê.'],
   { fx: { uy: -5, nl: 45 } },
 ];
@@ -283,11 +286,13 @@ async function runStep(step) {
   startDialogMode();
   if (step.who === 'obj:seat') {
     // sit down in the meeting room
-    player.pos.set(MEETING_SEAT[0], 1.2, MEETING_SEAT[1] + 0.25);
-    player.eye = 1.2; player.yaw = 0; player.pitch = -0.1;
+    player.pos.set(MEETING_SEAT[0], 1.05, MEETING_SEAT[1] + 0.25);
+    player.eye = 1.05; player.yaw = 0; player.pitch = -0.05;
   }
+  if (step.call) openCallFrame(step.call);
   const nodes = step.scene === 'altar' ? altarScene() : step.scene === 'meeting' ? MEETING : step.scene;
   await runNodes(nodes);
+  if (step.call) closeCallFrame();
   if (step.who === 'obj:altar') S.altar[S.day] = true;
   S.step++;
   if (step.scene !== 'meeting') {
@@ -305,7 +310,64 @@ function onStepStart() {
   placeNPCs(false);
   updateHUD();
   save();
+  maybeScheduleCall();
 }
+
+// ================= Teams calls =================
+let callMode = null;
+let ringTimer = null, ringLoop = null, callClock = null;
+function maybeScheduleCall(delay = 2600) {
+  clearTimeout(ringTimer);
+  const step = currentStep();
+  if (step && step.who.startsWith('call:')) ringTimer = setTimeout(tryRing, delay);
+}
+function tryRing() {
+  const step = currentStep();
+  if (!step || !step.who.startsWith('call:')) return;
+  if (mode !== 'play') { ringTimer = setTimeout(tryRing, 1500); return; }
+  const caller = charInfo(step.who.slice(5));
+  mode = 'ringing';
+  if (document.pointerLockElement) document.exitPointerLock();
+  $('#prompt').hidden = true; $('#mobile').hidden = true;
+  $('#incAvatar').textContent = caller.emoji;
+  $('#incAvatar').style.background = caller.color;
+  $('#incName').textContent = caller.name;
+  $('#incTitle').textContent = step.call.title;
+  $('#incoming').hidden = false;
+  const ring = () => { tone(784, 0.16, 'sine', 0.05); tone(988, 0.16, 'sine', 0.05, 0.2); tone(784, 0.16, 'sine', 0.05, 0.4); };
+  ring(); clearInterval(ringLoop); ringLoop = setInterval(ring, 1600);
+}
+function stopRing() { clearInterval(ringLoop); ringLoop = null; $('#incoming').hidden = true; }
+function acceptCall() {
+  const step = currentStep();
+  stopRing();
+  if (!step || !step.who.startsWith('call:')) { mode = 'play'; return; }
+  mode = 'play';
+  runStep(step);
+}
+function declineCall() {
+  stopRing();
+  mode = 'play';
+  $('#mobile').hidden = !isTouch;
+  applyFx({ uy: -2 });
+  toast('📵 Bạn từ chối cuộc gọi. Họ sẽ gọi lại… và nhớ chuyện này.', 'bad', 3);
+  lockPointer();
+  maybeScheduleCall(9000);
+}
+function openCallFrame(call) {
+  callMode = call;
+  $('#callTitle').textContent = call.title;
+  $('#callTiles').innerHTML = call.people.map((id) => {
+    const c = charInfo(id);
+    const label = id === 'me' ? `${esc(S.name)} (bạn)` : esc(c.name);
+    return `<div class="tile" data-id="${id}"><div class="av" style="background:${c.color}">${c.emoji}</div><div class="nm">${label}</div><div class="mic">${id === 'mai' ? '🎙️' : '🔇'}</div></div>`;
+  }).join('');
+  $('#callFrame').hidden = false;
+  let sec = 0; $('#callTime').textContent = '00:00';
+  clearInterval(callClock);
+  callClock = setInterval(() => { sec += 7; $('#callTime').textContent = `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`; }, 1000);
+}
+function closeCallFrame() { callMode = null; clearInterval(callClock); $('#callFrame').hidden = true; }
 
 function spotFor(id) {
   const day = DAYS[S.day];
@@ -367,7 +429,7 @@ function showDayIntro() {
     <div class="ov-sub">Thực tập sinh: ${esc(S.name)}</div>
     <p class="ov-text">${esc(fmt(d.intro))}</p>
     <div class="btns"><button class="btn primary" id="goDay">${S.day === 4 ? 'Bước vào phòng họp →' : 'Vào làm →'}</button></div>
-    ${isTouch ? '' : '<div class="help"><div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> đi · chuột nhìn · <kbd>E</kbd> nói chuyện · <kbd>Q</kbd> điện thoại · <kbd>Esc</kbd> tạm dừng</div></div>'}
+    ${isTouch ? '' : '<div class="help"><div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> đi · chuột nhìn · <kbd>E</kbd> nói chuyện · <kbd>Q</kbd> Teams · <kbd>Esc</kbd> tạm dừng</div></div>'}
   `);
   $('#goDay').onclick = () => {
     hideOverlay();
@@ -376,8 +438,8 @@ function showDayIntro() {
 }
 function startDay() {
   const d = DAYS[S.day];
-  player.pos.set(PLAYER_START[0], 1.6, PLAYER_START[1]);
-  player.yaw = PLAYER_START[2]; player.pitch = 0; player.eye = 1.6;
+  player.pos.set(PLAYER_START[0], EYE, PLAYER_START[1]);
+  player.yaw = PLAYER_START[2]; player.pitch = 0; player.eye = EYE;
   if (S.step === 0) S.coffee[S.day] = 0;
   placeNPCs(true);
   if (S.step === 0 && d.chatStart) pushChat(d.chatStart, 900);
@@ -388,6 +450,7 @@ function startDay() {
   updateHUD();
   save();
   lockPointer();
+  maybeScheduleCall(3500);
 }
 
 function dayEnd() {
@@ -399,7 +462,7 @@ function dayEnd() {
     <div class="diary">📓 ${esc(d.diary(S))}</div>
     ${statGrid()}
     <div class="rels">${relChips()}</div>
-    <div class="btns"><button class="btn primary" id="nextDay">Ngày tiếp theo →</button><button class="btn" id="dayPhone">📱 Xem điện thoại</button></div>
+    <div class="btns"><button class="btn primary" id="nextDay">Ngày tiếp theo →</button><button class="btn" id="dayPhone">💬 Xem Teams</button></div>
   `);
   S.st.nl = clamp(S.st.nl + 60, 0, 100);
   $('#nextDay').onclick = () => { S.day++; S.step = 0; save(); hideOverlay(); showDayIntro(); };
@@ -424,13 +487,13 @@ async function finishGame() {
     ${statGrid()}
     <div class="rels">${relChips()}</div>
     <div class="endings-list">${list}</div>
-    <div class="btns"><button class="btn primary" id="againBtn">Chơi lại, chọn khác đi 🔁</button><button class="btn" id="endPhone">👻 Hội TTS ẩn danh</button><button class="btn" id="shareBtn">Chia sẻ</button></div>
+    <div class="btns"><button class="btn primary" id="againBtn">Chơi lại, chọn khác đi 🔁</button><button class="btn" id="endPhone">👻 Hội Intern ẩn danh</button><button class="btn" id="shareBtn">Chia sẻ</button></div>
   `);
   $('#againBtn').onclick = () => { const name = S.name; S = newState(name); save(); hideOverlay(); showDayIntro(); };
   $('#endPhone').onclick = () => { openPhone('tts'); };
   $('#shareBtn').onclick = async () => {
-    const text = `Mình vừa đạt kết thúc "${E.title}" trong game Thực Tập Sinh. Còn bạn sống sót tới thứ Sáu không?`;
-    try { if (navigator.share) await navigator.share({ title: 'Thực Tập Sinh', text, url: location.href }); else { await navigator.clipboard.writeText(text + ' ' + location.href); toast('Đã copy link!', 'good'); } } catch { /* cancelled */ }
+    const text = `Mình vừa đạt kết thúc "${E.title}" trong game Intern Ơi! ở Ba Mẹ & Partners. Còn bạn sống sót tới Sprint Retro không?`;
+    try { if (navigator.share) await navigator.share({ title: 'Intern Ơi!', text, url: location.href }); else { await navigator.clipboard.writeText(text + ' ' + location.href); toast('Đã copy link!', 'good'); } } catch { /* cancelled */ }
   };
   const rows = await net.vote('ending', E.idx);
   if (rows && rows.length) {
@@ -580,10 +643,10 @@ $('#ttsForm').addEventListener('submit', async (e) => {
   const btn = $('#ttsForm button');
   btn.disabled = true;
   try {
-    const nick = $('#ttsAnon').checked ? 'TTS ẩn danh' : `TTS ${S ? S.name : 'ẩn danh'}`;
+    const nick = $('#ttsAnon').checked ? 'Intern ẩn danh' : `Intern ${S ? S.name : 'ẩn danh'}`;
     await net.postConfession(nick, body);
     $('#ttsBody').value = ''; $('#ttsLeft').textContent = '280';
-    toast('Đã đăng lên Hội TTS 👻', 'good');
+    toast('Đã đăng lên Hội Intern 👻', 'good');
   } catch (err) {
     toast('Không đăng được: ' + esc(err.message || 'lỗi mạng'), 'bad', 3);
   }
@@ -598,7 +661,7 @@ function ghostFor(id, name) {
   const palette = ['#6aa0ff', '#ff8fb1', '#7bd389', '#ffb35c', '#b48cff'];
   const col = palette[Math.abs([...id].reduce((a, c) => a + c.charCodeAt(0), 0)) % palette.length];
   const mesh = makePerson({ shirt: col, pants: '#3a3f55', hair: 'short', hairColor: '#2a2a2a' }, { ghost: true });
-  const tag = nameTag('TTS ' + (name || '???'), 'người chơi khác', { ghost: true });
+  const tag = nameTag('Intern ' + (name || '???'), 'người chơi khác', { ghost: true });
   mesh.add(tag);
   scene.add(mesh);
   ghosts[id] = { mesh, tag, target: new THREE.Vector3(), rot: 0, seen: performance.now(), name };
@@ -622,7 +685,7 @@ net.joinOffice(null, {
   onPos(p) {
     if (!S || mode === 'title') return;
     const g = ghostFor(p.id, clean(p.n || ''));
-    if (p.n && p.n !== g.name) { g.mesh.remove(g.tag); g.tag = nameTag('TTS ' + clean(p.n), 'người chơi khác', { ghost: true }); g.mesh.add(g.tag); g.name = p.n; }
+    if (p.n && p.n !== g.name) { g.mesh.remove(g.tag); g.tag = nameTag('Intern ' + clean(p.n), 'người chơi khác', { ghost: true }); g.mesh.add(g.tag); g.name = p.n; }
     if (!g.mesh.visible || g.mesh.position.lengthSq() === 0) g.mesh.position.set(p.x, 0, p.z);
     g.target.set(p.x, 0, p.z); g.rot = p.r; g.seen = performance.now(); g.mesh.visible = true;
   },
@@ -661,6 +724,8 @@ $('#phoneClose').onclick = closePhone;
 $('#phone').addEventListener('click', (e) => { if (e.target.id === 'phone') closePhone(); });
 document.querySelectorAll('.phone-tabs button').forEach((b) => { b.onclick = () => setTab(b.dataset.tab); });
 $('#soundBtn').onclick = () => setSound(!soundOn);
+$('#incAccept').onclick = () => acceptCall();
+$('#incDecline').onclick = () => declineCall();
 setSound(soundOn);
 
 window.addEventListener('keydown', (e) => {
@@ -669,6 +734,11 @@ window.addEventListener('keydown', (e) => {
     return;
   }
   keys[e.code] = true;
+  if (mode === 'ringing') {
+    if (e.code === 'KeyE' || e.code === 'Enter' || e.code === 'Space') { e.preventDefault(); acceptCall(); }
+    if (e.code === 'Escape' || e.code === 'KeyX') declineCall();
+    return;
+  }
   if (mode === 'dialog') {
     if (e.repeat) return;
     if (choiceKeyFn && /^Digit[1-4]$/.test(e.code)) { choiceKeyFn(Number(e.code.slice(5)) - 1); return; }
@@ -853,10 +923,11 @@ function frame() {
       else { parts.armR.rotation.x *= 0.85; parts.armR.rotation.z *= 0.85; parts.armL.rotation.x *= 0.85; }
     }
     parts.torso.scale.y = 1 + Math.sin(elapsed * 2 + n.phase) * 0.012;
+    n.tag.visible = m.position.distanceTo(player.pos) < 9 || (step && step.who === id);
     parts.head.rotation.y = Math.sin(elapsed * 0.6 + n.phase) * 0.15;
     const isTarget = step && step.who === id && mode !== 'dialog';
     n.marker.visible = !!isTarget;
-    if (isTarget) { n.marker.position.y = 2.42 + Math.sin(elapsed * 3) * 0.06; n.marker.rotation.y += dt * 2; }
+    if (isTarget) { n.marker.position.y = 2.05 + Math.sin(elapsed * 3) * 0.06; n.marker.rotation.y += dt * 2; }
   }
   // object marker
   if (step && step.who.startsWith('obj:') && mode !== 'dialog') {
@@ -865,6 +936,8 @@ function frame() {
     if (it) { objMarker.position.set(it.pos.x, it.pos.y + 0.75 + Math.sin(elapsed * 3) * 0.06, it.pos.z); objMarker.rotation.y += dt * 2; }
   } else objMarker.visible = false;
 
+  const catNode = npcs.khoa && npcs.khoa.mesh.userData.cat;
+  if (catNode) { catNode.userData.tail.rotation.z = -0.3 + Math.sin(elapsed * 2.5) * 0.3; catNode.rotation.y = -0.3 + Math.sin(elapsed * 0.7) * 0.25; }
   // --- ghosts ---
   const now = performance.now();
   for (const [id, g] of Object.entries(ghosts)) {
@@ -901,7 +974,10 @@ function frame() {
   }
   if (step && S && (mode === 'play' || mode === 'pause')) {
     let tp = null;
-    if (step.who.startsWith('obj:')) { const it = world.interactables.find((x) => 'obj:' + x.id === step.who); if (it) tp = it.pos; }
+    if (step.who.startsWith('call:')) { $('#objArrow').style.transform = 'rotate(0deg)'; $('#objArrow').textContent = '📞'; $('#objDist').textContent = '· Teams'; }
+    else $('#objArrow').textContent = '➤';
+    if (step.who.startsWith('call:')) { /* no world target */ }
+    else if (step.who.startsWith('obj:')) { const it = world.interactables.find((x) => 'obj:' + x.id === step.who); if (it) tp = it.pos; }
     else if (npcs[step.who]) tp = npcs[step.who].mesh.position;
     if (tp) {
       const dx = tp.x - player.pos.x, dz = tp.z - player.pos.z;
@@ -922,21 +998,22 @@ async function boot() {
   try { await Promise.race([document.fonts.load('900 40px "Be Vietnam Pro"'), sleep(2500)]); } catch { /* */ }
   world = buildWorld(scene);
   for (const [id, def] of Object.entries(CHARS)) {
+    if (def.noBody) continue;
     const mesh = makePerson(def);
     const tag = nameTag(def.name, def.role.split('·')[0].trim(), { color: def.color });
     mesh.add(tag);
     const marker = makeMarker();
-    marker.position.y = 2.42; marker.visible = false;
+    marker.position.y = 2.05; marker.visible = false;
     mesh.add(marker);
     scene.add(mesh);
-    npcs[id] = { mesh, marker, target: new THREE.Vector3(), rest: 0, walk: 0, phase: Math.random() * 6, talking: false };
+    npcs[id] = { mesh, tag, marker, target: new THREE.Vector3(), rest: 0, walk: 0, phase: Math.random() * 6, talking: false };
   }
   const sv = loadSave();
   S = sv || newState('');
   placeNPCs(true);
   S = null;
   // a slow idle camera for the title screen
-  player.pos.set(-1, 1.7, 7); player.yaw = 0.35; player.pitch = -0.08;
+  player.pos.set(-1, 1.6, 7.5); player.yaw = 0.3; player.pitch = -0.12;
   $('#loading').hidden = true;
   refreshTitle();
   if (!isTouch) setTimeout(() => $('#nameInput').focus(), 100);
@@ -948,4 +1025,4 @@ boot();
 setInterval(() => { if (mode === 'title') player.yaw += 0.0015; }, 16);
 
 // debug/test hook (harmless in production)
-window.__tts = { get S() { return S; }, get mode() { return mode; }, player, npcs, currentStep, interact, get world() { return world; } };
+window.__tts = { renderer, place: (i) => placeNPCs(i), ring: () => tryRing(), get S() { return S; }, get mode() { return mode; }, player, npcs, currentStep, interact, get world() { return world; } };

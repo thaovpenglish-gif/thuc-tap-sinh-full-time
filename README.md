@@ -1,10 +1,11 @@
-# Thực Tập Sinh 🪪
+# Intern Ơi! 🐱
 
-Game 3D góc nhìn thứ nhất chơi trên trình duyệt: tuần đầu tiên làm thực tập sinh ở **Phát Đạt Lộc**, một công ty gia đình 10 người vô cùng drama.
+Game 3D góc nhìn thứ nhất chơi trên trình duyệt: tuần đầu làm intern ở **Ba Mẹ & Partners**, một công ty tư vấn quản lý (management consulting) gia đình 10 người vô cùng drama. Phong cách pastel, nét viền đen kiểu sticker.
 
-- 5 ngày (thứ Hai → thứ Sáu), 10 nhân vật, mỗi lựa chọn đều ảnh hưởng Uy tín / Drama / Năng lượng và quan hệ.
+- Level 1: 5 ngày (thứ Hai → Sprint Retro thứ Sáu), 12 nhân vật + Mèo KPI, mỗi lựa chọn ảnh hưởng Uy tín / Drama / Năng lượng và quan hệ.
+- Daily stand-up mỗi sáng quanh bảng Scrum, Teams call từ sếp (nghe hoặc từ chối), group chat Teams.
 - 7 kết thúc khác nhau (có 1 kết thúc bí mật).
-- **Online qua Supabase**: thấy người chơi khác đi lại trong văn phòng theo thời gian thực, "Hội TTS ẩn danh" để đăng confession, và thống kê "x% người chơi chọn giống bạn".
+- **Online qua Supabase**: thấy người chơi khác đi lại trong văn phòng theo thời gian thực, "Hội Intern ẩn danh" để đăng confession, và thống kê "x% người chơi chọn giống bạn".
 - Chạy được trên máy tính (WASD + chuột) và điện thoại (cần điều khiển cảm ứng).
 
 ## Cấu trúc
