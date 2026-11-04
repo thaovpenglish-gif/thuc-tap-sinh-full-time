@@ -1,0 +1,118 @@
+// Người Đúng Chỗ HR — cast, idle lines, office theme.
+// A small HR consulting & headhunting firm whose own internal HR is a mess. All names are fictional.
+
+export const CAT_NAME = 'Mèo Ghost';
+
+// spot = a slot from maps/slots.js. body:false = candidates / clients / rivals (calls and chat only).
+export const CAST = {
+  duy: { name: 'Anh Duy', role: 'Founder & Chief People Officer · đăng LinkedIn lúc 5:30', emoji: '🧲', color: '#c9b6ff', spot: 'boss',
+    look: { shirt: '#c9b6ff', pants: '#3f3f55', hair: 'side', hairColor: '#1d1d1f', phone: true } },
+  ngan: { name: 'Chị Ngân', role: 'Senior Consultant · Executive Search', emoji: '🎯', color: '#9fb4ff', spot: 'senior',
+    look: { shirt: '#9fb4ff', pants: '#3f4a6b', hair: 'bun', hairColor: '#1d1d1f', glasses: true, mug: true } },
+  tuan: { name: 'Anh Tuấn', role: 'Top Headhunter · "văn phòng" là pantry', emoji: '📞', color: '#ffd3b8', spot: 'pantry',
+    look: { shirt: '#ffd3b8', pants: '#4b5566', hair: 'quiff', hairColor: '#2a1a12', phone: true, tie: '#c0392b' } },
+  vy: { name: 'Vy', role: 'Recruiter (RPO) · 400 tab LinkedIn', emoji: '🔎', color: '#ffc6e0', spot: 'c1',
+    look: { shirt: '#ffc6e0', pants: '#7d86b3', hair: 'pony', hairColor: '#3b2418', pods: true } },
+  my: { name: 'Chị My', role: 'C&B Analyst · biết lương của tất cả mọi người', emoji: '📈', color: '#b8f0d8', spot: 'n3',
+    look: { shirt: '#b8f0d8', pants: '#4a5a52', hair: 'short', hairColor: '#1d1d1f', glasses: true, notes: true } },
+  khoa: { name: 'Anh Khoa', role: 'Assessment & Training · vua icebreaker', emoji: '🎲', color: '#ffe08a', spot: 'coach',
+    look: { shirt: '#ffe08a', pants: '#6b7a99', hair: 'curly', hairColor: '#4a3226', notes: true } },
+  thao: { name: 'Chị Thảo', role: 'Hành chính · Kế toán · HR nội bộ · Lễ tân', emoji: '🧾', color: '#ffe9a0', spot: 'reception',
+    look: { shirt: '#ffe9a0', pants: '#8a6a5a', hair: 'wavy', hairColor: '#2a2a2a', glasses: true } },
+  bach: { name: 'Bách', role: 'Business Development · "chắc kèo"', emoji: '🤝', color: '#bfe3ff', spot: 'n1',
+    look: { shirt: '#bfe3ff', pants: '#2d3e5a', hair: 'short', hairColor: '#1d1d1f', tie: '#2d3e8a', phone: true } },
+  phat: { name: 'Phát', role: 'Consultant · kiêm "IT" của cái ATS', emoji: '🗂️', color: '#aeb7c9', spot: 'it',
+    look: { shirt: '#aeb7c9', pants: '#3a3a4a', hair: 'beanie', hairColor: '#1d1d1f', pods: true } },
+  quan: { name: 'Quân', role: 'Intern #2 · vào trước bạn một tuần', emoji: '⚡', color: '#a8dcc0', spot: 'c3',
+    look: { shirt: '#a8dcc0', pants: '#5b6b9a', hair: 'cap', hairColor: '#1d1d1f', tote: true } },
+
+  // ---- outside the office: candidates, clients, rivals ----
+  kimanh: { name: 'Chị Kim Anh', role: 'HR Manager · Đất Vàng Land (khách)', emoji: '🏢', color: '#d9d9d9', body: false },
+  tai: { name: 'Ông Tài', role: 'Giám đốc · Bao Bì Phú Quý (khách)', emoji: '🏭', color: '#d9d9d9', body: false },
+  son: { name: 'Anh Sơn', role: 'Ứng viên · Giám đốc Kinh doanh', emoji: '👔', color: '#d9d9d9', body: false },
+  yen: { name: 'Chị Yến', role: 'Ứng viên · Trưởng phòng Marketing', emoji: '💄', color: '#d9d9d9', body: false },
+  nam: { name: 'Anh Nam', role: 'Ứng viên · Kế toán trưởng', emoji: '📒', color: '#d9d9d9', body: false },
+  tung: { name: 'Anh "Tùng"', role: 'Người tham chiếu của anh Nam (?)', emoji: '🤧', color: '#d9d9d9', body: false },
+  trinh: { name: 'Chị Trinh', role: 'Ứng viên · CFO', emoji: '💼', color: '#d9d9d9', body: false },
+  hanh: { name: 'Chị Hạnh', role: 'Headhunter · Săn Đầu Pro (đối thủ)', emoji: '🦈', color: '#d9d9d9', body: false },
+  banhmi: { name: 'Cô Bánh Mì', role: 'Số gọi nhầm · đầu hẻm 42', emoji: '🥖', color: '#d9d9d9', body: false },
+};
+
+export const IDLE = {
+  duy: ['Sáng nay anh đăng bài "Lắng nghe là một năng lực". 2.000 like. Em like chưa?', 'Mình không phải công ty. Mình là gia đình. Gia đình thì… hợp đồng để sau.',
+    'Khó khăn là cơ hội, em ạ. Máy lạnh hỏng cũng là cơ hội.', 'Em có culture fit không? Anh hỏi vu vơ thôi.'],
+  ngan: ['Gửi shortlist trước năm giờ nhé.', 'Ứng viên nói "để em suy nghĩ" là bảy mươi phần trăm từ chối rồi.', 'Mình bán người phù hợp, không bán CV. Dù KPI đếm CV.',
+    'Em hỏi gì cứ hỏi. Chị không cắn. Chị chỉ sửa đỏ.'],
+  tuan: ['Anh ơi, cơ hội này không đến hai lần đâu anh. …À em đây, em nói điện thoại.', 'Pantry là phòng chốt deal. Cà phê là đạo cụ.',
+    'Hồi anh chốt ca CFO năm đó, anh mua được… một nửa cái xe. Nửa sau trả góp.', 'Đừng bao giờ hỏi ứng viên "anh có muốn đi không". Hỏi "anh muốn đi ngày nào".'],
+  vy: ['Đừng đóng tab nào của mình. Mỗi tab là một con người.', 'LinkedIn vừa khóa mình lần thứ ba. Kỷ lục cá nhân.', 'Hôm nay 41 CV. Mai 40. Ngày kia mình chết.',
+    'AND, OR, NOT. Ba từ duy nhất mình tin trên đời.'],
+  my: ['Lương của em à? Chị biết rồi. Đừng hỏi lương chị.', 'Tô phở này 55 nghìn. Hơi trên P50 của khu này.', 'Trung bình là con số biết nói dối. Trung vị thì ít hơn.',
+    'Biết lương của cả phòng mà không được kể. Đó là nghề của chị.'],
+  khoa: ['Trước khi em nói, mình làm một icebreaker nhỏ nhé!', 'Em là D, I, S hay C? Chị Thảo là C. Anh Duy là… "D tự nhận".',
+    'Ba từ mô tả bản thân em. Không được dùng từ "mệt".', 'Mọi cuộc họp đều cần một trò chơi khởi động. Kể cả họp kỷ luật.'],
+  thao: ['Người Đúng Chỗ HR xin nghe… dạ, chị chờ em một chút. Em đang làm kế toán.', 'Lương về "trong tuần" em nhé. Tuần nào thì chị chưa chắc.',
+    'Chị là kế toán, lễ tân, HR nội bộ. Lương thì một.', 'Em có biết làm hồ sơ bảo hiểm xã hội không? Chị hỏi thật.'],
+  bach: ['Deal này chắc kèo, anh hứa với khách rồi.', 'Khách chê phí cao thì mình tặng thêm bảo hành. Bảo hành là miễn phí mà.',
+    'Anh vừa hứa khách có shortlist trong bốn mươi tám tiếng. Ai làm thì… mình họp sau.', 'Anh không hứa bừa. Anh hứa tự tin.'],
+  phat: ['ATS của mình là file Google Sheets 14.000 dòng. Đừng sort một cột.', 'Ứng viên ghost mình. Mình ghost lại. Văn minh.',
+    'Năm tháng rồi mình chưa có hợp đồng lao động. Đừng nói ai. Mà ai cũng biết.', 'Mật khẩu là DungNguoi@2019. Đổi ba lần, vẫn là nó.'],
+  quan: ['Hôm nay mình 52 CV rồi. Bạn được mấy?', 'AI viết hộ phần tóm tắt. Nhanh mà, ai đọc đâu.', 'Mình phải lên chính thức. Nhà mình kể với cả họ rồi.',
+    'Bạn có thấy chị Ngân nhìn mình kiểu "lại nữa" không?'],
+};
+
+// Office look (see docs/COMPANY_CONTRACT.md §4). Desk slots: me c1 c2 c3 n1..n6 hr senior.
+export const THEME = {
+  logo: ['NGƯỜI ĐÚNG CHỖ HR', 'Headhunt · RPO · Khảo sát lương · Đào tạo', '"Right People. Right Place. Right… để tuần sau."'],
+  skyline: 'RIGHT PEOPLE · RIGHT PLACE',
+  bossWall: 'People First',
+  banner: 'WE ARE HIRING  ·  WE ARE HIRING  ·  (CHÍNH MÌNH)',
+  signs: {
+    boss: 'FOUNDER & CHIEF PEOPLE OFFICER',
+    finance: 'KẾ TOÁN · HÀNH CHÍNH · HR NỘI BỘ',
+    meeting: 'TALENT ROOM (kiêm kho)',
+    standup: 'HỌP KPI 8:30 · ĐỌC TO SỐ CV',
+    pantry: 'PANTRY · Phòng chốt deal của anh Tuấn',
+  },
+  desks: {
+    me: ['Intern · Bạn', ['ATS', 'CV.pdf (12 file)'], '#e07a5f'],
+    c1: ['Vy · RPO', ['LinkedIn', '412 tab đang mở'], '#ff8fb1'],
+    c2: ['Bàn trống', ['Đang tuyển Recruiter', '(từ 2025)'], '#9aa0ad'],
+    c3: ['Quân · Intern #2', ['CV hôm nay', '52 (???)'], '#62b38a'],
+    n1: ['Bách · BD', ['Deal', 'chắc kèo 90%'], '#3a7bd5'],
+    n2: ['Bàn trống', ['Tuyển gấp', 'chính mình'], '#9aa0ad'],
+    n3: ['My · C&B', ['P25 · P50 · P75', 'mẫu: 7 người'], '#5a9a5a'],
+    n4: ['Hot-desk', ['Ai ngồi', 'người đó dọn'], '#9aa0ad'],
+    n5: ['Bàn cũ của Hiền', ['Đã nghỉ', 'ngày thứ 59'], '#9aa0ad'],
+    n6: ['Ghế chờ ứng viên', ['Wifi khách', 'DungNguoi@2019'], '#e0a030'],
+    hr: ['HR nội bộ', ['Đánh giá nội bộ:', 'Đang cập nhật…'], '#ff7a6b'],
+    senior: ['Ngân · Senior', ['Shortlist', 'gửi trước 17:00'], '#9b7bff'],
+  },
+  whiteboard: ['KPI: 40 CV/NGÀY', 'Pipeline: 37 ứng viên', 'Đã ghost: 12 😶', 'Placement tháng này: 1', '"Chất lượng > số lượng" (vẫn đếm CV)'],
+  scrum: { cols: ['SOURCING', 'PHỎNG VẤN', 'OFFER'], notes: [
+    ['Kỹ sư vi mạch N2 (??)', 'Kế toán trưởng · Phú Quý', '200 công nhân bao bì', 'JD cho chính mình'],
+    ['GĐ Kinh doanh · anh S.', 'CFO · "đừng hỏi"', 'Trợ lý GĐ · Đất Vàng'],
+    ['Offer: chờ counter-offer', 'Lẩu mừng placement (?)'],
+  ] },
+  board: ['NHÀ MÌNH 💜', 'Workshop "Hạnh phúc nơi làm việc" · bắt buộc', 'Lương tháng này: "trong tuần"'],
+  palette: { wall: '#f6f1ff', lilac: '#e3d9ff', peach: '#ffe3d6', mint: '#d9f5ea', butter: '#fff3c4' },
+  labels: {
+    coffee: 'Pantry: cà phê & cuộc gọi chốt deal',
+    okr: 'Đọc bảng KPI CV',
+    altar: 'Thắp hương Thần Tài (xin một placement)',
+    safe: 'Két: hợp đồng phí & khách chưa trả',
+    plant: 'Xem chậu cây "Culture"',
+    redchair: 'Nhìn chiếc ghế nóng phỏng vấn',
+    interview: 'Ngồi vào ghế Talent Room',
+    printer: 'Máy in (in CV, in JD, in lại CV)',
+    desk: 'Ngồi vào bàn mình: mở ATS',
+  },
+  props: [
+    { type: 'standee', slot: 'p1', label: 'WE ARE|HIRING|(chính mình)|Inbox anh Duy', color: '#c9b6ff' },
+    { type: 'cabinet', slot: 'p2', label: 'HỒ SƠ ỨNG VIÊN', color: '#ffe9a0' },
+    { type: 'balloons', slot: 'p3', label: 'MỪNG PLACEMENT #1 (tháng 3)', color: '#ffc8dd' },
+    { type: 'cabinet', slot: 'p4', label: 'HỒ SƠ ỨNG VIÊN (cũ)', color: '#ffe9a0' },
+    { type: 'cabinet', slot: 'p5', label: 'HĐLĐ NỘI BỘ (trống)', color: '#ffc2b3' },
+    { type: 'ringlight', slot: 'p6', label: 'LIVE LINKEDIN 5:30', color: '#e3d9ff' },
+  ],
+};

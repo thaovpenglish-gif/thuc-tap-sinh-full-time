@@ -180,6 +180,25 @@ export async function validateCompany(id) {
   });
   eps.forEach((e) => { (e.steps || []).forEach((s, k) => { try { if (s.when) s.when(fresh); } catch (err) { E(`${e.id}.steps[${k}].when throws`); } probe(s.scene, `${e.id}.steps[${k}]`); }); try { if (e.diary) e.diary(fresh); } catch (err) { E(`${e.id}.diary throws: ${err.message}`); } });
   routine.forEach((b) => { try { if (b.when) b.when(fresh); } catch (err) { E(`${b.id}.when throws`); } probe(b.scene, b.id); });
+  // flags read in when()/if()/diary()/promotion but never set anywhere (dead branches)
+  const setFlags = new Set(['tax_commit', 'accept_official', 'promo_offered', 'official_day', 'paid30', 'drank_today', 'minis', 'minis_ok', 'snack_day', 'coffee_day', 'coffees', 'last_life']);
+  const readFlags = new Map();
+  const scanFn = (fn, at) => { if (typeof fn !== 'function') return; for (const m of fn.toString().matchAll(/flags(?:\.|\[['"])(\w+)/g)) if (!readFlags.has(m[1])) readFlags.set(m[1], at); };
+  const scanNodes = (nodes, at) => (nodes || []).forEach((n, i) => {
+    if (!n || Array.isArray(n)) return;
+    if (n.fx && n.fx.set) Object.keys(n.fx.set).forEach((k) => setFlags.add(k));
+    scanFn(n.if, `${at}[${i}]`);
+    (n.o || []).forEach((o, k) => { if (o.fx && o.fx.set) Object.keys(o.fx.set).forEach((f) => setFlags.add(f)); scanFn(o.when, `${at}[${i}].o[${k}]`); scanNodes(o.then, `${at}[${i}].o[${k}]`); });
+    scanNodes(n.then, at); scanNodes(n.else, at); scanNodes(n.good, at); scanNodes(n.bad, at);
+  });
+  const allSteps = [...(co.interview?.steps || []), ...eps.flatMap((e) => e.steps || []), ...routine];
+  allSteps.forEach((s2, i) => { scanFn(s2.when, `step ${s2.who}#${i}`); scanNodes(s2.scene, `step ${s2.who}#${i}`); });
+  eps.forEach((e) => scanFn(e.diary, `${e.id}.diary`)); scanFn(co.interview?.diary, 'interview.diary');
+  if (pr) { scanFn(pr.when, 'promotion.when'); scanNodes(pr.offer, 'promotion.offer'); }
+  if (co.endings) Object.values(co.endings).forEach((v) => scanFn(v, 'endings'));
+  (co.ties || []).forEach((t) => setFlags.add('tie_' + t.id));
+  // T&M Day 1 lives in story files but its flags count as set (scanned above through episodes)
+  for (const [f, at] of readFlags) if (!setFlags.has(f)) W(`flag "${f}" is read (${at}) but never set — that branch can never trigger`);
   void where;
   return { errors, warns, stats: { cast: Object.keys(cast).length, bodies: bodies.size, episodes: intern.length, official: official.length, routine: routine.length, sideTasks: st.length, lines } };
 }
