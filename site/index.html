@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Thực Tập Sinh Full-Time · Công ty #1: Ba Mẹ & Partners</title>
-  <meta name="description" content="Game 3D góc nhìn thứ nhất: tuần đầu làm intern ở Ba Mẹ & Partners, công ty tư vấn quản lý gia đình 10 người, 100 drama. Daily stand-up, Teams call, Sprint Retro. Chơi miễn phí trên trình duyệt.">
-  <meta property="og:title" content="Thực Tập Sinh Full-Time · Công ty #1: Ba Mẹ & Partners">
-  <meta property="og:description" content="Một headcount. Hai intern. Quỹ team building bốc hơi 50 triệu. Bạn có sống sót tới Sprint Retro thứ Sáu?">
+  <title>Thực Tập Sinh Full-Time · T&M Partners</title>
+  <meta name="description" content="T&M Partners · Consulting Chaos Simulator. Game văn phòng co-op: chạy deadline, chuyền tài liệu, sống sót qua brief đổi liên tục. Chơi miễn phí trên trình duyệt.">
+  <meta property="og:title" content="Thực Tập Sinh Full-Time · T&M Partners">
+  <meta property="og:description" content="Một sự nghiệp. Nhiều deadline. Vô số drama. We deliver excellence. Eventually.">
   <meta name="theme-color" content="#fff8ef">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,8 +44,6 @@
       <button id="menuBtn" class="icon-btn" title="Tạm dừng">⏸</button>
     </div>
   </div>
-  <div id="crosshair" hidden></div>
-  <div id="clickHint" hidden>🖱️ Bấm vào màn hình để điều khiển</div>
   <div id="prompt" hidden><kbd>E</kbd><span id="promptText"></span></div>
   <div id="toasts"></div>
 
@@ -122,7 +120,22 @@
   </div>
 
   <!-- Title -->
-  <div id="title" class="overlay title">
+  <!-- Main menu (T&M Partners) -->
+  <div id="mainMenu" class="overlay title" hidden>
+    <div class="menu-card">
+      <div class="kicker">T&M PARTNERS · CONSULTING CHAOS SIMULATOR</div>
+      <h1 class="menu-h1">Thực Tập Sinh<span>Full-Time</span></h1>
+      <p class="tagline">Một sự nghiệp. Nhiều deadline. Vô số drama.</p>
+      <p class="muted menu-sub">"We deliver excellence. Eventually."</p>
+      <div class="menu-modes">
+        <button class="mode-card" data-soon="solo"><span class="mode-ico">🧑‍💼</span><b>Solo</b><span>Office Story</span><em>Đang xây dựng</em></button>
+        <button class="mode-card" data-soon="mp"><span class="mode-ico">🏃‍♀️🏃</span><b>Multiplayer</b><span>Office Chaos · 2–4 người</span><em>Đang xây dựng</em></button>
+      </div>
+      <p class="menu-note" id="menuNote" hidden>🚧 Chế độ này đang được xây dựng. Hẹn bạn ở bản cập nhật tiếp theo!</p>
+    </div>
+  </div>
+
+  <div id="title" class="overlay title" hidden>
     <div class="title-card">
       <div class="badge-id">
         <div class="badge-clip"></div>

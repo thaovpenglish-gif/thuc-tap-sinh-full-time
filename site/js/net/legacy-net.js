@@ -1,7 +1,7 @@
 // Supabase: realtime presence (other interns walking around), confession wall, global choice stats.
 // Everything degrades gracefully: if Supabase is unreachable the game is fully playable offline.
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '../config.js';
 
 let sb = null;
 try {

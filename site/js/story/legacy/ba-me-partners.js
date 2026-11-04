@@ -1,4 +1,4 @@
-// Story data for "Thực Tập Sinh Full-Time" — Công ty #1: Tuần thực tập tại Ba Mẹ & Partners (management consulting, 10 người, 100 drama)
+// LEGACY story content: "Ba Mẹ & Partners" (Công ty #1). Hidden by default (see js/flags.js), kept intact.
 // Scene node formats:
 //   ['speakerId', 'text']                      a line ('me' = player, 'think' = inner voice, 'nar' = narrator)
 //   { c:'vote_id', o:[{ t, fx, then:[...], when:(s)=>bool }] }   a choice (vote_id → global stats)

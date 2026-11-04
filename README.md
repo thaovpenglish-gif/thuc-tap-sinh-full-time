@@ -11,18 +11,22 @@ Game 3D góc nhìn thứ nhất chơi trên trình duyệt về một sự nghi�
 ## Cấu trúc
 
 ```
-site/                 ← toàn bộ web tĩnh, deploy thẳng lên GitHub Pages
+site/                       web tĩnh, deploy thẳng lên GitHub Pages (không cần build)
   index.html, style.css
-  js/main.js          ← vòng lặp game, điều khiển, hội thoại, điện thoại, HUD
-  js/world.js         ← dựng văn phòng 3D (Three.js) + nhân vật
-  js/story.js         ← TOÀN BỘ cốt truyện: nhân vật, 5 ngày, lựa chọn, kết thúc
-  js/net.js           ← Supabase: presence, confession, vote
-  js/config.js        ← URL + anon key Supabase (an toàn để công khai, đã có RLS)
-supabase/schema.sql   ← schema database
-.github/workflows/deploy.yml ← tự động deploy khi push lên main
+  js/main.js                điểm vào: renderer, vòng lặp, chọn chế độ
+  js/flags.js               cờ tính năng (?legacy=1 mở cốt truyện cũ đang ẩn)
+  js/core/                  util, audio, input (phím + joystick), physics, camera nhìn từ trên
+  js/art/                   kit.js (vật liệu toon, viền sticker), people.js (nhân vật chibi)
+  js/maps/                  bản đồ văn phòng
+  js/game/sim.js            mô phỏng thuần (item, cầm/đặt/chuyền đồ) dùng chung Solo + host multiplayer
+  js/story/dialogue.js      engine hội thoại
+  js/story/legacy/          cốt truyện cũ "Ba Mẹ & Partners" (đang ẩn)
+  js/ui/                    toast, overlay, điện thoại
+  js/modes/legacy.js        chế độ cốt truyện cũ
+  js/net/                   kết nối Supabase
+supabase/schema.sql         cấu trúc database
+tests/                      unit test (npm test) + test tự chơi (tests/e2e)
 ```
-
-Không cần build. Muốn sửa cốt truyện thì sửa `site/js/story.js` rồi push, GitHub Actions tự deploy.
 
 ## Chạy thử trên máy
 
@@ -30,7 +34,13 @@ Không cần build. Muốn sửa cốt truyện thì sửa `site/js/story.js` r�
 cd site && python3 -m http.server 8000
 ```
 
-Mở http://localhost:8000
+Mở http://localhost:8000 (thêm `?legacy=1` để mở cốt truyện cũ).
+
+## Kiểm thử
+
+```bash
+npm test
+```
 
 ## Kiểm duyệt confession
 
