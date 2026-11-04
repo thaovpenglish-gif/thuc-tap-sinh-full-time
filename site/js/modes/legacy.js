@@ -463,7 +463,9 @@ export function startLegacy({ scene, camera, input }) {
     try { const pr = canvas.requestPointerLock(); if (pr && pr.catch) pr.catch(() => {}); } catch { /* not allowed yet */ }
   }
   document.addEventListener('pointerlockchange', () => {
-    if (!document.pointerLockElement && mode === 'play' && !isTouch) { mode = 'pause'; $('#pause').hidden = false; }
+    if (!document.pointerLockElement && mode === 'play' && !isTouch) { mode = 'pause'; $('#pause').hidden = false; $('#crosshair').hidden = true; }
+    // a lock that lands after we already left play mode (e.g. Teams opened from the pause card) hides the cursor: drop it
+    else if (document.pointerLockElement && mode !== 'play') document.exitPointerLock();
   });
   canvas.addEventListener('click', () => {
     if (mode === 'dialog') { dialogue.advance(); return; }
@@ -491,12 +493,16 @@ export function startLegacy({ scene, camera, input }) {
     const endLook = (e) => { for (const t of e.changedTouches) if (lookTouch && t.identifier === lookTouch.id) lookTouch = null; };
     window.addEventListener('touchend', endLook); window.addEventListener('touchcancel', endLook);
   }
-  const pause = () => { if (mode === 'play') { if (document.pointerLockElement) document.exitPointerLock(); mode = 'pause'; $('#pause').hidden = false; } };
-  const resume = () => { $('#pause').hidden = true; if (mode === 'pause') { mode = 'play'; lockPointer(); } };
+  const pause = () => { if (mode === 'play') { mode = 'pause'; if (document.pointerLockElement) document.exitPointerLock(); $('#pause').hidden = false; $('#crosshair').hidden = true; } };
+  const resume = () => { $('#pause').hidden = true; if (mode === 'pause') { mode = 'play'; $('#crosshair').hidden = isTouch; lockPointer(); } };
   $('#resumeBtn').onclick = resume;
   $('#pause').addEventListener('click', (e) => { if (e.target.id === 'pause') resume(); });
-  $('#pausePhone').onclick = () => { resume(); phone.open(); };
-  $('#menuBtn').onclick = pause;
+  $('#pausePhone').onclick = () => phone.open(); // the phone takes over from pause; closing it returns to play
+  $('#menuBtn').onclick = () => { if (mode === 'pause') resume(); else pause(); };
+  // back to the Solo / Multiplayer menu: progress is already saved, so a clean reload is the safest teardown
+  const goHome = () => { if (S) save(); location.href = location.pathname; };
+  $('#homeBtn').onclick = goHome;
+  $('#titleHomeBtn').onclick = goHome;
   $('#restartBtn').onclick = () => {
     if (!confirm('Chơi lại từ đầu? Tiến trình hiện tại sẽ mất.')) return;
     const name = S ? S.name : '';

@@ -111,13 +111,13 @@
   <div id="pause" class="overlay" hidden>
     <div class="ov-card small">
       <h2>Coffee break ☕</h2>
-      <p class="muted">Bấm vào màn hình hoặc nút bên dưới để quay lại làm việc.</p>
+      <p class="muted">Bấm nút bên dưới (hoặc <kbd>Esc</kbd>) để quay lại làm việc. Các nút góc trên bên phải vẫn bấm được.</p>
       <div class="btns"><button class="btn primary" id="resumeBtn">Quay lại làm việc</button><button class="btn" id="pausePhone">💬 Teams</button></div>
       <div class="help">
         <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> đi lại · <kbd>Shift</kbd> đi nhanh · Chuột: nhìn</div>
         <div><kbd>E</kbd> nói chuyện / tương tác · <kbd>Q</kbd> mở Teams · <kbd>1</kbd>–<kbd>4</kbd> chọn câu trả lời</div>
       </div>
-      <button class="link" id="restartBtn">Chơi lại từ đầu</button>
+      <div class="pause-links"><button class="link" id="homeBtn">🏠 Về menu chính</button><button class="link" id="restartBtn">Chơi lại từ đầu</button></div>
     </div>
   </div>
 
@@ -158,6 +158,7 @@
           <button class="btn primary" id="startBtn">Onboard ngay →</button>
           <button class="btn" id="continueBtn" hidden></button>
         </div>
+        <button class="link back-link" id="titleHomeBtn">← Về menu chính</button>
         <div class="title-meta"><span id="titleOnline">👥 đang kết nối…</span><span id="titleEndings"></span></div>
         <div class="help">
           <div>💻 <kbd>WASD</kbd> đi · chuột nhìn · <kbd>E</kbd> nói chuyện · <kbd>Q</kbd> Teams</div>
