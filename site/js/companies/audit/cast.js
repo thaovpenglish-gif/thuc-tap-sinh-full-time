@@ -35,6 +35,7 @@ export const CAST = {
   quang: { name: 'Anh Quang', role: 'CFO · Phúc Lộc Foods (khách hàng)', emoji: '🐟', color: '#d9d9d9', body: false },
   hong: { name: 'Chị Hồng', role: 'Kế toán trưởng · Phúc Lộc Foods', emoji: '📒', color: '#d9d9d9', body: false },
   tu: { name: 'Chú Tư', role: 'Thủ kho lạnh · Phúc Lộc Foods', emoji: '🧊', color: '#d9d9d9', body: false },
+  may: { name: 'Chị Mây', role: 'Chủ chuỗi Lẩu Bếp Nhà Mây (khách dịch vụ kế toán)', emoji: '🍲', color: '#d9d9d9', body: false },
   meo: { name: 'Mèo Số Dư', role: 'Mèo văn phòng · chưa bao giờ lệch', emoji: '🐈', color: '#d9d9d9', body: false },
 };
 
