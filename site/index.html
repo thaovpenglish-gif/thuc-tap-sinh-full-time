@@ -135,6 +135,38 @@
         <button class="mode-card" data-soon="mp"><span class="mode-ico">🏃‍♀️🏃</span><b>Multiplayer</b><span>Office Chaos · 2–4 người</span><em>Sắp ra mắt</em></button>
       </div>
       <p class="menu-note" id="menuNote" hidden>🚧 Multiplayer đang được xây dựng. Trong lúc chờ, bạn chơi Solo nhé!</p>
+      <button class="link letter-link" id="letterBtn">💌 Thư từ người làm game · cách lưu tiến trình</button>
+    </div>
+  </div>
+
+  <!-- Letter from the developer: shown the first time you press Solo, reopenable from the main menu -->
+  <div id="devLetter" class="overlay title" hidden>
+    <div class="letter-card">
+      <div class="letter-stamp">💌</div>
+      <h2>Thư từ người làm game</h2>
+      <p>Chào bạn,</p>
+      <p><b>Thực Tập Sinh Full-Time</b> là một trò chơi châm biếm đời đi làm. Bạn vào vai một bạn thực tập sinh, chọn một công ty để ứng tuyển, tự deal lương, rồi sống sót qua tối đa <b>45 ngày</b>: deadline, sếp gọi Teams, đồng nghiệp drama, bụng đói và ví mỏng. Mỗi thứ Sáu bạn bị review. Có một con đường để lên chính thức (và nó không dễ). Không có game over: hết chỗ này thì mình nhảy sang chỗ khác.</p>
+      <h3>💾 Tiến trình được lưu thế nào?</h3>
+      <ol>
+        <li><b>Tự động, trên trình duyệt này.</b> Game tự lưu sau mỗi cảnh. Tắt tab, mở lại là chơi tiếp đúng chỗ.</li>
+        <li><b>Nhưng sẽ mất nếu</b> bạn xóa dữ liệu trình duyệt, chơi ở tab ẩn danh, hoặc đổi sang máy khác.</li>
+        <li><b>Muốn giữ chắc ăn:</b> vào Solo, mở mục <b>☁️ Lưu lên mây</b>, chọn một trong hai cách:
+          <ul>
+            <li><b>Email + mật khẩu game:</b> lần đầu nhập là tạo tài khoản, sau đó game tự đồng bộ. Sang máy khác, nhập lại đúng email và mật khẩu đó là chơi tiếp. Game không gửi email nào cả. Hãy đặt một mật khẩu riêng cho game, <u>đừng</u> dùng mật khẩu thật của email.</li>
+            <li><b>Mã lưu 8 ký tự:</b> bấm "Tạo mã", chép lại mã (ví dụ <code>ABCD-2345</code>). Sang máy khác, nhập mã là lấy lại tiến trình. Mã dùng được 30 ngày.</li>
+          </ul>
+        </li>
+      </ol>
+      <h3>📜 Vài điều cần nói trước</h3>
+      <ul>
+        <li>Mọi công ty, nhân vật và tình huống đều <b>hư cấu</b>. Nếu thấy giống công ty bạn… thì đó là chuyện của bạn 🙂</li>
+        <li>Thông tin về lương, thuế, bảo hiểm, luật lao động và mức phạt giao thông trong game đã được <b>đơn giản hóa để giải trí</b>, không phải tư vấn pháp lý hay tài chính.</li>
+        <li>Lời than thở bạn đăng ở mục "Than thở" trong điện thoại sẽ <b>hiển thị công khai</b> (ẩn danh nếu bạn chọn). Đừng ghi tên thật hay thông tin cá nhân của ai.</li>
+        <li>Game lưu tên nhân vật và tiến trình trên trình duyệt của bạn. Nếu dùng lưu lên mây, game lưu thêm email và tiến trình trên máy chủ, chỉ để bạn chơi tiếp.</li>
+        <li>Game vẫn đang được làm tiếp mỗi ngày, nên đôi chỗ còn lỗi. Cảm ơn bạn đã kiên nhẫn.</li>
+      </ul>
+      <p class="letter-sign">Chúc bạn deal được lương tốt và về đúng giờ,<br>— Người làm game 💜</p>
+      <div class="btns"><button class="btn primary" id="letterGo">Đã hiểu, vào chơi →</button><a class="btn" id="letterCoffee" href="#" target="_blank" rel="noopener" hidden>☕ Mời người làm game ly cà phê</a><button class="btn ghost" id="letterClose">Đóng</button></div>
     </div>
   </div>
 

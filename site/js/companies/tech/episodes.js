@@ -1688,4 +1688,240 @@ const AI_DEMO = {
     : 'Demo hardcode chạy hoàn hảo. Anh Kevin hứa "tháng sau". Đêm nay mình mơ thấy if user == "demo_kevin".',
 };
 
-/*__PART4__*/
+// ---------------------------------------------------------------- official arc (after promotion)
+const OFF_HANDOVER = {
+  id: 'off_handover', official: true, title: 'Chính thức: pager thật, bàn giao bằng emoji',
+  intro: 'Tuần đầu tiên làm nhân viên chính thức. Hợp đồng lao động, bảo hiểm 10,5%, MacBook (vẫn đời 2019).\n\nVà một món quà: bạn có tên trong lịch on-call. Anh Lộc vừa nộp đơn nghỉ. Bàn giao: hôm nay.',
+  steps: [
+    {
+      who: 'ngan', obj: 'Ký hợp đồng chính thức với chị Ngân', time: '09:00',
+      scene: [
+        ['ngan', 'Chúc mừng em chính thức về với gia đình! Hợp đồng đây. Và đây là thư ESOP: cliff một năm, vesting bốn năm.'],
+        ['ngan', 'Nghĩa là sau một năm em bắt đầu có cổ phần. Giá trị thì… khi công ty IPO. Hoặc được mua lại. Hoặc khi nào đó.'],
+        { c: 'tech_off_esop', o: [
+          { t: '"ESOP này có giá thực hiện bao nhiêu, và lối ra là gì ạ?"', fx: { uy: 2, rel: { ngan: -1, thao: 1 } }, then: [
+            ['ngan', 'Ơ… câu này chị chuyển chị Thảo nha.'],
+            { chat: [['thao', 'giá thực hiện: chưa có. lối ra: chưa có. cổ phần: có, trên giấy. em ký hợp đồng lao động trước là quan trọng nhất.', true]] },
+          ] },
+          { t: 'Ký luôn. ESOP là tương lai.', fx: { rel: { ngan: 2, kevin: 1 } }, then: [['ngan', 'Tuyệt! Một năm nữa em là cổ đông. Nhớ ở lại một năm nha. Chị nói vui thôi.']] },
+        ] },
+        ['nar', '(Hợp đồng lao động từ đủ 1 tháng trở lên thì đóng BHXH bắt buộc. Thông tin giải trí, không phải tư vấn pháp lý.)'],
+      ],
+    },
+    {
+      who: 'loc', obj: 'Nhận bàn giao DevOps từ anh Lộc', time: '10:30',
+      scene: [
+        ['loc', '📦➡️🫵'],
+        ['nar', 'Tài liệu bàn giao của anh Lộc là một tin nhắn Slack: "🔑 = sticky note dưới bàn phím. 🔥 = gọi Thạc. 🙏 = luôn luôn."'],
+        { if: f('oncall_rotation'), then: [['loc', 'Lịch xoay vòng em đề xuất lần trước… anh dùng được ba tháng. Ba tháng anh được ngủ. Cảm ơn em.'], { fx: { rel: { loc: 2 } } }] },
+        { c: 'tech_off_handover', o: [
+          { t: 'Xin anh Lộc ngồi 2 tiếng, quay màn hình, viết runbook cùng nhau.', fx: { uy: 4, nl: -8, rel: { loc: 2, thac: 1 }, set: { handover_doc: true } }, then: [
+            ['loc', 'Hai tiếng… ok. Anh nói, em gõ. Anh không gõ được nữa, tay anh chỉ còn emoji.'],
+            ['nar', 'Runbook dài 14 trang. Trang 9 có đoạn: "Nếu server cũ kêu như máy giặt: đừng tắt. Không ai biết tại sao."'],
+          ] },
+          { t: 'Nhận bàn giao bằng emoji.', fx: { rel: { loc: 1 } }, then: [['think', '🔑 dưới bàn phím. 🔥 gọi Thạc. 🙏 luôn luôn. Ok. Mình là DevOps rồi.']] },
+        ] },
+        ['loc', '🫡 ✌️'],
+      ],
+    },
+    {
+      who: 'kevin', obj: 'Anh Kevin chào mừng "nhân viên chính thức"', time: '14:00',
+      scene: [
+        ['kevin', 'Welcome to the team for real! Giờ em là full-time. Nghĩa là em được làm full các thứ: Giỏ Chung, AI, và on-call.'],
+        ['kevin', 'Lương mười lăm triệu là đầu tư của anh vào em. Anh mong ROI.'],
+        { c: 'tech_off_kevin', o: [
+          { t: '"Em cần chị Diệp xếp ưu tiên ba việc đó giúp em ạ."', fx: { uy: 2, rel: { diep: 2, kevin: -1 } }, then: [['kevin', 'Ưu tiên là cả ba em ơi. Startup không có chữ "hoặc".']] },
+          { t: '"Dạ em sẽ cố hết sức ạ!"', fx: { nl: -6, rel: { kevin: 2 } }, then: [['kevin', 'That\'s the spirit! Anh đăng LinkedIn về em nha. Không ghi tên.']] },
+        ] },
+        ['nar', '(Lương 15 triệu, trừ 10,5% bảo hiểm, chưa tới mức chịu thuế sau giảm trừ gia cảnh 15,5 triệu. Thông tin giải trí, không phải tư vấn pháp lý.)'],
+      ],
+    },
+    {
+      who: 'call:thac', obj: '17:40 Pager kêu: anh Thạc gọi', time: '17:40',
+      call: { title: '#incident · Bạn đang on-call', people: ['thac', 'me'] },
+      scene: [
+        ['thac', 'Disk server cũ 85%. Không gấp. Anh gọi để em biết cảm giác pager kêu khi em là người chịu trách nhiệm thật.'],
+        { if: f('handover_doc'), then: [['me', 'Runbook trang 4 ạ. Em dọn log cũ, rồi báo #incident.'], ['thac', 'Có runbook. Lần đầu tiên công ty này có runbook DevOps. Anh suýt khóc.']], else: [['me', 'Dạ… 🔑 dưới bàn phím, 🔥 gọi anh ạ?'], ['thac', 'Đúng. Anh là 🔥. Lại đây, anh chỉ.']] },
+        ['thac', 'Chúc mừng em lên chính thức. Anh nói thật: ở đây chính thức nghĩa là không còn ai tha lỗi cho em vì là intern.'],
+      ],
+    },
+  ],
+  diary: (s) => `Tuần đầu chính thức. ${s.flags.handover_doc ? 'Mình và anh Lộc viết runbook 14 trang.' : 'Bàn giao DevOps bằng ba emoji.'} Pager kêu lúc 17:40. Không gấp. Nhưng tim mình gấp.`,
+};
+
+const OFF_SALARY_LATE = {
+  id: 'off_salary_late', official: true, title: 'Lương về trễ "vì gia đình"',
+  intro: 'Sáng nay có email từ anh Kevin gửi toàn công ty, tiêu đề: "Một gia đình ❤️".\n\nCùng lúc, LinkedIn anh Kevin đăng ảnh check-in hội thảo công nghệ ở Singapore, cầm ly cocktail, caption "Building the future".',
+  steps: [
+    {
+      who: 'obj:desk', obj: 'Đọc email "Một gia đình ❤️"', time: '09:00',
+      scene: [
+        ['nar', '"Thưa cả nhà, vì vòng gọi vốn cần thêm thời gian, lương tháng này sẽ về trễ 7 ngày. Chúng ta là một gia đình. Xin cả nhà thông cảm."'],
+        ['nar', 'Phía dưới email, chữ ký anh Kevin: "CEO · Top 30 Under 30 (đề cử)". Ảnh đại diện mới: anh Kevin ở Marina Bay.'],
+        { c: 'tech_off_email', o: [
+          { t: 'Trả lời: "Anh cho em hỏi lương trễ có ảnh hưởng đóng bảo hiểm tháng này không ạ?"', fx: { uy: 2, dr: 3, rel: { kevin: -2, thao: 1 } }, then: [
+            { chat: [['thao', 'bảo hiểm chị vẫn đóng đúng hạn. chị ưu tiên cái đó trước cả tiền điện.', true]] },
+          ] },
+          { t: 'Không trả lời. Mở Excel tính tiền nhà.', fx: { nl: -5, money: -100_000 }, then: [['think', 'Bảy ngày. Chủ trọ của mình không tin vào văn hóa gia đình.']] },
+          { t: 'Reply-all: "❤️"', fx: { rel: { kevin: 1 }, dr: 1 }, then: [['nar', '23 người reply-all "❤️". Chị Ngân reply-all "💐". Hộp thư của 80 người nổ tung.']] },
+        ] },
+      ],
+    },
+    {
+      who: 'thao', obj: 'Chị Thảo đóng cửa phòng, gọi bạn vào', time: '10:30',
+      scene: [
+        ['thao', 'Chị nói với em vì em là người từng hỏi runway. Quỹ Hạt Giống trả lời Series B: "cần cân nhắc thêm".'],
+        ['thao', 'Không có Series B thì runway còn ba tháng. Tiền bên Nhật nuôi được một nửa công ty. Một nửa.'],
+        { if: f('mau_inflated'), then: [['thao', 'Và họ hỏi lại con số một triệu MAU. Due diligence. Chị đã nói với em là nó sẽ quay lại.'], { fx: { dr: 4 } }] },
+        { c: 'tech_off_thao', o: [
+          { t: '"Chị có ổn không ạ?"', fx: { rel: { thao: 3 } }, then: [['thao', 'Không. Nhưng chị sẽ là người cuối cùng tắt đèn. Còn em thì đừng là người cuối cùng biết tin.']] },
+          { t: '"Em nên chuẩn bị gì ạ?"', fx: { uy: 1, rel: { thao: 1 }, set: { warned: true } }, then: [['thao', 'Cập nhật CV. Lưu email quan trọng. Và hỏi chị Ngân xem sổ bảo hiểm của em đã chốt tới tháng nào.']] },
+        ] },
+      ],
+    },
+    {
+      who: 'tung', obj: 'Tùng thu dọn bàn', time: '13:30',
+      scene: [
+        ['tung', 'Anh nghỉ rồi. Cái app freelance thành công ty nhỏ. Lương gấp rưỡi, trả đúng ngày. Không có ring light.'],
+        ['tung', 'Bên anh đang cần một người. Không cần giỏi nhất. Cần người đọc trang Rollback trước khi cần nó. Em muốn không?'],
+        { c: 'tech_off_tung', o: [
+          { t: '"Anh gửi em JD. Em cân nhắc."', fx: { rel: { tung: 2 }, set: { cv_sent: true } }, then: [['tung', 'Ok. Kentou shimasu hả? Đùa. Anh gửi rồi. Phỏng vấn tối thứ Năm, online, không take-home.']] },
+          { t: '"Em ở lại. Em muốn thấy Giỏ Chung đi tới đâu."', fx: { rel: { tung: 1, diep: 1 } }, then: [['tung', 'Ừ. Tôn trọng. Nhưng lưu số anh nha. Startup không có chữ "mãi mãi".']] },
+        ] },
+        ['nar', 'Trên bàn Tùng còn lại sticker "It works on my machine". Tùng bóc nó ra, dán lên bàn bạn.'],
+      ],
+    },
+    {
+      who: 'diep', obj: 'Chị Diệp nhờ một việc riêng', time: '16:00',
+      scene: [
+        ['diep', 'Em… có thể làm người tham chiếu cho chị không? Chị đang phỏng vấn ở một sàn thương mại điện tử. Đừng nói ai.'],
+        ['diep', 'Em biết vì sao chị nói toàn framework không? Vì framework không ai cãi được. Còn ý kiến của chị thì ai cũng cãi được.'],
+        { c: 'tech_off_diep', o: [
+          { t: '"Dạ được ạ. Em sẽ kể vụ thread Figma 61 comment."', fx: { rel: { diep: 3 } }, then: [['diep', 'Cảm ơn em. Đó là ngày chị thấy mình làm PM có ích nhất. Nhờ một intern.']] },
+          { t: '"Chị đi rồi thì ai che cho team khỏi anh Kevin ạ?"', fx: { rel: { diep: 1 }, dr: 1 }, then: [['diep', '…Câu hỏi đó chị hỏi mình mỗi tối. Chưa có framework nào trả lời được.']] },
+        ] },
+      ],
+    },
+  ],
+  diary: (s) => `Lương trễ bảy ngày, anh Kevin ở Singapore. ${s.flags.cv_sent ? 'Mình nhận JD của Tùng.' : 'Tùng nghỉ. Mình ở lại.'} Chị Diệp cũng đang phỏng vấn chỗ khác. Startup không có chữ "mãi mãi".`,
+};
+
+const OFF_PIVOT = {
+  id: 'off_pivot', official: true, title: 'Pivot',
+  intro: 'All-hands khẩn lúc 9:30. Lịch họp ghi: "Hướng đi mới 🚀". Không có mô tả.\n\nTrong phòng "Bún Bò", dòng chữ "Pivot? (đừng xóa)" trên bảng trắng đã được tô đậm.',
+  steps: [
+    {
+      who: 'kevin', obj: '9:30 All-hands khẩn ở bảng Scrum', time: '09:30', pos: ALLHANDS_POS,
+      scene: [
+        ['kevin', 'Team! Mình pivot. Từ hôm nay, Nợ Kỹ Thuật Labs là "AI agent cho doanh nghiệp nhỏ". Đi chợ là quá khứ. AI là tương lai.'],
+        ['kevin', 'Squad Giỏ Chung giải thể từ thứ Hai. Không phải do các bạn. Do chiến lược.'],
+        ['think', 'Giỏ Chung. Ý tưởng của mình. Sống được bốn tuần. Một đêm mất ngủ, rồi một buổi sáng pivot.'],
+        { c: 'tech_off_pivot', o: [
+          { t: '"Người dùng Giỏ Chung hiện tại thì sao ạ?"', fx: { uy: 2, rel: { kevin: -1, nguyet: 1 } }, then: [['kevin', 'Họ sẽ được… chuyển đổi. Sang trải nghiệm AI. Mình sẽ gửi push notification: "Lúa nhớ bạn 🌾".']] },
+          { t: 'Vỗ tay cùng mọi người.', fx: { nl: -3, rel: { kevin: 1 } }, then: [['nar', 'Tiếng vỗ tay nghe như tiếng mưa trên mái tôn. Thưa, và hơi buồn.']] },
+        ] },
+      ],
+    },
+    {
+      who: 'thac', obj: 'Anh Thạc rủ ra pantry', time: '11:00', pos: { thac: 'pantry' },
+      scene: [
+        ['thac', 'Anh nói với em đầu tiên, như anh đã hứa. Anh nghỉ. Cuối tháng. Anh muốn làm một công ty nhỏ, có lãi, không có ring light.'],
+        ['thac', 'Anh cần hai người. Một người đọc runbook trước khi cần nó. Một người dám hỏi runway trước mặt CEO. Em là cả hai.'],
+        { c: 'tech_off_cto', o: [
+          { t: '"Em muốn nghe thêm ạ."', fx: { rel: { thac: 2 }, set: { cto_offer: true } }, then: [['thac', 'Lương thấp hơn ở đây một chút. Nhưng trả đúng ngày. Và anh sẽ ngủ đủ tám tiếng. Đó là văn hóa công ty.']] },
+          { t: '"Em cảm ơn anh, nhưng em chưa sẵn sàng."', fx: { rel: { thac: 1 } }, then: [['thac', 'Ừ. Cửa luôn mở. Cửa nhà anh không có thẻ từ.']] },
+        ] },
+      ],
+    },
+    {
+      who: 'hieu', obj: 'Anh Hiếu (BrSE) có tin cho bạn', time: '14:00',
+      scene: [
+        ['hieu', 'Tanaka-san gia hạn hợp đồng một năm. Và khách muốn một người onsite ở Tokyo sáu tháng.'],
+        { if: (r) => r.flags.exile_script || r.flags.exile_loyal || r.flags.jp_ok, then: [['hieu', 'Khách nhớ em. Tanaka-san gọi em là "người hourensou". Đó là lời khen cao nhất của ông ấy.']], else: [['hieu', 'Khách chưa biết em. Nhưng anh tin em học nhanh. Mỗi sáng một câu tiếng Nhật, mỗi tối một ly bia.']] },
+        { c: 'tech_off_tokyo', o: [
+          { t: '"Em muốn đi Tokyo ạ."', fx: { rel: { hieu: 2 }, set: { tokyo_offer: true } }, then: [['hieu', 'Đi đày vĩnh viễn! Đùa. Đi onsite. Anh gửi khách CV của em. Nhớ: kentou shimasu nghĩa là không.']] },
+          { t: '"Em xin suy nghĩ ạ."', fx: { rel: { hieu: 1 } }, then: [['hieu', 'Kentou shimasu. Em học nhanh thật.']] },
+        ] },
+      ],
+    },
+    {
+      who: 'obj:desk', obj: '17:00 Về bàn: con đường tiếp theo', time: '17:00',
+      scene: [
+        ['nar', 'Trên màn hình, Jira đã chuyển cả board Giỏ Chung sang "Archived". Ticket NKT-1337 "Fix everything" vẫn In Progress.'],
+        { c: 'tech_off_path', o: [
+          { t: 'Xin vào squad AI. Ở lại tới cùng.', fx: { nl: -6, rel: { kevin: 2 }, set: { path_ai: true } }, then: [['kevin', 'Ownership! Em là AI-native rồi. Hai tiếng thôi, em học được.']] },
+          { t: 'Theo anh Thạc ra riêng.', when: f('cto_offer'), fx: { rel: { thac: 2 }, set: { path_cto: true } }, then: [['think', 'Một công ty nhỏ, có lãi, ngủ đủ tám tiếng. Nghe như khoa học viễn tưởng.']] },
+          { t: 'Đi onsite Tokyo với dự án Nhật.', when: f('tokyo_offer'), fx: { rel: { hieu: 2 }, set: { path_tokyo: true } }, then: [['think', 'Tokyo. Spec 200 trang. Nhưng có lương đúng ngày, và KitKat trà xanh.']] },
+          { t: 'Tiếp tục gửi CV, chờ cơ hội.', fx: { nl: -3, set: { path_cv: true } }, then: [['think', 'Mình cập nhật CV: "Rollback prod lúc 17:31 thứ Sáu". Dòng đẹp nhất.']] },
+        ] },
+      ],
+    },
+  ],
+  diary: (s) => `Pivot. Giỏ Chung sống bốn tuần. ${s.flags.path_cto ? 'Mình sẽ theo anh Thạc.' : s.flags.path_tokyo ? 'Mình sẽ đi Tokyo.' : s.flags.path_ai ? 'Mình xin vào squad AI. Hai tiếng thôi, anh Kevin bảo.' : 'Mình gửi CV. Lần đầu tiên viết "Rollback prod" vào phần thành tích.'}`,
+};
+
+const OFF_FINAL = {
+  id: 'off_final', official: true, end: 'layoff', noReview: true, title: '"Quick sync 15 phút" (lần này là bạn)',
+  intro: 'Thứ Tư, 8:47. Lịch của bạn có một cuộc họp mới: "Quick sync 15 phút" với chị Ngân. 9:00. Phòng "Cơm Tấm".\n\nLần này bạn biết. Ai ở đây cũng biết.',
+  steps: [
+    {
+      who: 'obj:desk', obj: '8:50 Về bàn lần cuối', time: '08:50',
+      scene: [
+        ['nar', 'Slack: 23 avatar chuyển xám trong đêm. Squad AI còn 2 người. Kênh #squad-gio-chung đã bị archive.'],
+        { if: f('path_cto'), then: [['think', 'Thư mời của anh Thạc nằm trong email cá nhân. Ngày bắt đầu: thứ Hai tuần sau.']] },
+        { if: f('path_tokyo'), then: [['think', 'Visa đang xử lý. Anh Hiếu nhắn: "Tanaka-san đã chọn em. Kentou shimasu không áp dụng."']] },
+        { if: f('path_cv'), then: [['think', 'Tối qua công ty của Tùng gửi offer. Mình chưa trả lời. Giờ thì chắc là trả lời rồi.']] },
+        ['nar', 'Bạn nhìn quanh. Tờ A4 "KHÔNG DEPLOY CHIỀU THỨ SÁU" vẫn còn trên tường pantry. Nó sẽ sống lâu hơn công ty này.'],
+      ],
+    },
+    {
+      who: 'ngan', obj: '9:00 Quick sync với chị Ngân', time: '09:00', pos: { ngan: 'meeting_head', thao: 'mr_n1' },
+      scene: [
+        ['ngan', 'Em ngồi đi. Chị… chị không biết bắt đầu thế nào. Chị đã làm cuộc họp này 37 lần trong năm nay.'],
+        ['thao', 'Công ty cắt tiếp 40%. Vị trí của em nằm trong danh sách. Không phải do em làm dở. Em biết chị không nói dối em.'],
+        ['thao', 'Em được báo trước theo hợp đồng, nhận đủ lương những ngày đã làm, sổ bảo hiểm chốt đầy đủ. Chị làm đúng tới cùng.'],
+        ['nar', '(Thông tin giải trí, không phải tư vấn pháp lý: chấm dứt hợp đồng vì lý do kinh tế phải theo thủ tục luật định; trợ cấp tính theo thời gian làm việc.)'],
+        { c: 'tech_off_final', o: [
+          { t: 'Nộp luôn đơn nghỉ: "Em cũng có một quick sync cho chị."', when: (r) => r.flags.path_cto || r.flags.path_tokyo || r.flags.path_cv, fx: { uy: 3, rel: { thao: 1 }, set: { resigned_first: true } }, then: [
+            ['ngan', 'Em… nghỉ trước? Ồ. Ồ. Vậy chị ghi "nghỉ việc" hay "tái cấu trúc"?'],
+            ['thao', 'Ghi "tái cấu trúc" cho em hưởng đủ quyền lợi. Còn em, đi đi. Đi trước khi đèn tắt.'],
+          ] },
+          { t: 'Hỏi rõ từng quyền lợi, xin bằng email.', fx: { uy: 3, rel: { thao: 2 }, set: { layoff_clean: true } }, then: [
+            ['thao', 'Chị gửi em trước 12 giờ. Từng dòng. Em là người thứ hai trong năm hỏi như vậy. Người đầu tiên là chị, hồi chị bị layoff ở công ty cũ.'],
+          ] },
+          { t: 'Ký. Không hỏi gì.', fx: { nl: -10, rel: { ngan: 1 } }, then: [['ngan', 'Cảm ơn em. Em vẫn là gia đình. Chỉ là… gia đình ở xa.']] },
+        ] },
+      ],
+    },
+    {
+      who: 'nguyet', obj: 'Chị Nguyệt chờ ở bàn QA', time: '10:30',
+      scene: [
+        ['nguyet', 'Chị cũng có tên. QA thủ công là thứ đầu tiên bị cắt khi người ta tin AI test được mọi thứ.'],
+        ['nguyet', 'Chị gửi em file "Khong_phai_bug.xlsx". 231 dòng rồi. Em mang theo. Đi đâu cũng sẽ có người nói "không phải bug".'],
+        { c: 'tech_off_nguyet', o: [
+          { t: '"Em sẽ mở file Excel riêng của em, chị ạ."', fx: { rel: { nguyet: 3 } }, then: [['nguyet', 'Tốt. Cột cuối luôn là "Sau này có phải bug không". Em sẽ ngạc nhiên vì nó luôn là "Có".']] },
+          { t: 'Ôm chị Nguyệt một cái.', fx: { rel: { nguyet: 3 }, nl: 5 }, then: [['nguyet', 'Ơ… ừ. Ok. Bug lớn nhất ở đây không phải trong code. Đi đi em.']] },
+        ] },
+      ],
+    },
+    {
+      who: 'hoa', obj: 'Trả thẻ và laptop cho chị Hoa', time: '11:30',
+      scene: [
+        ['hoa', 'Thẻ của em. Laptop của em. Cái sticker "It works on my machine" thì em giữ nha. Mình là startup mà em.'],
+        ['hoa', 'Chị làm lễ tân ở đây từ hồi có bốn người. Giờ lại sắp còn bốn người. Vòng tròn.'],
+        ['nar', 'Mèo 404 đi ra từ dưới gầm bàn lễ tân. Lần đầu tiên, đúng lúc bạn cần, nó xuất hiện. Nó cọ vào chân bạn một lần.'],
+        { fx: { nl: 5 } },
+        ['nar', 'Bạn bước ra khỏi coworking. Standee "We\'re hiring!" đã được ai đó dán thêm một tờ giấy: "(not anymore)".'],
+      ],
+    },
+  ],
+  diary: (s) => s.flags.resigned_first ? 'Mình nộp đơn nghỉ trong chính buổi quick sync. Chị Thảo vẫn ghi "tái cấu trúc" để mình đủ quyền lợi. Mèo 404 xuất hiện đúng lúc.'
+    : 'Quick sync 15 phút. Lần này là mình. Mình mang theo một file Excel, một sticker, và trang Rollback trong đầu.',
+};
+
+export const EPISODES = [
+  ONBOARDING, FIX_EVERYTHING, PLANNING_POKER, CANNOT_REPRO, FRIDAY_DEPLOY, MAU_RECALC, FIGMA_WAR, ONCALL, HACKATHON,
+  IDEA_STOLEN, QUICK_SYNC, OUTSOURCING, PROD_BLAME, APPSTORE, AMA, SALARY_SHEET, AI_DEMO,
+  OFF_HANDOVER, OFF_SALARY_LATE, OFF_PIVOT, OFF_FINAL,
+];
+export const ARC = ['off_handover', 'off_salary_late', 'off_pivot', 'off_final'];

@@ -5,6 +5,7 @@ import { $, sleep } from './core/util.js';
 import { CameraRig } from './core/camera.js';
 import { createInput } from './core/input.js';
 import { FLAGS } from './flags.js';
+import { SUPPORT_URL } from './config.js';
 
 const canvas = $('#game');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -49,9 +50,25 @@ async function startLegacy() {
   active = start({ scene, camera, input });
 }
 
+// Letter from the developer: what the game is, how saving works, disclaimer. Shown once before Solo.
+const LETTER_KEY = 'tts_letter_v1';
+function showLetter(thenPlay) {
+  $('#mainMenu').hidden = true;
+  $('#devLetter').hidden = false;
+  $('#devLetter').scrollTop = 0;
+  const coffee = $('#letterCoffee');
+  coffee.hidden = !SUPPORT_URL; if (SUPPORT_URL) coffee.href = SUPPORT_URL;
+  $('#letterGo').textContent = thenPlay ? 'Đã hiểu, vào chơi →' : 'Vào chơi Solo →';
+  const close = () => { $('#devLetter').hidden = true; try { localStorage.setItem(LETTER_KEY, '1'); } catch { /* private mode */ } };
+  $('#letterGo').onclick = () => { close(); startSolo(); };
+  $('#letterClose').onclick = () => { close(); showMainMenu(); };
+}
+const letterSeen = () => { try { return !!localStorage.getItem(LETTER_KEY); } catch { return false; } };
+
 function showMainMenu() {
   $('#mainMenu').hidden = false;
-  $('#soloBtn').onclick = () => startSolo();
+  $('#soloBtn').onclick = () => (letterSeen() ? startSolo() : showLetter(true));
+  $('#letterBtn').onclick = () => showLetter(false);
   document.querySelectorAll('[data-soon]').forEach((b) => {
     b.onclick = () => { $('#menuNote').hidden = false; };
   });

@@ -60,7 +60,7 @@ export const INTERVIEW = {
       who: 'obj:interview', obj: 'Vào phòng họp ngồi xuống: phỏng vấn gia đình', time: '14:10', seat: 'mr_seat',
       pos: { hung: 'meeting_head', hang: 'mr_n1', tuan: 'mr_n2' },
       scene: [
-        ['nar', 'Trên bàn họp: một dĩa khô gà, ba ly trà đá, một cuốn sổ bìa đỏ của Má và một cái iPad của Kevin. Không ai nhìn CV của bạn.'],
+        ['nar', 'Trên bàn họp: một dĩa khô gà, ba ly trà đá, một cuốn sổ bìa đỏ của Má và một cái máy tính bảng của Kevin. Không ai nhìn CV của bạn.'],
         ['hung', 'Ngồi đi con. Ăn miếng khô đi đã. Ăn rồi nói chuyện mới thiệt.'],
         { c: 'bm_iv_taste', o: [
           { t: 'Ăn một miếng, khen thật lòng: "Thơm lá chanh mà không gắt ạ."', fx: { rel: { hung: 2 } }, then: [
@@ -83,7 +83,7 @@ export const INTERVIEW = {
             ['hung', 'Ngoài Bắc ăn khô ít ngọt hơn. Con nếm thử lô sau rồi góp ý cho ba.'],
             ['hang', 'Góp ý thôi. Đừng đòi đổi công thức. Đổi là tốn tiền.'],
           ] },
-          { t: '"Dạ con dân thành phố, quê con là… Grab ạ."', fx: { dr: 2, rel: { tuan: 1 } }, then: [
+          { t: '"Dạ con dân thành phố, quê con là… chung cư ạ."', fx: { dr: 2, rel: { tuan: 1 } }, then: [
             ['tuan', 'Haha, I like this one.'],
             ['hung', 'Ai cũng có quê. Không có thì lấy quê ba. Ba cho mượn.'],
           ] },
@@ -101,7 +101,7 @@ export const INTERVIEW = {
             ['hang', 'Siêng tiết kiệm. Được. Mà ăn mì hoài đau bao tử, đau bao tử là nghỉ, nghỉ là tốn.'],
           ] },
         ] },
-        ['nar', 'Kevin xoay iPad về phía bạn. Trên màn hình: một slide tên "BA & MÁ 2.0: FROM CHỢ TO CLOUD".'],
+        ['nar', 'Kevin xoay máy tính bảng về phía bạn. Trên màn hình: một slide tên "BA & MÁ 2.0: FROM CHỢ TO CLOUD".'],
         ['tuan', 'My turn. Em hiểu gì về growth hacking? Mình bán khô gà, nhưng mindset phải là tech startup.'],
         { c: 'bm_iv_growth', o: [
           { t: '"Thử nhanh, đo kỹ: test vài combo, giữ cái ra đơn thật, bỏ cái chỉ ra view."', fx: { uy: 4, rel: { tuan: 2 } }, then: [
@@ -143,7 +143,7 @@ export const INTERVIEW = {
     {
       who: 'hang', obj: 'Qua phòng Má (kế toán) làm giấy tờ', time: '15:00',
       scene: [
-        ['nar', 'Phòng Má có một cái két sắt, hai cuốn sổ, một máy tính tiền Casio và một bức ảnh Thần Tài đang cười.'],
+        ['nar', 'Phòng Má có một cái két sắt, hai cuốn sổ, một cái máy tính bỏ túi và một bức ảnh Thần Tài đang cười.'],
         ['hang', 'Ngồi. Má làm giấy tờ cho con. Má làm kế toán ba mươi năm, chưa sai một đồng. Có sai thì là người khác sai.'],
         { if: isTier('t0'), then: [
           ['hang', 'Con không lấy phụ cấp nên không có gì để khấu trừ. Nhưng vẫn ký xác nhận. Hai bản. Má giữ một, Má giữ luôn bản kia.'],
