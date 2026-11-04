@@ -4,7 +4,7 @@
 const F = (k) => (r) => !!r.flags[k];
 const NOT = (k) => (r) => !r.flags[k];
 const ANY = (...ks) => (r) => ks.some((k) => !!r.flags[k]);
-const tie = (id) => (r) => !!r.flags['tie_' + id];
+const tie = (id) => { const key = `tie_${id}`; return (r) => !!r.flags[key]; };
 const countA = (r) => (r.reviews || []).filter((x) => x.grade === 'A').length;
 
 // The final arc episode ends the run as 'quit' or 'layoff' depending on the player's choice (flag tm_final).
@@ -92,7 +92,7 @@ export const OFFICIAL_EPISODES = [
       ] },
       { who: 'tuyet', obj: 'Chị Tuyết giao việc đầu tiên', time: '14:00', scene: [
         ['tuyet', 'Giờ em không còn là intern. Nghĩa là không ai tha lỗi cho em vì là intern nữa.'],
-        ['tuyet', 'Chị giao em Êm Ru giai đoạn 2. Và một bạn intern mới vào thứ Hai. Em hướng dẫn nó.'],
+        ['tuyet', 'Chị giao em Êm Ru giai đoạn 2. Và từ mai có một bạn intern mới. Em hướng dẫn nó.'],
         ['think', 'Tuần trước mình còn là người được hướng dẫn.'],
         { c: 'off_hm_task', o: [
           { t: '"Dạ. Bài đầu tiên em dạy: đừng tin chữ FINAL."', fx: { uy: 1, rel: { tuyet: 1 } }, then: [
@@ -109,7 +109,7 @@ export const OFFICIAL_EPISODES = [
 
   {
     id: 'off_more_work', official: true, title: 'Thêm việc, không thêm lương',
-    intro: 'Tuần thứ hai làm chính thức. Chức danh trên email của bạn tự nhiên dài ra: "Consultant kiêm điều phối Êm Ru kiêm hướng dẫn intern kiêm…"\n\nLương thì không dài ra.',
+    intro: 'Làm chính thức chưa được bao lâu, chức danh trên email của bạn tự nhiên dài ra: "Consultant kiêm điều phối Êm Ru kiêm hướng dẫn intern kiêm…"\n\nLương thì không dài ra.',
     chatStart: [['han', 'Em ơi, giờ em official rồi, em ôm giúp chị phần "change management" cho Êm Ru nha ✨', true], ['linh', 'Em hỗ trợ team chị thêm 2 buổi/tuần được không? Minh lại thi.', true]],
     steps: [
       { who: 'obj:desk', obj: 'Hộp thư sáng thứ Hai: 9 việc mới', time: '08:30', scene: [
@@ -171,12 +171,12 @@ export const OFFICIAL_EPISODES = [
         ] },
       ] },
     ],
-    diary: (r) => `Tuần hai làm chính thức. Chín việc mới, một mức lương cũ. ${r.flags.off_claim_ot ? 'Mình xin được phiếu làm thêm. Chị Tuyết ký, kèm "lần sau làm ít đi".' : 'Mình làm thêm 52 giờ, "tự nguyện".'}`,
+    diary: (r) => `Vài ngày làm chính thức. Chín việc mới, một mức lương cũ. ${r.flags.off_claim_ot ? 'Mình xin được phiếu làm thêm. Chị Tuyết ký, kèm "lần sau làm ít đi".' : 'Mình làm thêm 52 giờ, "tự nguyện".'}`,
   },
 
   {
     id: 'off_toxic', official: true, title: 'Ý nhỏ lúc nửa đêm',
-    intro: 'Tuần thứ ba làm chính thức. 23:47 tối qua, chị Tuyết nhắn: "Chị có vài ý nhỏ." Rồi im lặng tới sáng.\n\nSáng nay, phân tích Êm Ru giai đoạn 2 của bạn được trình bày ở họp ban giám đốc. Người trình bày: Khang.',
+    intro: 'Vẫn chưa hết tháng đầu làm chính thức. 23:47 tối qua, chị Tuyết nhắn: "Chị có vài ý nhỏ." Rồi im lặng tới sáng.\n\nSáng nay, phân tích Êm Ru giai đoạn 2 của bạn được trình bày ở họp ban giám đốc. Người trình bày: Khang.',
     chatStart: [['tuyet', 'Chị có vài ý nhỏ. (23:47)', true], ['tuyet', 'Thôi để mai. (23:58)', true], ['tuyet', 'Em ngủ chưa? (00:31)', true]],
     steps: [
       { who: 'an', obj: 'An có tin không vui', time: '08:30', scene: [
@@ -257,7 +257,7 @@ export const OFFICIAL_EPISODES = [
         ['tuyet', 'Sáng mai 8 giờ gặp chị. Mang theo vài ý nhỏ của em.'],
       ] },
     ],
-    diary: (r) => `Tuần ba làm chính thức. Khang trình bày slide của mình. ${r.flags.off_credit ? 'Mình nói với chị Tuyết: bản đó là của mình.' : 'Mình để "team" nhận công.'} Chị Tuyết nhắn lúc 23:47, 23:58 và 00:31. Ý nhỏ không có giờ làm việc.`,
+    diary: (r) => `Tháng đầu làm chính thức. Khang trình bày slide của mình. ${r.flags.off_credit ? 'Mình nói với chị Tuyết: bản đó là của mình.' : 'Mình để "team" nhận công.'} Chị Tuyết nhắn lúc 23:47, 23:58 và 00:31. Ý nhỏ không có giờ làm việc.`,
   },
 
   {

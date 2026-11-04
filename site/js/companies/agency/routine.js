@@ -5,7 +5,7 @@ const f = (k) => (r) => !!r.flags[k];
 
 const TYPO_MINI = {
   type: 'quiz', title: 'Soát caption trước khi đăng', icon: '🔤',
-  prompt: 'Sương sắp bấm đăng. Câu nào đúng chính tả?', time: 25, pass: 0.66,
+  prompt: 'Sương sắp bấm đăng. Câu nào đúng chính tả?', time: 30, pass: 0.66,
   questions: [
     { q: 'Caption Ông Táo', options: ['Tết sum vây, mì đầy nồi', 'Tết sum vầy, mì đầy nồi', 'Tết xum vầy, mì đầy nồi'], correct: 1 },
     { q: 'Caption Răng Xinh', options: ['Nụ cười rạng rỡ, tự tin cả ngày', 'Nụ cười rạn rỡ, tự tin cả ngày', 'Nụ cười rạng rở, tự tin cả ngày'], correct: 0 },
@@ -14,7 +14,7 @@ const TYPO_MINI = {
 };
 const HASHTAG_MINI = {
   type: 'pick', title: 'Hashtag cho Trà Sữa', icon: '#️⃣',
-  prompt: 'Client muốn "nhiều hashtag". Chọn 2 cái không làm brand xấu hổ.', pick: 2, time: 20, pass: 0.5,
+  prompt: 'Client muốn "nhiều hashtag". Chọn 2 cái không làm brand xấu hổ.', pick: 2, time: 25, pass: 0.5,
   items: [
     { text: '#TâmTrạngGìCũngCóSize', correct: true },
     { text: '#TràSữaTâmTrạng', correct: true },

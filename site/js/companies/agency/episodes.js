@@ -10,7 +10,7 @@ const LUNCH_POS = { thi: 'lunch1', vy: 'lunch2', linh: 'lunch3', suong: 'lunch4'
 // ---------- mini-games ----------
 const WIP_MINI = {
   type: 'pick', title: 'Call report: họp WIP', icon: '📝',
-  prompt: 'Chị Diệp cần: ai làm gì, deadline, ai chịu trách nhiệm. Chọn 3 dòng đáng ghi.', pick: 3, time: 30, pass: 0.66,
+  prompt: 'Chị Diệp cần: ai làm gì, deadline, ai chịu trách nhiệm. Chọn 3 dòng đáng ghi.', pick: 3, time: 35, pass: 0.66,
   items: [
     { text: 'Ông Táo: Vỹ sửa KV v14, gửi client 15:00 thứ Ba', correct: true },
     { text: 'Sen Hồng: chị Hồng gửi lại báo giá, cần PO trước thứ Năm', correct: true },
@@ -23,7 +23,7 @@ const WIP_MINI = {
 };
 const FILE_MINI = {
   type: 'pick', title: 'Ổ chung > Ông Táo > KV', icon: '🗂️',
-  prompt: 'Bản nào là bản đã GỬI client tuần trước?', pick: 1, time: 25, pass: 1,
+  prompt: 'Bản nào là bản đã GỬI client tuần trước?', pick: 1, time: 30, pass: 1,
   items: [
     { text: 'KV_Tet_FINAL.psd', sub: 'Sửa: 3 tuần trước · Vỹ' },
     { text: 'KV_Tet_FINAL_final_v7_sualancuoi.psd', sub: 'Sửa: 2 tuần trước · Vỹ' },
@@ -47,7 +47,7 @@ const BS_MINI = {
 };
 const V1_MINI = {
   type: 'pick', title: 'Đi tìm v1', icon: '🔎',
-  prompt: 'Client muốn "quay lại bản đầu tiên". Bản đầu tiên thật là bản nào?', pick: 1, time: 25, pass: 1,
+  prompt: 'Client muốn "quay lại bản đầu tiên". Bản đầu tiên thật là bản nào?', pick: 1, time: 30, pass: 1,
   items: [
     { text: 'KV_v1.psd', sub: 'Sửa: hôm qua · ai đó "lưu đè"' },
     { text: 'KV_v1_goc.psd', sub: 'Tạo: 3 tuần trước · Vỹ · gửi client 14:02', correct: true },
@@ -1519,14 +1519,14 @@ export const EPISODES = [
         scene: [
           ['tung', 'Mọi người, tháng này lương có thể trễ vài ngày. Không phải agency khó khăn. Là… vũ trụ đang thử thách mình.'],
           { if: f('debt_fixed'), then: [
-            ['hong', 'Anh Tùng, Sen Hồng vừa xác nhận chuyển khoản thứ Sáu. Nhờ bạn intern soi ra hồ sơ thiếu.'],
-            ['tung', 'Ồ! Intern! Vũ trụ thua rồi!'],
+            ['hong', 'Anh Tùng, Sen Hồng vừa xác nhận chuyển khoản thứ Sáu. Nhờ {ten} soi ra hồ sơ thiếu.'],
+            ['tung', 'Ồ! {ten}! Vũ trụ thua rồi!'],
             { fx: { uy: 2, rel: { tung: 2 } } },
           ], else: [
             ['phat', '(nhỏ) Vũ trụ thử thách mình ba tháng rồi.'],
           ] },
           { c: 'ag_debt_tung', o: [
-            { t: '"Anh ơi, phụ cấp intern có trễ không ạ?"', fx: { uy: 1, rel: { tung: -1 } }, then: [
+            { t: '"Anh ơi, phụ cấp của intern như Linh có trễ không ạ?"', fx: { uy: 1, rel: { tung: -1 } }, then: [
               ['tung', 'Intern… à. Phụ cấp intern đi riêng. Hồng đảm bảo. Hồng nhỉ?'],
               ['hong', 'Chị đảm bảo. Bằng tiết kiệm của chị, như năm 2023.'],
             ] },
@@ -1553,7 +1553,7 @@ export const EPISODES = [
           ['think', 'Bên client. Giờ hành chính. Không ai "em ơi" mình lúc 23:00. Mình mới là người đi "em ơi".'],
           { c: 'ag_poach_reply', o: [
             { t: 'Trả lời: "Dạ em cảm ơn chị, cho em suy nghĩ ạ."', fx: { nl: -2, rel: { nguyet: 1 }, set: { poach_think: true } } },
-            { t: 'Trả lời: "Em muốn làm trọn kỳ ở Trend Trễ trước ạ."', fx: { uy: 1, set: { poach_no: true } } },
+            { t: 'Trả lời: "Em muốn ở lại Trend Trễ thêm một thời gian ạ."', fx: { uy: 1, set: { poach_no: true } } },
             { t: 'Chụp màn hình gửi chị Diệp.', fx: { rel: { diep: 2, nguyet: -1 }, set: { poach_told: true } }, then: [
               { chat: [['diep', 'cảm ơn em đã kể. chị không giận chị Nguyệt. chị chỉ hơi buồn vì chị không trả được gấp đôi.', true]] },
             ] },
@@ -1597,10 +1597,10 @@ export const EPISODES = [
           ['tung', 'Anh chỉ nói một câu: em đi đâu cũng được, nhớ make it pop. Nhưng pop cho đúng người.'],
           ['think', 'Lần đầu câu "make it pop" có nghĩa.'],
           { c: 'ag_poach_final', o: [
-            { t: 'Từ chối chị Nguyệt, ở lại tới hết kỳ.', fx: { uy: 2, rel: { tung: 2 }, set: { stay_agency: true } }, then: [
+            { t: 'Từ chối chị Nguyệt, ở lại Trend Trễ.', fx: { uy: 2, rel: { tung: 2 }, set: { stay_agency: true } }, then: [
               ['tung', 'Tốt. Anh không hứa Đà Lạt nữa. Anh hứa một cái thư giới thiệu thật.'],
             ] },
-            { t: 'Nhận lời chị Nguyệt, bắt đầu sau kỳ thực tập.', fx: { rel: { nguyet: 2, tung: -1 }, set: { go_client: true } }, then: [
+            { t: 'Nhận lời chị Nguyệt.', fx: { rel: { nguyet: 2, tung: -1 }, set: { go_client: true } }, then: [
               ['tung', 'Ok. Lần sau em làm client của anh, nhớ đừng bắt sửa 14 vòng nha.'],
               ['think', 'Không hứa được.'],
             ] },

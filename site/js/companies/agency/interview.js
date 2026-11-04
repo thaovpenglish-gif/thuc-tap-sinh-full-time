@@ -12,15 +12,13 @@ export const SLOGAN_MINI = {
     { text: 'Về nhà, nấu một gói, thêm một người.', sub: 'có người, có chuyện', correct: true },
     { text: 'Ăn Mì Hảo Hạng, Tết Hảo Hạng.', sub: 'tên của đối thủ' },
     { text: 'Tết nào cũng có Táo.', sub: 'ngắn, dễ nhớ', correct: true },
-    { text: 'Mì ngon tới mức bạn quên luôn cả Tết.', sub: 'Tết là thứ không ai muốn quên' },
     { text: 'Sáng tạo không giới hạn.', sub: 'nhìn quen quen…' },
-    { text: 'Tết này đừng về, ở lại ăn mì.', sub: 'client sẽ khóc' },
   ],
 };
 
 export const CONTRACT_MINI = {
   type: 'pick', title: 'Thỏa thuận thực tập (mẫu 2019)', icon: '📄',
-  prompt: 'Tìm 3 điều khoản "có vấn đề" trước khi ký.', pick: 3, time: 35, pass: 0.66,
+  prompt: 'Tìm 3 điều khoản "có vấn đề" trước khi ký.', pick: 3, time: 40, pass: 0.66,
   items: [
     { text: 'Thực tập sinh bảo mật thông tin client và tài liệu pitch.' },
     { text: 'Mọi ý tưởng phát sinh trong và ngoài giờ làm, kể cả trong mơ, thuộc về công ty.', correct: true },

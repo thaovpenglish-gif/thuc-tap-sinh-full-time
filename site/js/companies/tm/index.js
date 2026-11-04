@@ -2,8 +2,8 @@
 // Story data for the interview and Day 1 lives in story/tm/*.js (kept where it was written).
 import { CAST, IDLE } from '../../story/tm/characters.js';
 import { PROLOGUE } from '../../story/tm/prologue.js';
-import { DAY1, SIDE_TASKS } from '../../story/tm/day1.js';
-import { EPISODES, ROUTINE, REVIEW, PROMOTION, ENDINGS, TIES, OBJ_LINES, FOOD, LIFE_EVENTS } from './content.js';
+import { DAY1 } from '../../story/tm/day1.js';
+import { EPISODES, ROUTINE, SIDE_TASKS, REVIEW, PROMOTION, ENDINGS, TIES, OBJ_LINES, FOOD, LIFE_EVENTS } from './content.js';
 
 const cast = {};
 for (const [id, c] of Object.entries(CAST)) cast[id] = { ...c, spot: c.body === false ? null : id };

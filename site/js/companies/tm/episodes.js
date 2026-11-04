@@ -7,13 +7,13 @@
 const F = (k) => (r) => !!r.flags[k];
 const NOT = (k) => (r) => !r.flags[k];
 const ANY = (...ks) => (r) => ks.some((k) => !!r.flags[k]);
-const tie = (id) => (r) => !!r.flags['tie_' + id];
+const tie = (id) => { const key = `tie_${id}`; return (r) => !!r.flags[key]; };
 const LUNCH = { mai: 'lunch1', long: 'lunch2', trang: 'lunch3', thu: 'lunch4', nhi: 'lunch5' };
 
 // ---------- mini-games ----------
 const IDEAS_MINI = {
   type: 'pick', title: '27 ý nhỏ: rổ "phải sửa"', icon: '🖍️',
-  prompt: 'Chọn 5 comment khách thật sự trả tiền để thấy được sửa. Còn lại là "định hướng cho bản sau".', pick: 5, time: 40, pass: 0.6,
+  prompt: 'Chọn 5 comment khách thật sự trả tiền để thấy được sửa. Còn lại là "định hướng cho bản sau".', pick: 5, time: 45, pass: 0.6,
   items: [
     { text: 'Slide 3 chưa trả lời: khách nên làm gì trước?', correct: true },
     { text: 'Số liệu slide 7 lệch với phụ lục', correct: true },
@@ -1111,7 +1111,7 @@ export const INTERN_EPISODES = [
           { t: '"Team chị Linh đang làm hết sức ạ."', fx: { dr: 1, rel: { linh: 1 } }, then: [
             ['tuyet', 'Hết sức không phải là một chỉ số.'],
           ] },
-          { t: '"Chị Linh cần nửa người. Em là nửa đó, và em sắp hết thực tập ạ."', fx: { dr: 2, rel: { tuyet: 1, linh: 2 }, set: { linh_win: true } }, then: [
+          { t: '"Chị Linh cần nửa người. Em là nửa đó, và em sắp hết thực tập ạ."', when: (r) => r.status !== 'official', fx: { dr: 2, rel: { tuyet: 1, linh: 2 }, set: { linh_win: true } }, then: [
             ['tuyet', 'Lý lẽ kém. Nhưng sự thật thì đúng.'],
           ] },
         ] },
@@ -1500,6 +1500,7 @@ export const INTERN_EPISODES = [
       { who: 'phuong', obj: 'Chị Phương muốn nói chuyện riêng', time: '16:00', scene: [
         ['phuong', 'Em có năm phút không? Chị đọc mấy câu trả lời mở rồi.'],
         ['phuong', 'Có người viết: "Team building thứ Bảy làm tôi không gặp được con." Chị đọc ba lần.'],
+        { if: F('tb_saturday'), then: [['think', 'Thứ Bảy hôm đó mình cũng ở đó, cầm dây cáp sạc kéo co.']] },
         ['phuong', 'Chị làm team building mỗi tuần vì chị sợ. Năm ngoái công ty hai mươi người mà nghỉ chín. Chị nghĩ thân nhau thì sẽ ở lại.'],
         { if: tie('phuong_friend'), then: [['phuong', 'Với lại cô Tuyết tin chị. Mẹ chị dặn "con đừng làm cô buồn". Nên chị làm nhiều hơn mức cần.']] },
         { c: 'ep_360_culture', o: [
