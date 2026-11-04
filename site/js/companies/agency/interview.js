@@ -33,11 +33,12 @@ export const CONTRACT_MINI = {
 
 export const TAX_MINI = {
   type: 'quiz', title: 'Bản cam kết thu nhập (mẫu hiện hành)', icon: '🧾',
-  prompt: 'Điền đúng từng ô. Bản gốc. Không tẩy xóa. Không sticker.', time: 40, pass: 0.75,
+  prompt: 'Điền đúng từng ô. Bản gốc. Không tẩy xóa. Không sticker.', time: 50, pass: 0.75,
   questions: [
     { q: 'Ô "Họ và tên"', options: ['Tên em, viết hoa có dấu', 'Tên TikTok của em', 'Trend Trễ Agency'], correct: 0 },
     { q: 'Ô "Số định danh cá nhân"', options: ['Số điện thoại', '12 số trên Căn cước', 'Mã số sinh viên'], correct: 1 },
     { q: 'Ô "Mã số thuế cá nhân"', options: ['Để trống vì em chưa đi làm', 'Mã số thuế cá nhân (thường là số định danh)', 'Mã giảm giá trà sữa'], correct: 1 },
+    { q: 'Ô "Cam kết cho năm"', options: ['2026, năm em nhận phụ cấp', 'Năm sinh của em', 'Năm Mão'], correct: 0 },
     { q: 'Ô "Ký, ghi rõ họ tên"', options: ['Ký và ghi rõ họ tên', 'Vẽ chữ ký bằng font Vỹ chọn', 'Thả sticker 👍'], correct: 0 },
   ],
 };

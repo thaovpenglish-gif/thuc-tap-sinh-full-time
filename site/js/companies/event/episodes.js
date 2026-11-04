@@ -33,7 +33,7 @@ const TIMELINE_MINI = {
 
 const NAMES_MINI = {
   type: 'pick', title: 'Soát danh sách vé', icon: '🪪',
-  prompt: 'Chị Ngân: "Tên trên vé phải khớp căn cước từng dấu. Tìm 3 tên sai."', pick: 3, time: 35, pass: 0.66,
+  prompt: 'Chị Ngân: "Vé in không dấu, nhưng phải khớp căn cước từng chữ, đúng thứ tự. Tìm 3 tên sai."', pick: 3, time: 35, pass: 0.66,
   items: [
     { text: 'NGUYEN VAN ANH', sub: 'Căn cước: Nguyễn Văn Ánh' },
     { text: 'TRAN THI BE NHO', sub: 'Căn cước: Trần Thị Bé Nhỏ' },
@@ -101,7 +101,7 @@ const CONTACTS_MINI = {
   prompt: 'Cần xe 45 chỗ trong 1 giờ, gần quận 7. Chọn 2 số đáng gọi nhất.', pick: 2, time: 25, pass: 0.5,
   items: [
     { text: 'Anh Xe Quận 7', sub: '"có 45 chỗ, hay rảnh sáng thứ Hai"', correct: true },
-    { text: 'Anh Xe Nhà Bè (vợ là chị Út)', sub: '"anh không nghe thì gọi chị Út"', correct: true },
+    { text: 'Anh Xe Nhà Bè (vợ là chị Út)', sub: '"xe 45 chỗ, anh không nghe thì gọi chị Út"', correct: true },
     { text: 'Anh Xe Bình Dương 2', sub: '"chỉ có xe 16 chỗ"' },
     { text: 'Anh Xe Đám Cưới', sub: '"xe hoa, 4 chỗ"' },
     { text: 'Anh Xe (không nhớ ai)', sub: 'lưu năm 2017' },
@@ -144,20 +144,20 @@ const MC_MINI = {
 
 const PROPOSAL_MINI = {
   type: 'order', title: 'Cấu trúc proposal đấu thầu', icon: '📑',
-  prompt: 'Mỹ: "Khách đọc 3 trang đầu rồi lật thẳng tới trang giá. Xếp sao cho 3 trang đầu đáng đọc."', time: 30, pass: 0.8,
+  prompt: 'Mỹ: "3 trang đầu phải đáng đọc. Sau đó mới tới giá, rồi bằng chứng mình làm được, cuối cùng là điều khoản."', time: 35, pass: 0.8,
   items: [
     { text: 'Hiểu brief & mục tiêu của khách', order: 0 },
     { text: 'Concept & key visual', order: 1 },
     { text: 'Kịch bản tổng', order: 2 },
     { text: 'Hạng mục & báo giá', order: 3 },
-    { text: 'Case study các show đã làm', order: 4 },
+    { text: 'Case study: các show đã làm được', order: 4 },
     { text: 'Điều khoản thanh toán & hủy', order: 5 },
   ],
 };
 
 const LION_MINI = {
   type: 'order', title: 'Bài lân khai trương (bản rút gọn)', icon: '🦁',
-  prompt: 'Khoa đọc to thứ tự. Bạn ở khúc đuôi, không thấy gì, chỉ nghe.', time: 25, pass: 0.8,
+  prompt: 'Khoa đọc to thứ tự một lần. Bạn không thấy gì, chỉ nghe. Xếp lại cho đúng.', time: 25, pass: 0.8,
   items: [
     { text: 'Lân chào khách ba lần', order: 0 },
     { text: 'Múa vòng quanh sân', order: 1 },
@@ -207,7 +207,7 @@ export const EPISODES = [
           ['duy', 'Intern mới. {ten}. Kiểm tra nhanh: em xếp vòng đời một gala cho anh.'],
           { mini: TIMELINE_MINI,
             good: [['duy', 'Copy. Đúng hết. Kể cả cái phần "và gửi lại 4 lần".'], ['ngan', '(nhỏ) Lần đầu có intern xếp nghiệm thu ở cuối.'], { fx: { uy: 3, rel: { duy: 2 }, set: { timeline_ok: true } } }],
-            bad: [['duy', 'Em cho tổng duyệt sau chạy show. Ừ, nhiều khách cũng làm vậy. Nhưng mình thì không.'], { fx: { rel: { duy: -1 } } }],
+            bad: [['duy', 'Lộn thứ tự rồi. Ừ, nhiều khách cũng làm lộn vậy. Nhưng mình thì không.'], { fx: { rel: { duy: -1 } } }],
           },
           ['nar', 'Briefing "ngắn" kết thúc lúc 9:20. Bộ đàm số hai kêu bốn lần trong lúc đó.'],
         ],
@@ -270,7 +270,7 @@ export const EPISODES = [
           ['ngan', 'Sai một chữ là ra sân bay không lên được máy bay. Rồi khách gọi em. Lúc 5 giờ sáng.'],
           { mini: NAMES_MINI,
             good: [['ngan', 'Ba tên sai, đúng ba tên. Em có mắt booking đấy.'], { fx: { uy: 3, rel: { ngan: 2 }, set: { name_check: true } } }],
-            bad: [['ngan', 'Còn sót một tên. "Đỗ Văn Hùng Hùng". Hệ thống không bắt lỗi, khách bắt.'], ['nar', 'Chị Ngân sửa lại trong 40 giây, mắt không rời đồng hồ.'], { fx: { nl: -3 } }],
+            bad: [['ngan', 'Còn sót tên sai. Ngược họ tên, lặp chữ, thiếu chữ: hệ thống không bắt lỗi, khách bắt.'], ['nar', 'Chị Ngân sửa lại trong 40 giây, mắt không rời đồng hồ.'], { fx: { nl: -3 } }],
           },
         ],
       },
@@ -342,7 +342,7 @@ export const EPISODES = [
           ['tien', 'Bốn năm làm designer. Anh vẫn nằm mơ thấy câu "sang hơn chút".'],
           { mini: FEEDBACK_MINI,
             good: [['tien', 'Bớt màu, thêm khoảng thở, chữ vàng đồng… Ừ. Em dịch được tiếng khách. Anh nợ em ly cà phê.'], { fx: { uy: 3, rel: { tien: 2 }, set: { kv_translated: true } } }],
-            bad: [['tien', 'Thêm kim tuyến hả? Lần trước anh thêm kim tuyến, khách bảo "sến". Thôi để anh đoán tiếp.'], { fx: { rel: { tien: -1 }, nl: -3 } }],
+            bad: [['tien', 'Em dịch giống anh dịch lần trước. Lần trước khách bảo "sến". Thôi để anh đoán tiếp.'], { fx: { rel: { tien: -1 }, nl: -3 } }],
           },
         ],
       },
@@ -453,7 +453,7 @@ export const EPISODES = [
           ['nar', 'Khoa dán 8 tờ giấy trò chơi lên bảng. Bạn cầm bút đỏ.'],
           { mini: GAMES_MINI,
             good: [['khoa', 'Mật thư, rung chuông vàng, xếp tháp… Ừ. Không ai ướt. Không ai đi viện. Cũng vui.'], { fx: { uy: 3, rel: { thang: 1 }, set: { safe_games: true } } }],
-            bad: [['khoa', 'Bạn giữ "nhảy bao bố trên cát lúc 13 giờ" hả? Cát lúc đó 50 độ đấy.'], { fx: { set: { safe_games: false } } }],
+            bad: [['khoa', 'Bạn còn giữ trò nặng cho đoàn có ba anh đau lưng hả? Cát lúc 13 giờ là 50 độ đấy.'], { fx: { set: { safe_games: false } } }],
           },
         ],
       },
@@ -509,7 +509,7 @@ export const EPISODES = [
           ['vy', 'Bạn ơi, mình lướt Facebook gala năm ngoái của Khỏe Re. Có clip hai anh trưởng phòng cãi nhau giữa tiệc.'],
           ['vy', 'Anh Cường kinh doanh với anh Hùng sản xuất. Năm nay hai anh… ở chung phòng 204.'],
           { c: 'e8_gossip', o: [
-            { t: '"Cảm ơn Vy! Đây là thông tin vàng."', fx: { rel: { vy: 2 } }, then: [['vy', 'Mình nói rồi mà, TikTok hậu trường là nghiên cứu thị trường.']] },
+            { t: '"Cảm ơn Vy! Đây là thông tin vàng."', fx: { rel: { vy: 2 } }, then: [['vy', 'Mình nói rồi mà, lướt mạng là nghiên cứu thị trường.']] },
             { t: '"Bạn nên báo chị Ngân luôn."', fx: { rel: { vy: 1, ngan: 1 }, uy: 1 }, then: [['ngan', 'Vy ơi, lần sau có tin này thì báo chị trước khi đăng TikTok nhé.']] },
           ] },
         ],
@@ -546,7 +546,7 @@ export const EPISODES = [
           ['ngan', 'Gửi rồi. 16:52. Rooming list lần 8 xong trước 17:00. Kỷ lục của chị năm nay.'],
           ['ngan', 'Chắc tối nay khách sẽ gửi v9. Họ luôn gửi v9.'],
           { fx: { rel: { ngan: 1 } } },
-          { chat: [['thang', 'Em ơi bổ sung thêm 2 người nữa nhé, vợ chồng anh Phát phòng kế toán 🙏 (21:04)', false]] },
+          ['nar', 'Tối đó, 21:04, anh Thắng nhắn: "Em ơi bổ sung thêm 2 người nữa nhé, vợ chồng anh Phát phòng kế toán 🙏"'],
           ['think', 'v9.'],
         ],
       },
@@ -681,7 +681,7 @@ export const EPISODES = [
       {
         who: 'quan', obj: 'Anh Quân test hình trên LED', time: '14:00',
         scene: [
-          ['quan', 'Laptop em cổng gì? Type-C. Màn LED cần HDMI. Khách sạn thì chỉ có VGA. Năm 2026 rồi đấy.'],
+          ['quan', 'Laptop em cổng gì? Type-C. Màn LED cần HDMI. Venue thì chỉ có cáp VGA. Năm 2026 rồi đấy.'],
           ['nar', 'Anh Quân mở một hộp nhựa chứa 47 loại đầu chuyển. Mỗi cái có nhãn viết tay.'],
           { if: is('backdrop_plan', 'led'), then: [['quan', 'Toàn bộ backdrop lên LED thì anh cần file 7680 x 2160. Em xuất lại giúp anh. Và cầu cho không có điểm ảnh chết.']] },
           { c: 'e10_quan', o: [
@@ -693,7 +693,7 @@ export const EPISODES = [
       {
         who: 'duy', obj: 'Anh Duy: "Đêm nay ai trực sân khấu?"', time: '17:30',
         scene: [
-          ['duy', 'Load-in 22:00. Dựng truss, LED, âm thanh tới 3 giờ sáng. Cần một người canh cửa hàng, đếm ghế. Ai?'],
+          ['duy', 'Load-in 22:00. Dựng truss, LED, âm thanh tới 3 giờ sáng. Cần một người canh đồ, đếm ghế. Ai?'],
           ['nar', 'Cả văn phòng đột nhiên rất bận nhìn màn hình. Vy nhìn trần nhà.'],
           { if: F('contract_blind'), then: [['think', '"Kể cả cuối tuần, lễ, Tết". Đêm thứ Tư chắc cũng tính.']] },
           { c: 'e10_night', o: [
@@ -777,7 +777,7 @@ export const EPISODES = [
       },
       {
         who: 'call:duy', obj: 'Bộ đàm từ venue: MƯA!', time: '16:45',
-        call: { title: '📻 Kênh Sân Khấu · venue Vườn Cỏ Xanh', people: ['duy', 'hai', 'quan', 'me'] },
+        call: { title: '📻 Kênh Sân Khấu · venue Vườn Cỏ Xanh', people: ['duy', 'hai', 'quan', 'toan', 'me'] },
         scene: [
           ['nar', 'Tiếng mưa trong bộ đàm to hơn tiếng anh Duy. Khách bắt đầu check-in lúc 17:00.'],
           ['duy', 'Mưa sớm hơn dự báo hai tiếng. Ai nghe báo cáo.'],
@@ -801,14 +801,15 @@ export const EPISODES = [
             ] },
           ] },
           { if: (s) => s.flags.backdrop_ok === false, then: [['quan', 'À… backdrop. Có một chữ… ai đó soát lại chưa? Ảnh của khách đang chụp sát vào đó.'], { fx: { dr: 2, uy: -2 } }] },
-          { if: is('backdrop_plan', 'patch'), then: [['hai', 'Khách chụp ảnh check-in. Zoom vào thấy viền đề can bị mưa bong. Chị Hường nhìn thấy rồi.'], { fx: { dr: 2, rel: { huong: -1 } } }] },
-          { if: F('cover_duy'), then: [['duy', '(nhỏ) Lúc tổng duyệt anh gọi được cho bé rồi. Bé hỏi "bố đang ở trong mưa à". Cảm ơn em đã giữ bộ đàm.'], { fx: { rel: { duy: 1 } } }] },
+          { if: is('backdrop_plan', 'patch'), then: [['hai', 'Khách chụp ảnh check-in. Zoom vào là thấy viền đề can đỏ dán trên nền vàng. Chị Hường nhìn thấy rồi.'], { fx: { dr: 2, rel: { huong: -1 } } }] },
+          { if: F('cover_duy'), then: [['duy', '(nhỏ) Lúc tổng duyệt anh gọi được cho bé rồi. Em trực kênh vendor từ văn phòng, không ai réo anh. Bé hỏi "bố đang ở trong mưa à".'], { fx: { rel: { duy: 1 } } }] },
         ],
       },
       {
         who: 'obj:desk', obj: '17:55 Ôm áo mưa ra venue (gala bắt đầu)', time: '17:55',
         scene: [
           ['nar', 'Bạn ôm hai thùng áo mưa, gọi xe, nhìn bầu trời đen kịt. Ở nhà, mèo Plan B đã ngủ trong kho từ sáng.'],
+          ['nar', 'Gala chạy tới 22:00. Bạn chạy theo nó. 22:30, điện thoại rung liên tục.'],
           { if: F('gala_saved'), then: [
             { chat: [
               ['kieu', 'Khách khen!!! Anh Quang bảo "mưa mà vui hơn năm ngoái" 🎤🎤🎤 Xin một tràng pháo tay cho cả team!', false],
@@ -853,7 +854,7 @@ export const EPISODES = [
           { if: F('toan_contacts'), then: [['think', 'Anh Toàn nói hôm đầu: "Tên không quan trọng. Ghi chú mới quan trọng."']] },
           { mini: CONTACTS_MINI,
             good: [['toan', 'Anh Xe Quận 7! Có xe 45 chỗ, 9:40 tới. Anh nợ ổng một bữa. Giờ nợ hai.'], { fx: { uy: 3, rel: { toan: 2 }, set: { bus_found: true } } }],
-            bad: [['toan', 'Anh Xe Đám Cưới hả? Xe hoa bốn chỗ. Đẹp, nhưng chở được bốn người.'], { fx: { nl: -3 } }],
+            bad: [['toan', 'Số này hoặc không có xe 45 chỗ, hoặc anh không nhớ là ai. Để anh tự lục.'], { fx: { nl: -3 } }],
           },
         ],
       },
@@ -930,8 +931,11 @@ export const EPISODES = [
             ['hai', 'Mật thư, rung chuông vàng, xếp tháp ly! Ba anh đau lưng giành giải nhất xếp tháp! Anh Thắng khóc vì vui!'],
             { fx: { uy: 3, rel: { thang: 1, khoa: 1 } } },
           ] },
-          { if: (s) => !s.flags.risky_game && !s.flags.safe_games, then: [
-            ['hai', 'Nhảy bao bố trên cát lúc một giờ chiều. Cát nóng. Khách nhảy rất nhanh. Không phải vì vui.'],
+          { if: (s) => !s.flags.risky_game && !s.flags.safe_games && !!s.flags.boring_games, then: [
+            ['hai', 'Toàn trò ngồi. Mật thư ba tiếng. Khách giải xong thì ngủ gật. Không ai đau lưng, không ai nhớ gì.'],
+          ] },
+          { if: (s) => !s.flags.risky_game && !s.flags.safe_games && !s.flags.boring_games, then: [
+            ['hai', 'Còn một trò trên cát lúc một giờ chiều. Cát nóng. Khách chạy rất nhanh. Không phải vì vui.'],
             { fx: { dr: 2 } },
           ] },
           { if: F('first_aid'), then: [['hai', 'Túi sơ cứu dùng hết hai miếng băng cá nhân. Đội cổ vũ hét to hơn đội chơi. Anh thích.']] },
@@ -948,7 +952,7 @@ export const EPISODES = [
           ['ngan', 'Em đọc hợp đồng với khách sạn đi. Điều khoản quan trọng luôn nằm ở trang 9.'],
           { mini: ALLOTMENT_MINI,
             good: [['ngan', 'Đúng. Khách sạn phải bố trí phòng tương đương và chịu xe đưa đón. Em nhớ câu đó. Chiều nay có thể cần.'], { fx: { uy: 2, rel: { ngan: 2 }, set: { knows_contract: true } } }],
-            bad: [['ngan', '"Release date" không phải ngày ra mắt. Thôi, chiều nay chị nói, em nghe.'], { fx: { nl: -2 } }],
+            bad: [['ngan', 'Chưa chắc lắm. Trang 9 phải đọc chậm. Thôi, chiều nay chị nói, em nghe.'], { fx: { nl: -2 } }],
           },
         ],
       },
@@ -986,7 +990,7 @@ export const EPISODES = [
 
   {
     id: 'mc_sick', day: 18, title: 'MC mất giọng. Em lên.',
-    intro: 'Thứ Năm. Hội nghị khách hàng của Bê Tông Vững Chãi, 18:30, ballroom khách sạn. 200 khách.\n\nMC Khải đã ký hợp đồng. Chị Kiều là MC dự bị.\n\n8:40. Có một cuộc gọi. Giọng bên kia nghe như cái máy trộn bê tông.',
+    intro: 'Thứ Năm. Hội nghị khách hàng của Bê Tông Vững Chãi, 18:00, ballroom khách sạn. 200 khách.\n\nMC Khải đã ký hợp đồng. Chị Kiều là MC dự bị.\n\n8:40. Có một cuộc gọi. Giọng bên kia nghe như cái máy trộn bê tông.',
     steps: [
       {
         who: 'call:khai', obj: 'MC Khải gọi (bằng giọng còn lại)', time: '08:40',
@@ -1018,9 +1022,10 @@ export const EPISODES = [
         who: 'duy', obj: 'Anh Duy đưa run-sheet', time: '11:00',
         scene: [
           ['duy', 'Run-sheet. Mỗi phần có cue nhạc, cue đèn, người lên sân khấu. Em xếp lại cho anh, bản này bị Thảo sửa lúc nửa đêm.'],
+          ['duy', 'Luật nhà: Chủ tịch nói trước, tri ân sau, rồi mới cầm đũa. Bốc thăm để cuối cho khách ở lại.'],
           { mini: RUNSHEET_MINI,
             good: [['duy', 'Copy. Chủ tịch phát biểu trước tri ân. Bốc thăm cuối để khách ở lại. Em hiểu run-sheet.'], { fx: { uy: 3, rel: { duy: 2 }, set: { runsheet_ok: true } } }],
-            bad: [['duy', 'Bốc thăm trước tiệc thì khách trúng xong là về. Không ai nghe Chủ tịch. Sửa lại.'], { fx: { nl: -3 } }],
+            bad: [['duy', 'Sai thứ tự là Chủ tịch phát biểu lúc khách đang ăn tráng miệng. Hoặc trúng thăm xong là về. Sửa lại.'], { fx: { nl: -3 } }],
           },
         ],
       },
@@ -1070,7 +1075,7 @@ export const EPISODES = [
 
   {
     id: 'lost_id', day: 22, title: 'Mất giấy tờ ở sân bay',
-    intro: 'Thứ Hai. Đoàn 40 khách của Bảo Hiểm An Tâm bay Phú Quốc lúc 10:15.\n\nAnh Hải ở sân bay từ 6 giờ. Chị Ngân và bạn trực ở văn phòng, nhìn màn hình như nhìn đồng hồ bom.',
+    intro: 'Thứ Hai. Đoàn 40 khách của Bảo Hiểm An Tâm bay Phú Quốc lúc 10:45.\n\nAnh Hải ở sân bay từ 6 giờ. Chị Ngân và bạn trực ở văn phòng, nhìn màn hình như nhìn đồng hồ bom.',
     steps: [
       {
         who: 'call:hai', obj: 'Anh Hải gọi từ sân bay!', time: '08:30',
@@ -1078,7 +1083,7 @@ export const EPISODES = [
         scene: [
           ['hai', 'BA MƯƠI CHÍN KHÁCH ĐÃ LÀM THỦ TỤC! KHÁCH THỨ BỐN MƯƠI: TỔNG GIÁM ĐỐC! MẤT VÍ! CĂN CƯỚC NẰM TRONG VÍ!'],
           ['hai', 'Anh ấy tên "An Tâm". Ý anh là công ty tên An Tâm. Anh ấy không an tâm chút nào.'],
-          ['ngan', 'Còn 1 tiếng 45 phút tới giờ đóng quầy.'],
+          ['ngan', 'Còn 1 tiếng 35 phút tới giờ đóng quầy.'],
           { fx: { nl: -3 } },
         ],
       },
@@ -1200,7 +1205,7 @@ export const EPISODES = [
         scene: [
           { if: F('dirty_invoice'), then: [
             ['kieu', 'Cô Bích kể chị nghe rồi. Em biết vì sao chị dẫn gala 15 năm mà không ai nói xấu chị không? Chị chưa bao giờ ký cái gì sai.'],
-            ['kieu', 'Lần này chị coi như em là intern. Lần sau thì không có "intern" nữa.'],
+            { if: official, then: [['kieu', 'Em là nhân viên chính thức rồi. Lần này chị bỏ qua. Lần sau thì không.']], else: [['kieu', 'Lần này chị coi như em là intern. Lần sau thì không có "intern" nữa.']] },
             { fx: { rel: { kieu: -2 } } },
           ], else: [
             ['kieu', 'Chị nghe chuyện hóa đơn. Mất 40 triệu doanh thu ảo, giữ được một cái tên thật. Chị lời.'],
@@ -1250,7 +1255,7 @@ export const EPISODES = [
           ['my', 'Proposal 40 trang. Khách đọc 3 trang đầu rồi lật thẳng tới trang giá. Xếp sao cho 3 trang đầu đáng đọc.'],
           { mini: PROPOSAL_MINI,
             good: [['my', 'Brief, concept, kịch bản. Ba trang đầu là ba lý do để không lật tới trang giá vội. Bạn hiểu khách ghê.'], { fx: { uy: 3, rel: { my: 2 }, set: { proposal_ok: true } } }],
-            bad: [['my', 'Bạn để báo giá lên trang 2. Khách sẽ lật tới đó đầu tiên. Rồi đóng file.'], { fx: { nl: -3 } }],
+            bad: [['my', 'Thứ tự này thì khách lật tới trang giá trước khi kịp thích mình. Rồi đóng file.'], { fx: { nl: -3 } }],
           },
         ],
       },
@@ -1272,7 +1277,7 @@ export const EPISODES = [
           ['kieu', 'Xin chào anh Quang! Hôm nay em để bạn trẻ trình bày. Em chỉ ngồi nghe. Em hứa.'],
           ['quang', 'Bên kia rẻ hơn 10%. Em nói anh nghe tại sao anh nên trả nhiều hơn.'],
           { c: 'e29_pitch', o: [
-            { t: 'Kể lại đêm gala mưa: rạp dựng lúc 16:20, 300 khách khô ráo, rồi mở concept mới.', when: F('gala_saved'), fx: { uy: 4, rel: { quang: 2 }, set: { pitch_won: true } }, then: [
+            { t: 'Kể lại đêm gala mưa: cả đội xoay xở trong một tiếng, khách khô ráo, rồi mở concept mới.', when: F('gala_saved'), fx: { uy: 4, rel: { quang: 2 }, set: { pitch_won: true } }, then: [
               ['quang', 'Đêm đó anh nhớ. Bên kia thì anh không biết họ làm gì khi trời mưa. Anh không muốn biết.'],
               ['huong', 'Anh Quang chốt rồi đó em.'],
             ] },
@@ -1325,7 +1330,7 @@ export const EPISODES = [
           { c: 'e31_lion', o: [
             { t: '"Dạ, em làm đuôi lân ạ."', fx: { nl: -10, rel: { kieu: 2, khoa: 1 }, set: { lion_tail: true } }, then: [['kieu', 'TUYỆT! Xin một tràng pháo tay cho khúc đuôi!']] },
             { t: '"Em làm điều phối cue, chị Kiều làm đầu lân ạ."', fx: { rel: { kieu: -1, duy: 1 }, dr: 1 }, then: [['kieu', '…Lưng của CEO. Thôi được. Một lần cuối. Ai quay clip chị là chị trừ lương.'], ['vy', '(nhỏ) Mình sẽ quay.']] },
-            { t: 'Đề xuất lân điện tử trên màn LED kết hợp trống thật.', fx: { uy: 2, rel: { quan: 2, kieu: -1 } }, then: [['quan', 'Lân LED! Không gãy sừng! Không đau lưng!'], ['kieu', 'Khách thích lân thật. Có hơi người. Nhưng thôi, ghi vào phương án B.'], { fx: { set: { lion_tail: true } } }] },
+            { t: 'Đề xuất lân điện tử trên màn LED kết hợp trống thật.', fx: { uy: 2, rel: { quan: 2, kieu: -1 } }, then: [['quan', 'Lân LED! Không gãy sừng! Không đau lưng!'], ['kieu', 'Khách thích lân thật. Có hơi người. Nhưng thôi, ghi vào phương án B. Phương án A vẫn thiếu khúc đuôi. Là em.'], { fx: { set: { lion_tail: true } } }] },
           ] },
         ],
       },
@@ -1334,9 +1339,10 @@ export const EPISODES = [
         scene: [
           ['khoa', 'Mình từng học múa lân ba tháng. Rồi chuyển sang làm quản trò. Lý do tương tự: không ai muốn đứng một mình.'],
           { if: F('lion_tail'), then: [['nar', 'Bạn chui vào khúc đuôi. Bên trong tối, mùi băng keo và mùi gala năm ngoái.']], else: [['nar', 'Bạn cầm run-sheet, Khoa đọc bài cho chị Kiều. Chị Kiều đội đầu lân, nhìn bạn đầy oán trách.']] },
+          ['khoa', 'Nghe nè: chào khách ba lần, múa vòng quanh sân, hái lộc treo cao, nhả câu đối, rồi chào kết. Một lần thôi nha.'],
           { mini: LION_MINI,
-            good: [['khoa', 'Đúng nhịp! Hái lộc trước, nhả câu đối sau. Bạn có tố chất… khúc đuôi.'], { fx: { uy: 2, rel: { khoa: 2 }, set: { lion_ok: true } } }],
-            bad: [['khoa', 'Lân nhả câu đối trước khi chào khách. Như MC nói "cảm ơn quý vị đã đến" ở đầu chương trình. Tập lại.'], { fx: { nl: -5 } }],
+            good: [['khoa', 'Đúng nhịp! Hái lộc trước, nhả câu đối sau. Bạn có tố chất… lân.'], { fx: { uy: 2, rel: { khoa: 2 }, set: { lion_ok: true } } }],
+            bad: [['khoa', 'Lộn nhịp rồi. Như MC nói "cảm ơn quý vị đã đến" ở đầu chương trình. Tập lại.'], { fx: { nl: -5 } }],
           },
         ],
       },
@@ -1419,7 +1425,7 @@ export const EPISODES = [
   },
 
   {
-    id: 'peak_board', day: 38, title: 'Lịch tháng 12 lên bảng',
+    id: 'peak_board', day: 38, internOnly: true, title: 'Lịch tháng 12 lên bảng',
     intro: 'Thứ Tư. Sáng nay bảng "LỊCH SỰ KIỆN THÁNG 11" đã bị xóa.\n\nThay vào đó: "THÁNG 12". 23 show. Ô ngày 20 ghi "3 SHOW" bằng bút đỏ, không còn dấu hỏi.\n\nDòng cuối: "Nghỉ phép: KHÔNG".',
     steps: [
       {
@@ -1439,7 +1445,7 @@ export const EPISODES = [
           ['duy', 'Ngày 20: ba show. Anh show 1, Thảo show 2. Show 3 cần một người giám sát, một mình, ba bộ đàm.'],
           ['duy', 'Anh nói thật. Sau tháng 12 anh tính nghỉ. Con anh lên lớp một. Anh muốn có mặt ít nhất một ngày sinh nhật.'],
           { c: 'e38_show3', o: [
-            { t: '"Em nhận show 3 ạ."', fx: { nl: -6, uy: 3, rel: { duy: 2 }, set: { peak_volunteer: true } }, then: [['duy', 'Copy. Anh sẽ dạy em mọi thứ trong ba tuần. Kể cả cách tắt bộ đàm số ba.']] },
+            { t: '"Em nhận show 3 ạ."', fx: { nl: -6, uy: 3, rel: { duy: 2 }, set: { peak_volunteer: true } }, then: [['duy', 'Copy. Anh sẽ dạy em mọi thứ trong hai tuần. Kể cả cách tắt bộ đàm số ba.']] },
             { t: '"Em xin đi kèm show 1 với anh để học trước ạ."', fx: { uy: 2, rel: { duy: 1 } }, then: [['duy', 'Hợp lý. Học trước, chạy sau. Anh sẽ xin chị Kiều thuê thêm CTV. Chị sẽ hỏi "tiền đâu".']] },
             { t: '"Anh nghỉ thật hả anh?"', fx: { rel: { duy: 2 } }, then: [['duy', 'Năm nào anh cũng nói vậy. Năm nay anh nói với một người. Là em. Vậy là thật hơn mọi năm.']] },
           ] },
@@ -1569,7 +1575,7 @@ export const EPISODES = [
               ['nar', 'Hai CTV tới lúc 19:00. Show chạy ổn. Hôm sau chị Kiều hỏi: "Ai duyệt thêm hai CTV? Tiền đâu?"'],
             ] },
           ] },
-          ['think', 'Ba tuần trước mình còn là intern. Giờ mình là người được gọi là "Show 3".'],
+          ['think', 'Mới tuần trước mình còn là intern. Giờ mình là người được gọi là "Show 3".'],
         ],
       },
     ],
@@ -1623,7 +1629,7 @@ export const EPISODES = [
 
   {
     id: 'off_final', official: true, end: (r) => (r.flags.final === 'ctv' ? 'layoff' : 'quit'), noReview: true, title: 'Đêm tất niên của chính mình',
-    intro: 'Cuối mùa cao điểm. 23 show đã chạy. Hôm nay là tất niên của chính công ty Đi Đâu Cũng Được.\n\nNgười tổ chức: bạn. Ngân sách: "tùy em, miễn đừng tốn".\n\nBạn đã nghĩ suốt tuần về một quyết định.',
+    intro: 'Cuối đợt cao điểm. Bạn đã thôi đếm số show. Hôm nay là tất niên sớm của chính công ty Đi Đâu Cũng Được: ngày duy nhất tháng này không có show.\n\nNgười tổ chức: bạn. Ngân sách: "tùy em, miễn đừng tốn".\n\nBạn đã nghĩ suốt tuần về một quyết định.',
     steps: [
       {
         who: 'kieu', obj: 'Chị Kiều gọi vào phòng', time: '09:00',
@@ -1641,7 +1647,7 @@ export const EPISODES = [
       {
         who: 'vy', obj: 'Vy (giờ là intern lâu nhất) phụ bạn setup tất niên', time: '14:00',
         scene: [
-          ['vy', 'Mình vẫn là intern. Lâu nhất công ty. Ba tháng. Mình thành "anh Bảo" của chỗ này rồi.'],
+          ['vy', 'Mình vẫn là intern. Lâu nhất công ty. Gần ba tháng. Mình thành "intern huyền thoại" của chỗ này rồi.'],
           ['vy', 'Bạn biết không, clip "Setup gala lúc 3 giờ sáng" của mình lên 2 triệu view. Có công ty khác nhắn mời mình làm content.'],
           { c: 'eo4_vy', o: [
             { t: '"Vy đi đi. Đừng làm intern ba năm."', fx: { rel: { vy: 3 } }, then: [['vy', 'Bạn cũng đi đi. Mình thấy mắt bạn từ tuần trước rồi.']] },

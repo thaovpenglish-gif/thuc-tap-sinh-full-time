@@ -25,7 +25,7 @@ const HASHTAG_MINI = {
 };
 
 export const ROUTINE = [
-  { id: 'r_emoi_offline', who: 'diep', obj: 'Chị Diệp: "Client nhắn em ơi rồi offline"', time: '10:00', scene: [
+  { id: 'r_emoi_offline', who: 'diep', obj: 'Chị Diệp: "Client nhắn em ơi rồi offline"', time: '11:05', scene: [
     ['diep', 'Chị Nguyệt nhắn "Em ơi" lúc 9:02. Rồi offline. Hai tiếng rồi. Chị không dám làm gì khác.'],
     ['think', '"Em ơi" không có gì phía sau. Như một bộ phim chỉ có trailer.'],
     { c: '_r_emoi', o: [
@@ -88,7 +88,7 @@ export const ROUTINE = [
     ] },
   ] },
   { id: 'r_pizza', who: 'diep', obj: 'Có pizza! Client gửi tặng sau khi duyệt KV', time: '15:30', scene: [
-    ['diep', 'Răng Xinh duyệt KV lúc 1 giờ sáng kèm "thanks em, ngủ ngon". Sáng nay gửi pizza tới. Ăn đi em.'],
+    ['diep', 'Răng Xinh duyệt KV lúc 1 giờ sáng kèm "thanks em, ngủ ngon". Giờ họ gửi pizza tới. Ăn đi em.'],
     ['nar', 'Pizza vị hải sản. Ăn xong, theo thói quen nghề nghiệp, mọi người đi đánh răng bằng sample Răng Xinh.'],
     { c: '_r_pizza', o: [
       { t: 'Ăn hai miếng.', fx: { nl: 15 } },
@@ -100,7 +100,7 @@ export const ROUTINE = [
     ['nar', 'Trên cục phát có dán giấy: "Mật khẩu: MakeItPop2016". Chữ đã mờ gần hết.'],
     { c: '_r_wifi', o: [
       { t: 'Phát 4G từ điện thoại cho anh Tùng.', fx: { nl: -2, uy: 2, rel: { tung: 2 } }, then: [['tung', 'Cứu tinh! Anh sẽ ghi tên em vào… cái gì đó. Một slide nào đó.']] },
-      { t: 'Đọc to mật khẩu mờ: "MakeItPop2016".', fx: { rel: { tung: 1 }, dr: 1 }, then: [['tung', 'Sai… à đúng, phải viết hoa chữ P. POP luôn viết hoa.']] },
+      { t: 'Đọc to mật khẩu mờ: "MakeItPop2016".', fx: { rel: { tung: 1 }, dr: 1 }, then: [['tung', 'Sai… à đúng, phải viết hoa cả chữ POP. POP luôn viết hoa.']] },
     ] },
   ] },
   { id: 'r_quote_cut', who: 'hong', obj: 'Chị Hồng: client ép giá 30%', time: '15:00', scene: [
@@ -134,7 +134,7 @@ export const ROUTINE = [
       { t: '"Nói là anh Lộc đang nói về… bà chủ nhà ạ."', fx: { dr: 3, rel: { loc: 1 } }, then: [['loc', 'Bà chủ nhà anh cũng hay đổi ý thật. Không tính là nói dối.']] },
     ] },
   ] },
-  { id: 'r_timesheet_ping', who: 'hong', obj: 'Chị Hồng nhắc timesheet lần thứ ba', time: '16:00', scene: [
+  { id: 'r_timesheet_ping', who: 'hong', obj: 'Chị Hồng nhắc timesheet lần thứ ba', time: '16:00', when: (r) => r.day >= 8, scene: [
     ['hong', 'Lần ba. Timesheet. Tuần trước em ghi "Khác: 6 giờ". Khác là gì?'],
     { c: '_r_ts', o: [
       { t: 'Sửa lại, ghi rõ từng client.', fx: { uy: 1, nl: -2, rel: { hong: 2 } }, then: [['hong', 'Đẹp. Timesheet đẹp là timesheet thật. Hiếm như brief rõ ràng.']] },
@@ -185,7 +185,8 @@ export const ROUTINE = [
       { t: 'Brief: "Trẻ hơn (theo anh Tuấn)."', fx: { rel: { khai: -1 } }, then: [['khai', 'Đây không phải brief. Đây là trích dẫn.']] },
     ] },
   ] },
-  { id: 'r_wellness', who: 'hong', obj: 'Chị Hồng phát thông báo "Tuần lễ sức khỏe tinh thần"', time: '09:45', scene: [
+  { id: 'r_wellness', who: 'hong', obj: 'Chị Hồng phát thông báo "Tuần lễ sức khỏe tinh thần"', time: '09:45', when: (r) => r.status !== 'official' && !r.flags.wellness_seen, scene: [
+    { fx: { set: { wellness_seen: true } } },
     ['hong', 'Anh Tùng muốn tổ chức "Tuần lễ sức khỏe tinh thần". Giữa mùa Tết. Mỗi ngày 5 phút thiền lúc 17:45.'],
     ['think', '17:45. Đúng giờ "em ơi".'],
     { c: '_r_well', o: [
@@ -197,7 +198,7 @@ export const ROUTINE = [
     ['diep', 'Chị Nguyệt nhắn: "Tiện thiết kế giùm chị cái thiệp cưới nha em. Nhanh thôi." Thiệp cưới. Của chị Nguyệt.'],
     { c: '_r_wedding', o: [
       { t: 'Gợi ý: "Mình tặng chị thiệp, coi như quà cưới của cả team."', fx: { rel: { diep: 1, nguyet: 1, vy: -1 } }, then: [['vy', 'Quà cưới bằng sức lao động của anh. Anh sẽ ký tên nhỏ ở góc.']] },
-      { t: 'Gợi ý: báo giá nhẹ, như một job ngoài.', fx: { uy: 1, rel: { hong: 1 } }, then: [['diep', 'Chị Nguyệt nói "ok em" rồi tự làm trên Canva. Thiệp có hiệu ứng lửa. Chắc Bin chỉ.']] },
+      { t: 'Gợi ý: báo giá nhẹ, như một job ngoài.', fx: { uy: 1, rel: { hong: 1 } }, then: [['diep', 'Chị Nguyệt nói "ok em" rồi tự làm trên Canva. Thiệp có hiệu ứng lửa và bảy font.']] },
     ] },
   ] },
   { id: 'r_rival_like', who: 'loc', obj: 'Anh Lộc đang lướt tin tuyển dụng', time: '13:30', scene: [
@@ -209,7 +210,7 @@ export const ROUTINE = [
     ] },
   ] },
   { id: 'r_whiteboard', who: 'obj:okr', obj: 'Ai đó vừa viết thêm lên bảng trắng', time: '10:00', scene: [
-    ['nar', 'Bảng trắng có dòng mới: "Brief rõ ràng là một huyền thoại." Ai đó vẽ thêm con kỳ lân cạnh chữ "brief".'],
+    ['nar', 'Ai đó vừa vẽ một con kỳ lân cạnh dòng "BRIEF RÕ RÀNG LÀ MỘT HUYỀN THOẠI" trên bảng trắng.'],
     { c: '_r_wb', o: [
       { t: 'Viết thêm: "Feedback nhẹ cũng vậy."', fx: { rel: { khai: 1, thi: 1 }, dr: 1 }, then: [['khai', '(từ xa) Ai viết đó? …Đúng.']] },
       { t: 'Xóa trước khi client ghé.', fx: { uy: 1, rel: { diep: 1 } }, then: [['diep', 'Cảm ơn em. Tuần trước chị Nguyệt suýt đọc được câu "Bà Wow sắp tới".']] },
@@ -269,10 +270,11 @@ export const ROUTINE = [
     ['diep', 'Trà Sữa muốn "nhiều hashtag" cho bài Tâm trạng gì cũng có size. Chọn giúp chị cái nào không làm brand xấu hổ.'],
     { mini: HASHTAG_MINI,
       good: [['diep', 'Hai hashtag, sạch, có tên chiến dịch. Client hỏi "ít vậy em?". Chị nói "ít mà chất".'], { fx: { uy: 2, rel: { diep: 1 } } }],
-      bad: [['diep', '#[CHÈN_HASHTAG]? Em ơi đây là lỗi của KOL, không phải lựa chọn.'], { fx: { dr: 1 } }],
+      bad: [['diep', 'Hashtag rác, hashtag "ghiền/điên" là tự bôi đen brand đó em. Còn #[CHÈN_HASHTAG] là lỗi của KOL, không phải lựa chọn.'], { fx: { dr: 1 } }],
     },
   ] },
-  { id: 'r_diep_bday', who: 'thi', obj: 'Thi rủ: sinh nhật bất ngờ cho chị Diệp', time: '17:15', scene: [
+  { id: 'r_diep_bday', who: 'thi', obj: 'Thi rủ: sinh nhật bất ngờ cho chị Diệp', time: '17:15', when: (r) => !r.flags.diep_bday_done, scene: [
+    { fx: { set: { diep_bday_done: true } } },
     ['thi', 'Hôm nay sinh nhật chị Diệp. Chị đang deadline. Tụi mình định bưng bánh ra lúc chị đang gọi client. Bạn tham gia không?'],
     { c: '_r_bday', o: [
       { t: 'Góp tiền mua bánh, cầm nến.', fx: { money: -50_000, rel: { diep: 2, thi: 1 } }, then: [['nar', 'Chị Diệp vừa nói "dạ em sửa liền ạ" thì thấy bánh. Chị cười, rồi khóc, rồi vẫn sửa file. Ba việc cùng lúc. Chuyên nghiệp.']] },
@@ -280,15 +282,15 @@ export const ROUTINE = [
     ] },
   ] },
   // ---- official-only beats ----
-  { id: 'r_off_groups', who: 'obj:desk', obj: 'Về bàn: 22 nhóm Zalo đang sáng', time: '10:00', official: true, scene: [
-    ['nar', 'Bạn giờ ở trong 22 nhóm Zalo. Ba nhóm cùng tên "Răng Xinh Tết". Một nhóm có client. Bạn không nhớ nhóm nào.'],
+  { id: 'r_off_groups', who: 'obj:desk', obj: 'Về bàn: cả chục nhóm Zalo đang sáng', time: '10:00', official: true, scene: [
+    ['nar', 'Số nhóm Zalo của bạn giờ nhiều hơn số ngón tay. Ba nhóm cùng tên "Răng Xinh Tết". Một nhóm có client. Bạn không nhớ nhóm nào.'],
     { c: '_r_off_groups', o: [
       { t: 'Đổi tên tất cả nhóm nội bộ thành "🔒 NỘI BỘ".', fx: { uy: 2, nl: -3 }, then: [['think', 'Mười phút. Cứu được một sự nghiệp. Có thể là của mình.']] },
       { t: 'Tắt thông báo hết, đọc khi rảnh.', fx: { nl: 5, dr: 2 }, then: [['nar', 'Bạn không bao giờ rảnh. Ba tiếng sau, anh Tuấn gọi điện hỏi "em có đọc Zalo không".']] },
     ] },
   ] },
   { id: 'r_off_new_intern', who: 'linh', obj: 'Linh hỏi bạn như hỏi "anh chị"', time: '15:00', official: true, scene: [
-    ['linh', 'Bạn… à không, giờ phải gọi là "anh/chị" hả? Mình hỏi: AE chính thức có được về trước 18:00 không?'],
+    ['linh', 'Bạn… à không, giờ phải gọi là "anh/chị" hả? Mình hỏi: intern như mình có được về trước 18:00 không?'],
     { c: '_r_off_intern', o: [
       { t: '"Được. Về đi. Intern về đúng giờ là quyền."', fx: { rel: { linh: 2 }, nl: -2 }, then: [['think', 'Mình vừa nói câu chị Diệp từng nói. Bằng giọng hơi mệt.']] },
       { t: '"Không. Không ai về trước 18:00 hết."', fx: { rel: { linh: -1 }, dr: 1 }, then: [['think', 'Mình nghe thấy giọng mình. Nó giống giọng một người mình từng sợ.']] },

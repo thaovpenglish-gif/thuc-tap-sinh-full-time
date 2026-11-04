@@ -46,7 +46,7 @@ const TAXFORM_MINI = {
 export const INTERVIEW = {
   title: 'Buổi đầu tiên',
   subtitle: 'Vòng phỏng vấn',
-  intro: 'Chiều thứ Sáu, 14:00. Tầng 3 một nhà phố. Tầng trệt là kho: standee, bạt cũ, ghế Chiavari và một con lân gãy sừng.\n\nTấm biển ghi: "ĐI ĐÂU CŨNG ĐƯỢC · Sự kiện · Team building · Tour".\n\nBạn đi phỏng vấn thực tập. Và hôm nay, bạn sẽ phải deal lương.',
+  intro: 'Chiều thứ Sáu, 14:00. Tầng 3 một nhà phố. Hành lang chất đầy standee, bạt cũ, ghế Chiavari và một con lân gãy sừng.\n\nTấm biển ghi: "ĐI ĐÂU CŨNG ĐƯỢC · Sự kiện · Team building · Tour".\n\nBạn đi phỏng vấn thực tập. Và hôm nay, bạn sẽ phải deal lương.',
   pos: { kieu: 'meeting_head', duy: 'mr_n1', thao: 'mr_n2', vy: 'pantry' },
   steps: [
     {
@@ -102,7 +102,7 @@ export const INTERVIEW = {
             { fx: { uy: 3, rel: { duy: 2 }, set: { kit_ok: true } } },
           ],
           bad: [
-            ['duy', 'Loa kéo với bánh tráng trộn. Đoàn sẽ vui. Cho tới lúc trời mưa và micro hết pin.'],
+            ['duy', 'Thiếu đồ cần, dư đồ vui. Đoàn sẽ vui. Cho tới lúc trời mưa và micro hết pin.'],
             ['kieu', 'Thôi, cái này học được. Chị hồi xưa còn mang giày cao gót ra bãi biển.'],
             { fx: { rel: { kieu: 1 } } },
           ],
@@ -147,7 +147,7 @@ export const INTERVIEW = {
       who: 'bich', obj: 'Qua phòng kế toán gặp cô Bích làm thủ tục', time: '15:00',
       scene: [
         ['bich', 'Em ngồi đi. Cô là Bích, kế toán trưởng. Ở đây tiền đi đâu cô biết hết. Trừ cái thùng nước suối thứ ba.'],
-        ['nar', 'Trên bàn cô Bích có một kính lúp, một máy tính Casio và một xấp biên lai được kẹp theo màu.'],
+        ['nar', 'Trên bàn cô Bích có một kính lúp, một máy tính bỏ túi và một xấp biên lai được kẹp theo màu.'],
         { if: isTier('t0'), then: [
           ['bich', 'Em không nhận phụ cấp nên không có gì để khấu trừ. Nhưng vẫn ký xác nhận. Hai bản. Bút bi xanh.'],
           { fx: { rel: { bich: 1 } } },
@@ -196,7 +196,7 @@ export const INTERVIEW = {
           { t: '"Bạn có mẹo gì để sống sót không?"', fx: { rel: { vy: 2 }, set: { vy_tips: true } }, then: [
             ['vy', 'Luôn mang sạc dự phòng, áo mưa, một gói xôi. Lưu số anh Toàn. Và đừng tin bản run-sheet nào có chữ FINAL.'],
           ] },
-          { t: '"Bạn quay TikTok hậu trường hả? Cho mình xem với."', fx: { rel: { vy: 2 }, dr: 1 }, then: [
+          { t: '"Thấy bạn cầm điện thoại quay suốt. Quay gì vậy?"', fx: { rel: { vy: 2 }, dr: 1 }, then: [
             ['vy', 'Clip "Setup gala lúc 3 giờ sáng" 40 nghìn view. Chị Kiều chưa biết. Bạn cũng chưa biết nha.'],
           ] },
         ] },
@@ -211,5 +211,5 @@ export const INTERVIEW = {
       ],
     },
   ],
-  diary: (s) => `Buổi đầu tiên. Mình deal được mức ${({ t0: '0 đồng', t1: '1 triệu', t3: '3 triệu', t5: '5 triệu' })[s.tier] || '?'}. ${s.flags.contract_fixed ? 'Mình đọc kỹ thỏa thuận, anh Duy sửa luôn ba điều khoản viết lúc 2 giờ sáng. ' : 'Mình ký hơi nhanh. Dòng "kể cả cuối tuần, lễ, Tết" cứ lởn vởn. '}Chị Kiều nói chuyện như đang cầm micro. Có một con lân gãy sừng ở tầng trệt. Thứ Hai bắt đầu.`,
+  diary: (s) => `Buổi đầu tiên. Mình deal được mức ${({ t0: '0 đồng', t1: '1 triệu', t3: '3 triệu', t5: '5 triệu' })[s.tier] || '?'}. ${s.flags.contract_fixed ? 'Mình đọc kỹ thỏa thuận, anh Duy sửa luôn ba điều khoản viết lúc 2 giờ sáng. ' : 'Mình ký hơi nhanh. Dòng "kể cả cuối tuần, lễ, Tết" cứ lởn vởn. '}Chị Kiều nói chuyện như đang cầm micro. Có một con lân gãy sừng cạnh quầy lễ tân. Thứ Hai bắt đầu.`,
 };

@@ -44,7 +44,7 @@ export const PROMOTION = {
     ['nar', 'Review vừa xong thì cửa mở. Chị Kiều bước vào. Không cầm micro. Lần đầu tiên bạn thấy chị không cầm micro.'],
     ['kieu', 'Chị nói ngắn, không cần pháo tay. Chị muốn giữ em lại. Chính thức. Mười triệu. Hợp đồng lao động, có bảo hiểm.'],
     ['duy', 'Kèm bộ đàm số 4 vĩnh viễn. Và anh nói trước: tháng 12 có 23 show. Tháng 12 không có cuối tuần.'],
-    { if: (r) => !!r.flags.gala_saved, then: [['kieu', 'Đêm gala mưa, chị đứng dưới cái rạp đó và nhớ năm 2009. Lần này không ai phải ướt. Chị cần người như vậy.']] },
+    { if: (r) => !!r.flags.gala_saved, then: [['kieu', 'Đêm gala mưa, chị nhìn cả đội xoay xở và nhớ năm 2009. Lần này không ai phải ướt. Chị cần người như vậy.']] },
     { if: (r) => !!r.flags.mc_hosted, then: [['kieu', 'Với lại em cầm micro được. Ở đây biết cầm micro là có thêm một nghề dự phòng.']] },
     ['think', 'Mười triệu. Bảo hiểm. Tháng 12 không có cuối tuần.'],
     { c: 'ev_offer', o: [
@@ -72,7 +72,7 @@ export const ENDINGS = {
     };
     if (duy >= 6 && st.uy >= 70) return {
       title: 'Hết 45 ngày: "Có Plan B"',
-      text: `Anh Duy viết thư giới thiệu đúng ba dòng: "Đọc brief trước khi cầm micro. Có Plan B. Không bỏ ai lại." Rồi anh tặng bạn bộ đàm số 4.${f.gala_saved ? ' Chị Kiều kẹp kèm một tấm ảnh: 300 khách dưới rạp, mưa bên ngoài.' : ''} "Tháng 12 cần người, em biết số anh rồi."`,
+      text: `Anh Duy viết thư giới thiệu đúng ba dòng: "Đọc brief trước khi cầm micro. Có Plan B. Không bỏ ai lại." Rồi anh tặng bạn bộ đàm số 4.${f.gala_saved ? ' Chị Kiều kẹp kèm một tấm ảnh: 300 khách khô ráo, mưa trắng trời bên ngoài.' : ''} "Tháng 12 cần người, em biết số anh rồi."`,
     };
     if (f.mc_hosted) return {
       title: 'Hết 45 ngày: một giọng MC mới',

@@ -74,7 +74,7 @@ export const THEME = {
     ['KV Ông Táo v13', 'Caption x30', 'Resize 27 size', 'Deck 80 trang'],
     ['Client seen 👍 (?)', 'Timesheet tuần trước'],
   ] },
-  board: ['TẾT 2027 🧧', 'Pitch Bia Hơi Phố: thứ Năm', 'Sinh nhật chị Diệp (đừng quên)'],
+  board: ['TẾT 2027 🧧', 'Pitch Bia Hơi Phố: tuần 3', 'Sinh nhật chị Diệp (đừng quên)'],
   palette: { wall: '#fff0f5', lilac: '#e8dcff', peach: '#ffe0e9', mint: '#d9f7ef', butter: '#fff3c4' },
   labels: { coffee: 'Pantry: mì Ông Táo free', okr: 'Đọc bảng trắng', altar: 'Thắp hương Thần Tài (xin client duyệt)', safe: 'Nhìn tủ cúp giải thưởng', plant: 'Tưới cây (đạo cụ quay)', redchair: 'Ghế đỏ "brainstorm"' },
   props: [

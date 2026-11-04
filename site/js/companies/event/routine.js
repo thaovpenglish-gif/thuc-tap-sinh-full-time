@@ -133,17 +133,17 @@ export const ROUTINE = [
     ] },
   ] },
   { id: 'r_zalo', who: 'obj:desk', obj: 'Group Zalo đoàn có 80 tin nhắn mới', scene: [
-    ['nar', 'Group "Khỏe Re Đi Biển 🏖️" có 120 thành viên. 80 tin nhắn mới. Tin gần nhất: "mấy giờ xe chạy ạ?".'],
+    ['nar', 'Group "Đoàn Đi Biển 🏖️" có 120 thành viên. 80 tin nhắn mới. Tin gần nhất: "mấy giờ xe chạy ạ?".'],
     { mini: ZALO_MINI,
       good: [['nar', 'Bạn ghim một tin. Group im lặng 40 phút. Kỷ lục.'], { fx: { uy: 2 } }],
-      bad: [['nar', 'Bạn trả lời từng người. Tin thứ 81: "mấy giờ xe chạy ạ?".'], { fx: { nl: -4 } }],
+      bad: [['nar', 'Chưa ổn. Tin thứ 81: "mấy giờ xe chạy ạ?".'], { fx: { nl: -4 } }],
     },
   ] },
   { id: 'r_cut', who: 'thao', obj: 'Chị Thảo: khách bảo "bớt chút"', scene: [
     ['thao', 'Khách bảo đắt quá, bớt chút. "Chút" là 10%. Em giúp chị chọn chỗ cắt mà show vẫn sống.'],
     { mini: CUT_MINI,
       good: [['thao', 'Standee một mặt, bóng bay ít đi, xe kỹ thuật thường. Không ai biết. Không ai chết.'], { fx: { uy: 2, rel: { thao: 1, duy: 1 } } }],
-      bad: [['duy', '(từ xa) Ai vừa gạch máy phát điện? Mất điện là ai đứng trên sân khấu tối thui?'], { fx: { rel: { duy: -1 } } }],
+      bad: [['duy', '(từ xa) Ai vừa gạch đồ dự phòng? Mất điện, rè micro, khách té thì ai đứng ra chịu?'], { fx: { rel: { duy: -1 } } }],
     },
   ] },
   { id: 'r_concept', who: 'khoa', obj: 'Khoa brainstorm tên concept', scene: [
@@ -167,7 +167,7 @@ export const ROUTINE = [
       { t: 'Để nguyên, gọi đó là "phân màu theo bàn".', fx: { dr: 1, rel: { khoa: 1 } }, then: [['khoa', 'Phân màu theo bàn! Mình đưa vào kịch bản luôn! Bàn xanh lá đi lấy buffet trước!']] },
     ] },
   ] },
-  { id: 'r_vendor_fb', who: 'obj:desk', obj: 'Điện thoại rung: lời mời kết bạn', scene: [
+  { id: 'r_vendor_fb', who: 'obj:desk', obj: 'Điện thoại rung: lời mời kết bạn', when: (s) => s.day > 15, scene: [
     { chat: [['loc', 'Em ơi anh Lộc Xe đây, kết bạn với anh nha. Có job gì cứ gọi anh. Xe 45 chỗ luôn luôn sẵn sàng 🚌', true]] },
     ['think', '"Luôn luôn sẵn sàng". Mình nhớ cái sáng thứ Hai đó.'],
     { c: '_r_fb', o: [
@@ -175,7 +175,7 @@ export const ROUTINE = [
       { t: 'Để đó, chưa trả lời.', fx: { nl: 1 }, then: [['nar', 'Anh Lộc gửi thêm một sticker con xe buýt đang vẫy tay.']] },
     ] },
   ] },
-  { id: 'r_vegetarian', who: 'call:huong', obj: 'Chị Hường bên khách gọi', call: { title: 'Bê Tông Vững Chãi · "hỏi xíu"', people: ['huong', 'me'] }, scene: [
+  { id: 'r_vegetarian', who: 'call:huong', obj: 'Chị Hường bên khách gọi', when: (s) => s.day > 11, call: { title: 'Bê Tông Vững Chãi · "hỏi xíu"', people: ['huong', 'me'] }, scene: [
     ['huong', 'Em ơi, hôm tiệc có một anh ăn chay. Anh ấy nói lúc… đã ăn xong. Giờ anh ấy hỏi có được bù không.'],
     { c: '_r_veg', o: [
       { t: '"Dạ, lần sau bên em gửi phiếu khảo sát ăn uống trước sự kiện ạ."', fx: { uy: 2, rel: { huong: 1 } }, then: [['huong', 'Ừ, hay đó. Anh ấy thì… chắc bù một giỏ trái cây. Anh ấy ăn trái cây được.']] },
@@ -224,8 +224,8 @@ export const ROUTINE = [
     ['lan', 'Plan B vừa chui vào kho. Em biết nghĩa là gì rồi đấy.'],
     ['kpi', 'Meo.'],
     { c: '_r_cat', o: [
-      { t: 'Báo cả team mang áo mưa chiều nay.', fx: { uy: 1, rel: { lan: 1 } }, then: [['nar', '15:20 trời đổ mưa. Cả team khô. Mèo Plan B được thêm một hộp pate.']] },
-      { t: 'Cười, con mèo thì biết gì.', fx: { nl: -3 }, then: [['nar', '15:20 trời đổ mưa. Bạn về nhà ướt từ đầu tới chân. Con mèo biết.']] },
+      { t: 'Báo cả team mang áo mưa chiều nay.', fx: { uy: 1, rel: { lan: 1 } }, then: [['nar', 'Chiều đó trời đổ mưa. Cả team khô. Mèo Plan B được thêm một hộp pate.']] },
+      { t: 'Cười, con mèo thì biết gì.', fx: { nl: -3 }, then: [['nar', 'Chiều đó trời đổ mưa. Bạn về nhà ướt từ đầu tới chân. Con mèo biết.']] },
     ] },
   ] },
   { id: 'r_hai_tip', who: 'hai', obj: 'Anh Hải có chuyện muốn hỏi', scene: [
@@ -242,7 +242,7 @@ export const ROUTINE = [
   ] },
   { id: 'r_gala_photo', who: 'tien', obj: 'Anh Tiến khoe ảnh gala lên fanpage', when: F('gala_saved'), scene: [
     ['tien', 'Ảnh gala mưa lên fanpage. Khách share. 2.000 like. Công ty vui một ngày.'],
-    ['tien', 'Ảnh đẹp nhất là ảnh 300 người dưới rạp, đèn vàng, mưa bên ngoài. Ai chụp anh không biết. Hình như là em.'],
+    ['tien', 'Ảnh đẹp nhất là ảnh 300 người khô ráo, đèn vàng, mưa bên ngoài. Ai chụp anh không biết. Hình như là em.'],
     { fx: { uy: 2, rel: { tien: 1 } } },
   ] },
   // official-only
@@ -250,7 +250,7 @@ export const ROUTINE = [
     ['nar', 'Tin nhắn lúc 2:14 sáng, anh Thắng: "Em ơi, mai mấy giờ đón?". Tin lúc 2:15, chị Thảo: "Em trả lời giúp chị nha 🙏".'],
     ['think', 'Hồi intern, giờ này mình đang ngủ. Hồi đó mình không biết đó là một đặc ân.'],
     { c: '_r_off_2am', o: [
-      { t: 'Trả lời ngay bây giờ (8:30 sáng), kèm tin ghim.', fx: { uy: 1, nl: -2 }, then: [['nar', 'Anh Thắng trả lời: "ok em". Cả đêm qua bạn mơ thấy chữ "ok em".']] },
+      { t: 'Trả lời ngay bây giờ, kèm tin ghim.', fx: { uy: 1, nl: -2 }, then: [['nar', 'Anh Thắng trả lời: "ok em". Cả đêm qua bạn mơ thấy chữ "ok em".']] },
       { t: 'Đặt chế độ "Không làm phiền" từ 22:00.', fx: { nl: 5, dr: 1 }, then: [['think', 'Mình sẽ bị gọi là "không nhiệt tình". Mình sẽ được ngủ.']] },
     ] },
   ] },

@@ -1680,7 +1680,7 @@ const OFF3 = {
 };
 
 const OFF4 = {
-  id: 'off_final', official: true, end: 'quit', title: 'Mùa thưởng và một lá đơn',
+  id: 'off_final', official: true, end: (r) => (r.flags.final_path === 'pushed' ? 'layoff' : 'quit'), title: 'Mùa thưởng và một lá đơn',
   intro: 'Busy season kết thúc. Thưởng về: "một tháng lương, tùy kết quả kinh doanh". Kết quả kinh doanh: mất Phúc Lộc. Thưởng: nửa tháng.\n\nĐêm qua lúc 3:04 sáng, chị Thảo gửi bạn một email. Không có note nào. Chỉ một dòng: "Mai em vào phòng chị một chút nhé."',
   steps: [
     { who: 'obj:desk', obj: 'Đọc lại email 3:04 sáng của chị Thảo', time: '08:45', scene: [
