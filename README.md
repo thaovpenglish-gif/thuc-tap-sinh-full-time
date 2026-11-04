@@ -45,3 +45,7 @@ npm test
 ## Kiểm duyệt confession
 
 Vào Supabase → Table editor → `confessions` → đặt `hidden = true` cho bài muốn ẩn.
+
+## Cache khi deploy
+
+GitHub Pages cho trình duyệt giữ file cũ khoảng 10 phút. Mỗi lần đổi code, cập nhật số `?v=` ở `style.css` và `js/main.js` trong `site/index.html`, để người chơi không bị trộn code cũ với trang mới (lỗi màn hình trắng).
