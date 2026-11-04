@@ -43,7 +43,7 @@ export const ROUTINE = [
     ['ungvien', 'Dạ em hỏi lại chút: mức hai mươi triệu là gross hay net ạ?'],
     ['think', 'Lần thứ ba trong tuần. Cùng một người.'],
     { c: '_r_gross', o: [
-      { t: 'Giải thích kỹ: gross trừ bảo hiểm khoảng 10,5% rồi mới ra net, gửi kèm ví dụ.', fx: { uy: 2, nl: -2 }, then: [['ungvien', 'À, giờ em mới hiểu thật. Hai lần trước em gật cho có.']] },
+      { t: 'Giải thích kỹ: gross trừ bảo hiểm khoảng 10,5% rồi mới ra net, gửi kèm ví dụ.', fx: { uy: 2, nl: -2 }, then: [['ungvien', 'À, giờ em mới hiểu thật. Hai lần trước em gật cho có.'], ['nar', '(Đơn giản hóa: thông tin giải trí, không phải tư vấn pháp lý.)']] },
       { t: '"Dạ net ạ." (cho nhanh)', fx: { dr: 3 }, then: [['nar', 'Một tuần sau, ứng viên nhận phiếu lương và gọi lại. Lần này không hỏi. Lần này hét.']] },
     ] },
   ] },

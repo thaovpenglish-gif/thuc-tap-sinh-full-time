@@ -18,7 +18,7 @@ export const CV_MINI = {
 
 export const CONTRACT_MINI = {
   type: 'pick', title: 'Thỏa thuận thực tập (sửa tạm từ mẫu của khách)', icon: '📝',
-  prompt: 'Tìm 3 điều khoản "có vấn đề" trước khi ký.', pick: 3, time: 40, pass: 0.66,
+  prompt: 'Có ít nhất 3 điều khoản "có vấn đề". Chọn 3 trước khi ký.', pick: 3, time: 40, pass: 0.66,
   items: [
     { text: 'Bên A: Công ty TNHH Bao Bì Phú Quý', sub: 'Khoan… đây là tên khách', correct: true },
     { text: 'Phụ cấp chi trả "khi khách hàng thanh toán phí dịch vụ"', correct: true },

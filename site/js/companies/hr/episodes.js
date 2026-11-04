@@ -105,7 +105,7 @@ export const TIMELINE_MINI = {
 
 export const PAYSLIP_MINI = {
   type: 'pick', title: 'Phiếu lương (bản nháp, vẽ bằng Excel)', icon: '🧾',
-  prompt: 'Tìm 3 lỗi trên phiếu phụ cấp của bạn.', pick: 3, time: 35, pass: 0.66,
+  prompt: 'Phiếu phụ cấp của bạn có ít nhất 3 lỗi. Chọn 3.', pick: 3, time: 35, pass: 0.66,
   items: [
     { text: 'Họ tên: "Thực Tập Sinh 2"', correct: true },
     { text: 'Phụ cấp: "theo thỏa thuận"', sub: '(không có con số)', correct: true },
@@ -1481,7 +1481,7 @@ export const EPISODES = [
           { mini: PAYSLIP_MINI,
             good: [
               ['think', 'Bốn chỗ sai. Mình báo ba. Chỗ thứ tư chắc chị Thảo tự thấy… hy vọng vậy.'],
-              ['thao', '(nhắn) em đúng. em chưa có HĐLĐ nên không trừ BHXH. quỹ team building là ý anh Duy, chị bỏ luôn.'],
+              ['thao', '(nhắn) em đúng. em chưa có HĐLĐ nên không trừ BHXH (thông tin giải trí, không phải tư vấn pháp lý). quỹ team building là ý anh Duy, chị bỏ luôn.'],
               { fx: { uy: 2, rel: { thao: 1 }, set: { payslip_fixed: true } } },
             ],
             bad: [
