@@ -7,7 +7,7 @@ const F = (k) => (r) => !!r.flags[k];
 // ---------- mini-games ----------
 export const TICK_MINI = {
   type: 'quiz', title: 'Bảng màu tick-mark của chị Diệp', icon: '🖊️',
-  prompt: 'Chị Diệp hỏi, em trả lời. Sai màu là sai đời.', time: 30, pass: 0.75,
+  prompt: 'Chị Diệp hỏi, em trả lời. Sai màu là sai đời.', time: 40, pass: 0.75,
   questions: [
     { q: '✓ màu đỏ nghĩa là…', options: ['Đã đối chiếu chứng từ gốc', 'Chị Diệp đang giận', 'Đã xem qua cho có'], correct: 0 },
     { q: 'Σ màu tím nghĩa là…', options: ['Ký hiệu cho đẹp', 'Đã cộng dồn, khớp tổng', 'Tím mộng mơ'], correct: 1 },
@@ -18,7 +18,7 @@ export const TICK_MINI = {
 
 export const STOCK_MINI = {
   type: 'pick', title: 'Kho lạnh −18°C · chọn pallet mở thùng', icon: '🧊',
-  prompt: 'Ngón tay bạn sắp đông. Chọn 3 pallet đáng ngờ nhất để mở kiểm tra.', pick: 3, time: 30, pass: 0.66,
+  prompt: 'Ngón tay bạn sắp đông. Chọn 3 pallet đáng ngờ nhất để mở kiểm tra.', pick: 3, time: 35, pass: 0.66,
   items: [
     { text: 'Pallet A3', sub: 'Sương phủ đều, tem sản xuất tháng này' },
     { text: 'Pallet B7', sub: 'Gõ vào nghe "bộp bộp" như thùng rỗng', correct: true },
@@ -77,7 +77,7 @@ export const TAX_QUIZ = {
 
 export const REVIEW_MINI = {
   type: 'pick', title: 'RN – Phúc Lộc – E200 (27 note)', icon: '🖍️',
-  prompt: '1:07 sáng. Chọn 3 note phải xử lý trước 8 giờ.', pick: 3, time: 30, pass: 0.66,
+  prompt: '1:07 sáng. Chọn 3 note phải xử lý trước 8 giờ.', pick: 3, time: 35, pass: 0.66,
   items: [
     { text: '"Số dư TK tiền gửi chưa khớp sổ phụ. Giải thích?"', correct: true },
     { text: '"Font tiêu đề nên là Arial 11."' },

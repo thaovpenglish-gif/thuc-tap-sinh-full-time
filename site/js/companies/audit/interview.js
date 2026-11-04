@@ -16,7 +16,7 @@ export const ACCT_QUIZ = {
 
 export const CONTRACT_MINI = {
   type: 'pick', title: 'Thỏa thuận thực tập · bản 2025 (sửa tay)', icon: '📄',
-  prompt: 'Tìm 3 điều khoản "có vấn đề" trước khi ký. Cô Lụa đang cầm sẵn con dấu.', pick: 3, time: 35, pass: 0.66,
+  prompt: 'Tìm 3 điều khoản "có vấn đề" trước khi ký. Cô Lụa đang cầm sẵn con dấu.', pick: 3, time: 40, pass: 0.66,
   items: [
     { text: 'Thực tập sinh tuân thủ quy định về tính độc lập của nghề kiểm toán.' },
     { text: 'Thực tập sinh tham gia kiểm kê kho theo lịch khách hàng, kể cả 2 giờ sáng, lễ, Tết và "khi cần".', correct: true },

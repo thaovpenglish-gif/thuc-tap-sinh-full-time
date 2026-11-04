@@ -99,12 +99,12 @@ export const INTERVIEW = {
         ['khai', 'Ba câu. Không cần hay. Cần dùng được.'],
         { mini: SLOGAN_MINI,
           good: [
-            ['khai', '"Ông Táo lên trời, mì Ông Táo ở lại." Câu này… tạm.'],
+            ['khai', 'Biết né câu sáo, biết né tên đối thủ. Mấy câu này… tạm.'],
             ['diep', '"Tạm" là mức cao nhất anh Khải từng nói trong một buổi phỏng vấn đó em.'],
             { fx: { uy: 4, rel: { khai: 1 }, set: { slogan_ok: true } } },
           ],
           bad: [
-            ['khai', 'Em chọn câu có tên đối thủ. Client sẽ gọi lúc 23 giờ chỉ để hỏi "em có đùa chị không".'],
+            ['khai', 'Câu sáo thì client quên. Câu dính tên đối thủ thì client nhớ mãi, gọi lúc 23 giờ hỏi "em có đùa chị không".'],
             ['diep', 'Không sao. Intern năm ngoái còn chọn "Sáng tạo không giới hạn".'],
             { fx: { dr: 2 } },
           ],
