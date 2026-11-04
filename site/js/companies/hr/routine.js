@@ -31,7 +31,7 @@ export const ROUTINE = [
     ] },
     ['nar', 'Họp KPI mười lăm phút kéo dài bốn mươi phút. Ba mươi phút trong đó là quote.'],
   ] },
-  { id: 'r_inmail_7m', who: 'vy', obj: 'Vy gọi bạn xem một tin nhắn lạ', scene: [
+  { id: 'r_inmail_7m', once: true, who: 'vy', obj: 'Vy gọi bạn xem một tin nhắn lạ', scene: [
     ['vy', 'Xem này! Một ứng viên trả lời InMail mình gửi bảy tháng trước: "Dạ bây giờ em mới đọc. Job còn không ạ?"'],
     ['vy', 'Job đó tuyển xong từ tháng Năm. Người được tuyển nghỉ tháng Tám. Nên… job còn thật.'],
     { c: '_r_inmail', o: [
@@ -63,7 +63,7 @@ export const ROUTINE = [
       { t: '"Gửi đi, cho khách thấy ứng viên hạnh phúc."', fx: { dr: 2, rel: { quan: 1 } }, then: [['nar', 'Khách trả lời: "Ảnh đẹp. Nhưng anh ấy làm được gì?"']] },
     ] },
   ] },
-  { id: 'r_banhmi', who: 'call:banhmi', obj: 'Gọi ứng viên (hình như nhầm số)', call: { title: 'Cuộc gọi ra · số trong ATS', people: ['banhmi', 'me'] }, scene: [
+  { id: 'r_banhmi', once: true, who: 'call:banhmi', obj: 'Gọi ứng viên (hình như nhầm số)', call: { title: 'Cuộc gọi ra · số trong ATS', people: ['banhmi', 'me'] }, scene: [
     ['banhmi', 'Alo, bánh mì đầu hẻm 42 nghe. Ai đó?'],
     ['me', 'Dạ… em gọi cho anh Hưng, ứng viên Kế toán ạ.'],
     ['banhmi', 'Hưng là thằng con cô! Nó đi Bình Dương rồi. Mà con ơi, công ty con có tuyển công nhân không? Cháu cô đang tìm việc.'],
@@ -72,7 +72,7 @@ export const ROUTINE = [
       { t: 'Xin lỗi vì gọi nhầm, cúp máy.', fx: { nl: 1 }, then: [['nar', 'ATS dòng 9.412: "Hưng – Kế toán – SĐT: tiệm bánh mì". Bạn sửa lại. Một dòng trong mười bốn nghìn.']] },
     ] },
   ] },
-  { id: 'r_wrong_building', who: 'thao', obj: 'Chị Thảo gọi: ứng viên đi lạc', scene: [
+  { id: 'r_wrong_building', who: 'thao', obj: 'Chị Thảo gọi: ứng viên đi lạc', time: '10:00', scene: [
     ['thao', 'Em ơi, ứng viên phỏng vấn lúc 10 giờ đang đứng ở… tòa nhà đối diện. Bên đó cũng có công ty tên "Đúng Người".'],
     ['thao', 'Họ mời anh ấy vào phỏng vấn luôn rồi.'],
     { c: '_r_building', o: [
@@ -103,7 +103,7 @@ export const ROUTINE = [
       { t: 'Lùi xa khỏi máy tính.', fx: { dr: 1 }, then: [['nar', 'Mười phút sau Vy khôi phục được. Cả phòng thở ra cùng lúc như vừa qua động đất.']] },
     ] },
   ] },
-  { id: 'r_own_cv', who: 'obj:desk', obj: 'Về bàn: tìm ứng viên trong ATS', scene: [
+  { id: 'r_own_cv', once: true, who: 'obj:desk', obj: 'Về bàn: tìm ứng viên trong ATS', scene: [
     ['nar', 'Bạn tìm "sinh viên năm cuối" trong ATS. Dòng 3.208 là… CV của chính bạn. Hai năm trước.'],
     ['nar', 'Ghi chú của consultant cũ: "Ứng viên ổn, hơi ít máu lửa. Không phù hợp."'],
     { c: '_r_owncv', o: [
@@ -157,7 +157,7 @@ export const ROUTINE = [
       { t: 'Chịu nóng, gắn kết.', fx: { nl: -6, rel: { duy: 1 } }, then: [['nar', 'Bạn gắn kết với cái ghế. Theo nghĩa đen, vì mồ hôi.']] },
     ] },
   ] },
-  { id: 'r_translate', who: 'ngan', obj: 'Chị Ngân cần dịch JD gấp', scene: [
+  { id: 'r_translate', who: 'ngan', obj: 'Chị Ngân cần dịch JD gấp', time: '10:00', scene: [
     ['ngan', 'Khách nước ngoài cần JD tiếng Anh trước 11 giờ. Em dịch giúp chị. Ba mươi phút.'],
     { mini: TRANSLATE_MINI,
       good: [['ngan', 'Ổn. Không ai bị dịch thành "old people first". Chị gửi.'], { fx: { uy: 3, rel: { ngan: 1 } } }],
@@ -172,7 +172,7 @@ export const ROUTINE = [
       { t: 'Trêu anh Tuấn "chốt deal với mẹ".', fx: { dr: 1, rel: { tuan: 1 } }, then: [['tuan', 'Deal duy nhất anh chưa bao giờ phải nói "cơ hội không đến hai lần".']] },
     ] },
   ] },
-  { id: 'r_thao_bhxh', who: 'thao', obj: 'Chị Thảo hỏi một câu lạ', scene: [
+  { id: 'r_thao_bhxh', when: (s) => s.status !== 'official', who: 'thao', obj: 'Chị Thảo hỏi một câu lạ', scene: [
     ['thao', 'Em ơi, em có biết làm hồ sơ bảo hiểm xã hội không? Chị hỏi thật.'],
     ['think', 'Mình là intern. Mình còn chưa có bảo hiểm xã hội.'],
     { c: '_r_bhxh', o: [
@@ -187,7 +187,7 @@ export const ROUTINE = [
       { t: 'Khen Quân chăm.', fx: { rel: { quan: 2 } }, then: [['quan', 'Cảm ơn. Không ai khen mình chăm cả. Chỉ khen nhanh.']] },
     ] },
   ] },
-  { id: 'r_cry', who: 'call:ungvien', obj: 'Một ứng viên gọi, giọng khác thường', call: { title: 'Ứng viên · cuộc gọi không hẹn trước', people: ['ungvien', 'me'] }, scene: [
+  { id: 'r_cry', once: true, time: '10:30', who: 'call:ungvien', obj: 'Một ứng viên gọi, giọng khác thường', call: { title: 'Ứng viên · cuộc gọi không hẹn trước', people: ['ungvien', 'me'] }, scene: [
     ['ungvien', 'Em xin lỗi gọi đột ngột. Sáng nay công ty cũ cho em nghỉ. Email lúc 8:02. Em không biết gọi ai.'],
     { c: '_r_cry', o: [
       { t: 'Nghe hết, hẹn chiều nay cùng xem lại CV và các job phù hợp.', fx: { uy: 2, nl: -4 }, then: [['ungvien', 'Cảm ơn em. Không phải vì job. Vì có người nghe.']] },
@@ -201,7 +201,7 @@ export const ROUTINE = [
       { t: 'Nhận làm, thức đêm.', fx: { nl: -12, rel: { bach: 2 } }, then: [['nar', 'Bốn mươi bảy tiếng sau, shortlist gửi đi. Khách đọc lúc 23 giờ và trả lời: "Chưa đúng ý."']] },
     ] },
   ] },
-  { id: 'r_my_peek', who: 'my', obj: 'Chị My mời xem một biểu đồ', scene: [
+  { id: 'r_my_peek', when: (s) => s.status !== 'official', who: 'my', obj: 'Chị My mời xem một biểu đồ', scene: [
     ['my', 'Báo cáo lương thị trường mới ra. Em muốn xem lương intern nhân sự nằm ở đâu không?'],
     ['my', 'Đây là P25. Đây là P50. Còn em… ở ngoài khung hình. Phía trái.'],
     { if: (s) => !!s.flags.tie_my_ngan, then: [['my', 'Lương chị Ngân thì chị biết từ năm nhất. Hồi đó là học bổng. Giờ vẫn… thôi. Bạn thân thì không kể.']] },
@@ -217,7 +217,7 @@ export const ROUTINE = [
       { t: '"Ghost hai ngày thôi, cho công bằng."', fx: { dr: 2, rel: { phat: 1 } }, then: [['phat', 'Hai ngày. Công bằng. Văn minh. …Mình thấy hơi tệ.']] },
     ] },
   ] },
-  { id: 'r_cat', who: 'vy', obj: 'Vy tìm Mèo Ghost', scene: [
+  { id: 'r_cat', who: 'vy', obj: 'Vy tìm Mèo Ghost', time: '14:00', scene: [
     ['vy', 'Ai thấy Mèo Ghost không? Khách gọi video lúc ba giờ, anh Duy muốn nó ngồi cạnh logo cho "employer branding".'],
     ['kpi', '…'],
     ['nar', 'Không ai thấy nó. Đúng như tên. Bạn chỉ thấy một sợi lông trên ghế nóng phỏng vấn.'],
@@ -226,7 +226,7 @@ export const ROUTINE = [
       { t: 'Đề xuất dùng ảnh cũ của nó.', fx: { uy: 1 }, then: [['vy', 'Ảnh cũ duy nhất là nó đang quay lưng. Đúng tinh thần công ty.']] },
     ] },
   ] },
-  { id: 'r_son_back', who: 'call:son', obj: 'Anh Sơn gọi lại sau nhiều tuần', when: (s) => !!s.flags.son_counter && s.day >= 24,
+  { id: 'r_son_back', once: true, who: 'call:son', obj: 'Anh Sơn gọi lại sau nhiều tuần', when: (s) => !!s.flags.son_counter && s.day >= 24,
     call: { title: 'Anh Sơn · "Em còn nhớ anh không?"', people: ['son', 'me'] }, scene: [
       ['son', 'Em còn nhớ anh không? Sơn đây. Sếp cũ hứa tăng lương ba mươi phần trăm. Tăng được… một tháng. Rồi "tái cấu trúc ngân sách".'],
       { if: (s) => !!s.flags.son_respect, then: [['son', 'Anh gọi em vì em là người duy nhất không mắng anh hôm đó. Anh muốn đi. Lần này thật.']] },
@@ -235,7 +235,7 @@ export const ROUTINE = [
         { t: 'Hỏi kỹ lý do lần này, rồi báo chị Ngân.', fx: { uy: 3, rel: { ngan: 1, son: 1 } }, then: [['ngan', 'Ứng viên quay lại sau counter-offer. Hiếm mà không hiếm. Lần này mình hỏi kỹ trước khi mời.']] },
       ] },
     ] },
-  { id: 'r_yen_ref', who: 'obj:desk', obj: 'Về bàn: tin nhắn của chị Yến', when: (s) => !!s.flags.yen_grateful, scene: [
+  { id: 'r_yen_ref', once: true, who: 'obj:desk', obj: 'Về bàn: tin nhắn của chị Yến', when: (s) => !!s.flags.yen_grateful, scene: [
     { chat: [['yen', 'Em ơi, chị gửi số ba người bạn nhé. Ai cũng muốn đổi việc. Chị dặn họ: "gặp bạn này, bạn ấy không ép đâu" 😊', true]] },
     ['think', 'Ba lead. Từ một ca thua.'],
     { c: '_r_yenref', o: [
@@ -243,7 +243,7 @@ export const ROUTINE = [
       { t: 'Chuyển cho chị Ngân phân bổ.', fx: { uy: 1, rel: { ngan: 1 } }, then: [['ngan', 'Lead từ ứng viên cũ là lead tốt nhất. Em giữ một người, chị lấy hai.']] },
     ] },
   ] },
-  { id: 'r_luc', who: 'khoa', obj: 'Anh Khoa cầm một lá thư', when: (s) => !!s.flags.assess_rigged, scene: [
+  { id: 'r_luc', once: true, who: 'khoa', obj: 'Anh Khoa cầm một lá thư', when: (s) => !!s.flags.assess_rigged, scene: [
     ['khoa', 'Ông Lực gửi thư cho công ty mình. Ông ấy đọc được báo cáo. Ông hỏi: "Các anh chị chấm tôi dựa trên khung năng lực nào?"'],
     ['khoa', 'Anh không trả lời được. Vì câu trả lời là "dựa trên ý ông Tài".'],
     { c: '_r_luc', o: [
@@ -255,20 +255,20 @@ export const ROUTINE = [
     ['ngan', 'Em hỏi JD của chính em từ ngày đầu. Chị nhớ. Giờ em viết luôn: onboarding và JD intern. Chị review.'],
     ['ngan', 'Đừng nói anh Duy là chị giao. Cứ coi như em tự nguyện. Ở đây cái gì tự nguyện thì mới được làm.'],
     { mini: ONBOARD_MINI,
-      good: [['ngan', 'Đúng thứ tự. Chị gửi anh Duy dưới tên em.'], { fx: { uy: 3, rel: { ngan: 2 }, set: { wrote_own_jd: true } } }],
-      bad: [['ngan', 'Em để "giao việc" trước "ký hợp đồng". Y như công ty mình. Chị sửa, vẫn để tên em.'], { fx: { nl: -6, rel: { ngan: 1 }, set: { wrote_own_jd: true } } }],
+      good: [['ngan', 'Ổn. Chị gửi anh Duy dưới tên em.'], { fx: { uy: 3, rel: { ngan: 2 }, set: { wrote_own_jd: true } } }],
+      bad: [['ngan', 'Thứ tự lộn xộn. Y như công ty mình. Chị sửa, vẫn để tên em.'], { fx: { nl: -6, rel: { ngan: 1 }, set: { wrote_own_jd: true } } }],
     },
   ] },
   // ---- official-only ----
-  { id: 'r_off_commission', official: true, who: 'thao', obj: 'Chị Thảo báo tin về hoa hồng', scene: [
-    ['thao', 'Hoa hồng ca của em… ứng viên nghỉ ngày thứ năm mươi chín. Bảo hành sáu mươi ngày. Nên không có hoa hồng.'],
-    ['think', 'Ngày năm mươi chín. Huyền thoại có thật.'],
+  { id: 'r_off_commission', official: true, once: true, who: 'thao', obj: 'Chị Thảo báo tin về hoa hồng', scene: [
+    ['thao', 'Hoa hồng ca của em… ứng viên báo nghỉ rồi. Mới ngày thứ mười chín. Bảo hành sáu mươi ngày. Nên không có hoa hồng.'],
+    ['think', 'Ngày mười chín. Còn chưa kịp tới huyền thoại "ngày năm mươi chín".'],
     { c: '_r_offcom', o: [
       { t: 'Gọi ứng viên hỏi lý do nghỉ, để rút kinh nghiệm.', fx: { uy: 2, nl: -3 }, then: [['nar', 'Ứng viên nói: "Sếp ném hồ sơ vào mặt em." Bạn ghi vào hồ sơ khách: "Cần hỏi về văn hóa trước khi gửi người."']] },
       { t: 'Thở dài, mở mì.', fx: { nl: 5 }, then: [['thao', 'Mì gói chị có ba vị. Em lấy vị nào cũng được. Coi như hoa hồng của chị.']] },
     ] },
   ] },
-  { id: 'r_off_intern', official: true, who: 'khoa', obj: 'Anh Khoa: intern mới đến', scene: [
+  { id: 'r_off_intern', official: true, once: true, who: 'khoa', obj: 'Anh Khoa: intern mới đến', scene: [
     ['khoa', 'Có intern mới! Em onboard bạn ấy theo cái JD em viết nhé. Anh lo phần icebreaker.'],
     { c: '_r_offintern', o: [
       { t: 'Đưa intern mới đủ hợp đồng, laptop, JD, người hướng dẫn. Đúng thứ tự.', fx: { uy: 3, nl: -4, rel: { khoa: 1 } }, then: [['nar', 'Intern mới hỏi: "Ở đây onboarding chuyên nghiệp vậy ạ?" Cả phòng im lặng một giây.']] },
@@ -276,7 +276,7 @@ export const ROUTINE = [
     ] },
   ] },
   { id: 'r_off_kpi', official: true, who: 'duy', obj: 'Anh Duy hỏi placement tháng này', scene: [
-    ['duy', 'Placement tháng này của em là… một. KPI là ba. Mình cần nhìn lại mindset nhé.'],
+    ['duy', 'Placement tháng này của em là… "đang trong pipeline". KPI là ba. Mình cần nhìn lại mindset nhé.'],
     { c: '_r_offkpi', o: [
       { t: 'Đưa số liệu: tháng cuối năm thị trường đóng băng, cả phòng trung bình 0,8.', fx: { uy: 2, rel: { duy: -1, my: 1 } }, then: [['duy', '0,8? Ai tính? …My. Ừ. Anh sẽ nhìn lại mindset của… KPI.']] },
       { t: '"Dạ em sẽ cố hơn ạ."', fx: { nl: -6, rel: { duy: 1 } }, then: [['think', 'Cố hơn trong một tháng không ai nhảy việc. Như chèo thuyền trên đường nhựa.']] },

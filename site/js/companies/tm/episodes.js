@@ -315,7 +315,7 @@ export const INTERN_EPISODES = [
         { if: F('ideas_linear'), then: [['mai', 'Font hả? Font thuộc rổ ba. Rổ ba là nơi các ý nhỏ về hưu.']] },
         { mini: IDEAS_MINI,
           good: [['mai', 'Chuẩn. Năm ý này sửa xong, 22 ý kia tự nhiên bớt quan trọng.'], { fx: { uy: 3, rel: { mai: 1 }, set: { ideas_five: true } } }],
-          bad: [['mai', 'Logo lệch 2px là rổ ba nha em. Không sao, chị chỉ lại. Lần sau em tự chia.'], { fx: { nl: -4 } }],
+          bad: [['mai', 'Mấy ý kiểu "logo lệch 2px" là rổ ba nha em. Không sao, chị chỉ lại. Lần sau em tự chia.'], { fx: { nl: -4 } }],
         },
       ] },
       { who: 'han', obj: 'Chị Hân "ghé qua góp thêm 5 ý"', time: '11:30', scene: [
@@ -421,7 +421,7 @@ export const INTERN_EPISODES = [
         { if: F('long_dict'), then: [['long', 'Người dùng thứ năm quay lại. Bản beta có thêm mười hai mục mới. Cảm ơn chị Hân.']] },
         { mini: HAN2_MINI,
           good: [['long', 'Chuẩn. Mày lên level "phiên dịch viên cấp hai". Lương vẫn vậy.'], { fx: { uy: 2, rel: { long: 1 }, set: { pitch_decoded: true } } }],
-          bad: [['long', 'Sai câu north start rồi. Không sao, chị Hân cũng chưa biết nó là gì.'], { fx: { nl: -3 } }],
+          bad: [['long', 'Sai vài câu rồi. Không sao, chị Hân cũng chưa biết "north start" là gì.'], { fx: { nl: -3 } }],
         },
       ] },
       { who: 'khang', obj: 'Xin chữ ký duyệt #1: Khang', time: '11:30', scene: [
@@ -485,7 +485,7 @@ export const INTERN_EPISODES = [
     id: 'paid_yet', day: 8, title: 'Khách đã chuyển tiền chưa?',
     intro: 'Thứ Hai tuần thứ hai. Êm Ru gọi: họ cần hóa đơn đợt 2 trước 15:00, và khẳng định "đã chuyển tiền từ thứ Năm".\n\nChị Quỳnh có ba file Excel theo dõi công nợ. Ba file nói ba điều khác nhau.',
     steps: [
-      { who: 'nhi', obj: 'Nhi đang nghe điện thoại của khách', time: '08:30', scene: [
+      { who: 'nhi', obj: 'Nhi đang nghe điện thoại của khách', time: '08:30', pos: { mai: 'away' }, scene: [
         ['nhi', 'Ủa, sao cái này cũng đến tay mình vậy? Khách Êm Ru gọi số mình. Mình đâu có đưa số cho họ.'],
         ['nhi', 'À có. Năm ngoái. Mình nhớ số khách, khách cũng nhớ số mình. Lời nguyền đó.'],
         ['nhi', 'Họ cần hóa đơn trước 15:00, nói đã chuyển 186 triệu. Chị Mai đang ở chỗ khách, nhờ bạn xử lý giúp.'],
@@ -499,7 +499,7 @@ export const INTERN_EPISODES = [
           ] },
         ] },
       ] },
-      { who: 'quynh', obj: 'Đối soát ba file Excel với sao kê cùng chị Quỳnh', time: '09:15', scene: [
+      { who: 'quynh', obj: 'Đối soát ba file Excel với sao kê cùng chị Quỳnh', time: '09:15', pos: { mai: 'away' }, scene: [
         ['quynh', 'Êm Ru hả? Để chị kiểm tra lại file đã nhé.'],
         ['nar', 'Ba file: "CongNo_2026.xlsx", "CongNo_2026_Quynh.xlsx", "CongNo_2026_BANGOC.xlsx". Cùng một khách, ba con số.'],
         { if: F('tax_commit'), then: [['quynh', 'Em là đứa điền bản cam kết thuế đúng không? Ngồi đây, đối giúp chị với sao kê.']],
@@ -508,13 +508,13 @@ export const INTERN_EPISODES = [
         { mini: PAID_MINI,
           good: [['quynh', 'Đúng dòng này. "Em Run" là công ty giày chạy bộ, tháng nào cũng làm chị suýt xuất nhầm hóa đơn.'], { fx: { uy: 3, rel: { quynh: 2 }, set: { paid_found: true, quynh_trust: true } } }],
           bad: [
-            ['quynh', 'Không phải. "Em Run" là công ty giày chạy bộ. Để chị kiểm tra lại. Lần thứ tư.'],
+            ['quynh', 'Không phải dòng này. Coi chừng "Em Run", công ty giày chạy bộ. Để chị kiểm tra lại. Lần thứ tư.'],
             ['nar', 'Hai mươi phút sau, chị Quỳnh tìm ra dòng đúng. Chị thở dài một hơi dài như file công nợ.'],
             { fx: { nl: -5, rel: { quynh: -1 }, set: { paid_found: true } } },
           ],
         },
       ] },
-      { who: 'call:mai', obj: 'Chị Mai gọi từ chỗ khách (nghe máy)', time: '10:30',
+      { who: 'call:mai', obj: 'Chị Mai gọi từ chỗ khách (nghe máy)', time: '10:30', pos: { mai: 'away' },
         call: { title: 'Mai (ở chỗ khách) · "Tiền về chưa em?"', people: ['mai', 'nhi', 'me'] }, scene: [
         ['mai', 'Chị đang ngồi với kế toán Êm Ru. Họ hỏi lần thứ ba rồi. Tiền về chưa em?'],
         { c: 'ep_paid_confirm', o: [
@@ -615,7 +615,7 @@ export const INTERN_EPISODES = [
         { if: F('lit_question'), then: [['think', 'Câu hỏi của khách: có nên bán online mạnh hơn không. Ý nào không trả lời câu đó thì ra phụ lục.']] },
         { mini: LIT_MINI,
           good: [['think', 'Năm ý. Hai trang. Một câu trả lời: có, và đây là lý do.'], { fx: { uy: 3, set: { exec_summary: true } } }],
-          bad: [['think', 'Mình vừa chọn "Lịch sử giấc ngủ" làm ý chính. Khách sẽ ngủ thật.'], { fx: { nl: -4 } }],
+          bad: [['think', 'Mình lẫn vài ý phụ lục vào ý chính. Khách sẽ ngủ thật.'], { fx: { nl: -4 } }],
         },
       ] },
       { who: 'long', obj: 'Long báo động: chị Hạ thêm 12 trang mới', time: '14:00', scene: [
@@ -886,7 +886,7 @@ export const INTERN_EPISODES = [
         ['nar', 'Bạn mở hai cửa sổ: bản phân tích của An, và một bài báo tiếng Anh Khang gửi, tiêu đề "Survey is dead".'],
         { mini: OVS_MINI,
           good: [['think', 'Ba con số. Không cần "overseas". Chỉ cần đọc kỹ.'], { fx: { uy: 3, set: { ovs_numbers: true } } }],
-          bad: [['think', 'Mình vừa đánh dấu "Survey is dead" là sự thật. Khang sẽ vui.'], { fx: { nl: -4 } }],
+          bad: [['think', 'Mình vừa chọn vài điều "nghe overseas" làm sự thật. Khang sẽ vui.'], { fx: { nl: -4 } }],
         },
       ] },
       { who: 'khang', obj: 'Họp chốt phương pháp với Khang', time: '14:00', scene: [
@@ -980,7 +980,7 @@ export const INTERN_EPISODES = [
             ['nar', '(Thông tin giải trí, không phải tư vấn pháp lý: theo Bộ luật Lao động, việc có trả công, có quản lý, điều hành thì có thể được coi là quan hệ lao động, dù gọi tên là gì.)'],
             { fx: { uy: 3, rel: { bao: 2 }, set: { bao_dossier: true } } },
           ],
-          bad: [['think', 'Mình vừa chọn "Áo đẹp nhất team building" làm bằng chứng. Mạnh, nhưng sai hướng.'], { fx: { nl: -4 } }],
+          bad: [['think', 'Hồ sơ của mình còn lẫn mấy email kiểu "Áo đẹp nhất team building". Mạnh, nhưng sai hướng.'], { fx: { nl: -4 } }],
         },
       ] },
       { who: 'quynh', obj: 'Hỏi chị Quỳnh về hồ sơ trong ngăn kéo', time: '13:30', scene: [
@@ -1159,7 +1159,7 @@ export const INTERN_EPISODES = [
         ['nar', 'Chị Mai gửi bạn một tin nhắn: bảy dòng, không tiêu đề. "Chọn giúp chị ba cái chị thật sự cần."'],
         { mini: MAI_MINI,
           good: [['think', 'Ba điều. Không cái nào là "view sông". Không cái nào cần đổi công ty mới có.'], { fx: { uy: 2, rel: { mai: 1 }, set: { mai_compare: true } } }],
-          bad: [['think', 'Mình chọn "view sông". Chị Mai sẽ cười mình. Chị ấy sẽ đúng.'], { fx: { nl: -3 } }],
+          bad: [['think', 'Mình chọn lẫn vài điều "nghe hay". Chị Mai sẽ cười mình. Chị ấy sẽ đúng.'], { fx: { nl: -3 } }],
         },
       ] },
       { who: 'long', obj: 'Giờ trưa ở pantry', time: '12:00', pos: { long: 'lunch2', trang: 'lunch3', thu: 'lunch4', nhi: 'lunch5' }, scene: [
@@ -1251,7 +1251,7 @@ export const INTERN_EPISODES = [
           ] },
         ] },
       ] },
-      { who: 'ha', obj: 'Chị Hạ muốn biết Trang đang ôm bao nhiêu việc', time: '09:15', scene: [
+      { who: 'ha', obj: 'Chị Hạ muốn biết Trang đang ôm bao nhiêu việc', time: '09:15', pos: { trang: 'away' }, scene: [
         ['ha', 'Trang ôm… mười một việc? Chị chỉ giao ba.'],
         ['ha', 'Ba việc của chị, tám việc của… những người khác. Chị nghĩ mình cần một nghiên cứu về văn hóa nhận việc.'],
         ['think', 'Không. Mình cần một cái bảng.'],
@@ -1262,15 +1262,15 @@ export const INTERN_EPISODES = [
           ] },
         ] },
       ] },
-      { who: 'obj:okr', obj: 'Chia lại 11 việc của Trang trên bảng trắng', time: '10:00', scene: [
+      { who: 'obj:okr', obj: 'Chia lại 11 việc của Trang trên bảng trắng', time: '10:00', pos: { trang: 'away' }, scene: [
         ['nar', 'Bạn xóa bảng, viết "VIỆC CỦA TRANG (THẬT RA LÀ CỦA AI?)". Long đi ngang, đứng lại đọc, rồi lặng lẽ đi chậm hơn.'],
         { mini: TRANG_MINI,
           good: [['nar', 'Mười một việc, mười một cái tên. Tên Trang còn đúng ba lần, đúng như chị Hạ giao.'], { fx: { uy: 3, rel: { trang: 1, long: 1 }, set: { trang_board: true } } }],
-          bad: [['nar', 'Bạn giao việc đổi font cho chị Gấm. Chị Gấm nhận. Bằng bút chì.'], { fx: { dr: 1 } }],
+          bad: [['nar', 'Vài việc về sai chủ. Suýt nữa chị Gấm nhận luôn việc đổi font 40 slide. Bằng bút chì.'], { fx: { dr: 1 } }],
         },
         { if: F('ha_speaks'), then: [['ha', '(nói to) Cả nhà ơi, việc ai nấy nhận. Hết. Chị nói ngắn chưa?'], ['long', 'Ngắn nhất lịch sử, chị.']] },
       ] },
-      { who: 'khang', obj: 'Khang thấy tên mình trên bảng', time: '11:30', scene: [
+      { who: 'khang', obj: 'Khang thấy tên mình trên bảng', time: '11:30', pos: { trang: 'away' }, scene: [
         { if: F('trang_board'), then: [['khang', 'Ai ghi tên anh vào cột "Đổi font 40 slide"? Actually, overseas có người làm design riêng.']],
           else: [['khang', 'Trang nghỉ à? Vậy ai đổi font cho anh?']] },
         ['long', '(nói to) Anh Khang, overseas người ta tự đổi font. Em xem YouTube rồi.'],
@@ -1287,7 +1287,7 @@ export const INTERN_EPISODES = [
           ] },
         ] },
       ] },
-      { who: 'call:trang', obj: 'Trang gọi từ nhà (nghe máy)', time: '15:00',
+      { who: 'call:trang', obj: 'Trang gọi từ nhà (nghe máy)', time: '15:00', pos: { trang: 'away' },
         call: { title: 'Trang (ở nhà) · "Mình sắp nói dạ…"', people: ['trang', 'ha', 'me'] }, scene: [
         ['trang', 'Bạn ơi, mình ở nhà rồi. Chị Hân vừa gọi nhờ mình làm "nhanh một slide". Mình… sắp nói "dạ".'],
         { if: F('trang_no'), then: [['trang', 'Nhưng mình nhớ hôm đầu bạn dạy mình. Mình tập rồi. Bạn nghe mình nói thử nhé?']],
@@ -1367,7 +1367,7 @@ export const INTERN_EPISODES = [
           { t: 'Nhờ anh Bảo lấy giúp, mình chuẩn bị giấy.', fx: { uy: 1, rel: { bao: 1 } }, then: [['bao', 'Phân công hợp lý. Tao bắt đầu thấy mình là quản lý thật.']] },
         ] },
       ] },
-      { who: 'obj:desk', obj: 'Mở sổ tay anh Bảo để lại', time: '09:40', when: F('bao_left'), scene: [
+      { who: 'obj:desk', obj: 'Mở sổ tay anh Bảo để lại', time: '09:40', when: F('bao_left'), pos: { bao: 'away' }, scene: [
         ['nar', 'Anh Bảo đang đi phỏng vấn chỗ mới. Bạn mở cuốn sổ tay anh để lại. Trang 12: "Máy in dự phòng: kho, kệ 3, sau thùng Quà Tết 2023 (đừng mở). MK 1234."'],
         ['nar', 'Bên dưới, chữ nhỏ hơn: "Nếu mày đọc được dòng này, tức là máy in chính lại hỏng. Tao đoán đúng không?"'],
         { c: 'ep_tender_note', o: [
@@ -1571,7 +1571,7 @@ export const INTERN_EPISODES = [
           { t: '"Mình chỉ làm theo lời khuyên số một: đừng tin chữ FINAL."', fx: { dr: -1, rel: { long: 2 } }, then: [['long', 'Học trò giỏi nhất của tao. Và là duy nhất.']] },
         ] },
       ] },
-      { who: 'tuyet', obj: '15:00 Đánh giá cuối kỳ với chị Tuyết', time: '15:00', scene: [
+      { who: 'tuyet', obj: '15:00 Đánh giá cuối kỳ (kèm review tuần) với chị Tuyết', time: '15:00', review: true, scene: [
         ['tuyet', 'Ngồi đi. Chị nói ngắn. Chị đang tập nói ngắn.'],
         { if: (r) => r.status === 'official', then: [['tuyet', 'Em là nhân viên rồi, nên đây không phải đánh giá thực tập. Nhưng chị vẫn muốn nhìn lại sáu tuần.']] },
         { if: F('bao_signed'), then: [['tuyet', 'Em làm được việc ba năm không ai làm: một bộ hồ sơ cho Bảo.']] },

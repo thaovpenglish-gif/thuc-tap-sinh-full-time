@@ -59,13 +59,17 @@ export function scheduleEpisodes(episodes, seed = 1, maxDay = MAX_DAYS) {
  */
 export function scheduleArc(arcIds, fromDay, plan, gap = 2, maxDay = MAX_DAYS) {
   const out = { ...plan };
-  const free = [];
-  for (let d = fromDay + 1; d <= maxDay; d++) if (!isWeekend(d)) free.push(d);
+  const all = [];
+  for (let d = fromDay + 1; d <= maxDay; d++) if (!isWeekend(d)) all.push(d);
+  // prefer days without an intern episode; fall back to every workday when there are not enough
+  const empty = all.filter((d) => !plan[d]);
+  const free = empty.length >= Math.min(arcIds.length, all.length) ? empty : all;
   if (!free.length || !arcIds.length) return out;
   let ids = [...arcIds];
   if (ids.length > free.length) ids = free.length >= 2 ? [...ids.slice(0, free.length - 1), ids[ids.length - 1]] : [ids[ids.length - 1]];
-  const g = Math.max(1, Math.min(gap, Math.floor(free.length / ids.length)));
-  ids.forEach((id, i) => { out[free[Math.min(free.length - 1, (i + 1) * g - 1)]] = id; });
+  // first arc episode on the first official workday, then every `g` workdays (shrinks to fit)
+  const g = ids.length > 1 ? Math.max(1, Math.min(gap, Math.floor((free.length - 1) / (ids.length - 1)))) : 1;
+  ids.forEach((id, i) => { out[free[Math.min(free.length - 1, i * g)]] = id; });
   return out;
 }
 

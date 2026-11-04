@@ -31,11 +31,13 @@ test('episodes land on workdays, fixed days first, no collisions', () => {
 });
 
 test('promotion arc is placed after the promotion day, in order, and always keeps the ending', () => {
-  const plan = C.scheduleArc(['x', 'y', 'z'], 19, { 22: 'busy', 40: 'later' }, 2);
+  const plan = C.scheduleArc(['x', 'y', 'z'], 19, { 23: 'busy', 40: 'later' }, 2);
   const days = ['x', 'y', 'z'].map((id) => Number(Object.keys(plan).find((d) => plan[d] === id)));
   assert.ok(days.every((d) => d > 19 && !C.isWeekend(d)));
   assert.ok(days[0] < days[1] && days[1] < days[2]);
+  assert.equal(days[0], 22); // promoted at the Friday-19 review → first arc episode on Monday 22
   assert.equal(plan[40], 'later');
+  assert.equal(plan[23], 'busy'); // intern episodes are kept when there is room
   // promoted at the day-40 review: 3 workdays left (43, 44, 45) → gap shrinks to 1, all four cannot fit → first + ending kept
   const late = C.scheduleArc(['a', 'b', 'c', 'end'], 40, {}, 2);
   const vals = Object.values(late);

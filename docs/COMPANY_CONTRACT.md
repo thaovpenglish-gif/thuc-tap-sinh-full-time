@@ -122,7 +122,9 @@ whiteboard) · `coffee` (pantry; when not a story target it opens the food menu)
                                       // (people on a Teams call step are hidden automatically while it plays)
   chatStart: [['tam', 'tin nhắn', true]],  // optional: messages at 08:30
   sideTasks: true,                    // default true
-  steps: [ { who, obj, time, pos, seat, call, scene, when } ... ],
+  steps: [ { who, obj, time, pos, seat, call, scene, when, review } ... ],  // review: true on a Friday step = the weekly
+                                      // review happens right after this step's scene (instead of the automatic 16:30 one)
+                                      // `when` is checked before a step starts (never in the middle of its scene)
   diary: (run) => 'Nhật ký cuối ngày, 1–3 câu, có thể đổi theo flags.' }
 ```
 

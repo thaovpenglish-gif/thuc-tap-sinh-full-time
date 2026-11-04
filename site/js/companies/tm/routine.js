@@ -1,7 +1,6 @@
 // T&M Partners — routine beats for ordinary days (engine picks 2–3 per day, no repeats until the pool runs out).
 // Short: setup → one choice → consequence. Gated beats only appear once the player has seen what they reference.
-// One-off beats (a birthday, a backstory, Bảo's new job…) set a seen-flag so the engine never repeats them when the
-// fresh pool runs out (it falls back to the whole pool).
+// One-off beats (a birthday, a backstory, Bảo's new job…) are `once: true`: never repeated when the pool runs out.
 
 const F = (k) => (r) => !!r.flags[k];
 const NOT = (k) => (r) => !r.flags[k];
@@ -69,8 +68,7 @@ export const ROUTINE = [
       { t: 'Ngồi chờ cập nhật.', fx: { clock: 25, dr: 1 }, then: [['nar', 'Cập nhật xong. Thứ duy nhất thay đổi: biểu tượng thùng rác tròn hơn.']] },
     ] },
   ] },
-  { id: 'r_long_dict', who: 'long', obj: 'Long cập nhật "từ điển Hân – Việt"', time: '11:30', when: NOT('seen_r_long_dict'), scene: [
-    { fx: { set: { seen_r_long_dict: true } } },
+  { id: 'r_long_dict', who: 'long', obj: 'Long cập nhật "từ điển Hân – Việt"', time: '11:30', once: true, scene: [
     ['long', 'Bản beta 3 của từ điển Hân – Việt. Mày góp một mục đi. Chị Hân sáng nay nói "mình cần ROI cái culture".'],
     { c: '_r_long', o: [
       { t: '"ROI cái culture" = "team building có ảnh đẹp".', fx: { rel: { long: 2 }, dr: 1 }, then: [['long', 'Duyệt. Mục R, trang 4.']] },
@@ -185,8 +183,7 @@ export const ROUTINE = [
       { t: 'Xóa KR2 trước khi chị Tuyết thấy.', fx: { uy: 1, rel: { long: -1 } }, then: [['long', '(từ xa) Ai xóa KR2 của tao?']] },
     ] },
   ] },
-  { id: 'r_birthday', who: 'phuong', obj: 'Chị Phương thu tiền mừng sinh nhật', time: '15:00', when: NOT('seen_r_birthday'), scene: [
-    { fx: { set: { seen_r_birthday: true } } },
+  { id: 'r_birthday', who: 'phuong', obj: 'Chị Phương thu tiền mừng sinh nhật', time: '15:00', once: true, scene: [
     ['phuong', 'Em ơi, sinh nhật chị Tuyết tuần sau, mỗi người góp 200 nghìn mua quà nha. Bí mật nhé!'],
     ['nar', 'Group "Sinh nhật chị Tuyết (bí mật)" có 19 thành viên. Một trong số đó là chị Tuyết.'],
     { c: '_r_bday', o: [
@@ -194,8 +191,7 @@ export const ROUTINE = [
       { t: '"Chị ơi, chị Tuyết có trong group đó ạ."', fx: { uy: 1, dr: 1 }, then: [['phuong', 'Ôi trời. Ba năm nay… Thôi, coi như năm nào chị ấy cũng giả vờ bất ngờ.']] },
     ] },
   ] },
-  { id: 'r_linh_pantry', who: 'linh', obj: 'Chị Linh đứng một mình ở pantry', time: '16:30', pos: { linh: 'pantry' }, when: NOT('seen_r_linh_pantry'), scene: [
-    { fx: { set: { seen_r_linh_pantry: true } } },
+  { id: 'r_linh_pantry', who: 'linh', obj: 'Chị Linh đứng một mình ở pantry', time: '16:30', pos: { linh: 'pantry' }, once: true, scene: [
     ['linh', 'Em biết không, chị từng là intern ở đây. Mười năm trước. Hồi đó T&M có năm người, ai cũng làm mọi việc.'],
     ['linh', 'Giờ có hai mươi người, và ai cũng làm mọi việc. Tiến bộ ghê.'],
     { c: '_r_linh', o: [
@@ -237,8 +233,7 @@ export const ROUTINE = [
       { t: '"Ổn hết rồi!" và ăn bánh.', fx: { nl: 6, rel: { trang: 1 } }, then: [['trang', 'Thật hả? Vậy mình sửa thêm cho chắc.']] },
     ] },
   ] },
-  { id: 'r_bao_postcard', who: 'bao', obj: 'Anh Bảo kể chuyện buổi phỏng vấn mới', time: '17:00', when: (r) => !!r.flags.bao_left && !r.flags.seen_r_bao_postcard, scene: [
-    { fx: { set: { seen_r_bao_postcard: true } } },
+  { id: 'r_bao_postcard', who: 'bao', obj: 'Anh Bảo kể chuyện buổi phỏng vấn mới', time: '17:00', when: F('bao_left'), once: true, scene: [
     ['bao', 'Tao đi phỏng vấn chỗ mới về. Họ hỏi "anh thực tập ba năm để làm gì?". Tao nói "để biết mình không muốn chờ nữa".'],
     { c: '_r_bao_new', o: [
       { t: '"Họ nhận anh chưa?"', fx: { rel: { bao: 1 } }, then: [['bao', 'Nhận. Hợp đồng ký ngay buổi đầu. Tao đọc ba lần vì tưởng có lỗi.']] },

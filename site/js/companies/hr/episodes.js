@@ -19,7 +19,7 @@ export const BOOLEAN_MINI = {
 
 export const JD_MINI = {
   type: 'pick', title: 'Viết lại JD Trợ lý Giám đốc', icon: '✍️',
-  prompt: 'Chọn 3 tiêu chí được đưa vào tin tuyển dụng: đo được, liên quan đến công việc.', pick: 3, time: 35, pass: 0.66,
+  prompt: 'Chọn 3 tiêu chí được đưa vào tin tuyển dụng: đo được, liên quan đến công việc.', pick: 3, time: 35, pass: 1,
   items: [
     { text: 'Tiếng Anh giao tiếp tốt (có bài test)', correct: true },
     { text: 'Nữ, dưới 25 tuổi' },
@@ -38,7 +38,7 @@ export const CHIP_MINI = {
     { text: 'Kỹ sư thiết kế vi mạch 4 năm, JLPT N2', correct: true },
     { text: 'Kỹ sư điện lạnh 10 năm', sub: '"Cũng là mạch"' },
     { text: 'Thông dịch tiếng Nhật N1, chưa làm kỹ thuật' },
-    { text: 'Kỹ sư kiểm thử vi mạch 3 năm, N2, từng làm ở Nhật', correct: true },
+    { text: 'Kỹ sư thiết kế & kiểm chứng vi mạch 3 năm, N2, từng làm ở Nhật', correct: true },
     { text: 'Sinh viên năm 2 ngành điện tử, thích anime' },
     { text: 'Kỹ sư thiết kế vi mạch 7 năm, N2, sẵn sàng chuyển chỗ', correct: true },
     { text: 'Kỹ sư phần mềm, "biết vi mạch qua YouTube"' },
@@ -58,7 +58,7 @@ export const PCT_MINI = {
 
 export const ICE_MINI = {
   type: 'quiz', title: 'Icebreaker: Hai sự thật, một lời nói dối', icon: '🎲',
-  prompt: 'Anh Khoa đọc ba câu về một đồng nghiệp. Câu nào là lời nói dối?', time: 35, pass: 0.66,
+  prompt: 'Anh Khoa đọc ba câu về một đồng nghiệp. Câu nào là lời nói dối?', time: 45, pass: 0.66,
   questions: [
     { q: 'Anh Duy: (A) dậy 5:30 đăng LinkedIn (B) từng bị cho nghỉ vì "tái cấu trúc" (C) đã ký hợp đồng lao động cho cả công ty', options: ['(A)', '(B)', '(C)'], correct: 2 },
     { q: 'Chị Thảo: (A) làm kế toán, lễ tân và HR nội bộ (B) nghỉ đủ 12 ngày phép năm ngoái (C) giữ chìa khóa két', options: ['(A)', '(B)', '(C)'], correct: 1 },
@@ -70,11 +70,11 @@ export const ONBOARD_MINI = {
   type: 'order', title: 'Onboarding cho chính công ty mình', icon: '🧭',
   prompt: 'Xếp các bước onboarding đúng thứ tự. (Gợi ý: ngược với những gì bạn đã trải qua.)', time: 30, pass: 0.6,
   items: [
-    { text: 'Gặp lại sau hai tuần: hỏi người mới cần gì', order: 4 },
-    { text: 'Ký thỏa thuận / hợp đồng, đủ hai chữ ký', order: 0 },
-    { text: 'Giao việc đầu tiên, có hạn, có người review', order: 3 },
-    { text: 'Cấp laptop, tài khoản (không dán mật khẩu dưới đáy máy)', order: 1 },
-    { text: 'Giới thiệu người hướng dẫn và JD của vị trí', order: 2 },
+    { text: 'Sau hai tuần: gặp lại, hỏi người mới cần gì', order: 4 },
+    { text: 'Trước hết: ký thỏa thuận / hợp đồng, đủ hai chữ ký', order: 0 },
+    { text: 'Tuần đầu: giao việc đầu tiên, có hạn, có người review', order: 3 },
+    { text: 'Trước ngày đầu: chuẩn bị laptop, tài khoản (không dán mật khẩu dưới đáy máy)', order: 1 },
+    { text: 'Ngày đầu: giới thiệu người hướng dẫn và JD của vị trí', order: 2 },
   ],
 };
 
@@ -119,7 +119,7 @@ export const PAYSLIP_MINI = {
 
 export const ASSESS_MINI = {
   type: 'quiz', title: 'Đọc kết quả assessment: ông Lực', icon: '📊',
-  prompt: 'Giải quyết vấn đề 4,6 · Làm việc nhóm 4,7 · An toàn lao động 4,8 · "Phục tùng cấp trên" 2,0 (thang 5).', time: 35, pass: 0.66,
+  prompt: 'Giải quyết vấn đề 4,6 · Làm việc nhóm 4,7 · An toàn lao động 4,8 · Giao tiếp 4,5 · "Phục tùng cấp trên" 2,0 (thang 5).', time: 35, pass: 0.66,
   questions: [
     { q: 'Ông Lực phù hợp vai trò trưởng ca ở mức…', options: ['Cao: các năng lực cốt lõi đều mạnh', 'Thấp: vì điểm phục tùng thấp', 'Không kết luận được'], correct: 0 },
     { q: '"Phục tùng cấp trên" có trong khung năng lực khách đã duyệt không?', options: ['Không. Khung chỉ có: vấn đề, nhóm, an toàn, giao tiếp', 'Có, ở trang 0'], correct: 0 },
@@ -321,7 +321,7 @@ export const EPISODES = [
       {
         who: 'tuan', obj: 'Ra pantry gặp anh Tuấn: gọi anh Sơn', time: '08:30',
         scene: [
-          ['tuan', 'Em gọi chưa? Anh gọi bốn cuộc rồi. Thuê bao không liên lạc được. Từ tối Chủ Nhật.'],
+          ['tuan', 'Em gọi chưa? Anh gọi bốn cuộc rồi. Thuê bao không liên lạc được. Từ tối qua.'],
           ['nar', 'Bạn gọi. "Thuê bao quý khách vừa gọi tạm thời không liên lạc được." Giọng tổng đài còn tươi hơn anh Tuấn.'],
           ['tuan', 'Zalo: đã xem, không trả lời. LinkedIn: vẫn ghi công ty cũ. Ảnh đại diện vừa đổi sang… một bãi biển.'],
           ['think', 'Ảnh bãi biển. Trong nghề này, đó là một tín hiệu.'],
@@ -462,7 +462,7 @@ export const EPISODES = [
           ['ngan', 'Còn "ngoại hình sáng" thì không phải kỹ năng. Trừ khi việc của người ta là làm đèn.'],
           { mini: JD_MINI,
             good: [['ngan', 'Ba tiêu chí, đều đo được, đều liên quan đến việc. Đây mới là JD.'], { fx: { uy: 3, rel: { ngan: 1 }, set: { jd_draft_ok: true } } }],
-            bad: [['ngan', 'Em vừa đưa một tiêu chí không đo được vào tin đăng. Xóa. Vy sẽ bị report bài trong mười phút.'], { fx: { dr: 2 } }],
+            bad: [['ngan', 'Em vừa đưa vào tin đăng một tiêu chí không liên quan đến việc, hoặc phân biệt đối xử. Xóa. Vy sẽ bị report bài trong mười phút.'], { fx: { dr: 2 } }],
           },
         ],
       },
@@ -598,8 +598,8 @@ export const EPISODES = [
         scene: [
           ['nar', 'Bạn lọc ATS theo "vi mạch" + "tiếng Nhật". Ra tám hồ sơ. Một hồ sơ là tiệm bánh "Vi Mạch Bakery".'],
           { mini: CHIP_MINI,
-            good: [['think', 'Ba hồ sơ thật sự phù hợp. Ba. Không phải bốn mươi.'], { fx: { uy: 2, set: { chip_ok: true } } }],
-            bad: [['think', 'Mình vừa chọn kỹ sư điện lạnh. "Cũng là mạch." Không. Không phải.'], { fx: { dr: 1 } }],
+            good: [['think', 'Cả ATS chỉ có ba hồ sơ thật sự phù hợp. Ba. Không phải bốn mươi.'], { fx: { uy: 2, set: { chip_ok: true } } }],
+            bad: [['think', 'Mình vừa chọn nhầm. Kiểu "cũng là mạch". Không. Không phải.'], { fx: { dr: 1 } }],
           },
           { c: 'hr_d8_send', o: [
             { t: 'Gửi ba CV chuẩn, kèm ghi chú vì sao từng người phù hợp.', fx: { uy: 4, rel: { ngan: 2, duy: -1 }, set: { kpi_quality: true } }, then: [
@@ -620,7 +620,7 @@ export const EPISODES = [
         scene: [
           { if: (s) => !!s.flags.kpi_spam, then: [
             ['ngan', 'Chip Chíp vừa gọi. Họ hỏi vì sao có một tiệm bánh trong shortlist kỹ sư.'],
-            ['ngan', 'Họ dặn: "Lần sau gửi ít thôi, nhưng đúng." Đúng câu chị nói em sáng nay. Giờ khách nói.'],
+            ['ngan', 'Họ dặn: "Lần sau gửi ít thôi, nhưng đúng." Đúng câu chị vẫn nói. Giờ khách nói.'],
           ], else: [
             ['ngan', 'Chip Chíp mời hai trong ba ứng viên của em phỏng vấn. Tỉ lệ sáu mươi sáu phần trăm. Tháng trước cả phòng được hai phần trăm.'],
             ['ngan', 'Đừng kể con số đó với Vy. Vy biết rồi.'],
@@ -765,7 +765,7 @@ export const EPISODES = [
         scene: [
           ['quan', 'Mình gửi nhầm file "BaoCaoLuong_Logistics_FULL.xlsx". Cho anh Nam, ứng viên Kế toán trưởng. Gõ "Nam" nó tự điền… nhầm Nam.'],
           { if: (s) => !!s.flags.file_locked, then: [
-            ['quan', 'File có mật khẩu. Nhưng… mình gửi kèm mật khẩu ở dòng dưới. Cho tiện.'],
+            ['quan', 'File có mật khẩu. Nhưng mình xin chị My mật khẩu, rồi… gửi kèm ở dòng dưới. Cho tiện.'],
             ['think', 'Ổ khóa tốt nhất thế giới, chìa dán ngay trên cửa.'],
           ] },
           { if: (s) => !!s.flags.tie_quan_duy, then: [['quan', 'Đừng nói chú Duy. Chú mà biết thì bố mình biết, rồi cả họ biết.']] },
@@ -790,7 +790,7 @@ export const EPISODES = [
         call: { title: 'Gọi anh Nam (ứng viên) · về một file Excel', people: ['nam', 'quan', 'me'] },
         scene: [
           ['nam', 'Alo em! Cảm ơn em gửi file nhé. Hay lắm. Giờ anh biết P75 kế toán trưởng. Anh sẽ deal năm mươi triệu.'],
-          ['nam', 'Có cả tên công ty từng người nữa. Phú Quý trả kế toán trưởng cũ ba mươi lăm à? Thú vị.'],
+          ['nam', 'Có cả tên công ty từng người nữa. Cả lương "Giám đốc Tầm nhìn" chín mươi lăm triệu. Thú vị.'],
           { c: 'hr_d11_nam', o: [
             { t: 'Giải thích là gửi nhầm, đề nghị anh xóa và xác nhận qua email.', fx: { uy: 3, rel: { nam: 1 }, set: { nam_deleted: true } }, then: [
               ['nam', 'Ừ, anh xóa. Anh xác nhận. Nhưng anh đọc rồi thì… đầu anh không có nút xóa.'],
@@ -894,7 +894,7 @@ export const EPISODES = [
       {
         who: 'ngan', obj: 'Chị Ngân tóm tắt ca chị Yến', time: '08:30',
         scene: [
-          ['ngan', 'Ca của chị, nhưng em theo từ đầu. Chị Yến nộp đơn lúc 8:00. Sếp cũ gọi vào phòng lúc 8:10. Đoán xem.'],
+          ['ngan', 'Ca của chị, hôm nay em theo cùng. Chị Yến nộp đơn lúc 8:00. Sếp cũ gọi vào phòng lúc 8:10. Đoán xem.'],
           ['me', 'Counter-offer ạ?'],
           ['ngan', 'Ba mươi phần trăm, thêm chữ "Giám đốc", bỏ chữ "Trưởng phòng". Nghe như thăng chức. Thật ra là đổi biển tên.'],
           { if: (s) => !!s.flags.son_counter, then: [['think', 'Lại giống anh Sơn. Counter-offer có mùa vụ à?']] },
@@ -1044,13 +1044,13 @@ export const EPISODES = [
           ['duy', 'Anh trước, anh trước!'],
           { mini: ICE_MINI,
             good: [
-              ['khoa', 'Đúng cả! Em hiểu nhà mình ghê.'],
+              ['khoa', 'Giỏi! Em hiểu nhà mình ghê.'],
               ['duy', '…Câu C là anh định làm. Sắp làm. Tuần sau.'],
               ['thao', '(nhỏ) "Tuần sau" mười tám tháng rồi.'],
               { fx: { uy: 2, rel: { khoa: 1 } } },
             ],
             bad: [
-              ['khoa', 'Sai câu của chị Thảo! Năm ngoái chị ấy nghỉ đúng nửa ngày, để đi làm Căn cước.'],
+              ['khoa', 'Chưa đúng hết! Câu chị Thảo chẳng hạn: năm ngoái chị ấy nghỉ đúng nửa ngày, để đi làm Căn cước.'],
               ['thao', 'Và chiều hôm đó chị vẫn trả lời Zalo.'],
               { fx: { rel: { thao: 1 } } },
             ],
@@ -1097,8 +1097,8 @@ export const EPISODES = [
         scene: [
           ['nar', 'Workshop tan lúc 19:00. Bạn mở một file trắng: "JD_ThucTapSinh_NguoiDungCho_v1.docx". Lần đầu tiên công ty này có JD cho chính mình.'],
           { mini: ONBOARD_MINI,
-            good: [['ngan', '(nhắn) chị đọc rồi. đúng thứ tự, đủ ý. chị sửa hai chữ. gửi anh Duy đi.'], { fx: { uy: 4, rel: { ngan: 2 }, set: { wrote_own_jd: true } } }],
-            bad: [['ngan', '(nhắn) em để "giao việc" trước "ký hợp đồng" kìa. y như công ty mình. chị sửa lại thứ tự, vẫn để tên em.'], { fx: { nl: -8, rel: { ngan: 1 }, set: { wrote_own_jd: true } } }],
+            good: [['ngan', '(nhắn) chị đọc rồi. ổn, đủ ý. chị sửa hai chữ. gửi anh Duy đi.'], { fx: { uy: 4, rel: { ngan: 2 }, set: { wrote_own_jd: true } } }],
+            bad: [['ngan', '(nhắn) thứ tự lộn xộn y như công ty mình. chị sửa lại, vẫn để tên em.'], { fx: { nl: -8, rel: { ngan: 1 }, set: { wrote_own_jd: true } } }],
           },
           ['think', 'Mình đã viết JD cho vị trí của mình. Giờ chỉ cần ai đó tuyển mình vào đó.'],
         ],
@@ -1302,7 +1302,7 @@ export const EPISODES = [
         scene: [
           ['ngan', 'Chốt điểm ca CFO. Em chấm chị Trinh bao nhiêu?'],
           { c: 'hr_ex_score', o: [
-            { t: 'Chấm đúng năng lực (cao nhất), ghi rõ anh Duy đứng ngoài ca vì xung đột lợi ích.', fx: { uy: 4, rel: { ngan: 2 }, set: { trinh_fair: true } }, then: [
+            { t: 'Chấm đúng năng lực (cao nhất), ghi rõ anh Duy có quan hệ cũ và đề nghị anh đứng ngoài ca.', fx: { uy: 4, rel: { ngan: 2 }, set: { trinh_fair: true } }, then: [
               ['ngan', 'Đúng quy trình. Chị gửi Mộc Lan, kèm ghi chú xung đột lợi ích. Khách sẽ tôn trọng mình hơn, không kém đi.'],
             ] },
             { t: 'Hạ điểm một chút cho "an toàn" với anh Duy.', when: (s) => !!s.flags.duy_hint, fx: { dr: 5, rel: { ngan: -3 }, set: { trinh_sabotaged: true } }, then: [
@@ -1372,7 +1372,7 @@ export const EPISODES = [
           ['ngan', 'Hợp đồng phí: ứng viên mình giới thiệu, khách tuyển trong vòng sáu tháng thì vẫn tính phí. Em dựng timeline cho chị.'],
           { mini: TIMELINE_MINI,
             good: [['ngan', 'Timeline sạch. Email gửi CV có giờ, có tệp đính kèm. Họ không cãi được.'], { fx: { uy: 3, set: { fee_evidence: true } } }],
-            bad: [['ngan', 'Em đảo hai mốc. Gửi thế này họ sẽ nói ứng viên tự ứng tuyển trước. Chị sửa.'], { fx: { nl: -4 } }],
+            bad: [['ngan', 'Timeline lộn rồi. Gửi thế này họ sẽ nói ứng viên tự ứng tuyển trước. Chị sửa.'], { fx: { nl: -4 } }],
           },
         ],
       },
@@ -1633,7 +1633,7 @@ export const EPISODES = [
         who: 'khoa', obj: 'Anh Khoa: "Em nghĩ sao?"', time: '14:30',
         scene: [
           ['khoa', 'Anh dạy kỹ năng phỏng vấn tám năm. Lần đầu khách muốn anh dạy cách nói dối bằng biểu đồ.'],
-          ['khoa', 'Hợp đồng này nuôi mảng Đào tạo cả năm. Và trả một phần phụ cấp của em. Em nghĩ sao?'],
+          ['khoa', 'Hợp đồng này nuôi mảng Đào tạo cả năm. Và trả một phần lương của cả phòng. Em nghĩ sao?'],
           { c: 'hr_as_main', o: [
             { t: 'Báo cáo trung thực theo khung năng lực đã duyệt.', fx: { uy: 4, rel: { khoa: 2, tai: -2 }, set: { assess_honest: true } }, then: [
               ['khoa', '…Ừ. Mất hợp đồng thì anh mất hợp đồng. Còn hơn mất nghề.'],
@@ -1715,10 +1715,10 @@ export const EPISODES = [
           { mini: FUNNEL_MINI,
             good: [
               ['vy', 'Đúng. Muốn 200 người đi làm, mình cần gọi khoảng mười hai nghìn cuộc. Ba tuần. Bốn người.'],
-              ['think', 'Ba nghìn cuộc mỗi người. Một trăm năm mươi cuộc mỗi ngày. Nếu không ai ngủ.'],
+              ['think', 'Ba nghìn cuộc mỗi người. Hai trăm cuộc mỗi ngày làm việc. Nếu không ai ngủ.'],
               { fx: { uy: 2, rel: { vy: 1 } } },
             ],
-            bad: [['vy', 'Bạn để "nhận việc" trước "đến phỏng vấn" à? Ở RPO thì… cũng có ngày như vậy thật. Nhưng hiếm.'], { fx: { nl: -2 } }],
+            bad: [['vy', 'Bạn xếp lộn phễu rồi. Ở RPO thì… thứ tự lộn xộn cũng có ngày xảy ra thật. Nhưng hiếm.'], { fx: { nl: -2 } }],
           },
           { c: 'hr_rpo_plan', o: [
             { t: 'Đề xuất thêm cộng tác viên ở khu công nghiệp, trả theo người đi làm thật.', fx: { uy: 3, rel: { vy: 2 }, set: { rpo_ctv: true } }, then: [
@@ -1764,7 +1764,7 @@ export const EPISODES = [
             ] },
           ], else: [
             ['nar', '17:45. Anh Duy và Bách đi ăn. Bạn ở lại soạn phễu tuyển và báo giá.'],
-            { chat: [['duy', 'Ký rồi! Ông Tài hỏi "bạn intern có số liệu đâu". Mai em gửi ông ấy file nhé', true]] },
+            { chat: [['duy', 'Ký rồi! Ông Tài hỏi "bạn trẻ có số liệu đâu". Mai em gửi ông ấy file nhé', true]] },
             { fx: { set: { rpo_signed: true } } },
           ] },
           { c: '_hr_rpo_end', o: [
@@ -1779,7 +1779,7 @@ export const EPISODES = [
     diary: (s) => (s.flags.dinner_drunk
       ? 'Bữa cơm chốt deal. Mình hứa ba trăm công nhân trong hai tuần. Mình không nhớ đã hứa. Bách nhớ.'
       : s.flags.dinner_sober ? 'Bữa cơm chốt deal. Mình uống trà đá, trình bày phễu tuyển. Ông Tài ký lên khăn giấy.'
-        : 'Mình không đi ăn với khách. Deal vẫn được ký. Ông Tài hỏi file số liệu của "bạn intern".'),
+        : 'Mình không đi ăn với khách. Deal vẫn được ký. Ông Tài hỏi file số liệu của "bạn trẻ".'),
   },
 
   // ===== Day 38–40 =====
@@ -1843,7 +1843,7 @@ export const EPISODES = [
         ],
       },
       {
-        who: 'call:hanh', obj: 'Số lạ đang gọi Teams', time: '16:00',
+        who: 'call:hanh', obj: 'Số lạ đang gọi Teams', time: '16:00', pos: { phat: 'away' },
         call: { title: 'Số lạ · "Săn Đầu Pro xin nghe"', people: ['hanh', 'me'] },
         scene: [
           ['hanh', 'Chào em, chị Hạnh bên Săn Đầu Pro. Em là {ten} bên Đúng Chỗ hả? Chị nghe kể về em.'],
@@ -1868,7 +1868,8 @@ export const EPISODES = [
         who: 'phat', obj: 'Phát quay về từ "khám răng"', time: '17:00',
         scene: [
           { if: (s) => !!s.flags.retention_plan, then: [
-            ['phat', 'Anh Duy gọi mình vào. Đưa hợp đồng lao động. Có chữ ký. Lương lên đúng mức thị trường. Kèm cả bảng của chị My.'],
+            ['phat', 'Anh Duy gọi mình vào. Đưa hợp đồng lao động. Có chữ ký. Lương lên đúng mức thị trường.'],
+            { if: (s) => !!s.flags.my_data, then: [['phat', 'Kèm cả bảng so sánh của chị My. Mẫu: một người. Là mình.']] },
             ['phat', 'Mình ở lại. Không phải vì tiền. Vì lần đầu tiên ở đây có người làm đúng cái nghề mình làm cho người khác.'],
             { fx: { rel: { phat: 2 }, set: { phat_stay: true } } },
           ], else: [
@@ -1876,7 +1877,7 @@ export const EPISODES = [
             { if: (s) => !!s.flags.spy_phat, then: [['phat', 'Anh Duy hỏi mình lương bên kia, đúng con số mình chỉ nói với bạn. Mình hiểu rồi.']] },
             { fx: { set: { phat_left: true } } },
           ] },
-          { if: (s) => !!s.flags.lent_phat, then: [['phat', 'À, hai trăm nghìn. Trả bạn. Thứ Sáu thật.'], { fx: { money: 200_000 } }] },
+          { if: (s) => !!s.flags.lent_phat, then: [['phat', 'À, hai trăm nghìn. Trả bạn. Trễ hơn thứ Sáu một chút, nhưng trả thật.'], { fx: { money: 200_000 } }] },
           { c: '_hr_ph_end', o: [
             { t: 'Ôm Phát một cái.', fx: { nl: 2, rel: { phat: 1 } }, then: [['phat', 'Ê, đừng. Mình khóc là ATS khóc theo.']] },
             { t: 'Giúp Phát sắp lại cái ATS 14.000 dòng.', fx: { uy: 1, nl: -4 }, then: [
@@ -1896,7 +1897,7 @@ export const EPISODES = [
 export const OFFICIAL_EPISODES = [
   {
     id: 'off_day1', official: true, title: 'Chính thức (theo bài LinkedIn)',
-    intro: 'Ngày đầu làm nhân viên chính thức. Anh Duy đăng bài lúc 5:30: "Từ intern thành người nhà 💜".\n\nBài có 2.300 like. Hợp đồng lao động của bạn thì đang nằm trong khay máy in.',
+    intro: 'Tuần đầu làm nhân viên chính thức. Anh Duy đăng bài lúc 5:30: "Từ intern thành người nhà 💜".\n\nBài có 2.300 like. Hợp đồng lao động của bạn thì vẫn nằm ở quầy chị Thảo, chờ đóng dấu.',
     steps: [
       {
         who: 'thao', obj: 'Ký hợp đồng lao động với chị Thảo', time: '08:30',
@@ -1960,11 +1961,11 @@ export const OFFICIAL_EPISODES = [
         ],
       },
     ],
-    diary: (s) => `Ngày đầu chính thức. Hợp đồng có đủ hai chữ ký. ${s.flags.off_boundary ? 'Mình nhận onboarding, trả lại LinkedIn.' : 'Mình nhận thêm LinkedIn và onboarding.'} Lương mười triệu, hoa hồng sau sáu mươi ngày. Sáu mươi ngày là xa.`,
+    diary: (s) => `Ngày ký hợp đồng chính thức. Hợp đồng có đủ hai chữ ký. ${s.flags.off_boundary ? 'Mình nhận onboarding, trả lại LinkedIn.' : 'Mình nhận thêm LinkedIn và onboarding.'} Lương mười triệu, hoa hồng sau sáu mươi ngày. Sáu mươi ngày là xa.`,
   },
   {
     id: 'off_inherit', official: true, title: 'Thừa kế bốn mươi ứng viên',
-    intro: 'Tuần thứ hai làm chính thức. Bạn được giao "chăm" bốn mươi ứng viên của Hiền, consultant đã nghỉ, nằm trong một tab tên "chăm sau".\n\nFile ghi chú cuối cùng của Hiền chỉ có một dòng: "Chăm tiếp nhé. Đừng sort."',
+    intro: 'Vài ngày sau khi lên chính thức. Bạn được giao "chăm" bốn mươi ứng viên của Hiền, consultant đã nghỉ, nằm trong một tab tên "chăm sau".\n\nFile ghi chú cuối cùng của Hiền chỉ có một dòng: "Chăm tiếp nhé. Đừng sort."',
     steps: [
       {
         who: 'ngan', obj: 'Chị Ngân giao tab "chăm sau"', time: '08:30',
@@ -2029,7 +2030,7 @@ export const OFFICIAL_EPISODES = [
         ],
       },
     ],
-    diary: (s) => `Tuần hai chính thức. Bốn mươi ứng viên thừa kế, một khách đòi bảo hành ngày sáu mươi mốt, và một bí mật: xe của anh Tuấn là xe thuê. ${s.flags.off_cleaned ? 'Mình gọi lại cho cả bốn mươi người.' : ''}`,
+    diary: (s) => `Mấy ngày đầu chính thức. Bốn mươi ứng viên thừa kế, một khách đòi bảo hành ngày sáu mươi mốt, và một bí mật: xe của anh Tuấn là xe thuê. ${s.flags.off_cleaned ? 'Mình gọi lại cho cả bốn mươi người.' : ''}`,
   },
   {
     id: 'off_ai', official: true, title: 'CVinator 3000',
@@ -2059,7 +2060,7 @@ export const OFFICIAL_EPISODES = [
             good: [['think', 'Nó học đúng những gì công ty từng làm. Kể cả những thứ không ai dám ghi ra văn bản.'], { fx: { uy: 3, set: { ai_bias_found: true } } }],
             bad: [['think', 'Nhìn qua thì quy tắc nào cũng hợp lý. Đó chính là chỗ đáng sợ.'], { fx: { nl: -3 } }],
           },
-          { if: (s) => !!s.flags.jd_pushback, then: [['think', 'Giống hệt bản JD Đất Vàng ngày nào. Chỉ là giờ nó chạy ba giây một nghìn người.']] },
+          { if: (s) => !!s.flags.jd_pushback && !!s.flags.ai_bias_found, then: [['think', 'Giống hệt bản JD Đất Vàng ngày nào. Chỉ là giờ nó chạy ba giây một nghìn người.']] },
         ],
       },
       {
@@ -2135,7 +2136,7 @@ export const OFFICIAL_EPISODES = [
               ['nar', 'Anh Duy im rất lâu. Rồi rút hộp khăn giấy về phía mình.'],
               ['duy', 'Anh sẽ trả thêm cho em một tháng lương, dù luật không bắt. Và anh tự viết thư giới thiệu. Không đăng LinkedIn.'],
             ] },
-            { t: '"Em đã định nộp đơn, anh ạ. Bên Săn Đầu Pro mời em từ tháng trước."', when: (s) => !!(s.flags.hanh_declined || s.flags.hanh_listened), fx: { dr: 3, rel: { duy: -1 }, set: { layoff_jump: true } }, then: [
+            { t: '"Em đã định nộp đơn, anh ạ. Bên Săn Đầu Pro đã mời em rồi."', when: (s) => !!(s.flags.hanh_declined || s.flags.hanh_listened), fx: { dr: 3, rel: { duy: -1 }, set: { layoff_jump: true } }, then: [
               ['duy', '…Vậy anh vừa cho nghỉ một người đã định nghỉ. Hiệu quả. Anh ghét chữ đó.'],
               ['ngan', '(nhỏ) Chị Hạnh tuyển được người tốt.'],
             ] },

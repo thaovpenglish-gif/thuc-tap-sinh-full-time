@@ -8,7 +8,7 @@ export const REVIEW = {
     'Em hỏi đúng câu, đúng lúc, đúng người. Ba cái "đúng". Em hợp với tên công ty hơn cả công ty.',
     'Chị không có gì để sửa đỏ. Chị hơi buồn. Nhưng tốt.',
     'Khách khen em lễ phép. Khách vẫn đòi giảm phí, nhưng lần này họ đòi nhẹ nhàng hơn.',
-    'Em làm việc như người có JD. Mà em chưa có JD. Ấn tượng.',
+    'Em làm việc như thể có người onboard em đàng hoàng. Mà không ai onboard em cả. Ấn tượng.',
   ],
   B: [
     'Ổn. Pipeline gọn gàng. Gọn hơn cả pipeline thật.',

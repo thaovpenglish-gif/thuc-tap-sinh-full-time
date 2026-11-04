@@ -251,7 +251,7 @@ export const OFFICIAL_EPISODES = [
             ['think', 'À.'],
           ] },
         ] },
-        ['tuyet', 'Sáng mai 8 giờ gặp chị. Mang theo vài ý nhỏ của em.'],
+        ['tuyet', 'Lần sau phân tích của em, em tự trình bày. Mang theo vài ý nhỏ của em.'],
       ] },
     ],
     diary: (r) => `Tháng đầu làm chính thức. Khang trình bày slide của mình. ${r.flags.off_credit ? 'Mình nói với chị Tuyết: bản đó là của mình.' : 'Mình để "team" nhận công.'} Chị Tuyết nhắn lúc 23:47, 23:58 và 00:31. Ý nhỏ không có giờ làm việc.`,

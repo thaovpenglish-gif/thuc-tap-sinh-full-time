@@ -119,7 +119,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     if (ep) steps = [...ep.steps];
     else steps = (t.beats || []).map((id) => (CO.routine || []).find((b) => b.id === id)).filter(Boolean).map((b, i) => ({ ...b, time: b.time || ['10:00', '14:00', '15:30'][i] }));
     if (!ep) steps.sort((a, b) => toMin(a.time) - toMin(b.time));
-    if (C.isFriday(R.day) && !(ep && ep.noReview)) {
+    if (C.isFriday(R.day) && !(ep && ep.noReview) && !steps.some((s) => s.review)) {
       const mgr = reviewer();
       const rv = { who: mgr, obj: `16:30 Review tuần với ${charInfo(mgr).name}`, time: '16:30', review: true, scene: [] };
       const k = steps.findIndex((s) => toMin(s.time || '00:00') > toMin('16:30'));
@@ -134,10 +134,11 @@ export function startSolo({ scene, camera, input, onExit }) {
   }
   let todayCache = null;
   const day = () => { const key = R ? `${R.id}:${R.day}:${R.today ? R.today.day : '-'}` : ''; if (!todayCache || todayCache.key !== key) todayCache = { key, def: today() }; return todayCache.def; };
+  let stepLocked = false; // while a step plays, its own effects must not make currentStep() skip ahead
   function currentStep() {
     const d = R && day();
     if (!d) return null;
-    while (d.steps[R.step] && d.steps[R.step].when && !d.steps[R.step].when(R)) R.step++;
+    while (!stepLocked && d.steps[R.step] && d.steps[R.step].when && !d.steps[R.step].when(R)) R.step++;
     return d.steps[R.step] || null;
   }
 
@@ -279,11 +280,13 @@ export function startSolo({ scene, camera, input, onExit }) {
 
   // ---------- story flow ----------
   async function playStep(step) {
+    stepLocked = true;
     startDialogMode();
     if (step.seat === 'mr_seat') fp.teleport(MEETING_SEAT[0], MEETING_SEAT[1], 0, 1.05);
     if (step.call) { openCallFrame(step.call); placeNPCs(true); }
+    await dialogue.run(step.scene || []);
     if (step.review) await runReview();
-    else await dialogue.run(step.scene || []);
+    stepLocked = false;
     if (step.call) { closeCallFrame(); for (const id of step.call.people) if (npcs[id]) npcs[id].mesh.visible = isPresent(id) && spotFor(id) !== 'away'; }
     if (step.seat) player.eye = 1.38;
     R.step++;
