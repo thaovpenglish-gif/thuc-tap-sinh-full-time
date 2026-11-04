@@ -15,6 +15,7 @@ import { sfx } from '../core/audio.js';
  *   getState() -> state passed to `when` / `if` predicates
  *   applyFx(fx), pushChat(list), onChoice(voteId, optionIndex)
  *   onSpeaker(id)                (camera framing / call tile highlight)
+ *   extra(node, run) -> Promise  (optional: custom node types for a mode)
  * }
  */
 export function createDialogue(hooks) {
@@ -101,6 +102,9 @@ export function createDialogue(hooks) {
         hooks.applyFx(n.fx);
       } else if (n.chat) {
         hooks.pushChat(n.chat);
+      } else if (hooks.extra) {
+        // mode-specific nodes (mini-games, salary cards, task spawns…); may run sub-scenes via `run`
+        await hooks.extra(n, run);
       }
     }
   }

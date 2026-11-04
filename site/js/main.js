@@ -1,5 +1,5 @@
 // Entry point: renderer + loop + mode routing.
-// Modes: main menu (T&M Partners, new game — under construction), legacy story (?legacy=1).
+// Modes: main menu → Solo (T&M Partners, first person); legacy story (?legacy=1).
 import * as THREE from 'three';
 import { $, sleep } from './core/util.js';
 import { CameraRig } from './core/camera.js';
@@ -33,11 +33,20 @@ function frame() {
   renderer.render(scene, camera);
 }
 
+let solo = null; // the T&M Solo mode is built once, then reused (its menu lists the saved runs)
 async function startSolo() {
-  // Solo currently plays the existing story (Chương 1). The T&M Solo campaign plugs in here later.
   $('#mainMenu').hidden = true;
-  const { startLegacy } = await import('./modes/legacy.js');
-  active = startLegacy({ scene, camera, input });
+  if (solo) { active = solo; solo.showMenu(); return; }
+  const { startSolo: start } = await import('./modes/solo.js');
+  solo = start({ scene, camera, input, onExit: () => showMainMenu() });
+  active = solo;
+}
+
+async function startLegacy() {
+  // The original story (Ba Mẹ & Partners), kept intact at ?legacy=1.
+  $('#mainMenu').hidden = true;
+  const { startLegacy: start } = await import('./modes/legacy.js');
+  active = start({ scene, camera, input });
 }
 
 function showMainMenu() {
@@ -51,7 +60,7 @@ function showMainMenu() {
 async function boot() {
   try { await Promise.race([document.fonts.load('900 40px "Be Vietnam Pro"'), sleep(2500)]); } catch { /* fonts optional */ }
   if (FLAGS.legacyStory) {
-    await startSolo();
+    await startLegacy();
   } else {
     showMainMenu();
   }

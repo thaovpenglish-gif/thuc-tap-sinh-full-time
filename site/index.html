@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400;1,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=202611041648">
+  <link rel="stylesheet" href="style.css?v=202611042130">
   <script type="importmap">
   { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
   </script>
@@ -84,7 +84,7 @@
   <!-- Phone -->
   <div id="phone" hidden>
     <div class="phone-frame">
-      <div class="phone-top"><span id="phoneClock">08:00</span><span>📶 BaMe@1998</span><button id="phoneClose" aria-label="Đóng">✕</button></div>
+      <div class="phone-top"><span id="phoneClock">08:00</span><span id="phoneWifi">📶 BaMe@1998</span><button id="phoneClose" aria-label="Đóng">✕</button></div>
       <div class="phone-tabs">
         <button data-tab="zalo" class="active">💬 Teams</button>
         <button data-tab="tts">👻 Hội Intern ẩn danh</button>
@@ -137,6 +137,25 @@
     </div>
   </div>
 
+  <!-- Solo menu: career profile with several runs -->
+  <div id="soloMenu" class="overlay title" hidden>
+    <div class="menu-card solo-card">
+      <div class="kicker">SOLO · T&amp;M PARTNERS</div>
+      <h2 class="solo-h">Hồ sơ sự nghiệp</h2>
+      <p class="muted">Mỗi lượt chơi là một lần "nhảy việc", lưu riêng: mức lương, level, ngày. Thoát ra lúc nào cũng được, quay lại là chơi tiếp đúng chỗ.</p>
+      <div id="soloRuns" class="runs"></div>
+      <div class="new-run">
+        <label class="name-field">Tên trên thẻ nhân viên
+          <input id="soloName" maxlength="16" placeholder="VD: Linh" autocomplete="off">
+        </label>
+        <button class="btn primary" id="soloNew">Đi phỏng vấn →</button>
+      </div>
+      <p class="muted small">💾 Đang lưu trên trình duyệt này. Lưu qua email / mã lưu để chơi trên máy khác: sắp có.</p>
+      <div class="btns solo-foot"><button class="btn ghost" id="soloBack">← Menu chính</button><a class="link" href="?legacy=1">📼 Chơi lại chuyện cũ: Ba Mẹ &amp; Partners</a></div>
+    </div>
+  </div>
+  <div id="taskList" hidden></div>
+
   <div id="title" class="overlay title" hidden>
     <div class="title-card">
       <div class="badge-id">
@@ -177,6 +196,6 @@
 
   <div id="loading" class="overlay"><div class="loader">Đang mở cửa văn phòng… 🐱</div></div>
 
-  <script type="module" src="js/main.js?v=202611041648"></script>
+  <script type="module" src="js/main.js?v=202611042130"></script>
 </body>
 </html>
