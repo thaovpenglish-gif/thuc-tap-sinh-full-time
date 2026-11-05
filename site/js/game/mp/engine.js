@@ -21,6 +21,23 @@ export const ITEMS = {
   contract_print: { label: 'Hợp đồng in', icon: '📜', color: '#ffe9a0' },
   contract_signed: { label: 'Hợp đồng đã ký', icon: '🖋️', color: '#ffd25a' },
   minutes: { label: 'Biên bản họp', icon: '🗒️', color: '#e3f7ee' },
+  // Ba & Má
+  ga: { label: 'Gà tươi', icon: '🐔', color: '#ffe3c2' },
+  bo: { label: 'Bò tươi', icon: '🐄', color: '#ffb3a7' },
+  fruit: { label: 'Xoài', icon: '🥭', color: '#ffe08a' },
+  ga_uop: { label: 'Gà ướp lá chanh', icon: '🍗', color: '#f6d28b' },
+  bo_uop: { label: 'Bò ướp', icon: '🥩', color: '#e8907a' },
+  fruit_cut: { label: 'Xoài cắt lát', icon: '🔪', color: '#fff0b3' },
+  kho_ga: { label: 'Khô gà (xá)', icon: '🍗', color: '#e8b04a' },
+  kho_bo: { label: 'Khô bò (xá)', icon: '🥓', color: '#c96a52' },
+  fruit_dry: { label: 'Xoài sấy', icon: '🥭', color: '#f2b134' },
+  goi_ga: { label: 'Gói khô gà lá chanh', icon: '🐔', color: '#b8f0d8' },
+  goi_bo: { label: 'Gói khô bò', icon: '🐄', color: '#ffc8dd' },
+  hop_qua: { label: 'Hộp quà Phú Quý', icon: '🧧', color: '#ff8f8f' },
+  hop_tem: { label: 'Hộp quà "dán lại tem"', icon: '🏷️', color: '#ffc2b3' },
+  hop_ok: { label: 'Hộp quà Má duyệt', icon: '🎁', color: '#ffd25a' },
+  an_thu: { label: 'Gói ăn thử', icon: '🍢', color: '#fff1b8' },
+  burnt: { label: 'Khô cháy khét', icon: '🔥', color: '#5a4a42' },
 };
 
 // What each station kind does with an item. A level may override these with its own `process` table.
@@ -90,7 +107,8 @@ export function createGame(levelId, { seed = 1, players = [] } = {}) {
     orders: [],
     players: {},
   };
-  for (const s of L.stations) state.stations[s.id] = { id: s.id, kind: s.kind, x: s.x, z: s.z, item: null, progress: 0, overdue: 0, busy: false };
+  for (const s of L.stations) state.stations[s.id] = { id: s.id, kind: s.kind, x: s.x, z: s.z, item: null, progress: 0, overdue: 0, busy: false, off: false };
+  state.flashIdx = 0; state.flashWarn = false; state.cutIdx = 0; state.cutWarn = false;
   players.forEach((p, i) => addPlayer(state, p, i));
   return state;
 }
@@ -175,7 +193,8 @@ export function hintFor(state, p) {
   switch (s.kind) {
     case 'source': return held ? null : `Lấy ${ITEMS[def.gives].label}`;
     case 'trash': return held ? `Vứt ${ITEMS[held.type].label}` : null;
-    case 'coffee': return 'Uống cà phê ☕';
+    case 'coffee': return def.drink || 'Uống cà phê ☕';
+    case 'breaker': return Object.values(state.stations).some((x) => x.off) ? 'Bật lại cầu dao ⚡' : null;
     case 'deliver': return held ? `Nộp ${ITEMS[held.type].label} cho khách` : null;
     default:
       if (held) {
@@ -183,6 +202,7 @@ export function hintFor(state, p) {
         if (accepts(state, s.kind, held.type)) return `Đặt ${ITEMS[held.type].label} vào ${def.label}`;
         return null;
       }
+      if (s.off && on) return `${def.label} mất điện! Ra cầu dao bật lại ⚡`;
       const wr = on && workRule(state, s.kind, on.type);
       if (wr) return p.working === s.id ? 'Đang làm…' : `Làm ${ITEMS[on.type].label} → ${ITEMS[wr.to].label}`;
       if (on) return `Lấy ${ITEMS[on.type].label}`;
@@ -215,6 +235,13 @@ export function act(state, id) {
   const on = s.item ? state.items[s.item] : null;
 
   if (s.kind === 'coffee') return drinkCoffee(state, p);
+  if (s.kind === 'breaker') {
+    const off = Object.values(state.stations).filter((x) => x.off);
+    if (!off.length) return [say(id, 'Điện vẫn đang có mà.')];
+    off.forEach((x) => { x.off = false; });
+    const L = LEVELS[state.level];
+    return [{ type: 'sfx', name: 'good' }, { type: 'toast', text: `⚡ ${p.name} bật lại cầu dao. ${(L.powerCut && L.powerCut.backLine) || 'Có điện rồi!'}`, cls: 'good' }];
+  }
   if (s.kind === 'source') {
     if (held) return [say(id, 'Tay đang cầm đồ rồi.')];
     p.held = newItem(state, def.gives);
@@ -279,14 +306,15 @@ function deliver(state, p, held) {
   if (!order) return [say(p.id, `Không ai đặt ${ITEMS[held.type].label}. Khách: "Cái này là gì em?"`, 'bad'), { type: 'sfx', name: 'bad' }];
   const R = L.recipes[order.recipe];
   const who = clientName(state, order);
-  const tip = Math.round(R.reward * 0.5 * (order.t / order.total));
-  state.money += R.reward + tip;
+  const base = Math.round(R.reward * (order.bonus || 1));
+  const tip = Math.round(base * 0.5 * (order.t / order.total));
+  state.money += base + tip;
   state.done++;
   state.orders = state.orders.filter((o) => o !== order);
   delete state.items[held.id]; p.held = null;
   // lobby empty: the next client walks in soon instead of after a full gap
   if (!state.orders.length && !state.firstOrders.length) state.nextSpawn = Math.min(state.nextSpawn, state.elapsed + 5);
-  return [{ type: 'sfx', name: 'good' }, { type: 'served', order: order.id }, { type: 'toast', text: `✅ ${who} nhận ${R.title}: +${R.reward}k${tip ? ` (+${tip}k tip)` : ''}`, cls: 'good' }];
+  return [{ type: 'sfx', name: 'good' }, { type: 'served', order: order.id }, { type: 'toast', text: `✅ ${who} nhận ${R.title}: +${base}k${order.bonus ? ' 🔥' : ''}${tip ? ` (+${tip}k tip)` : ''}`, cls: 'good' }];
 }
 
 /** The client (from the level's cast) who placed this order. */
@@ -295,9 +323,9 @@ export function clientName(state, order) {
   return c && c[order.client] ? c[order.client].name : 'Khách';
 }
 
-function spawnOrder(state) {
+function spawnOrder(state, flash = null) {
   const L = LEVELS[state.level];
-  const pool = L.orderPool.filter((o) => state.elapsed >= (o.after || 0));
+  const pool = L.orderPool.filter((o) => state.elapsed >= (o.after || 0) && (!flash || !flash.recipes || flash.recipes.includes(o.recipe)));
   const total = pool.reduce((a, o) => a + o.w, 0);
   let r = rand(state) * total, pick = pool[0];
   for (const o of pool) { r -= o.w; if (r <= 0) { pick = o; break; } }
@@ -314,8 +342,10 @@ function spawnOrder(state) {
   let spot = 0;
   while (taken.has(spot)) spot++;
   // fewer players → clients are more patient
-  const time = Math.round(R.time * pace(state).time);
-  state.orders.push({ id: state.nextOrder++, recipe: pick.recipe, t: time, total: time, client, spot });
+  const time = Math.round(R.time * pace(state).time * (flash ? flash.patience || 1 : 1));
+  const order = { id: state.nextOrder++, recipe: pick.recipe, t: time, total: time, client, spot };
+  if (flash) order.bonus = flash.bonus || 1.5;
+  state.orders.push(order);
   return [{ type: 'order', recipe: pick.recipe }, { type: 'sfx', name: 'ring' }];
 }
 
@@ -387,6 +417,8 @@ export function step(state, dt) {
   }
   if (state.standup.ring > 0) state.standup.ring = Math.max(0, state.standup.ring - dt);
 
+  ev.push(...levelEvents(state));
+
   // players: work, burnout, collapse, meetings
   for (const p of Object.values(state.players)) {
     if (p.jitter > 0) p.jitter = Math.max(0, p.jitter - dt);
@@ -426,7 +458,7 @@ export function step(state, dt) {
 
   // auto stations: printer, boss sign-off
   for (const s of Object.values(state.stations)) {
-    if (!isAuto(state, s.kind) || !s.item) continue;
+    if (!isAuto(state, s.kind) || !s.item || s.off) continue;
     const it = state.items[s.item];
     const rule = it && autoRule(state, s.kind, it.type);
     const made = it && !rule && madeHere(state, s.kind, it.type);
@@ -437,7 +469,7 @@ export function step(state, dt) {
         s.progress = 0; s.busy = false;
         if (rule.notes && !it.noted && rand(state) < L.notesChance) {
           it.type = rule.notes; it.noted = true;
-          ev.push({ type: 'toast', text: `🖍️ ${L.bossName}: "${L.bossLine}" ${ITEMS[rule.notes].label} quay về laptop sửa.`, cls: 'drama' }, { type: 'sfx', name: 'bad' });
+          ev.push({ type: 'toast', text: `🖍️ ${L.bossName}: "${L.bossLine}" ${ITEMS[rule.notes].label}: mang về ${rule.fixAt || 'Laptop'} sửa.`, cls: 'drama' }, { type: 'sfx', name: 'bad' });
         } else {
           it.type = rule.to;
           ev.push({ type: 'sfx', name: 'ding' });
@@ -448,8 +480,8 @@ export function step(state, dt) {
       s.busy = false;
       s.overdue += dt;
       if (s.overdue >= made.overdue) {
-        it.type = 'ruined'; s.overdue = 0;
-        ev.push({ type: 'toast', text: '🔥 Máy in kẹt giấy, in nhầm 200 bản. File thành "v3_FINAL_sửa_lần_cuối". Vứt đi làm lại!', cls: 'bad' }, { type: 'sfx', name: 'bad' });
+        it.type = made.ruin || 'ruined'; s.overdue = 0;
+        ev.push({ type: 'toast', text: made.ruinText || '🔥 Máy in kẹt giấy, in nhầm 200 bản. File thành "v3_FINAL_sửa_lần_cuối". Vứt đi làm lại!', cls: 'bad' }, { type: 'sfx', name: 'bad' });
       }
     } else { s.busy = false; }
   }
@@ -457,6 +489,43 @@ export function step(state, dt) {
   if (state.time <= 0) {
     state.phase = 'over';
     ev.push({ type: 'over' });
+  }
+  return ev;
+}
+
+// Scheduled level events (each optional):
+//   flash    — a livestream flash sale: several clients rush in at once, paying more but less patient
+//   powerCut — someone switches the power off: listed stations stop until a player flips the breaker
+function levelEvents(state) {
+  const L = LEVELS[state.level];
+  const ev = [];
+  const F = L.flash;
+  if (F && state.flashIdx < F.at.length) {
+    const at = F.at[state.flashIdx];
+    if (!state.flashWarn && state.elapsed >= at - (F.warn || 4)) {
+      state.flashWarn = true;
+      ev.push({ type: 'toast', text: `🔴 ${F.warnText}`, cls: 'drama' }, { type: 'sfx', name: 'ring' });
+    }
+    if (state.elapsed >= at) {
+      state.flashIdx++; state.flashWarn = false;
+      const spots = (L.clientSpots || []).length || 4;
+      let n = 0;
+      for (let i = 0; i < (F.count || 2) && state.orders.length < spots; i++) { ev.push(...spawnOrder(state, F)); n++; }
+      ev.push({ type: 'toast', text: n ? `🔥 ${F.text} (+${n} đơn, tiền ×${F.bonus || 1.5})` : `🔥 ${F.text} Nhưng sảnh hết chỗ, khách đứng ngoài!`, cls: 'drama' });
+    }
+  }
+  const P = L.powerCut;
+  if (P && state.cutIdx < P.at.length) {
+    const at = P.at[state.cutIdx];
+    if (!state.cutWarn && state.elapsed >= at - (P.warn || 3)) {
+      state.cutWarn = true;
+      ev.push({ type: 'toast', text: `👀 ${P.warnText}`, cls: 'drama' });
+    }
+    if (state.elapsed >= at) {
+      state.cutIdx++; state.cutWarn = false;
+      for (const id of P.stations) if (state.stations[id]) state.stations[id].off = true;
+      ev.push({ type: 'toast', text: `⚡ ${P.text}`, cls: 'bad' }, { type: 'sfx', name: 'bad' }, { type: 'power', on: false });
+    }
   }
   return ev;
 }

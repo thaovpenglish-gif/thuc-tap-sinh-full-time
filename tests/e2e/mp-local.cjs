@@ -39,6 +39,12 @@ const assert = (c, m) => { if (!c) throw new Error('ASSERT: ' + m); };
   await A.waitForFunction(() => document.querySelectorAll('#mpScreen .mp-member:not(.empty)').length === 2, null, { timeout: 6000 });
   await shot(A, 'mp-room');
 
+  // --- the host picks another client company: the guest's office follows
+  await A.click('[data-level="bama"]');
+  await B.waitForFunction(() => window.__mp.level === 'bama', null, { timeout: 6000 });
+  await A.click('[data-level="tm"]');
+  await B.waitForFunction(() => window.__mp.level === 'tm', null, { timeout: 6000 });
+
   // --- start
   await A.click('#mpStart');
   await B.waitForFunction(() => window.__mp && window.__mp.mode === 'play' && window.__mp.game, null, { timeout: 6000 });
