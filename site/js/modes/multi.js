@@ -602,9 +602,9 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       const it = s.item && game.items[s.item];
       syncItem(m.userData.slot, placed[s.id], it && it.type, (v) => { if (v) placed[s.id] = v; else delete placed[s.id]; });
       let v = 0, col = '#9be7c4';
-      if (s.kind === 'laptop' && s.progress > 0) v = s.progress;
-      else if (s.busy) { v = s.progress; col = s.kind === 'boss' ? '#ff8fb1' : '#bfe3ff'; }
-      else if (s.kind === 'printer' && s.overdue > 0) { v = s.overdue / 8; col = Math.sin(animT * 14) > 0 ? '#ff6f8a' : '#ffd25a'; }
+      if (s.busy) { v = s.progress; col = s.kind === 'boss' ? '#ff8fb1' : '#bfe3ff'; }
+      else if (s.overdue > 0) { v = s.overdue / 8; col = Math.sin(animT * 14) > 0 ? '#ff6f8a' : '#ffd25a'; }
+      else if (s.progress > 0) v = s.progress; // someone working on it
       m.userData.bar.set(v, col);
       m.userData.ring.visible = !!myTarget && myTarget.id === s.id;
     }

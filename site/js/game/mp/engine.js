@@ -16,18 +16,33 @@ export const ITEMS = {
   deck_notes: { label: 'Deck "vài ý nhỏ"', icon: '🖍️', color: '#ffc2b3' },
   deck_signed: { label: 'Deck đã ký', icon: '✅', color: '#9be7c4' },
   ruined: { label: 'v3_FINAL_sửa_lần_cuối (hỏng)', icon: '🔥', color: '#9a9a9a' },
+  tea: { label: 'Trà', icon: '🍵', color: '#c7e8b5' },
+  contract: { label: 'Hợp đồng nháp', icon: '📃', color: '#fff8ef' },
+  contract_print: { label: 'Hợp đồng in', icon: '📜', color: '#ffe9a0' },
+  contract_signed: { label: 'Hợp đồng đã ký', icon: '🖋️', color: '#ffd25a' },
+  minutes: { label: 'Biên bản họp', icon: '🗒️', color: '#e3f7ee' },
 };
 
-// work stations: a player stands there and works (burnout goes up)
-const WORK = {
-  laptop: { data: { to: 'excel', time: 3.5 }, brief: { to: 'slide', time: 3 }, deck_notes: { to: 'deck', time: 2 } },
+// What each station kind does with an item. A level may override these with its own `process` table.
+//   work: a player stands there and works (burnout goes up) · auto: put the item in and it processes by itself
+//   overdue: seconds a finished item may wait before it is ruined · notes: the boss may send it back once
+export const DEFAULT_PROCESS = {
+  work: {
+    laptop: { data: { to: 'excel', time: 3.5 }, brief: { to: 'slide', time: 3 }, deck_notes: { to: 'deck', time: 2 } },
+  },
+  auto: {
+    printer: { excel: { to: 'print', time: 5, overdue: 8 } },
+    boss: { deck: { to: 'deck_signed', time: 3, notes: 'deck_notes' } },
+  },
+  combos: [[['slide', 'print'], 'deck']],
 };
-// auto stations: put the item in and it processes by itself
-const AUTO = {
-  printer: { excel: { to: 'print', time: 5, overdue: 8 } },
-  boss: { deck: { to: 'deck_signed', time: 3 } },
-};
-const COMBOS = [[['slide', 'print'], 'deck']];
+const proc = (state) => LEVELS[state.level].process || DEFAULT_PROCESS;
+const workRule = (state, kind, type) => { const w = proc(state).work[kind]; return w ? w[type] || null : null; };
+const autoRule = (state, kind, type) => { const a = proc(state).auto[kind]; return a ? a[type] || null : null; };
+const isWork = (state, kind) => !!proc(state).work[kind];
+const isAuto = (state, kind) => !!proc(state).auto[kind];
+/** the auto rule that produced this finished item at this station (for the "left too long" timer) */
+const madeHere = (state, kind, type) => { const a = proc(state).auto[kind]; return a ? Object.values(a).find((r) => r.to === type && r.overdue) || null : null; };
 
 export const TUNING = {
   reach: 1.35,        // max distance from a station centre to use it
@@ -67,8 +82,8 @@ export function createGame(levelId, { seed = 1, players = [] } = {}) {
     money: 0,
     done: 0, failed: 0,
     nextItem: 1, nextOrder: 1,
-    nextSpawn: L.firstOrders[0],
-    firstOrders: [...L.firstOrders],
+    nextSpawn: 0,
+    firstOrders: [...paceFor(L, players.length).first],
     standup: { idx: 0, warn: false, ring: 0 },
     items: {},
     stations: {},
@@ -164,25 +179,24 @@ export function hintFor(state, p) {
     case 'deliver': return held ? `Nộp ${ITEMS[held.type].label} cho khách` : null;
     default:
       if (held) {
-        if (on) return combine(held.type, on.type) ? `Ghép thành ${ITEMS[combine(held.type, on.type)].label}` : null;
-        if (accepts(s.kind, held.type)) return `Đặt ${ITEMS[held.type].label} vào ${def.label}`;
+        if (on) return combine(state, held.type, on.type) ? `Ghép thành ${ITEMS[combine(state, held.type, on.type)].label}` : null;
+        if (accepts(state, s.kind, held.type)) return `Đặt ${ITEMS[held.type].label} vào ${def.label}`;
         return null;
       }
-      if (on && s.kind === 'laptop' && WORK.laptop[on.type]) return p.working === s.id ? 'Đang làm…' : `Làm ${ITEMS[on.type].label} → ${ITEMS[WORK.laptop[on.type].to].label}`;
+      const wr = on && workRule(state, s.kind, on.type);
+      if (wr) return p.working === s.id ? 'Đang làm…' : `Làm ${ITEMS[on.type].label} → ${ITEMS[wr.to].label}`;
       if (on) return `Lấy ${ITEMS[on.type].label}`;
       return null;
   }
 }
 
-function combine(a, b) {
-  for (const [[x, y], out] of COMBOS) if ((a === x && b === y) || (a === y && b === x)) return out;
+function combine(state, a, b) {
+  for (const [[x, y], out] of proc(state).combos || []) if ((a === x && b === y) || (a === y && b === x)) return out;
   return null;
 }
-function accepts(kind, type) {
+function accepts(state, kind, type) {
   if (kind === 'counter') return true;
-  if (kind === 'laptop') return !!WORK.laptop[type];
-  if (AUTO[kind]) return !!AUTO[kind][type];
-  return false;
+  return !!(workRule(state, kind, type) || autoRule(state, kind, type));
 }
 
 const say = (to, text, cls = '') => ({ type: 'toast', to, text, cls });
@@ -219,19 +233,19 @@ export function act(state, id) {
   // counters and processing stations
   if (held) {
     if (on) {
-      const out = combine(held.type, on.type);
+      const out = combine(state, held.type, on.type);
       if (!out) return [say(id, `${def.label} đang có đồ rồi.`)];
       if (s.kind !== 'counter') return [say(id, 'Ghép đồ ở bàn ghép nhé.')];
       delete state.items[held.id]; p.held = null;
       on.type = out;
       return [{ type: 'sfx', name: 'good' }, say(id, `Ghép xong ${ITEMS[out].label}!`, 'good')];
     }
-    if (!accepts(s.kind, held.type)) return [say(id, `${def.label} không nhận ${ITEMS[held.type].label}.`)];
+    if (!accepts(state, s.kind, held.type)) return [say(id, `${def.label} không nhận ${ITEMS[held.type].label}.`)];
     s.item = held.id; p.held = null; s.progress = 0; s.overdue = 0;
     return [{ type: 'sfx', name: 'blip' }];
   }
   if (!on) return [];
-  if (s.kind === 'laptop' && WORK.laptop[on.type]) {
+  if (isWork(state, s.kind) && workRule(state, s.kind, on.type)) {
     // take over a laptop someone else stopped working on, or start fresh
     for (const q of Object.values(state.players)) if (q.working === s.id && q.id !== p.id) return [say(id, `${q.name} đang làm máy này.`)];
     p.working = s.id; p.workAt = { x: p.x, z: p.z };
@@ -270,6 +284,8 @@ function deliver(state, p, held) {
   state.done++;
   state.orders = state.orders.filter((o) => o !== order);
   delete state.items[held.id]; p.held = null;
+  // lobby empty: the next client walks in soon instead of after a full gap
+  if (!state.orders.length && !state.firstOrders.length) state.nextSpawn = Math.min(state.nextSpawn, state.elapsed + 5);
   return [{ type: 'sfx', name: 'good' }, { type: 'served', order: order.id }, { type: 'toast', text: `✅ ${who} nhận ${R.title}: +${R.reward}k${tip ? ` (+${tip}k tip)` : ''}`, cls: 'good' }];
 }
 
@@ -297,18 +313,30 @@ function spawnOrder(state) {
   const taken = new Set(state.orders.map((o) => o.spot));
   let spot = 0;
   while (taken.has(spot)) spot++;
-  state.orders.push({ id: state.nextOrder++, recipe: pick.recipe, t: R.time, total: R.time, client, spot });
+  // fewer players → clients are more patient
+  const time = Math.round(R.time * pace(state).time);
+  state.orders.push({ id: state.nextOrder++, recipe: pick.recipe, t: time, total: time, client, spot });
   return [{ type: 'order', recipe: pick.recipe }, { type: 'sfx', name: 'ring' }];
 }
 
+// Order pacing by team size: the level's `pace` has one row per player count (1–4).
+//   gap: seconds between new clients · time: × each recipe's patience · max: clients waiting at once · first: opening orders
+const PACE_DEFAULT = [
+  { gap: 34, time: 1.4, max: 2, first: [2, 16] },
+  { gap: 24, time: 1.15, max: 3, first: [2, 10] },
+  { gap: 18, time: 1, max: 4, first: [2, 8] },
+  { gap: 14, time: 0.9, max: 4, first: [2, 6] },
+];
+function paceFor(L, n) {
+  const rows = L.pace || PACE_DEFAULT;
+  return rows[Math.max(1, Math.min(rows.length, n)) - 1];
+}
+export function pace(state) { return paceFor(LEVELS[state.level], Object.keys(state.players).length); }
 function maxOrders(state) {
   const spots = (LEVELS[state.level].clientSpots || []).length || 4;
-  return Math.min(spots, 2 + Object.keys(state.players).length);
+  return Math.min(spots, pace(state).max);
 }
-function spawnGap(state) {
-  const n = Math.max(1, Object.keys(state.players).length);
-  return LEVELS[state.level].spawnGap[Math.min(n, 4) - 1];
-}
+function spawnGap(state) { return pace(state).gap; }
 
 /** Advance the game by dt seconds. Returns events. */
 export function step(state, dt) {
@@ -372,7 +400,7 @@ export function step(state, dt) {
     } else if (p.working) {
       const s = state.stations[p.working];
       const it = s && s.item && state.items[s.item];
-      const rule = it && WORK.laptop[it.type];
+      const rule = it && workRule(state, s.kind, it.type);
       if (!rule) { p.working = null; p.workAt = null; }
       else {
         const rate = (isTired(p) ? 0.7 : 1) * (p.jitter > 0 ? 1.25 : 1);
@@ -398,28 +426,28 @@ export function step(state, dt) {
 
   // auto stations: printer, boss sign-off
   for (const s of Object.values(state.stations)) {
-    const rules = AUTO[s.kind];
-    if (!rules || !s.item) continue;
+    if (!isAuto(state, s.kind) || !s.item) continue;
     const it = state.items[s.item];
-    const rule = it && rules[it.type];
+    const rule = it && autoRule(state, s.kind, it.type);
+    const made = it && !rule && madeHere(state, s.kind, it.type);
     if (rule) {
       s.busy = true;
       s.progress += dt / rule.time;
       if (s.progress >= 1) {
         s.progress = 0; s.busy = false;
-        if (s.kind === 'boss' && !it.noted && rand(state) < L.notesChance) {
-          it.type = 'deck_notes'; it.noted = true;
-          ev.push({ type: 'toast', text: `🖍️ ${L.bossName}: "${L.bossLine}" Deck quay về laptop sửa.`, cls: 'drama' }, { type: 'sfx', name: 'bad' });
+        if (rule.notes && !it.noted && rand(state) < L.notesChance) {
+          it.type = rule.notes; it.noted = true;
+          ev.push({ type: 'toast', text: `🖍️ ${L.bossName}: "${L.bossLine}" ${ITEMS[rule.notes].label} quay về laptop sửa.`, cls: 'drama' }, { type: 'sfx', name: 'bad' });
         } else {
           it.type = rule.to;
           ev.push({ type: 'sfx', name: 'ding' });
-          if (s.kind === 'boss') ev.push({ type: 'toast', text: `✍️ ${L.bossName} đã ký!`, cls: 'good' });
+          if (s.kind === 'boss') ev.push({ type: 'toast', text: `✍️ ${L.bossName} đã ký ${ITEMS[rule.to].label}!`, cls: 'good' });
         }
       }
-    } else if (s.kind === 'printer' && it && it.type === 'print') {
+    } else if (made) {
       s.busy = false;
       s.overdue += dt;
-      if (s.overdue >= rules.excel.overdue) {
+      if (s.overdue >= made.overdue) {
         it.type = 'ruined'; s.overdue = 0;
         ev.push({ type: 'toast', text: '🔥 Máy in kẹt giấy, in nhầm 200 bản. File thành "v3_FINAL_sửa_lần_cuối". Vứt đi làm lại!', cls: 'bad' }, { type: 'sfx', name: 'bad' });
       }
