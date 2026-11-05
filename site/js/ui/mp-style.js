@@ -35,6 +35,12 @@ export const MP_CSS = `
 .mp-level.on { background: var(--butter); }
 .mp-level:disabled { opacity: .5; box-shadow: none; }
 .mp-level:disabled.on { opacity: 1; }
+.mp-level.soon { background: repeating-linear-gradient(135deg, #f6f3ee 0 10px, #efeae2 10px 20px); box-shadow: none; border-style: dashed; color: var(--muted); }
+.mp-level.soon b { color: #4a4e5a; }
+.mp-level.soon .ico { filter: grayscale(.6); }
+.mp-level.soon em { grid-column: 2; font-style: normal; font-size: 10.5px; font-weight: 900; color: #b5651d; }
+.mp-soon-note { margin-top: 8px; background: #fff8ef; border: 2px dashed var(--ink); border-radius: 14px; padding: 8px 10px; font-size: 13px; font-weight: 600; line-height: 1.5; }
+.mp-soon-note .tag { background: var(--butter); border: 2px solid var(--ink); border-radius: 99px; padding: 0 8px; font-size: 11px; font-weight: 900; }
 .mp-help { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.6; }
 .mp-link { background: none; border: none; text-decoration: underline; font-weight: 800; font-size: 14px; padding: 6px; }
 

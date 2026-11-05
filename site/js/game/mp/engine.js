@@ -1,9 +1,9 @@
 // Overdeadline & Overburnout — co-op order-rush rules (SOS Advisory multiplayer).
 // PURE: no DOM, no Three.js, no network. The host runs it; clients only render the state it sends.
 // State is plain JSON (safe to broadcast as-is). Functions mutate the state and return events for the UI.
-import { LEVELS } from './levels.js';
+import { LEVELS, COMING_SOON } from './levels.js';
 
-export { LEVELS };
+export { LEVELS, COMING_SOON };
 
 // ---------- items ----------
 export const ITEMS = {

@@ -9,7 +9,7 @@ import { moveActor } from '../core/physics.js';
 import { makePerson, nameTag } from '../art/people.js';
 import { textTexture } from '../art/kit.js';
 import { buildRoom, makeItem, makeBar, makeClient, itemIcon } from '../maps/mp-room.js';
-import { LEVELS, ITEMS, PLAYER_COLORS, clientName, createGame, addPlayer, removePlayer, act, answerQuiz, step, setPlayerPos, hintFor, targetOf, speedOf, isFrozen, isTired, starsFor, starGoals } from '../game/mp/engine.js';
+import { LEVELS, COMING_SOON, ITEMS, PLAYER_COLORS, clientName, createGame, addPlayer, removePlayer, act, answerQuiz, step, setPlayerPos, hintFor, targetOf, speedOf, isFrozen, isTired, starsFor, starGoals } from '../game/mp/engine.js';
 import { joinRoom, myId, newRoomCode, normCode, cleanName } from '../net/mp-net.js';
 import { toast } from '../ui/toast.js';
 import { MP_CSS } from '../ui/mp-style.js';
@@ -81,10 +81,21 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     return `<div class="mp-levels">${LEVEL_ORDER.map((id) => {
       const X = LEVELS[id];
       return `<button class="mp-level${id === levelId ? ' on' : ''}" data-level="${id}" ${canPick ? '' : 'disabled'}><span class="ico">${X.emoji}</span><b>${esc(X.client)}</b><small>${esc(X.title)}</small></button>`;
-    }).join('')}</div>`;
+    }).join('')}${COMING_SOON.map((X) => `<button class="mp-level soon" data-soon-level="${X.id}"><span class="ico">${X.emoji}</span><b>${esc(X.client)}</b><small>${esc(X.title)}</small><em>🚧 Đang phát triển</em></button>`).join('')}</div>
+    <div class="mp-soon-note" id="mpSoonNote" hidden></div>`;
   }
   function wirePicker(after) {
     screen.querySelectorAll('[data-level]').forEach((b) => { b.onclick = () => { setLevel(b.dataset.level); after(); }; });
+    // demo cards: show the teaser, nothing to play yet
+    screen.querySelectorAll('[data-soon-level]').forEach((b) => {
+      b.onclick = () => {
+        const X = COMING_SOON.find((c) => c.id === b.dataset.soonLevel);
+        const note = screen.querySelector('#mpSoonNote');
+        if (!X || !note) return;
+        note.innerHTML = `<b>${X.emoji} ${esc(X.client)} · ${esc(X.title)}</b> <span class="tag">🚧 Đang phát triển</span><br>${esc(X.teaser)}<br><span class="muted">Màn này chưa chơi được. Trong lúc chờ, thử 4 khách hàng ở trên nhé!</span>`;
+        note.hidden = false;
+      };
+    });
   }
   rig.bounds = null;
   const me = { x: L.spawns[0].x, z: L.spawns[0].z, r: Math.PI, moving: 0 };
