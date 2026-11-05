@@ -7,7 +7,7 @@ export const COMPANY_LIST = [
     blurb: 'Công ty gia đình. Ba là CEO, Má giữ két, con trai làm "Head of Innovation". Livestream mỗi tối.', toxic: 4, ready: true },
   { id: 'tech', style: 'startup', map: 'tech', styleLive: true, name: 'Nợ Kỹ Thuật Labs', emoji: '💻', color: '#bfe3ff', industry: 'Công nghệ · startup app', scale: '~80 người',
     blurb: 'Văn hóa "flat", deploy chiều thứ Sáu, on-call cuối tuần và một vòng gọi vốn "sắp xong".', toxic: 3, ready: true },
-  { id: 'agency', style: 'studio', map: 'agency', name: 'Trend Trễ Agency', emoji: '📣', color: '#ffc8dd', industry: 'Marketing agency', scale: '~30 người',
+  { id: 'agency', style: 'studio', map: 'agency', styleLive: true, name: 'Trend Trễ Agency', emoji: '📣', color: '#ffc8dd', industry: 'Marketing agency', scale: '~30 người',
     blurb: 'Khách sửa "lần cuối" lần thứ 14. KOL bùng. Viral thì có, nhưng viral ngược.', toxic: 4, ready: true },
   { id: 'audit', style: 'corporate', name: 'Cân Đối & Cộng Sự', emoji: '🧮', color: '#b8f0d8', industry: 'Kế toán · kiểm toán', scale: '~300 người',
     blurb: 'Busy season, kiểm kê kho lúc 2 giờ sáng và những con số "rất sáng tạo" của khách hàng.', toxic: 4, ready: true },

@@ -14,13 +14,13 @@ const H = 5.2; // loft: high ceiling, steel beams, long pendant lights
 export const AGENCY_TONES = {
   pop: { name: 'Hồng pop', wall: '#fff0f5', md: '#ff8fab', ceil: '#fbeef3', beam: '#2b2d42', ink: '#2b2d42',
     pink: '#ff5d8f', yellow: '#ffd23f', teal: '#2ec4b6', purple: '#7b5cff', orange: '#ff9f1c',
-    floorS: ['planks', '#e8c9a0', '#dfbd92'], floorW: ['terrazzo', '#ffe3ec'], pitch: '#3b3d5c', rug: '#ffd23f', brick: null },
+    floorS: ['planks', '#e8c9a0', '#dfbd92'], floorW: ['terrazzo', '#ffe3ec'], pitch: '#3b3d5c', rug: '#ffd23f', brick: null, s1: '#ffe9a0', s2: '#ffc8dd', s3: '#b8f0d8', s4: '#e8dcff' },
   loft: { name: 'Loft gạch đỏ · xanh rêu', wall: '#f1e8dc', md: '#2d6a4f', ceil: '#2e2e30', beam: '#1f1f1f', ink: '#1f1f1f',
     pink: '#d9532b', yellow: '#f2a71b', teal: '#2d6a4f', purple: '#3d5a80', orange: '#b5673a',
-    floorS: ['concrete', '#b9b4ac'], floorW: ['planks', '#8b5e3c', '#7d5233'], pitch: '#2b3a2f', rug: '#f2a71b', brick: '#b5523b' },
+    floorS: ['concrete', '#b9b4ac'], floorW: ['planks', '#8b5e3c', '#7d5233'], pitch: '#2b3a2f', rug: '#f2a71b', brick: '#b5523b', s1: '#f2a71b', s2: '#f6e7c8', s3: '#9cc5a1', s4: '#e9d7b9' },
   gallery: { name: 'Gallery trắng · màu Bauhaus', wall: '#ffffff', md: '#1d4ed8', ceil: '#ffffff', beam: '#111111', ink: '#111111',
     pink: '#e63946', yellow: '#ffbe0b', teal: '#1d4ed8', purple: '#06a77d', orange: '#fb5607',
-    floorS: ['concrete', '#ebeae6'], floorW: ['terrazzo', '#f4f3ef'], pitch: '#1d1d1f', rug: '#ffbe0b', brick: null },
+    floorS: ['concrete', '#ebeae6'], floorW: ['terrazzo', '#f4f3ef'], pitch: '#1d1d1f', rug: '#ffbe0b', brick: null, s1: '#ffbe0b', s2: '#ffffff', s3: '#a8dadc', s4: '#f1f1f1' },
 };
 const toneFromUrl = () => { try { return new URLSearchParams(location.search).get('tone'); } catch (e) { return null; } };
 
@@ -72,7 +72,7 @@ export function buildAgency(scene, th) {
   const L = (id, d) => (th.labels && th.labels[id]) || d;
   const signs = th.signs || {};
   const D = th.desks || {};
-  const C = AGENCY_TONES[toneFromUrl()] || AGENCY_TONES[th.tone] || AGENCY_TONES.pop;
+  const C = AGENCY_TONES[toneFromUrl()] || AGENCY_TONES[th.tone] || AGENCY_TONES.loft;
   const fl = (f) => (f[0] === 'planks' ? FLOORS.planks(f[1], f[2]) : f[0] === 'concrete' ? FLOORS.concrete(f[1]) : FLOORS.terrazzo(f[1], [C.pink, C.yellow, C.teal, C.purple]));
 
   // ---------- floors & ceiling ----------
@@ -178,7 +178,7 @@ export function buildAgency(scene, th) {
   desk(-11.3, 6.6, 1, { plate: 'Tùng · MD', screen: [['KV v14', '"chưa pop"'], C.pink], chair: C.ink, top: '#ffffff', leg: C.ink, w: 1.8 });
   box(0.75, 0.45, 2.0, C.ink, -13.5, 0, 7.6, true); box(0.2, 0.5, 2.0, C.ink, -13.8, 0.45, 7.6, false);
   poster([th.bossWall || 'Make it POP'], { w: 1024, h: 256, bg: C.ink, fg: C.yellow, sizes: [130], weights: [900], border: C.yellow }, -11.3, 2.1, 9.88, PI, 3.0, 0.75);
-  sign(signs.boss || 'MD', '#ffc8dd', -7.9, 2.6, 6.2, PI / 2, 1.5);
+  sign(signs.boss || 'MD', C.s2, -7.9, 2.6, 6.2, PI / 2, 1.5);
   const mood = canvasTex(768, 512, (g, w, h) => {
     g.fillStyle = '#ffffff'; roundRect(g, 4, 4, w - 8, h - 8, 22); g.fill(); g.strokeStyle = INK; g.lineWidth = 8; g.stroke();
     const cs = ['#ff5d8f', '#ffd23f', '#2ec4b6', '#7b5cff', '#ff9f1c', '#e63946', '#3a86ff', '#2b2d42'];
@@ -216,7 +216,7 @@ export function buildAgency(scene, th) {
   for (let i = 0; i < 6; i++) box(0.12, 0.01, 0.12, ['#ffe9a0', '#ffc8dd', '#b8f0d8'][i % 3], 1.3 + (i % 3) * 0.25, 0.79, 3.8 + Math.floor(i / 3) * 0.3, false, i * 0.4, 0.004);
   K.plasticChair(1.6, 5.15, PI, '#e63946');
   interact('redchair', L('redchair', 'Ghế đỏ "brainstorm"'), 1.6, 0.6, 5.15);
-  sign('KHU SÁNG TẠO · nói to lên', '#ffe9a0', -2.0, 2.75, 4.0, 0, 2.6);
+  sign('KHU SÁNG TẠO · nói to lên', C.s1, -2.0, 2.75, 4.0, 0, 2.6);
   // pendant lamps over the tables
   for (const x of [-5.5, -2.0, 1.6]) { cyl(0.008, 0.008, H - 2.3, '#222', x, 2.3, 4.0, 4, 0); cyl(0.05, 0.45, 0.4, [C.pink, C.yellow, C.teal][Math.round((x + 5.5) / 3.5)], x, 2.0, 4.0, 18, 0.012); sphere(0.11, glow('#fff3c4'), x, 1.98, 4.0, 0); }
 
@@ -229,7 +229,7 @@ export function buildAgency(scene, th) {
   box(0.8, 1.9, 0.75, '#bfe3ff', 8.4, 0, 1.55, true);
   box(0.04, 0.5, 0.06, '#ffffff', 8.0, 0.9, 1.95, false, 0, 0.006);
   interact('coffee', L('coffee', 'Pantry: ăn uống, cà phê'), 7.0, 1.1, 1.95);
-  sign(signs.pantry || 'PANTRY', '#ffe9a0', 5.8, 2.7, 1.12, 0, 2.6);
+  sign(signs.pantry || 'PANTRY', C.s1, 5.8, 2.7, 1.12, 0, 2.6);
 
   // ================= PHOTO STUDIO (east end) =================
   wall(9, 1, 9, 5.6, C.ink, { h: 3.4 });
@@ -263,11 +263,11 @@ export function buildAgency(scene, th) {
   desk(-12.5, 0.15, -1, { plate: (D.n1 && D.n1[0]) || 'CD', screen: [(D.n1 && D.n1[1]) || ['IDEAS'], '#2b2d42'], chair: '#1d1d1f', top: '#2b2d42', leg: '#1d1d1f' });
   dk(-6.0, -3.6, -1, 'finance', '#b8f0d8');
   box(0.6, 1.4, 1.2, '#ffffff', -2.45, 0, -1.8, true);
-  poster(['TIMESHEET', '2016–2026'], { w: 512, h: 256, bg: '#b8f0d8', sizes: [52, 40] }, -2.76, 1.0, -1.8, -PI / 2, 1.0, 0.5);
-  sign(signs.finance || 'TIMESHEET', '#b8f0d8', -6.0, 2.65, -4.85, 0, 2.2);
+  poster(['TIMESHEET', '2016–2026'], { w: 512, h: 256, bg: C.s3, sizes: [52, 40] }, -2.76, 1.0, -1.8, -PI / 2, 1.0, 0.5);
+  sign(signs.finance || 'TIMESHEET', C.s3, -6.0, 2.65, -4.85, 0, 2.2);
   box(0.6, 1.8, 0.6, '#2a2f3a', -2.45, 0, -3.3, true);
-  poster(['Ổ CỨNG CHUNG', '98% đầy'], { w: 512, h: 256, bg: '#ffc8dd', sizes: [46, 40] }, -2.76, 2.0, -3.3, -PI / 2, 0.7, 0.35);
-  sign('ACCOUNT · STRATEGY · MEDIA · KOL', '#e8dcff', -10.5, 2.75, -3.2, 0, 3.4);
+  poster(['Ổ CỨNG CHUNG', '98% đầy'], { w: 512, h: 256, bg: C.s2, sizes: [46, 40] }, -2.76, 2.0, -3.3, -PI / 2, 0.7, 0.35);
+  sign('ACCOUNT · STRATEGY · MEDIA · KOL', C.s4, -10.5, 2.75, -3.2, 0, 3.4);
   // WIP board at the corner of the L + floor ring
   const scrum = th.scrum || { cols: ['TODO', 'DOING', 'DONE'], notes: [[], [], []] };
   const kb = canvasTex(1024, 560, (g, w, h) => {
@@ -291,7 +291,7 @@ export function buildAgency(scene, th) {
   box(3.05, 1.7, 0.05, '#ffffff', -7.5, 0.7, -1.22, false, 0, 0.02);
   plane(3.0, 1.64, basic(kb), -7.5, 1.55, -1.18, 0);
   collideRect(-9.1, -5.9, -1.35, -1.05);
-  sign(signs.standup || 'WIP', '#ffc8dd', -7.5, 2.65, -1.17, 0, 2.6);
+  sign(signs.standup || 'WIP', C.s2, -7.5, 2.65, -1.17, 0, 2.6);
   const ringM = new THREE.Mesh(new THREE.RingGeometry(1.9, 2.0, 48), new THREE.MeshBasicMaterial({ color: C.pink }));
   ringM.rotation.x = -PI / 2; ringM.scale.set(1.35, 0.85, 1); ringM.position.set(-7.5, 0.009, 0.6); K.root.add(ringM);
 
@@ -308,8 +308,8 @@ export function buildAgency(scene, th) {
   poster(['PITCH: BIA HƠI PHỐ', 'slide 1/80 · "Insight: người Việt thích vui"'], { w: 1024, h: 576, bg: '#111827', fg: '#ffffff', sizes: [70, 34], border: null }, -13.82, 1.6, -7.5, PI / 2, 2.7, 1.52);
   box(0.45, 0.45, 0.45, C.yellow, -3.8, 0, -7.5, false, 0, 0.02);
   interact('interview', L('interview', 'Ngồi vào ghế phòng pitch'), -3.8, 0.8, -7.5);
-  sign(signs.meeting || 'PHÒNG PITCH', '#ffe9a0', -8.5, 2.95, -4.94, 0, 2.6);
-  sign(signs.meeting || 'PHÒNG PITCH', '#ffe9a0', -8.5, 2.95, -5.06, PI, 2.6);
+  sign(signs.meeting || 'PHÒNG PITCH', C.s1, -8.5, 2.95, -4.94, 0, 2.6);
+  sign(signs.meeting || 'PHÒNG PITCH', C.s1, -8.5, 2.95, -5.06, PI, 2.6);
   for (const x of [-10.5, -6.5]) { cyl(0.008, 0.008, H - 2.5, '#222', x, 2.5, -7.5, 4, 0); cyl(0.3, 0.3, 0.1, '#ffffff', x, 2.4, -7.5, 20, 0.012); }
   plant(-13.4, -4.4, { s: 1.0, pot: C.pink, leaf: '#3e9b57' });
   plant(-2.6, 0.4, { s: 1.0, pot: C.yellow, leaf: '#3e9b57' });
