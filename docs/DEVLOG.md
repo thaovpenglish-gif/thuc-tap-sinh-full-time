@@ -57,6 +57,9 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
   room screen) explains every task step by step, with tips.
 - Developer letter: new "🚨 Mới: Overdeadline & Overburnout" section (what it is, invite, one button, 📖, burnout,
   playing alone, beta + privacy note) and a "Chơi Overdeadline →" button; hidden with `?mp=0`.
+- Level 2 **Ba & Má** "Chốt đơn mùa Tết": workshop → marinate → dryer → pack chain, gift box approved by Má,
+  livestream flash sales (×1.5 pay, less patience) and Má switching the dryers off (breaker). Level picker on the
+  home screen and in the room (host); guests rebuild the office when the level changes.
 
 ## 2026-11-05 — QC round 1 and publish
 

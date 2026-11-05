@@ -14,7 +14,7 @@ import { joinRoom, myId, newRoomCode, normCode, cleanName } from '../net/mp-net.
 import { toast } from '../ui/toast.js';
 import { MP_CSS } from '../ui/mp-style.js';
 
-const LEVEL = 'tm';
+const LEVEL_ORDER = ['tm', 'bama']; // client companies available in the picker
 const MAX_PLAYERS = 4;
 const SPEED = 3.7;
 const SNAP_EVERY = 0.2;   // host snapshot interval (s)
@@ -61,9 +61,31 @@ export function startMulti({ scene, rig, input, onExit, params }) {
   let roster = [];         // players of the current/last game [{id,name,color}]
   let joinTimeout = null;
 
-  // ---------- world ----------
-  const L = LEVELS[LEVEL];
-  const world = buildRoom(scene, L);
+  // ---------- world (one client company = one level; switching rebuilds the office) ----------
+  let levelId = LEVELS[store.get('mp_level')] ? store.get('mp_level') : 'tm';
+  let L = LEVELS[levelId];
+  let world = buildRoom(scene, L);
+  function setLevel(id) {
+    if (!LEVELS[id] || id === levelId) return;
+    levelId = id; L = LEVELS[id];
+    store.set('mp_level', id);
+    world.dispose();
+    world = buildRoom(scene, L);
+    for (const k of Object.keys(placed)) { placed[k].removeFromParent(); delete placed[k]; }
+    for (const k of Object.keys(floorItems)) { floorItems[k].removeFromParent(); delete floorItems[k]; }
+    for (const k of Object.keys(npcs)) { scene.remove(npcs[k].mesh); delete npcs[k]; }
+    me.x = L.spawns[0].x; me.z = L.spawns[0].z;
+    if (!$('#mpBook').hidden) toggleBook(true);
+  }
+  function levelPicker(canPick) {
+    return `<div class="mp-levels">${LEVEL_ORDER.map((id) => {
+      const X = LEVELS[id];
+      return `<button class="mp-level${id === levelId ? ' on' : ''}" data-level="${id}" ${canPick ? '' : 'disabled'}><span class="ico">${X.emoji}</span><b>${esc(X.client)}</b><small>${esc(X.title)}</small></button>`;
+    }).join('')}</div>`;
+  }
+  function wirePicker(after) {
+    screen.querySelectorAll('[data-level]').forEach((b) => { b.onclick = () => { setLevel(b.dataset.level); after(); }; });
+  }
   rig.bounds = null;
   const me = { x: L.spawns[0].x, z: L.spawns[0].z, r: Math.PI, moving: 0 };
   const remote = {};       // id -> { x, z, r, tx, tz, tr, moving }
@@ -97,6 +119,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       <div class="mp-logo">Overdeadline <span>& Overburnout</span></div>
       <p>Bạn và đồng đội là nhân viên <b>SOS Advisory</b> <i>· Gọi là tới, tới là trễ</i>. Các công ty bên Solo gọi tới khi cháy deadline. Chạy qua lại, làm file, in, xin chữ ký, nộp cho khách trước khi hết giờ. Và nhớ nghỉ, không là burnout.</p>
       <label class="mp-field">Tên của bạn<input class="mp-input" id="mpName" maxlength="14" placeholder="VD: Linh" value="${esc(name)}" autocomplete="off"></label>
+      <div class="mp-field">Khách hàng (màn chơi)${levelPicker(true)}</div>
       <div class="mp-row"><button class="btn primary" id="mpCreate">🚨 Tạo phòng</button><button class="btn" id="mpSolo">🧑‍💻 Tập một mình</button></div>
       <p class="mp-or">— hoặc vào phòng của bạn bè —</p>
       <div class="mp-row"><input class="mp-input mp-code-in" id="mpCode" maxlength="5" placeholder="MÃ" value="${esc(presetCode)}" autocomplete="off"><button class="btn" id="mpJoin">Vào phòng →</button></div>
@@ -110,6 +133,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     $('#mpJoin').onclick = () => { unlockAudio(); readName(); const c = normCode($('#mpCode').value); if (c.length < 5) { homeScreen('Mã phòng có 5 ký tự.', c); return; } join(c); };
     $('#mpCode').onkeydown = (e) => { if (e.key === 'Enter') $('#mpJoin').click(); };
     $('#mpBack').onclick = () => leaveAll(true);
+    wirePicker(() => { const n = $('#mpName').value, c = $('#mpCode').value; homeScreen(err, c); $('#mpName').value = n; });
     if (!presetCode) $('#mpName').focus();
   }
 
@@ -129,6 +153,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       <div class="mp-code" id="mpCodeShow">${esc(code)}</div>
       <div class="mp-row"><button class="btn" id="mpInvite">📨 Mời bạn (gửi link)</button></div>
       <div class="mp-members">${slots.join('')}</div>
+      ${isHost ? `<div class="mp-field">Khách hàng (host chọn)${levelPicker(true)}</div>` : ''}
       <div class="mp-client"><span class="ico">${L.emoji}</span><div><b>Khách hàng: ${esc(L.client)} · ${esc(L.title)}</b><span class="muted">${esc(L.blurb)}</span></div></div>
       <div class="mp-recipes">${recipes}</div>
       <div class="mp-row"><button class="btn ghost" id="mpBookRoom">📖 Xem cách làm từng việc</button></div>
@@ -138,6 +163,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     </div>`);
     $('#mpInvite').onclick = invite;
     $('#mpBookRoom').onclick = () => toggleBook(true);
+    if (isHost) wirePicker(() => { roomScreen(note); hostBroadcastLobby(); });
     $('#mpLeave').onclick = () => leaveAll(false);
     if (isHost) $('#mpStart').onclick = () => hostStart();
   }
@@ -223,12 +249,13 @@ export function startMulti({ scene, rig, input, onExit, params }) {
 
   function hostBroadcastLobby() {
     if (!isHost || !net) return;
-    net.send('lobby', { mode, level: LEVEL, players: roster.map((p) => p.id) });
+    net.send('lobby', { mode, level: levelId, players: roster.map((p) => p.id) });
   }
 
   function onLobby(msg) {
     if (isHost) return;
     clearTimeout(joinTimeout);
+    if (mode !== 'play' && msg.level) setLevel(msg.level);
     if (mode !== 'play') roomScreen(msg.mode === 'play' ? 'Nhóm đang chơi dở. Ván sau bạn vào cùng nhé!' : '');
   }
 
@@ -236,10 +263,10 @@ export function startMulti({ scene, rig, input, onExit, params }) {
   function hostStart() {
     const ms = orderedMembers().slice(0, MAX_PLAYERS);
     roster = ms.map((m, i) => ({ id: m.id, name: m.name, color: PLAYER_COLORS[i] }));
-    game = createGame(LEVEL, { seed: (Math.random() * 2 ** 31) | 0, players: roster });
+    game = createGame(levelId, { seed: (Math.random() * 2 ** 31) | 0, players: roster });
     countdown = COUNTDOWN;
     evQueue = [];
-    net.send('start', { level: LEVEL, players: roster });
+    net.send('start', { level: levelId, players: roster });
     beginPlay();
     sendSnapshot();
     hostBroadcastLobby();
@@ -254,6 +281,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     clearTimeout(joinTimeout);
     roster = msg.players;
     if (!roster.some((p) => p.id === myId)) { if (mode !== 'play') roomScreen('Nhóm đang chơi dở. Ván sau bạn vào cùng nhé!'); return; }
+    if (msg.level) setLevel(msg.level);
     game = null;
     beginPlay();
   }
@@ -292,7 +320,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       <div class="mp-stars">${starHtml}</div>
       <div class="mp-res"><div><b>${g.money}k</b>doanh thu</div><div><b>${g.done}</b>việc đã nộp</div><div><b>${g.failed}</b>trễ deadline</div></div>
       <p class="muted" style="font-size:12.5px">Mốc sao: ${goals.map((x) => x + 'k').join(' · ')}</p>
-      <div class="mp-quote">${esc(QUOTES[stars])}</div>
+      <div class="mp-quote">${esc((L.quotes || QUOTES)[stars])}</div>
       <div class="mp-row">${isHost ? `<button class="btn primary" id="mpAgain">🔁 Chơi lại</button>${code !== 'SOLO' ? '<button class="btn" id="mpRoom">Về phòng chờ</button>' : ''}` : '<span class="muted" style="font-weight:800">⏳ Chờ host chọn chơi lại…</span>'}</div>
       <div class="mp-row"><button class="mp-link" id="mpQuit">${code === 'SOLO' ? '← Về sảnh Multiplayer' : '← Rời phòng'}</button></div>
     </div>`);
@@ -346,6 +374,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
   function onSnapshot(msg) {
     if (isHost) return;
     if (!msg.g.players[myId]) return; // not in this game (joined late): wait in the room
+    if (msg.g.level !== levelId) { setLevel(msg.g.level); game = null; if (mode === 'play') beginPlay(); }
     // the roster always follows the host's snapshot (also covers a missed 'start' message)
     roster = Object.values(msg.g.players).map((p) => ({ id: p.id, name: p.name, color: p.color }));
     if (mode !== 'play' || (game && game.phase === 'over' && msg.g.phase === 'play')) { game = null; beginPlay(); }
@@ -621,6 +650,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     // stations
     const myP = game.players[myId];
     const myTarget = myP && !isFrozen(myP) ? targetOf(game, { ...myP, x: me.x, z: me.z }).station : null;
+    const anyOff = Object.values(game.stations).some((x) => x.off);
     for (const s of Object.values(game.stations)) {
       const m = world.stations[s.id];
       const it = s.item && game.items[s.item];
@@ -631,6 +661,9 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       else if (s.progress > 0) v = s.progress; // someone working on it
       m.userData.bar.set(v, col);
       m.userData.ring.visible = !!myTarget && myTarget.id === s.id;
+      // power cut: dryers show "mất điện", the breaker blinks
+      if (m.userData.off) m.userData.off.visible = s.kind === 'breaker' ? anyOff && Math.sin(animT * 8) > -0.2 : !!s.off;
+      if (m.userData.heat) m.userData.heat.material.color.set(s.off ? '#8d93a6' : s.busy ? (Math.sin(animT * 9) > 0 ? '#ff8a3d' : '#ffb46b') : '#ffd9b0');
     }
     // floor items
     for (const it of Object.values(game.items)) {
@@ -773,6 +806,6 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       updateCamera(dt);
     },
     // test hooks (e2e)
-    debug: { get game() { return game; }, get mode() { return mode; }, get code() { return code; }, me, useAction, get isHost() { return isHost; } },
+    debug: { get game() { return game; }, get mode() { return mode; }, get level() { return levelId; }, get code() { return code; }, me, useAction, get isHost() { return isHost; } },
   };
 }
