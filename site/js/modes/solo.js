@@ -82,7 +82,8 @@ export function startSolo({ scene, camera, input, onExit }) {
     if (world) world.dispose();
     for (const n of Object.values(npcs)) scene.remove(n.mesh);
     npcs = {};
-    world = buildWorld(scene, { ...(co.theme || {}), style: (co.theme && co.theme.style) || (co.meta && co.meta.style) || 'tm' });
+    const style = FLAGS.officeStyles || (co.meta && co.meta.styleLive) ? ((co.theme && co.theme.style) || (co.meta && co.meta.style) || 'tm') : 'tm';
+    world = buildWorld(scene, { ...(co.theme || {}), style });
     worldCo = co.id;
     const people = { ...co.cast, ...(GIAO_ON ? { giao: GIAO } : {}) };
     for (const [id, def] of Object.entries(people)) {
