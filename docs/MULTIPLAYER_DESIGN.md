@@ -180,11 +180,13 @@ tests/e2e/mp-local.cjs      2 người trong 1 trình duyệt: tạo phòng, và
 
 Chọn ở sảnh (thẻ "Khách hàng") hoặc host đổi trong phòng chờ; máy của mọi người tự dựng lại văn phòng.
 
-- **Bản đồ** (cùng khung 7 khu với T&M): Xưởng sơ chế (tủ đông gà, tủ đông bò, thùng xoài, 2 bàn ướp, Cậu Tám) ·
-  Phòng sấy (2 máy sấy, bàn để khô) · Phòng Má · Két (vách kính: Má thấy hết, két, ghế đỏ) · hành lang (2 bàn đóng
-  gói, 2 bàn ghép, thùng rác, bàn thờ Thần Tài, Ba đi tuần, **Cầu dao** cuối hành lang) · Bếp cô Tư (khô ăn thử,
-  trà đá, Mèo Khô Gà) · Góc livestream (Út Mi, đèn ring, màn hình LIVE, anh Khoa) · Cửa hàng (kệ khô, xe Chú Bảy,
-  quầy giao hàng).
+- **Bản đồ riêng: nhà phố kiêm xưởng** (không dùng khung văn phòng của T&M): **Xưởng sơ chế & sấy** chiếm nửa trái
+  phía trên (tủ đông gà, tủ đông bò, thùng xoài dọc tường sau; 2 bàn ướp; **2 lò sấy thành đảo giữa xưởng**; bàn để
+  khô; Cậu Tám) · **Phòng Má · Két** vách kính (Ba đứng cạnh két, ghế đỏ, **cầu dao ngay sau lưng Má**) · lối đi nhỏ
+  nối xưởng với phòng Má · **Góc livestream** vách kính (Út Mi live sau bàn hàng, đèn ring, anh Khoa) · **Bếp cô Tư**
+  (khô ăn thử, trà đá, Mèo Khô Gà) · **Khu đóng gói** mở thông với xưởng (2 bàn đóng gói, 2 bàn ghép, thùng rác) ·
+  lối nhân viên ra **quầy giao hàng** · **Cửa hàng** mặt phố (khách vào từ cửa bên phải, kệ khô, bàn thờ Thần Tài,
+  Chú Bảy).
 - **Khách**: Chị Tâm (nhà phân phối), Cô Sáu Tạp Hóa, Kevin Tuấn, Chị Mai CSKH, Ngân, Anh Dũng, anh shipper,
   khách "shop ơi".
 
@@ -199,11 +201,11 @@ Chọn ở sảnh (thẻ "Khách hàng") hoặc host đổi trong phòng chờ; 
 - **Cơ chế riêng**:
   - 🔴 **Flash sale** (0:50, 1:52, 2:38; báo trước 4 giây): Út Mi hô, 2 khách ùa vào cùng lúc (ăn thử, xoài, khô gà),
     trả ×1,5 nhưng kiên nhẫn ×0,8. Ticket có 🔥.
-  - ⚡ **Má tắt điện** (1:20, 2:20; báo trước 3 giây): 2 máy sấy ngừng, hiện "⚡ Mất điện"; Cầu dao nhấp nháy
-    "Bật lại đây!". Ai bật thì Má hỏi "Ai bật đó?".
-  - 🔥 Đồ để trong máy sấy quá 9 giây thành **Khô cháy khét**.
+  - ⚡ **Má tắt điện** (1:20, 2:20; báo trước 3 giây): 2 lò sấy ngừng, hiện "⚡ Mất điện"; cầu dao trong phòng Má
+    nhấp nháy "Bật lại đây!". Ai bật thì Má hỏi "Ai bật đó?".
+  - 🔥 Đồ để trong lò sấy quá 9 giây thành **Khô cháy khét**.
 - Kỹ thuật: thêm vào engine `flash`, `powerCut`, trạm `breaker`, `rule.ruin/ruinText`, `rule.fixAt`; mặt bằng
-  dùng chung `TM_WALLS`/`TM_MATS`. Test: `tests/mp-bama.test.mjs`.
+  T&M dùng `TM_WALLS`/`TM_MATS`, Ba & Má có `walls`/`rooms` riêng. Test: `tests/mp-bama.test.mjs`.
 
 ## 9. Lộ trình
 
