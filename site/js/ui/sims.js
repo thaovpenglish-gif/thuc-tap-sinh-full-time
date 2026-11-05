@@ -31,7 +31,9 @@ function doc(host, foot, cfg, { onDone }) {
     if (!cfg.verdict) { stage = 'done'; onDone(); return; }
     stage = 'verdict';
     host.querySelectorAll('.doc-line').forEach((b) => { b.disabled = true; });
-    foot.innerHTML = `<div class="doc-verdict"><b>${esc(cfg.verdict.q)}</b><div class="doc-vopts">${cfg.verdict.options.map((o, k) => `<button class="btn${k ? '' : ' primary'}" data-v="${k}"><span class="num">${k + 1}</span> ${esc(o)}</button>`).join('')}</div></div>`;
+    // shuffled, none highlighted: the order must not give the answer away
+    const order = shuffle(cfg.verdict.options.map((o, k) => k));
+    foot.innerHTML = `<div class="doc-verdict"><b>${esc(cfg.verdict.q)}</b><div class="doc-vopts">${order.map((k, n) => `<button class="btn" data-n="${n}" data-v="${k}"><span class="num">${n + 1}</span> ${esc(cfg.verdict.options[k])}</button>`).join('')}</div></div>`;
     foot.querySelectorAll('[data-v]').forEach((b) => { b.onclick = () => { verdictPick = Number(b.dataset.v); sfx.choose(); stage = 'done'; onDone(); }; });
   };
   host.querySelectorAll('.doc-line').forEach((b) => { b.onclick = () => {
@@ -44,7 +46,7 @@ function doc(host, foot, cfg, { onDone }) {
   foot.querySelector('.mini-go').onclick = toVerdict; count();
   const onKey = (e) => {
     if (e.code === 'Enter' && stage === 'flag') { e.preventDefault(); e.stopPropagation(); toVerdict(); }
-    else if (stage === 'verdict' && /^Digit[1-4]$/.test(e.code)) { const b = foot.querySelector(`[data-v="${Number(e.code.slice(5)) - 1}"]`); if (b) { e.preventDefault(); e.stopPropagation(); b.click(); } }
+    else if (stage === 'verdict' && /^Digit[1-4]$/.test(e.code)) { const b = foot.querySelector(`[data-n="${Number(e.code.slice(5)) - 1}"]`); if (b) { e.preventDefault(); e.stopPropagation(); b.click(); } }
   };
   window.addEventListener('keydown', onKey, true);
   const flagScore = () => {
