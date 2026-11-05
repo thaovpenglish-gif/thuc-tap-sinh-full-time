@@ -78,6 +78,7 @@ export function startSolo({ scene, camera, input, onExit }) {
   const fp = createFPControls({ camera, input, getMode: () => mode, onPause: () => pause(), start: PLAYER_START });
   const player = fp.player;
 
+  const catPath = () => (world && world.catPath) || CAT_PATH;
   function enterCompany(co) {
     if (worldCo === co.id && world) return;
     if (world) world.dispose();
@@ -86,7 +87,10 @@ export function startSolo({ scene, camera, input, onExit }) {
     const live = FLAGS.officeStyles || (co.meta && co.meta.styleLive);
     const style = live ? ((co.theme && co.theme.style) || (co.meta && co.meta.style) || 'tm') : 'tm';
     const layout = live ? (co.meta && co.meta.layout) || null : null;
-    world = buildWorld(scene, { ...(co.theme || {}), style, layout });
+    const map = live ? (co.meta && co.meta.map) || null : null;
+    world = buildWorld(scene, { ...(co.theme || {}), style, layout, map });
+    const cp = catPath();
+    cat.position.set(cp[0][0], 0, cp[0][1]); catState.i = 0;
     worldCo = co.id;
     const people = { ...co.cast, ...(GIAO_ON ? { giao: GIAO } : {}) };
     for (const [id, def] of Object.entries(people)) {
@@ -295,7 +299,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     // a reload in the middle of this step must not apply its effects twice: keep the state from before it
     try { const { stepSnap, ...plain } = R; void stepSnap; R.stepSnap = JSON.parse(JSON.stringify(plain)); } catch { R.stepSnap = null; }
     startDialogMode();
-    if (step.seat === 'mr_seat') fp.teleport(MEETING_SEAT[0], MEETING_SEAT[1], 0, 1.05);
+    if (step.seat === 'mr_seat') { const ms = (world && world.meetingSeat) || MEETING_SEAT; fp.teleport(ms[0], ms[1], ms[2] || 0, 1.05); }
     if (step.call) { openCallFrame(step.call); placeNPCs(true); }
     await dialogue.run(step.scene || []);
     if (step.review) await runReview();
@@ -597,7 +601,8 @@ export function startSolo({ scene, camera, input, onExit }) {
   function startDay(quick) {
     const d = day();
     enterCompany(CO);
-    fp.teleport(PLAYER_START[0], PLAYER_START[1], PLAYER_START[2]);
+    const ps = (world && world.playerStart) || PLAYER_START;
+    fp.teleport(ps[0], ps[1], ps[2]);
     if (R.step === 0) {
       R.clock = R.day === 0 ? toMin((d.steps[0] && d.steps[0].time) || '14:00') - 5 : toMin('08:25');
       startSideTasks();
@@ -1049,7 +1054,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     }
 
     const others = Object.values(npcs).filter((n) => n.mesh.visible).map((n) => n.mesh.position);
-    fp.update(dt, { colliders: world ? world.colliders : [], others, bounds: BOUNDS, canMove: mode === 'play', idleSpin: mode === 'menu' || mode === 'companies' || mode === 'away', speed: hungry() ? 0.72 : 1 });
+    fp.update(dt, { colliders: world ? world.colliders : [], others, bounds: (world && world.bounds) || BOUNDS, canMove: mode === 'play', idleSpin: mode === 'menu' || mode === 'companies' || mode === 'away', speed: hungry() ? 0.72 : 1 });
 
     for (const [id, n] of Object.entries(npcs)) {
       const m = n.mesh, parts = m.userData.parts;
@@ -1090,9 +1095,10 @@ export function startSolo({ scene, camera, input, onExit }) {
     // the office cat: walk the loop, nap at each stop
     if (catState.nap > 0) catState.nap -= dt;
     else {
-      const [tx, tz] = CAT_PATH[(catState.i + 1) % CAT_PATH.length];
+      const CP = catPath();
+      const [tx, tz] = CP[(catState.i + 1) % CP.length];
       const dx = tx - cat.position.x, dz = tz - cat.position.z, d = Math.hypot(dx, dz);
-      if (d < 0.1) { catState.i = (catState.i + 1) % CAT_PATH.length; catState.nap = 5 + Math.random() * 10; }
+      if (d < 0.1) { catState.i = (catState.i + 1) % CP.length; catState.nap = 5 + Math.random() * 10; }
       else { const s = Math.min(d, 0.7 * dt); cat.position.x += dx / d * s; cat.position.z += dz / d * s; cat.rotation.y = angleLerp(cat.rotation.y, Math.atan2(dx, dz) - Math.PI / 2, 0.2); }
     }
     cat.userData.tail.rotation.z = -0.3 + Math.sin(elapsed * 2.5) * 0.3;

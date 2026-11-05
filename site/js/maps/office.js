@@ -5,6 +5,7 @@ import { INK, T, outline, canvasTex, roundRect, textTexture, gradientMap } from 
 import { PROP_SLOTS, SPOTS } from './slots.js';
 import { STYLES, paintFloor, decorate } from './styles.js';
 import { LAYOUTS } from './layouts.js';
+import { MAPS } from './custom/index.js';
 export { SPOTS, SLOT_HELP, PROP_SLOTS, CAT_PATH, PLAYER_START, MEETING_SEAT, PLAYER_DESK, INTERACTABLE_IDS } from './slots.js';
 
 // T&M theme = the original office. Other companies override any of these fields.
@@ -33,6 +34,7 @@ export const DEFAULT_THEME = {
 };
 
 export function buildWorld(scene, themeIn = {}) {
+  if (themeIn.map && MAPS[themeIn.map]) return MAPS[themeIn.map](scene, { ...DEFAULT_THEME, ...themeIn, signs: { ...DEFAULT_THEME.signs, ...(themeIn.signs || {}) }, desks: { ...DEFAULT_THEME.desks, ...(themeIn.desks || {}) }, labels: { ...(themeIn.labels || {}) } });
   const th = { ...DEFAULT_THEME, ...themeIn, signs: { ...DEFAULT_THEME.signs, ...(themeIn.signs || {}) }, desks: { ...DEFAULT_THEME.desks, ...(themeIn.desks || {}) }, labels: { ...(themeIn.labels || {}) } };
   const L = (id, d) => th.labels[id] || d;
   const colliders = [];

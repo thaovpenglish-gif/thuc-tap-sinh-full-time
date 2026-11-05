@@ -3,7 +3,7 @@
 export const COMPANY_LIST = [
   { id: 'tm', style: 'tm', name: 'T&M Partners', emoji: '📊', color: '#c9b6ff', industry: 'Tư vấn chiến lược & quản lý', scale: '~20 người',
     blurb: '"We deliver excellence. Eventually." Buzzword, Scrum Master và những "ý nhỏ" của chị Chủ tịch.', toxic: 3, ready: true },
-  { id: 'bama', style: 'workshop', layout: 'bama', name: 'Ba & Má', emoji: '🍖', color: '#ffd3b8', industry: 'Sản xuất & bán khô gà, khô bò, trái cây sấy', scale: '~20 người + xưởng',
+  { id: 'bama', style: 'workshop', map: 'bama', name: 'Ba & Má', emoji: '🍖', color: '#ffd3b8', industry: 'Sản xuất & bán khô gà, khô bò, trái cây sấy', scale: '~20 người + xưởng',
     blurb: 'Công ty gia đình. Ba là CEO, Má giữ két, con trai làm "Head of Innovation". Livestream mỗi tối.', toxic: 4, ready: true },
   { id: 'tech', style: 'startup', name: 'Nợ Kỹ Thuật Labs', emoji: '💻', color: '#bfe3ff', industry: 'Công nghệ · startup app', scale: '~80 người',
     blurb: 'Văn hóa "flat", deploy chiều thứ Sáu, on-call cuối tuần và một vòng gọi vốn "sắp xong".', toxic: 3, ready: true },
