@@ -84,12 +84,18 @@ export function buildWorld(scene, themeIn = {}) {
     wall: '#fff4e6', lilac: '#e3d9ff', peach: '#ffe0d6', mint: '#d6f5e8', butter: '#fff1b8', sky: '#d9eeff',
     desk: '#fffaf2', deskLeg: '#c9b6ff', chair: '#b8f0d8', chair2: '#ffc8dd', wood: '#f2c99a', woodDark: '#d9a273',
     plant: '#8fd6a0', pot: '#ffb39a', ink: INK,
+    // shell colours (reception, signs, meeting room, pantry): every company can repaint these
+    rug: '#ffc8dd', recDesk: '#ffc8dd', recWall: '#c9b6ff', logoBg: '#fff8ef', logoFg: INK,
+    sign1: '#c9b6ff', sign2: '#b8f0d8', sign3: '#ffc2b3', sign4: '#ffe9a0', board: '#ffd3b8',
+    meetChairs: ['#b8f0d8', '#ffc8dd', '#c9b6ff', '#ffe9a0', '#bfe3ff'], counter: '#ffe9a0', fridge: '#bfe3ff', stool1: '#bfe3ff', stool2: '#b8f0d8', altar: '#ff8fa3',
     ...(th.palette || {}),
   };
   const STY = STYLES[th.style] || STYLES.tm;
   const LAY = (th.layout && LAYOUTS[th.layout]) || null;
   if (LAY && LAY.signs) Object.assign(th.signs, LAY.signs);
   if (STY.wall) P.wall = STY.wall;
+  if (LAY && LAY.palette) Object.assign(P, LAY.palette);
+  const owns = (id) => !!(LAY && LAY.objects && LAY.objects.includes(id));
   const glassMat = new THREE.MeshBasicMaterial({ color: '#cfe9ff', transparent: true, opacity: 0.28, depthWrite: false });
 
   // ---------- floor & ceiling ----------
@@ -100,7 +106,7 @@ export function buildWorld(scene, themeIn = {}) {
   floor.rotation.x = -Math.PI / 2;
   root.add(floor);
   // pastel rug at the entrance
-  const rug = new THREE.Mesh(new THREE.CircleGeometry(1.6, 40), T('#ffc8dd'));
+  const rug = new THREE.Mesh(new THREE.CircleGeometry(1.6, 40), T(P.rug));
   rug.rotation.x = -Math.PI / 2; rug.position.set(0, 0.006, 7.4); root.add(rug);
   const rugO = new THREE.Mesh(new THREE.RingGeometry(1.6, 1.66, 40), new THREE.MeshBasicMaterial({ color: INK }));
   rugO.rotation.x = -Math.PI / 2; rugO.position.set(0, 0.007, 7.4); root.add(rugO);
@@ -207,7 +213,7 @@ export function buildWorld(scene, themeIn = {}) {
   interactables.push({ id: 'plant', label: L('plant', 'Xem cây kim tiền'), pos: new THREE.Vector3(-8, 1, -9.2) });
   }
 
-  sign(th.signs.boss, '#c9b6ff', -6.9, 2.3, -5.5, Math.PI / 2);
+  sign(th.signs.boss, P.sign1, -6.9, 2.3, -5.5, Math.PI / 2);
 
   // ---------- Finance (NE): peach ----------
   const peachFloor = new THREE.Mesh(new THREE.PlaneGeometry(8, 6), T(P.peach));
@@ -228,8 +234,8 @@ export function buildWorld(scene, themeIn = {}) {
   interactables.push({ id: 'safe', label: L('safe', 'Nhìn két sắt'), pos: new THREE.Vector3(13.6, 0.8, -8.8) });
   }
 
-  sign(th.signs.finance, '#ffc2b3', 8.75, 2.25, -3.88, 0);
-  const banner = textTexture([th.banner], { w: 1024, h: 128, bg: '#ffe9a0', sizes: [54], weights: [900] });
+  sign(th.signs.finance, P.sign3, 8.75, 2.25, -3.88, 0);
+  const banner = textTexture([th.banner], { w: 1024, h: 128, bg: P.sign4, sizes: [54], weights: [900] });
   plane(4.6, 0.58, basic(banner), 12.3, 2.35, -3.88, 0);
 
   // ---------- War Room (W): mint ----------
@@ -241,13 +247,14 @@ export function buildWorld(scene, themeIn = {}) {
   box(8, H, Tk, P.mint, -11, 0, 5, true, 0, 0);
   box(5.2, 0.72, 1.5, P.desk, -11, 0, 0.5, true);
   box(5.3, 0.06, 1.6, P.wood, -11, 0.72, 0.5, false);
-  const chairCols = ['#b8f0d8', '#ffc8dd', '#c9b6ff', '#ffe9a0', '#bfe3ff'];
+  const chairCols = P.meetChairs;
   for (let i = 0; i < 5; i++) {
     const x = -13 + i;
     box(0.45, 0.1, 0.45, chairCols[i], x, 0.4, -1.25, false); box(0.45, 0.5, 0.08, chairCols[i], x, 0.5, -1.47, false);
     box(0.45, 0.1, 0.45, chairCols[4 - i], x, 0.4, 2.25, false); box(0.45, 0.5, 0.08, chairCols[4 - i], x, 0.5, 2.47, false);
   }
   for (let i = 0; i < 4; i++) { cyl(0.16, 0.14, 0.03, '#ffffff', -12.5 + i, 0.78, 0.5, 20, 0.01); sphere(0.11, '#ff7a6b', -12.5 + i, 0.86, 0.5, 0.015); }
+  if (!owns('retro')) {
   // retro board on the south wall
   const retroTex = canvasTex(1024, 560, (g, w, h) => {
     g.fillStyle = '#ffffff'; roundRect(g, 4, 4, w - 8, h - 8, 26); g.fill(); g.strokeStyle = INK; g.lineWidth = 8; g.stroke();
@@ -260,19 +267,23 @@ export function buildWorld(scene, themeIn = {}) {
     });
   });
   plane(2.4, 1.3, basic(retroTex), -11, 1.7, 4.88, Math.PI);
+  }
   interactables.push({ id: 'interview', label: L('interview', 'Ngồi vào ghế phòng họp'), pos: new THREE.Vector3(-11, 0.8, 2.2) });
-  sign(th.signs.meeting, '#b8f0d8', -6.9, 2.3, 1.8, Math.PI / 2);
+  sign(th.signs.meeting, P.sign2, -6.9, 2.3, 1.8, Math.PI / 2);
 
   // ---------- Reception ----------
-  box(3.4, 0.82, 0.7, '#ffc8dd', -4, 0, 6.4, true);
-  box(3.5, 0.06, 0.8, P.desk, -4, 0.82, 6.4, false);
-  box(4.4, 2.6, 0.2, '#c9b6ff', -4, 0, 4.4, true);
-  const logo = textTexture(th.logo, { w: 1024, h: 512, bg: '#fff8ef', sizes: [92, 40, 34], weights: [900, 700, 500] });
+  box(4.4, 2.6, 0.2, P.recWall, -4, 0, 4.4, true);
+  const logo = textTexture(th.logo, { w: 1024, h: 512, bg: P.logoBg, fg: P.logoFg, sizes: [92, 40, 34], weights: [900, 700, 500] });
   plane(4.1, 2.05, basic(logo), -4, 1.6, 4.52, 0);
-  cyl(0.06, 0.08, 0.06, '#ffe08a', -3.2, 0.88, 6.3, 12, 0.01);
+  if (LAY && LAY.reception) LAY.reception({ THREE, box, cyl, sphere, plane, basic, textTexture, P, collideRect, root });
+  else {
+    box(3.4, 0.82, 0.7, P.recDesk, -4, 0, 6.4, true);
+    box(3.5, 0.06, 0.8, P.desk, -4, 0.82, 6.4, false);
+    cyl(0.06, 0.08, 0.06, '#ffe08a', -3.2, 0.88, 6.3, 12, 0.01);
+  }
 
   // ---------- Altar (Thần Tài) ----------
-  box(1.0, 0.7, 0.55, '#ff8fa3', 4, 0, 9.5, true);
+  box(1.0, 0.7, 0.55, P.altar, 4, 0, 9.5, true);
   box(1.1, 0.06, 0.62, '#ffe08a', 4, 0.7, 9.5, false);
   box(1.0, 0.6, 0.05, '#ff6f8a', 4, 0.76, 9.78, false, 0, 0.015);
   sphere(0.11, '#ffd25a', 3.75, 0.9, 9.55); cyl(0.09, 0.12, 0.14, '#ffd25a', 3.75, 0.76, 9.55);
@@ -388,17 +399,19 @@ export function buildWorld(scene, themeIn = {}) {
   const butterFloor = new THREE.Mesh(new THREE.PlaneGeometry(6, 7), T(P.butter));
   butterFloor.rotation.x = -Math.PI / 2; butterFloor.position.set(12, 0.004, 1.5); root.add(butterFloor);
   box(0.7, 0.9, 5.2, '#ffffff', 14.6, 0, 1.6, true);
-  box(0.75, 0.06, 5.2, '#ffe9a0', 14.6, 0.9, 1.6, false);
-  box(0.8, 1.9, 0.8, '#bfe3ff', 14.5, 0, -1.6, true);
+  box(0.75, 0.06, 5.2, P.counter, 14.6, 0.9, 1.6, false);
+  box(0.8, 1.9, 0.8, P.fridge, 14.5, 0, -1.6, true);
   cyl(0.18, 0.18, 0.25, '#ffffff', 14.6, 0.96, 0.4);
   box(0.35, 0.45, 0.35, '#ffc8dd', 14.6, 0.96, 3.6, false);
   interactables.push({ id: 'coffee', label: L('coffee', 'Pantry: ăn uống, cà phê'), pos: new THREE.Vector3(14.4, 1.1, 3.6) });
-  box(2.0, 0.72, 1.0, '#ffffff', 11.6, 0, 1.2, true);
-  for (let i = 0; i < 3; i++) { cyl(0.17, 0.2, 0.42, '#bfe3ff', 10.9 + i * 0.7, 0, 0.35); cyl(0.17, 0.2, 0.42, '#b8f0d8', 10.9 + i * 0.7, 0, 2.05); }
-  box(0.5, 0.1, 0.5, '#ff5a6e', 10.2, 0.4, 1.2, false); box(0.1, 0.6, 0.5, '#ff5a6e', 9.98, 0.45, 1.2, false);
-  interactables.push({ id: 'redchair', label: L('redchair', 'Nhìn chiếc ghế đỏ'), pos: new THREE.Vector3(10.2, 0.6, 1.2) });
+  box(2.0, 0.72, 1.0, P.desk, 11.6, 0, 1.2, true);
+  for (let i = 0; i < 3; i++) { cyl(0.17, 0.2, 0.42, P.stool1, 10.9 + i * 0.7, 0, 0.35); cyl(0.17, 0.2, 0.42, P.stool2, 10.9 + i * 0.7, 0, 2.05); }
+  if (!owns('redchair')) {
+    box(0.5, 0.1, 0.5, '#ff5a6e', 10.2, 0.4, 1.2, false); box(0.1, 0.6, 0.5, '#ff5a6e', 9.98, 0.45, 1.2, false);
+    interactables.push({ id: 'redchair', label: L('redchair', 'Nhìn chiếc ghế đỏ'), pos: new THREE.Vector3(10.2, 0.6, 1.2) });
+  }
   cyl(0.2, 0.18, 0.18, '#ffffff', 11.6, 0.72, 1.2);
-  const pantrySign = textTexture([th.signs.pantry], { w: 768, h: 128, bg: '#ffe9a0', sizes: [54] });
+  const pantrySign = textTexture([th.signs.pantry], { w: 768, h: 128, bg: P.sign4, sizes: [54] });
   plane(2.6, 0.43, basic(pantrySign), 14.88, 2.35, 1.6, -Math.PI / 2);
 
   // ---------- decorations ----------
@@ -415,7 +428,7 @@ export function buildWorld(scene, themeIn = {}) {
     for (let i = 1; i <= 12; i++) { const a = i / 12 * Math.PI * 2; g.fillText(i, 128 + Math.sin(a) * 88, 128 - Math.cos(a) * 88); }
   });
   plane(0.6, 0.6, basic(clockTex), 0, 2.45, 9.88, Math.PI);
-  const board = textTexture(th.board, { w: 768, h: 420, bg: '#ffd3b8', sizes: [52, 34, 34] });
+  const board = textTexture(th.board, { w: 768, h: 420, bg: P.board, sizes: [52, 34, 34] });
   plane(1.8, 1.0, basic(board), -8, 1.6, 9.88, Math.PI);
 
   // ---------- company props (in free prop slots) ----------

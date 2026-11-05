@@ -13,6 +13,32 @@ export const LAYOUTS = {
   // to the safe, watching every đồng that comes in or goes out; the old finance room is the finished-goods store.
   bama: {
     signs: { finance: 'KHO THÀNH PHẨM', boss: 'PHÒNG BA (UỐNG TRÀ)' },
+    objects: ['desk', 'printer', 'okr', 'redchair', 'plant', 'safe', 'retro'],
+    // warm family-shop palette: terracotta walls, wood, lantern red, Tết gold
+    palette: {
+      wall: '#f9dcc0', lilac: '#e2bf94', peach: '#e9cfac', mint: '#f2d6b3', butter: '#ffdca0', sky: '#ffe6c7',
+      desk: '#f2d2a9', deskLeg: '#8b5a2b', chair: '#c0392b', chair2: '#e67e22', wood: '#c98f5a', woodDark: '#9c6a3f',
+      rug: '#c0392b', recWall: '#a93226', logoBg: '#fff3d6', logoFg: '#7b1a12',
+      sign1: '#ffcc66', sign2: '#f5b37a', sign3: '#e8a87c', sign4: '#ffd25a', board: '#ffb38a',
+      meetChairs: ['#c0392b', '#e67e22', '#f1c40f', '#c0392b', '#e67e22'], counter: '#d98c4a', fridge: '#e8d5b5',
+      stool1: '#ff5a3c', stool2: '#ffb347', altar: '#d63031', plant: '#4f8a4f', pot: '#8b5a3c',
+    },
+    // reception = the family shop's retail counter with a glass display case of jars
+    reception(H) {
+      const { THREE, box, cyl, plane, basic, textTexture, collideRect } = H;
+      box(3.6, 0.95, 0.75, '#7a4a26', -4, 0, 6.4, false);
+      box(3.4, 0.6, 0.02, '#c0392b', -4, 0.2, 6.78, false, 0, 0);
+      box(3.7, 0.05, 0.85, '#e8c39a', -4, 0.95, 6.4, false);
+      collideRect(-5.85, -2.15, 6.0, 6.8);
+      const glass = new THREE.MeshBasicMaterial({ color: '#e8f6ff', transparent: true, opacity: 0.35, depthWrite: false });
+      const caseMesh = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.5, 0.55), glass); caseMesh.position.set(-4.3, 1.25, 6.4); H.root.add(caseMesh);
+      const fill = ['#8b3a1a', '#a0522d', '#e1a23c', '#c0703a', '#f39c12', '#8b3a1a'];
+      for (let i = 0; i < 6; i++) { const x = -5.35 + i * 0.42; cyl(0.12, 0.12, 0.28, fill[i], x, 1.0, 6.4, 14, 0.012); cyl(0.13, 0.13, 0.05, '#ffd25a', x, 1.28, 6.4, 14, 0.01); }
+      box(0.45, 0.25, 0.3, '#333333', -2.5, 0.98, 6.3, false, 0, 0.012);
+      const tag = textTexture(['BÁN LẺ · ĂN THỬ', 'Khô gà 120k · Khô bò 180k'], { w: 768, h: 256, bg: '#ffd25a', fg: '#7b1a12', sizes: [64, 44] });
+      plane(1.6, 0.53, basic(tag), -4, 0.55, 6.79, 0);
+      for (const x of [-6.5, -1.5]) { cyl(0.004, 0.004, 0.5, '#333333', x, 2.5, 4.6, 4, 0); const l = H.sphere ? null : null; void l; cyl(0.24, 0.24, 0.45, '#e74c3c', x, 1.95, 4.6, 16, 0.02); cyl(0.14, 0.14, 0.05, '#ffd25a', x, 2.4, 4.6, 12, 0.01); cyl(0.14, 0.14, 0.05, '#ffd25a', x, 1.92, 4.6, 12, 0.01); }
+    },
     spots: {
       boss: [-11.6, -7.0, PI / 2],     // Ba at his tea table
       finance: [4.9, 8.0, -PI / 2],    // Má behind her desk by the door, facing the entrance
@@ -28,6 +54,9 @@ export const LAYOUTS = {
     },
     build(H) {
       const { THREE, box, cyl, sphere, plane, basic, sign, textTexture, collideRect, interactables, P } = H;
+      // meeting room: a family calendar instead of a retro board
+      const cal = textTexture(['LỊCH NHÀ MÌNH', 'Rằm: cúng · 12.12: sale', 'Tết: không ai được nghỉ'], { w: 768, h: 420, bg: '#fff3d6', fg: '#7b1a12', sizes: [64, 44, 44] });
+      plane(2.4, 1.3, basic(cal), -11, 1.7, 4.88, PI);
       const wood = '#c98f5a', woodDark = '#9c6a3f';
       // ---- family table (bàn ăn dài) ----
       box(7.0, 0.08, 1.3, wood, -1, 0.72, -1.2, false, 0, 0.025);
