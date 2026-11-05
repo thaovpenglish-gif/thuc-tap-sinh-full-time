@@ -28,6 +28,36 @@ by a research agent; legal wording should be re-checked if the labour code is am
 
 **Tests**: reachability audit per map; 3D e2e on every map; full 45-day run of all 7 companies on live maps + legacy.
 
+## 2026-11-05 — Multiplayer prototype: Overdeadline & Overburnout
+
+**Asked by the Game Owner:** a multiplayer mode where the players are a consultancy that fixes crises for the 7 Solo
+companies, played like a co-op order-rush game; name **SOS Advisory**, **co-op only**, feel of the co-op cooking games
+played inside Messenger (tap a link, short rounds, phones). Built in parallel with Solo, behind `?mp=1`.
+
+- Design: `docs/MULTIPLAYER_DESIGN.md` (7 levels = 7 client companies, one signature mechanic each).
+- Prototype level **T&M**: 3 recipes (slide, report, signed deck), laptop work, printer that ruins prints left too long,
+  boss sign-off with "vài ý nhỏ", stand-up bell that traps players near the Scrum board, per-player burnout
+  (coffee, collapse, dropped items), 3-minute round, 1–3 stars, Tuyết's verdict.
+- Rooms: 5-character code + invite link (`?mp=1&room=CODE`), Supabase Realtime presence/broadcast, host-authoritative
+  rules (`game/mp/engine.js`), positions sent by each client. `?net=local` uses BroadcastChannel for 2-tab tests;
+  "Tập một mình" needs no network.
+- New files only (plus additive hooks in `main.js`, `flags.js`); Solo code untouched. 10 unit tests + 2-player e2e.
+- Game Owner feedback "chưa giống văn phòng nhiều phòng, chưa thấy khách": the T&M level is now a multi-room office
+  (work area, print room, glass chairperson's office, corridor with the Scrum board, pantry, meeting room, client
+  lobby with reception) and every order is a T&M person who walks into the lobby, waits with a bubble + patience bar,
+  and leaves happy or angry. Orders carry `client` and `spot`; engine emits `served` / `gone`.
+- Deployed to `main` (behind `?mp=1`) and tested over real Supabase on the live site.
+- More tasks (asked by the Game Owner): tea (pantry), Excel reconciliation, meeting minutes (new huddle table in the
+  meeting room), signed contract (contract shelf → printer → boss). Station rules moved from the engine into a
+  per-level `process` table (`DEFAULT_PROCESS` as fallback) so each company can define its own stations.
+- Pacing by team size (Game Owner: alone should be slower than 4 players): per-level `pace` rows for 1–4 players
+  (gap between clients, patience multiplier, clients waiting at once, opening orders); an empty lobby refills in 5 s.
+- Game Owner: show it on the main menu. The `mp` flag is now on by default (beta card); `?mp=0` hides it.
+- Game Owner got stuck ("lấy slide ở đâu?"): tickets now show the whole chain, and a 📖 recipe book (HUD button, `H`,
+  room screen) explains every task step by step, with tips.
+- Developer letter: new "🚨 Mới: Overdeadline & Overburnout" section (what it is, invite, one button, 📖, burnout,
+  playing alone, beta + privacy note) and a "Chơi Overdeadline →" button; hidden with `?mp=0`.
+
 ## 2026-11-05 — QC round 1 and publish
 
 **Story QC** (one picky-player agent per company read every scene; ~250 fixes in total): times that contradicted each

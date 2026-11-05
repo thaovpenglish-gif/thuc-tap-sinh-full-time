@@ -11,8 +11,9 @@ A satirical Vietnamese office game. The player is an **intern** ("thực tập s
 3D office. Tone: funny, "đời", a little mean when it fits; Vietnamese–English corporate jargon. No game over: when a
 job ends you apply somewhere else.
 
-Modes: **Solo** (this document) · **Multiplayer** (button shows "Sắp ra mắt"; planned with an elevated third-person
-camera, Supabase host-authoritative) · **Legacy story** "Ba Mẹ & Partners" kept intact at `?legacy=1`.
+Modes: **Solo** (this document) · **Multiplayer "Overdeadline & Overburnout"** (SOS Advisory, co-op; beta card on
+the main menu, `?mp=0` hides it; design in `docs/MULTIPLAYER_DESIGN.md`) ·
+**Legacy story** "Ba Mẹ & Partners" kept intact at `?legacy=1`.
 
 ## 2. Solo flow (every screen has a way back)
 
@@ -136,4 +137,4 @@ a mini-game makes it publish its answer key (used by the e2e to check that a per
   live when `meta.styleLive` is true (preview any company's map with `?styles=1`; the agency has `?tone=pop|loft|gallery`).
   A map must define every slot name the content uses; `node tests/e2e/map-reach.cjs` checks that every interactable,
   cast spot and meeting seat is reachable on foot from the player start.
-- Multiplayer (Office Chaos) is deferred.
+- Multiplayer is built in parallel: see `docs/MULTIPLAYER_DESIGN.md` (beta on the main menu).

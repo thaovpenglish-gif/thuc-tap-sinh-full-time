@@ -482,3 +482,6 @@ body.nb-open #toasts { display: none; }
 .pr-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .pr-score { font-size: 40px; font-weight: 900; text-align: center; }
 .pr-learn { font-weight: 700; margin: 3px 0; }
+.letter-mp { background: var(--lilac-2); border: 2px solid var(--ink); border-radius: 16px; padding: 4px 14px 8px; margin: 14px 0 6px; }
+.letter-mp h3 { margin-top: 10px; }
+.letter-note { font-size: 13px; color: var(--muted); }

@@ -8,4 +8,7 @@ export const FLAGS = {
   giao: params.get('giao') === '1',
   // per-company office styles/layouts: in progress, approved one company at a time — preview with ?styles=1
   officeStyles: params.get('styles') === '1',
+  // Multiplayer "Overdeadline & Overburnout" (SOS Advisory): open on the main menu as a beta (Game Owner, 2026-11-05).
+  // ?mp=0 hides it again (back to "Sắp ra mắt").
+  mp: params.get('mp') !== '0',
 };

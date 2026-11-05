@@ -43,6 +43,18 @@ async function startSolo() {
   active = solo;
 }
 
+// Multiplayer "Overdeadline & Overburnout" (behind ?mp=1). Leaving it reloads the page: the room scene is torn down cleanly.
+async function startMulti() {
+  $('#mainMenu').hidden = true;
+  const { startMulti: start } = await import('./modes/multi.js');
+  active = start({
+    scene, camera, rig, input,
+    params: new URLSearchParams(location.search),
+    onExit: () => { location.href = location.pathname + '?mp=1'; },
+  });
+  window.__mp = active.debug; // e2e hooks (tests/e2e/mp-local.cjs)
+}
+
 async function startLegacy() {
   // The original story (Ba Mẹ & Partners), kept intact at ?legacy=1.
   $('#mainMenu').hidden = true;
@@ -57,10 +69,13 @@ function showLetter(thenPlay) {
   $('#devLetter').hidden = false;
   $('#devLetter').scrollTop = 0;
   $('#letterGiao').hidden = !(SUPPORT_URL || FLAGS.giao);
+  $('#letterMp').hidden = !FLAGS.mp;
+  $('#letterMpGo').hidden = !FLAGS.mp;
   $('#letterGo').textContent = thenPlay ? 'Đã hiểu, vào chơi →' : 'Vào chơi Solo →';
   const close = () => { $('#devLetter').hidden = true; try { localStorage.setItem(LETTER_KEY, '1'); } catch { /* private mode */ } };
   $('#letterGo').onclick = () => { close(); startSolo(); };
   $('#letterClose').onclick = () => { close(); showMainMenu(); };
+  $('#letterMpGo').onclick = () => { close(); startMulti(); };
 }
 const letterSeen = () => { try { return !!localStorage.getItem(LETTER_KEY); } catch { return false; } };
 
@@ -71,12 +86,20 @@ function showMainMenu() {
   document.querySelectorAll('[data-soon]').forEach((b) => {
     b.onclick = () => { $('#menuNote').hidden = false; };
   });
+  const mp = document.querySelector('[data-soon="mp"]');
+  if (FLAGS.mp && mp) {
+    mp.innerHTML = '<span class="mode-ico">🚨🏃‍♀️🏃</span><b>Overdeadline<br>&amp; Overburnout</b><span>SOS Advisory · co-op 1–4 người</span><em class="go">Bản thử →</em>';
+    mp.onclick = () => startMulti();
+    $('#letterBtn').textContent = '💌 Thư từ người làm game · cách lưu tiến trình · 🚨 Multiplayer mới';
+  }
 }
 
 async function boot() {
   try { await Promise.race([document.fonts.load('900 40px "Be Vietnam Pro"'), sleep(2500)]); } catch { /* fonts optional */ }
   if (FLAGS.legacyStory) {
     await startLegacy();
+  } else if (FLAGS.mp && new URLSearchParams(location.search).get('room')) {
+    await startMulti(); // opened from an invite link
   } else {
     showMainMenu();
   }
