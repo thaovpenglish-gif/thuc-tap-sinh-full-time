@@ -60,6 +60,17 @@ export const MP_CSS = `
 .mp-banner { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); background: #fff; border: 3px solid var(--ink); border-radius: 22px; box-shadow: var(--pop-lg); padding: 14px 22px; font-weight: 900; font-size: 22px; text-align: center; }
 .mp-banner.big { font-size: 64px; padding: 10px 34px; }
 .mp-banner small { display: block; font-size: 13px; font-weight: 700; color: var(--muted); margin-top: 4px; }
+.mp-btns { display: flex; gap: 8px; }
+.mp-book-btn.on { background: var(--butter); }
+#mpRoot .mp-book { pointer-events: auto; position: fixed; right: 10px; top: 128px; width: min(400px, calc(100vw - 20px)); max-height: calc(100vh - 140px); overflow: auto; background: #fff; border: 3px solid var(--ink); border-radius: 20px; box-shadow: var(--pop-lg); padding: 12px 14px 14px; z-index: 20; }
+.mp-book-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 17px; }
+.mp-book-head .icon-btn { width: 38px; height: 38px; font-size: 16px; flex: none; }
+.mp-book-sub { font-size: 12px; margin: 4px 0 8px; }
+.mp-rec { border: 2px solid var(--ink); border-radius: 14px; padding: 8px 10px; margin-top: 8px; background: #fff8ef; }
+.mp-rec.tips { background: var(--lilac-2); }
+.mp-rec-h { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; }
+.mp-rec-h span { font-weight: 800; color: var(--muted); font-size: 12.5px; }
+.mp-rec ol, .mp-rec ul { margin: 4px 0 0; padding-left: 20px; font-size: 13px; line-height: 1.45; }
 #mpAct { position: absolute; right: 22px; bottom: 34px; width: 92px; height: 92px; border-radius: 50%; border: 3px solid var(--ink); background: var(--butter); box-shadow: var(--pop); font-size: 15px; font-weight: 900; pointer-events: auto; touch-action: none; line-height: 1.1; }
 #mpAct:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
 .mp-stars { font-size: 46px; letter-spacing: 6px; margin: 6px 0; }
@@ -85,5 +96,6 @@ body.mp-touch .mp-hint { bottom: auto; top: 118px; }
   .mp-members { grid-template-columns: 1fr; }
   .mp-code { font-size: 36px; }
   body.mp-touch .mp-hint { top: auto; bottom: 150px; }
+  #mpRoot .mp-book { top: 64px; max-height: calc(100vh - 80px); }
 }
 `;
