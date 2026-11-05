@@ -199,7 +199,7 @@ export const LEVELS = {
     standup: {
       board: { x: 3.4, z: 0.4 }, radius: 2.0, at: [55, 120], warn: 5, length: 7,
       coach: TM.dat,
-      warnText: 'Anh Đạt: "Cả nhà ơi 5 giây nữa stand-up nha!" Tránh xa bảng Scrum giữa hành lang!',
+      warnText: 'Anh Đạt: "5 giây nữa stand-up!" Tránh xa bảng Scrum',
       line: 'Anh Đạt: "15 phút thôi."',
     },
     // what each station kind does here (see DEFAULT_PROCESS in engine.js)
@@ -358,14 +358,14 @@ export const LEVELS = {
     // signature events of this level
     flash: {
       at: [50, 112, 158], warn: 4, count: 2, bonus: 1.5, patience: 0.8, recipes: ['an_thu', 'fruit', 'ga'],
-      warnText: 'Út Mi: "Cả nhà iu ơi 3, 2, 1… FLASH SALE nè!"',
-      text: 'Út Mi: "Chốt đơn! Chốt đơn!"',
+      warnText: 'Út Mi: "3, 2, 1… FLASH SALE!"',
+      text: 'Chốt đơn!',
     },
     powerCut: {
       at: [80, 140], warn: 3, stations: ['dryer1', 'dryer2'],
-      warnText: 'Má đi ngang xưởng, tay cầm sổ…',
-      text: 'Má: "Lò sấy chạy mà không ai đứng coi? Tắt! Tốn điện!" Cầu dao ở trong phòng Má, ngay sau lưng Má. Chạy vào bật lại!',
-      backLine: 'Má (từ xa): "Ai bật đó?"',
+      warnText: 'Má đang đi ngang xưởng…',
+      text: 'Má tắt lò sấy! Cầu dao ở phòng Má',
+      backLine: 'Có điện lại. Má: "Ai bật đó?"',
     },
 
     process: {
@@ -536,19 +536,19 @@ export const LEVELS = {
     ],
 
     // signature events of this level
-    decay: { types: ['cv_ok', 'interviewed', 'offer_draft'], after: 14, to: 'ghost', text: 'Ứng viên đã ghost. Vứt đi tìm người khác!' },
+    decay: { types: ['cv_ok', 'interviewed', 'offer_draft'], after: 14, to: 'ghost', text: 'Ứng viên ghost!' },
     powerCut: {
       at: [72, 138], warn: 3, stations: ['ats1', 'ats2', 'ats3'], icon: '💥',
-      warnText: 'Phát: "Ai vừa sort một cột trong file ATS 14.000 dòng vậy…"',
-      text: 'ATS sập! Google Sheets đứng hình, không lọc được CV. Ra bàn IT của Phát (góc C&B) bấm restart.',
+      warnText: 'Phát: "Ai vừa sort cột vậy…"',
+      text: 'ATS sập! Restart ở bàn IT của Phát',
       offSign: 'ATS sập', fixSign: 'Restart ở đây!', offHint: 'đang đứng hình! Ra bàn IT của Phát restart 💥',
-      fixHint: 'Restart ATS 💥', fixVerb: 'restart ATS', backLine: 'Phát: "Em restart máy thử chưa? …Rồi, chạy rồi."',
+      fixHint: 'Restart ATS 💥', fixVerb: 'restart ATS', backLine: 'ATS chạy lại rồi',
     },
     standup: {
       board: { x: 2.7, z: -2.4 }, radius: 1.7, at: [48, 118], warn: 5, length: 7,
       coach: HR.khoa,
       boardText: ['KPI: 40 CV/NGÀY', 'Đã ghost: 12 😶', 'Placement: 1'],
-      warnText: 'Anh Khoa: "Trước khi làm tiếp, mình chơi một icebreaker nhỏ nhé!" Tránh xa bảng KPI!',
+      warnText: 'Anh Khoa: "Icebreaker nhé!" Tránh xa bảng KPI',
       line: 'Anh Khoa: "Ba từ mô tả bản thân. Không được dùng từ mệt."',
     },
 
@@ -701,16 +701,16 @@ export const LEVELS = {
     },
     powerCut: {
       at: [66, 132], warn: 3, stations: ['kol'], icon: '🌟',
-      warnText: 'Chị Kiều: "Ủa KOL không seen tin nhắn chị…"',
-      text: 'KOL bùng! Bàn KOL ngừng nhận việc. Ra điện thoại dự phòng (góc Media) gọi KOL khác.',
+      warnText: 'Chị Kiều: "KOL không seen…"',
+      text: 'KOL bùng! Gọi KOL dự phòng (góc Media)',
       offSign: 'KOL bùng', fixSign: 'Gọi KOL khác!', offHint: 'đang bị KOL bùng! Gọi KOL dự phòng ở góc Media 📞',
-      fixHint: 'Gọi KOL dự phòng 📞', fixVerb: 'gọi được KOL dự phòng', backLine: 'Chị Kiều: "KOL này sạch, chị check rồi."',
+      fixHint: 'Gọi KOL dự phòng 📞', fixVerb: 'gọi được KOL dự phòng', backLine: 'Có KOL mới rồi',
     },
     standup: {
       board: { x: 5.6, z: 0.2 }, radius: 1.5, at: [50, 120], warn: 5, length: 7,
       coach: AG.diep,
       boardText: ['WIP 9:45', 'AI ĐANG CHÁY?', 'Ông Táo: KV v14'],
-      warnText: 'Chị Diệp: "Cả nhà ơi WIP nhanh 5 phút nha!" Tránh xa bảng WIP!',
+      warnText: 'Chị Diệp: "WIP 5 phút nha!" Tránh xa bảng WIP',
       line: 'Chị Diệp: "Em ơi… à không, chị chỉ hỏi tiến độ thôi."',
     },
 

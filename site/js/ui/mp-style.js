@@ -139,7 +139,7 @@ export const MP_CSS = `
 body.mp-touch .mp-hint { bottom: auto; top: 118px; }
 /* while playing, toasts sit at the bottom (above the hint) instead of over the back row of stations */
 body.mp-play #toasts { top: auto; bottom: 66px; flex-direction: column-reverse; max-height: 34vh; overflow: hidden; }
-body.mp-play .toast:nth-last-child(n+4) { display: none; }
+body.mp-play .toast:nth-last-child(n+3) { display: none; }
 body.mp-play.mp-touch #toasts { bottom: 200px; width: min(70vw, 420px); }
 @media (max-width: 760px) {
   .mp-top { flex-wrap: wrap; right: 10px; }

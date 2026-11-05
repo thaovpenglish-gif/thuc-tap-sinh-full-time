@@ -464,7 +464,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       lastEvSeq = e.seq;
       if (e.to && e.to !== myId) continue;
       if (e.type === 'served' || e.type === 'gone') { moods[e.order] = e.type === 'served' ? 'happy' : 'angry'; continue; }
-      if (e.type === 'toast') toast(esc(e.text), e.cls || '', 3.2);
+      if (e.type === 'toast') toast(esc(e.text), e.cls || '', 2.4);
       else if (e.type === 'sfx' && sfx[e.name]) sfx[e.name]();
       else if (e.type === 'over' && isHost) finishView();
     }
@@ -743,6 +743,8 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       else if (s.progress > 0) v = s.progress; // someone working on it
       m.userData.bar.set(v, col);
       m.userData.ring.visible = !!myTarget && myTarget.id === s.id;
+      // plain tables ("Bàn ghép", "Bàn") only show their label when you are close: less text on screen
+      if (s.kind === 'counter' && m.userData.label) m.userData.label.visible = Math.hypot(me.x - s.x, me.z - s.z) < 3;
       // power cut: dryers show "mất điện", the breaker blinks
       if (m.userData.off) m.userData.off.visible = s.kind === 'breaker' ? anyOff && Math.sin(animT * 8) > -0.2 : !!s.off;
       if (m.userData.heat) m.userData.heat.material.color.set(s.off ? '#8d93a6' : s.busy ? (Math.sin(animT * 9) > 0 ? '#ff8a3d' : '#ffb46b') : '#ffd9b0');
@@ -800,7 +802,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       // my own tag fades while I stand at a station, so it never hides that station's label
       if (r.id === myId) { const fade = myTarget ? 0.2 : 1; a.tag.material.opacity += (fade - a.tag.material.opacity) * Math.min(1, dt * 10); a.bar.visible = !myTarget; }
       // status bubble
-      const st = collapsed ? '🫠 burnout' : p.meeting > 0 ? '📋 đang họp' : p.working ? '💻 đang làm' : isTired(p) ? '🔥 mệt' : p.jitter > 0 ? '💓 run tay' : '';
+      const st = collapsed ? '🫠' : p.meeting > 0 ? '📋 họp' : isTired(p) ? '🔥 mệt' : p.jitter > 0 ? '💓' : '';
       if (st !== a.statusText) {
         if (a.status) a.mesh.remove(a.status);
         a.status = st ? statusSprite(st) : null;
