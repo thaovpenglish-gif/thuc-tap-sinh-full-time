@@ -265,11 +265,18 @@ Chọn ở sảnh (thẻ "Khách hàng") hoặc host đổi trong phòng chờ; 
   - 📋 **WIP của chị Diệp** (0:50, 2:00): ai đứng gần bảng WIP cạnh quầy client bị kéo vào họp 7 giây.
 - Test: `tests/mp-agency.test.mjs`.
 
+## 8e. Đang phát triển (thẻ demo)
+
+Game Owner chốt: Đi Đâu Cũng Được, Cân Đối & Cộng Sự, Nợ Kỹ Thuật Labs hiện trong phần chọn khách hàng dưới dạng thẻ
+**"🚧 Đang phát triển"** (nền sọc, viền nét đứt), bấm vào chỉ xem giới thiệu, chưa chơi được. Dữ liệu: `COMING_SOON`
+trong `levels.js`. Khi làm xong một màn: thêm vào `LEVELS`, thêm id vào `LEVEL_ORDER` (`modes/multi.js`), bỏ khỏi
+`COMING_SOON`.
+
 ## 9. Lộ trình
 
 1. ✅ **Bản thử** (`?mp=1`): màn T&M, 3 công thức, burnout, phòng online 1–4 người qua mã/link.
 2. Chơi thử thật với 2–4 người → chỉnh tốc độ đơn, thời gian, mốc sao.
-3. ✅ Màn Ba & Má, ✅ HR, ✅ Agency, chọn màn. Tiếp: Event, Audit, Tech, mở màn theo sao.
+3. ✅ Màn Ba & Má, ✅ HR, ✅ Agency, chọn màn. Event, Audit, Tech: thẻ demo "Đang phát triển". Sau: mở màn theo sao.
 4. 3 màn còn lại, âm thanh/hiệu ứng, chuyển host khi host thoát, bỏ cờ `?mp=1`.
 
 ## 10. Câu hỏi còn mở

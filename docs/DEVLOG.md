@@ -49,6 +49,8 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
 - Level 4 **Trend Trễ Agency** "Sửa lần cuối (lần thứ 14)": an old villa around a light well; brief → copy / Mac /
   studio / KOL desk → campaign deck approved by anh Tùng; clients send work back once ("feedback nhẹ"), KOL no-show
   (powerCut on the KOL desk), chị Diệp's WIP (standup).
+- Event, Audit, Tech shown in the picker as "🚧 Đang phát triển" demo cards with a teaser (`COMING_SOON`), not
+  playable yet (Game Owner). Developer letter lists the 4 playable clients.
 
 ## 2026-11-05 — QC round 1 and publish
 

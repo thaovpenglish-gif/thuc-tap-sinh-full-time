@@ -767,3 +767,13 @@ export const LEVELS = {
     stars: [200, 450, 700],
   },
 };
+
+// Client companies announced in the picker but not playable yet ("to be developed").
+export const COMING_SOON = [
+  { id: 'event', emoji: '🎪', client: 'Đi Đâu Cũng Được', title: 'Mưa giữa sự kiện',
+    teaser: 'Dựng sân khấu ngoài trời cho gala. Mưa kéo tới theo đợt: đồ để ngoài bị ướt, phải chuyển sang Plan B trong nhà. Khách đổi ý lúc 23h.' },
+  { id: 'audit', emoji: '🧮', client: 'Cân Đối & Cộng Sự', title: 'Kiểm kê kho lúc 2 giờ sáng',
+    teaser: 'Busy season. Văn phòng tắt đèn dần, chỉ thấy quanh người cầm đèn pin. Kệ chứng từ đổ, phải nhặt lại và tick cho đủ: Nợ = Có.' },
+  { id: 'tech', emoji: '💻', client: 'Nợ Kỹ Thuật Labs', title: 'Deploy chiều thứ Sáu',
+    teaser: 'Ticket Jira → code → review → deploy. Deploy sai là một tủ server bốc lửa, phải cầm "rollback" chạy tới dập trước khi cháy lan.' },
+];
