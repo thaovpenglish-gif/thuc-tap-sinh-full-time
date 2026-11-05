@@ -7,7 +7,10 @@ import { tier as tierInfo, TAX_THRESHOLD, TAX_RATE } from './difficulty.js';
 export const MAX_DAYS = 45;              // an internship run lasts at most 45 calendar days
 export const WORKDAYS_PER_MONTH = 22;
 export const PAYDAY = 30;                // first payslip at the end of day 30; the rest at the end of the run
-export const START_MONEY = 2_000_000;    // pocket money from home
+export const START_MONEY = 4_000_000;    // pocket money from home + savings (rent is due on day 1)
+export const RENT = 1_800_000;           // shared rented room, paid at the start of each month of the run (day 1, day 31)
+export const LOAN = 500_000;             // what a colleague lends you when your wallet is empty
+export const MOM_HELP = 1_000_000;       // calling home, once per run
 export const COMMUTE_COST = 30_000;      // petrol + parking, every workday
 export const OFFICIAL_INSURANCE = 0.105; // employee share: 8% retirement + 1.5% health + 1% unemployment
 export const PERSONAL_DEDUCTION = 15_500_000; // personal deduction per month used in-game (2026)
@@ -141,6 +144,13 @@ export const DRAIN_PER_MIN = 0.07;
 export function hungerState(nl) { return nl < FAINT ? 'faint' : nl < HUNGRY ? 'hungry' : 'ok'; }
 
 // ---------- money & payroll ----------
+/** Rent is due when a new month of the run starts: before day 1 and before day 31. */
+export function rentDue(fromDay, nextDay) { return fromDay === 0 ? nextDay >= 1 : fromDay < 31 && nextDay >= 31; }
+/** Who lends you money: the friendliest colleague in the office (relationship ≥ 1), else null. */
+export function lender(run, castIds) {
+  const best = castIds.map((id) => [id, (run.rel || {})[id] || 0]).filter(([, v]) => v >= 1).sort((a, b) => b[1] - a[1])[0];
+  return best ? best[0] : null;
+}
 /** One workday of pay accrues salary / 22. Status decides which bucket it goes to. */
 export function accrue(run) {
   const per = Math.round((run.salary || 0) / WORKDAYS_PER_MONTH);

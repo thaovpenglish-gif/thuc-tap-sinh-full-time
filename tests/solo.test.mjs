@@ -55,7 +55,7 @@ test('run label reads like the menu entry', () => {
   assert.equal(runLabel(r, (t) => TIERS[t].label), 'T&M Partners · 3 triệu · Ngày 4/45');
   assert.equal(runLabel(newRun({ name: 'x', id: 'q' })), 'T&M Partners · Vòng phỏng vấn');
   assert.equal(runLabel({ ...r, status: 'official' }), 'T&M Partners · Nhân viên chính thức · Ngày 4/45');
-  assert.equal(runLabel({ ...r, ended: { type: 'finish', day: 45 } }, (t) => t), 'T&M Partners · t3 · Đã kết thúc');
+  assert.equal(runLabel({ ...r, ended: { type: 'finish', day: 45 } }, (t) => t), 'T&M Partners · t3 · Hết 45 ngày');
 });
 
 test('validateProfile rejects garbage and repairs partial runs', () => {
@@ -69,7 +69,7 @@ test('validateProfile rejects garbage and repairs partial runs', () => {
   // v1 saves are migrated: company defaults to T&M, pocket money and intern status are filled in
   assert.equal(p.runs.z.company, 'tm');
   assert.equal(p.runs.z.status, 'intern');
-  assert.equal(p.runs.z.money, 2_000_000);
+  assert.equal(p.runs.z.money, 4_000_000);
   assert.deepEqual(p.runs.z.reviews, []);
 });
 

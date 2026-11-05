@@ -66,14 +66,14 @@ export function createCloudPanel(opts) {
     busy = true; $('#cloudLogin').disabled = true; $('#cloudLogin').textContent = 'Đang kết nối…';
     try {
       const r = await cloud.login(email, pass);
-      if (!r.ok) { toast(`☁️ ${ERR[r.error] || 'Không đăng nhập được.'}`, 'bad', 3.5); return; }
+      if (!r.ok) { toast(`☁️ ${ERR[r.error] || 'Không đăng nhập được.'}`, 'bad', 3.5); $('#cloudLogin').disabled = false; $('#cloudLogin').textContent = 'Lưu & đồng bộ'; busy = false; return; }
       const added = r.data ? adopt(r.data) : 0;
       const p = await cloud.push(opts.getProfile());
       lastSync = stamp();
       toast(r.created ? '☁️ Đã tạo tài khoản lưu và đẩy tiến trình lên mây!' : `☁️ Đã đồng bộ${added > 0 ? `: thêm ${added} lượt chơi từ mây` : ''}!`, p.ok ? 'good' : 'bad', 3.5);
       opts.onChanged && opts.onChanged();
-    } catch (err) { console.warn(err); toast('☁️ Không kết nối được máy chủ. Thử lại sau nhé.', 'bad', 3); }
-    finally { busy = false; render(); }
+      busy = false; render();
+    } catch (err) { console.warn(err); toast('☁️ Không kết nối được máy chủ. Thử lại sau nhé.', 'bad', 3); busy = false; $('#cloudLogin').disabled = false; $('#cloudLogin').textContent = 'Lưu & đồng bộ'; }
   }
   async function syncNow(loud) {
     if (!cloud.linked || busy) return;

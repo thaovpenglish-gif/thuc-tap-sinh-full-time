@@ -31,7 +31,7 @@ export const TIERS = {
   t5: {
     id: 't5', salary: 5_000_000, label: '5 triệu', name: 'Consulting Hell', emoji: '💀',
     sideTasks: 5, deadlineMult: 0.8, qa: 0.8, otPressure: 2,
-    expectation: 'Em là gương mặt của đợt intern này. Chị Tuyết sẽ nhớ tên em.',
+    expectation: 'Em là gương mặt của đợt intern này. Sếp sẽ nhớ tên em. Theo cả hai nghĩa.',
     perks: ['Phụ cấp 5 triệu/tháng', 'Laptop mới (không phải đời 2015)', 'Được đi gặp khách', 'Xét chính thức sớm'],
     costs: ['Bị khấu trừ 10% thuế nếu không nộp tờ cam kết', '"OT tự nguyện bắt buộc"', 'Duyệt việc rất khắt khe'],
   },

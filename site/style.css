@@ -207,14 +207,14 @@ kbd { display: inline-block; min-width: 1.6em; padding: 1px 6px; margin: 0 2px; 
   #hudTime { font-size: 11px; }
   .bar { grid-template-columns: 62px 1fr; gap: 6px; font-size: 10px; margin: 3px 0; }
   .track { height: 9px; }
-  .hud-obj { left: 10px; right: 10px; transform: none; max-width: none; min-width: 0; top: 104px; padding: 7px 10px; }
+  .hud-obj { left: 10px; right: 10px; transform: none; max-width: none; min-width: 0; top: 138px; padding: 7px 10px; }
   .obj-arrow { width: 30px; height: 30px; font-size: 13px; }
   #objText { font-size: 13px; }
   .hud-tr { top: 10px; right: 10px; gap: 6px; }
   .icon-btn { width: 40px; height: 40px; font-size: 18px; }
   .pill { padding: 5px 9px; font-size: 12px; }
-  #menuBtn { display: none; }
-  #toasts { top: 166px; }
+  #toasts { top: 186px; }
+  .hud-meta { font-size: 10px; margin-top: 3px; flex-wrap: wrap; gap: 2px 6px; }
   .overlay.title { align-content: start; padding-top: 84px; }
   #dialog { bottom: 10px; padding: 12px; gap: 10px; }
   .dlg-portrait { width: 50px; height: 50px; font-size: 27px; border-radius: 14px; }
@@ -411,3 +411,12 @@ body.ov-open #toasts { top: auto; bottom: 14px; flex-direction: column-reverse; 
 .letter-card h2 { padding-right: 64px; }
 @media (max-width: 560px) { .letter-card { padding: 22px 18px 16px; font-size: 14px; } .letter-card h2 { font-size: 22px; } .letter-stamp { font-size: 26px; right: 14px; } }
 .letter-giao { background: #fff1d6; border: 2px dashed var(--ink); border-radius: 14px; padding: 8px 12px; }
+
+/* QC round 1 fixes */
+.hud-meta span { white-space: nowrap; }
+@media (max-width: 560px) { #online { display: none; } .hud-tl { width: 176px; } }
+body.ov-open #toasts { max-height: 30vh; overflow: hidden; }
+body.ov-open .toast:nth-last-child(n+3) { display: none; }
+body.in-call #hud .hud-obj, body.in-call #hud .hud-tr { visibility: hidden; }
+.letter-card .btns { position: sticky; bottom: -20px; background: #fffdf6; padding: 10px 0 6px; margin-bottom: -6px; border-top: 2px dashed rgba(29,29,31,.15); }
+.small-note { font-size: 12px; margin: -4px 0 8px; }

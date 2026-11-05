@@ -110,3 +110,14 @@ test('one run: life events on roughly half the evenings, moods vary from day to 
     assert.ok(moods.size >= 5, `run ${id}: only ${moods.size} different moods`);
   }
 });
+
+test('rent is due before day 1 and when month 2 starts; lender is the friendliest colleague', () => {
+  assert.equal(C.rentDue(0, 1), true);
+  assert.equal(C.rentDue(29, 30), false);
+  assert.equal(C.rentDue(30, 31), true);
+  assert.equal(C.rentDue(30, 33), true);   // day 30 is Tuesday… but also covers a jump over 31
+  assert.equal(C.rentDue(31, 32), false);
+  const r = { ...newRun({ name: 'x', id: 'm' }), rel: { a: 1, b: 3, c: -2 } };
+  assert.equal(C.lender(r, ['a', 'b', 'c']), 'b');
+  assert.equal(C.lender({ ...r, rel: { c: -1 } }, ['a', 'c']), null);
+});

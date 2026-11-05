@@ -77,7 +77,7 @@ const OUT = process.env.SHOTS || '/tmp/claude-0';
         sal: q('#salary') && !document.querySelector('#salary').hidden,
         mini: q('#mini') && !document.querySelector('#mini').hidden && !q('#mini .mini-result'),
         ch: document.querySelectorAll('#choices button').length,
-        btn: ['#toCompanies', '#payOk', '#lifeOk', '#wkOk', '#nextCard', '#quickDay', '#goDay'].find((x) => q('#ovCard ' + x)) || (q('#ovCard .life-choices [data-i]') ? 'life' : null),
+        btn: ['#toCompanies', '#payOk', '#rentOk', '#brokeOk', '#lifeOk', '#wkOk', '#nextCard', '#quickDay', '#goDay'].find((x) => q('#ovCard ' + x)) || (q('#ovCard .life-choices [data-i]') ? 'life' : null),
         who: s ? s.who : null, review: !!(s && s.review),
         task: openTask ? openTask.legs[openTask.leg] : null,
       };
