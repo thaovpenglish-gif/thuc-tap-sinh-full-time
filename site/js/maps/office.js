@@ -2,8 +2,9 @@
 // Spots are named slots; T&M cast ids are kept as slot names, generic aliases are added below (boss, n1…n6, c1…c3…).
 import * as THREE from 'three';
 import { INK, T, outline, canvasTex, roundRect, textTexture, gradientMap } from '../art/kit.js';
-import { PROP_SLOTS } from './slots.js';
+import { PROP_SLOTS, SPOTS } from './slots.js';
 import { STYLES, paintFloor, decorate } from './styles.js';
+import { LAYOUTS } from './layouts.js';
 export { SPOTS, SLOT_HELP, PROP_SLOTS, CAT_PATH, PLAYER_START, MEETING_SEAT, PLAYER_DESK, INTERACTABLE_IDS } from './slots.js';
 
 // T&M theme = the original office. Other companies override any of these fields.
@@ -86,6 +87,8 @@ export function buildWorld(scene, themeIn = {}) {
     ...(th.palette || {}),
   };
   const STY = STYLES[th.style] || STYLES.tm;
+  const LAY = (th.layout && LAYOUTS[th.layout]) || null;
+  if (LAY && LAY.signs) Object.assign(th.signs, LAY.signs);
   if (STY.wall) P.wall = STY.wall;
   const glassMat = new THREE.MeshBasicMaterial({ color: '#cfe9ff', transparent: true, opacity: 0.28, depthWrite: false });
 
@@ -102,8 +105,11 @@ export function buildWorld(scene, themeIn = {}) {
   const rugO = new THREE.Mesh(new THREE.RingGeometry(1.6, 1.66, 40), new THREE.MeshBasicMaterial({ color: INK }));
   rugO.rotation.x = -Math.PI / 2; rugO.position.set(0, 0.007, 7.4); root.add(rugO);
   // stand-up circle on the floor
+  if (!LAY) {
   const ring = new THREE.Mesh(new THREE.RingGeometry(1.9, 2.0, 48), new THREE.MeshBasicMaterial({ color: '#c9b6ff' }));
   ring.rotation.x = -Math.PI / 2; ring.scale.set(1.35, 0.9, 1); ring.position.set(0.5, 0.006, -4.3); root.add(ring);
+  }
+
 
   const ceil = new THREE.Mesh(new THREE.PlaneGeometry(30, 20), new THREE.MeshBasicMaterial({ color: '#fffaf3' }));
   ceil.rotation.x = Math.PI / 2; ceil.position.y = 3; root.add(ceil);
@@ -184,17 +190,23 @@ export function buildWorld(scene, themeIn = {}) {
   glassWall(-7, -4.8, -7, -4);
   box(8, H, Tk, P.lilac, -11, 0, -4, true, 0, 0);
   box(0.08, 0.4, 1.4, '#ffffff', -7, 2.6, -5.5, false, 0, 0.015);
+  if (!LAY) {
   box(2.4, 0.74, 1.0, P.woodDark, -11, 0, -7.4, true);
   box(2.5, 0.06, 1.1, P.wood, -11, 0.74, -7.4, false);
   box(0.7, 1.15, 0.2, '#9fb4ff', -11, 0.25, -9.2, false);
   box(0.7, 0.12, 0.65, '#9fb4ff', -11, 0.45, -8.95, false);
   cyl(0.1, 0.08, 0.1, '#c98f6a', -11.5, 0.8, -7.3);
   for (let i = 0; i < 3; i++) cyl(0.045, 0.035, 0.05, '#ffffff', -11.2 + i * 0.12, 0.8, -7.1, 12, 0.01);
+  }
+
   const nhan = textTexture([th.bossWall], { w: 512, h: 256, bg: '#fff8ef', sizes: [96], weights: [900] });
   plane(1.4, 0.7, basic(nhan), -11, 1.8, -9.88, 0);
+  if (!LAY) {
   cyl(0.22, 0.18, 0.4, P.pot, -8, 0, -9.2);
   for (let i = 0; i < 6; i++) sphere(0.15, '#d9d47a', -8 + Math.cos(i) * 0.15, 0.6 + i * 0.12, -9.2 + Math.sin(i) * 0.15, 0.015);
   interactables.push({ id: 'plant', label: L('plant', 'Xem cây kim tiền'), pos: new THREE.Vector3(-8, 1, -9.2) });
+  }
+
   sign(th.signs.boss, '#c9b6ff', -6.9, 2.3, -5.5, Math.PI / 2);
 
   // ---------- Finance (NE): peach ----------
@@ -204,6 +216,7 @@ export function buildWorld(scene, themeIn = {}) {
   box(1, H, Tk, P.peach, 7.5, 0, -4, true, 0, 0);
   box(5.5, H, Tk, P.peach, 12.25, 0, -4, true, 0, 0);
   box(1.5, 0.6, Tk, P.peach, 8.75, 2.4, -4, false, 0, 0);
+  if (!LAY) {
   box(2.2, 0.74, 1.0, '#ffd3b8', 11, 0, -7.4, true);
   box(2.3, 0.06, 1.1, P.desk, 11, 0.74, -7.4, false);
   for (let i = 0; i < 4; i++) box(0.3, 0.05, 0.22, ['#ffb3c7', '#9fb4ff', '#b8f0d8', '#ffe08a'][i], 10.4 + i * 0.05, 0.8 + i * 0.05, -7.2, false, 0, 0.01);
@@ -213,6 +226,8 @@ export function buildWorld(scene, themeIn = {}) {
   const talisman = textTexture(['PHÁT'], { w: 128, h: 256, bg: '#ffe08a', fg: '#e0455f', sizes: [44] });
   plane(0.18, 0.36, basic(talisman), 13.85, 0.75, -8.83, 0);
   interactables.push({ id: 'safe', label: L('safe', 'Nhìn két sắt'), pos: new THREE.Vector3(13.6, 0.8, -8.8) });
+  }
+
   sign(th.signs.finance, '#ffc2b3', 8.75, 2.25, -3.88, 0);
   const banner = textTexture([th.banner], { w: 1024, h: 128, bg: '#ffe9a0', sizes: [54], weights: [900] });
   plane(4.6, 0.58, basic(banner), 12.3, 2.35, -3.88, 0);
@@ -298,6 +313,7 @@ export function buildWorld(scene, themeIn = {}) {
   }
   const D = (slot) => th.desks[slot] || ['', null, '#9aa0ad'];
   const dk = (x, z, f, slot, chair) => { const [plate, lines, col] = D(slot); desk(x, z, f, plate, lines ? [lines, col] : null, chair); };
+  if (!LAY) {
   dk(-4.2, -1.65, -1, 'c1', '#bfe3ff');
   dk(-2.2, -1.65, -1, 'c2', P.chair2);
   dk(-4.2, 0.85, 1, 'me', '#ffe9a0');
@@ -331,7 +347,10 @@ export function buildWorld(scene, themeIn = {}) {
   plane(1.9, 1.1, basic(wb), 4.3, 1.5, 4.56, Math.PI);
   const bean = sphere(0.45, '#b8f0d8', 4.4, 0.3, 3.2); bean.scale.y = 0.7;
   interactables.push({ id: 'okr', label: L('okr', 'Đọc bảng trắng của chị Hân'), pos: new THREE.Vector3(4.3, 1.4, 4.4) });
+  }
 
+
+  if (!LAY) {
   // ---------- Scrum board (centre stage) ----------
   box(0.08, 1.9, 0.08, '#ffffff', -0.9, 0, -6.6, false, 0, 0.015);
   box(0.08, 1.9, 0.08, '#ffffff', 1.9, 0, -6.6, false, 0, 0.015);
@@ -362,6 +381,8 @@ export function buildWorld(scene, themeIn = {}) {
   void scrum;
   const scrumBack = box(3.05, 1.7, 0.05, '#ffffff', 0.5, 0.7, -6.6, false, 0, 0.02); void scrumBack;
   sign(th.signs.standup, '#c9b6ff', 0.5, 2.62, -6.53, 0, 2.6);
+
+  }
 
   // ---------- Pantry (E): butter ----------
   const butterFloor = new THREE.Mesh(new THREE.PlaneGeometry(6, 7), T(P.butter));
@@ -432,6 +453,9 @@ export function buildWorld(scene, themeIn = {}) {
     }
   }
 
+  // ---------- company layout: its own furniture, seats and objects ----------
+  if (LAY) LAY.build({ THREE, box, cyl, sphere, plane, basic, sign, desk, textTexture, canvasTex, roundRect, INK, T, P, th, L, collideRect, interactables, animated, root });
+
   // ---------- company style: ceiling decoration + set pieces ----------
   decorate(th.style, { box, cyl, sphere, plane, basic, textTexture, canvasTex, roundRect, INK, collideRect, animated, root });
 
@@ -443,6 +467,7 @@ export function buildWorld(scene, themeIn = {}) {
 
   return {
     colliders, interactables, root,
+    spots: LAY ? { ...SPOTS, ...LAY.spots } : SPOTS,
     dispose() { scene.remove(root); root.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material && o.material.map) o.material.map.dispose(); }); },
     update(t) { animated.forEach((f) => f(t)); incense.forEach((s, i) => { s.scale.y = 0.9 + Math.sin(t * 2 + i) * 0.03; }); },
   };

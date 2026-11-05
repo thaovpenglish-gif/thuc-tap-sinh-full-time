@@ -83,8 +83,10 @@ export function startSolo({ scene, camera, input, onExit }) {
     if (world) world.dispose();
     for (const n of Object.values(npcs)) scene.remove(n.mesh);
     npcs = {};
-    const style = FLAGS.officeStyles || (co.meta && co.meta.styleLive) ? ((co.theme && co.theme.style) || (co.meta && co.meta.style) || 'tm') : 'tm';
-    world = buildWorld(scene, { ...(co.theme || {}), style });
+    const live = FLAGS.officeStyles || (co.meta && co.meta.styleLive);
+    const style = live ? ((co.theme && co.theme.style) || (co.meta && co.meta.style) || 'tm') : 'tm';
+    const layout = live ? (co.meta && co.meta.layout) || null : null;
+    world = buildWorld(scene, { ...(co.theme || {}), style, layout });
     worldCo = co.id;
     const people = { ...co.cast, ...(GIAO_ON ? { giao: GIAO } : {}) };
     for (const [id, def] of Object.entries(people)) {
@@ -334,7 +336,8 @@ export function startSolo({ scene, camera, input, onExit }) {
     const onCall = new Set(step && step.call && mode !== 'play' ? step.call.people : []);
     for (const [id, n] of Object.entries(npcs)) {
       n.mesh.visible = isPresent(id) && spotFor(id) !== 'away' && !onCall.has(id);
-      const sp = SPOTS[spotFor(id)] || SPOTS[(CO && CO.cast[id] && CO.cast[id].spot) || id];
+      const SP = world ? world.spots : SPOTS;
+      const sp = SP[spotFor(id)] || SP[(CO && CO.cast[id] && CO.cast[id].spot) || id];
       if (!sp) continue;
       n.target.set(sp[0], 0, sp[1]); n.rest = sp[2];
       if (instant) { n.mesh.position.copy(n.target); n.mesh.rotation.y = sp[2]; }
@@ -613,7 +616,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     const st = currentStep();
     if (!st) { await quickTasks(); R.today.quick = false; mode = 'dialog'; endDialogMode(); dayEnd(); return; }
     if (st.time) { const target = toMin(st.time); if (target > R.clock) R.clock = target; }
-    const sp = !st.call && !st.who.startsWith('obj:') && SPOTS[spotFor(st.who)];
+    const sp = !st.call && !st.who.startsWith('obj:') && (world ? world.spots : SPOTS)[spotFor(st.who)];
     placeNPCs(true);
     if (sp) fp.teleport(sp[0] + Math.sin(sp[2]) * 1.3, sp[1] + Math.cos(sp[2]) * 1.3, sp[2]);
     updateHUD();

@@ -18,7 +18,7 @@ const OUT = process.env.SHOTS || '/tmp/claude-0';
   const errs = [], occluded = new Set();
   p.on('pageerror', (e) => errs.push(e.message));
   p.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource|supabase|ERR_|net::/i.test(m.text())) errs.push(m.text()); });
-  await p.goto(BASE + '?debug=1', { waitUntil: 'networkidle' });
+  await p.goto(BASE + '?debug=1' + (process.env.STYLES ? '&styles=1' : ''), { waitUntil: 'networkidle' });
   await p.evaluate(() => { localStorage.clear(); localStorage.setItem('tts_letter_v1', '1'); });
   await p.reload({ waitUntil: 'networkidle' });
   await p.waitForTimeout(1000);
