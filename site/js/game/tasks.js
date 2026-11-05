@@ -48,13 +48,24 @@ export function tick(tasks, clock, maxOpen = Infinity) {
   return { tasks: next, events };
 }
 
-/** The player interacted with `target` ({npc} or {obj}); advance every open task whose current leg matches. */
+const matches = (leg, target) => !!leg && ((target.npc && leg.npc === target.npc) || (target.obj && leg.obj === target.obj));
+
+/**
+ * The player interacted with `target` ({npc} or {obj}); advance every open task whose current leg matches.
+ * Shortcut: if the current leg is only "go and get the request" from the requester (leg 0, npc === task.from) and
+ * the player went straight to the next leg's place, the request counts as received by message (event `remote`).
+ */
 export function visit(tasks, target) {
   const events = [];
   const next = tasks.map((t) => {
     if (t.status !== 'open') return t;
-    const leg = currentLeg(t);
-    const hit = (target.npc && leg.npc === target.npc) || (target.obj && leg.obj === target.obj);
+    let leg = currentLeg(t);
+    if (!matches(leg, target) && t.leg === 0 && leg.npc && leg.npc === t.from && t.legs.length > 1 && matches(t.legs[1], target)) {
+      events.push({ type: 'leg', task: t, leg, remote: true });
+      t = { ...t, leg: 1 };
+      leg = currentLeg(t);
+    }
+    const hit = matches(leg, target);
     if (!hit) return t;
     const leg2 = t.leg + 1;
     if (leg2 >= t.legs.length) { events.push({ type: 'done', task: t, leg }); return { ...t, leg: leg2, status: 'done' }; }

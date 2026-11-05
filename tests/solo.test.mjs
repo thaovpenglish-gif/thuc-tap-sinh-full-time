@@ -109,8 +109,9 @@ test('tasks spawn on time, advance leg by leg, and finish', () => {
   r = tick(tasks, tasks[0].spawnAt); tasks = r.tasks;
   assert.equal(r.events[0].type, 'spawned');
   assert.equal(active(tasks).length, 1);
-  r = visit(tasks, { npc: 'quynh' }); assert.equal(r.events.length, 0, 'wrong order does nothing');
+  r = visit(tasks, { npc: 'binh' }); assert.equal(r.events.length, 0, 'someone unrelated does nothing');
   r = visit(tasks, { npc: 'mai' }); tasks = r.tasks; assert.equal(r.events[0].type, 'leg');
+  r = visit(tasks, { npc: 'mai' }); assert.equal(r.events.length, 0, 'the requester again (out of order) does nothing');
   r = visit(tasks, { npc: 'quynh' }); tasks = r.tasks;
   r = visit(tasks, { npc: 'mai' }); tasks = r.tasks; assert.equal(r.events[0].type, 'done');
   assert.equal(summary(tasks).done, 1);
@@ -124,4 +125,17 @@ test('overdue tasks become late; declined tasks never spawn', () => {
   assert.equal(r.events[0].type, 'late');
   assert.equal(summary(r.tasks).late, 1);
   assert.equal(summary(r.tasks).declined, 1);
+});
+
+test('errands: going straight to the job counts the request as received (by message)', () => {
+  const t = { id: 'n#0', title: 'Thắp nhang', from: 'hung', status: 'open', leg: 0, legs: [{ npc: 'hung' }, { obj: 'altar' }, { npc: 'hung' }] };
+  const r1 = visit([t], { obj: 'altar' });
+  assert.deepEqual(r1.events.map((e) => [e.type, !!e.remote]), [['leg', true], ['leg', false]]);
+  assert.equal(r1.tasks[0].leg, 2);
+  // not a shortcut when the first leg is someone else (a real handover) or a later leg is visited
+  const u = { ...t, legs: [{ npc: 'vy' }, { obj: 'altar' }] };
+  assert.equal(visit([u], { obj: 'altar' }).events.length, 0);
+  assert.equal(visit([t], { npc: 'hung' }).tasks[0].leg, 1, 'meeting the requester still works as before');
+  const done = visit(visit([t], { obj: 'altar' }).tasks, { npc: 'hung' });
+  assert.equal(done.tasks[0].status, 'done');
 });
