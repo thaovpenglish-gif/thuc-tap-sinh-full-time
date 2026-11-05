@@ -156,6 +156,10 @@ function stationMesh(s, L) {
       add(box(1.06, 0.06, 0.76, '#e3d9ff', 0.015), 0, TOP - 0.03, 0);
       add(cyl(0.22, 0.22, 0.45, '#ff5a6e', 0.015), 0.85, 0.22, 0); add(box(0.46, 0.4, 0.08, '#ff5a6e', 0.012), 1.05, 0.62, 0).rotation.y = Math.PI / 2;
       add(cyl(0.22, 0.22, 0.45, '#3a3f55', 0.015), -0.85, 0.22, 0);
+      // candidates who take the hot seat (the mode shows one while a CV is on this table)
+      g.userData.seats = CANDIDATES.map((look) => {
+        const c = makePerson(look); c.position.set(0.85, -0.12, 0); c.rotation.y = -Math.PI / 2; c.visible = false; g.add(c); return c;
+      });
       icon = '🎤'; bg = '#e3d9ff';
       break;
     }
@@ -387,6 +391,14 @@ const EXTRA = {
   trang: { name: 'Trang', look: { shirt: '#ffc6e0', pants: '#7d86b3', hair: 'long', hairColor: '#3b2418', clip: true } },
   gam: { name: 'Chị Gấm', look: { shirt: '#ffe9a0', pants: '#8a6a5a', hair: 'wavy', hairColor: '#4a3226' } },
 };
+
+// looks of the candidates in the interview hot seat
+const CANDIDATES = [
+  { shirt: '#ffffff', pants: '#2d3e5a', hair: 'short', hairColor: '#1d1d1f', tie: '#2d3e8a' },
+  { shirt: '#ffc6e0', pants: '#3f3f55', hair: 'long', hairColor: '#3b2418' },
+  { shirt: '#bfe3ff', pants: '#4b5566', hair: 'quiff', hairColor: '#4a3226', glasses: true },
+  { shirt: '#e3d9ff', pants: '#5a4a6b', hair: 'bun', hairColor: '#2a2a2a', glasses: true },
+];
 
 /** A client (T&M person) who walks into the lobby; bubble + patience bar above the head. */
 export function makeClient(c) {

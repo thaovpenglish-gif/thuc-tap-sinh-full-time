@@ -495,6 +495,24 @@ export const LEVELS = {
       angry: ['Thôi chị tự tuyển', 'Em nhận offer khác rồi', 'Seen. (ghost)', 'Phí cao mà chậm'],
     },
 
+    // interview questions: good = this candidate should pass the round
+    quiz: [
+      { q: 'Vì sao em nghỉ chỗ cũ?', a: 'Sếp cũ không tôn trọng em. Em đăng TikTok nói xấu sếp có ba lần mà sếp vẫn giận.', good: false, why: 'Nói xấu chỗ cũ công khai là red flag.' },
+      { q: 'Em mong muốn mức lương bao nhiêu?', a: 'Em tìm hiểu rồi, vị trí này thị trường khoảng 15–18 triệu. Em mong 17 và thương lượng được ạ.', good: true, why: 'Có tìm hiểu thị trường, mong muốn hợp lý.' },
+      { q: 'Điểm yếu của em là gì?', a: 'Em hay ôm việc. Giờ em đang học cách chia việc và báo sớm khi bị quá tải.', good: true, why: 'Nhận ra điểm yếu và đang sửa.' },
+      { q: 'Điểm yếu của em là gì?', a: 'Em cầu toàn quá ạ. Với lại em hay đi trễ hai tiếng.', good: false, why: 'Đi trễ hai tiếng không phải "cầu toàn".' },
+      { q: 'Em biết gì về công ty bên chị?', a: 'Dạ… công ty mình làm về… nhân sự đúng không ạ? Em rải CV 200 chỗ nên hơi lẫn.', good: false, why: 'Không tìm hiểu gì về nơi mình ứng tuyển.' },
+      { q: 'Kể một lần em làm sai việc.', a: 'Em gửi nhầm báo giá cho khách. Em gọi xin lỗi ngay, gửi lại bản đúng, từ đó em tự kiểm tra hai lần.', good: true, why: 'Nhận lỗi, sửa nhanh, rút kinh nghiệm.' },
+      { q: '5 năm nữa em thấy mình ở đâu?', a: 'Ngồi ghế của chị ạ. Sớm hơn thì càng tốt.', good: false, why: 'Tham vọng thì được, nhưng câu này… hơi đáng sợ.' },
+      { q: 'Em có câu hỏi gì cho chị không?', a: 'Dạ, team mình đang gặp khó nhất ở đâu, và ba tháng đầu em cần làm được gì ạ?', good: true, why: 'Hỏi đúng thứ quan trọng.' },
+      { q: 'Em có câu hỏi gì cho chị không?', a: 'Dạ không. À mà công ty có cho ngủ trưa ba tiếng không ạ?', good: false, why: 'Câu hỏi duy nhất là về giờ ngủ trưa.' },
+      { q: 'Em dùng Excel được không?', a: 'Em làm được VLOOKUP, pivot, có làm dashboard báo cáo tuần ở chỗ cũ. Em gửi chị file mẫu nhé.', good: true, why: 'Có kỹ năng thật, có bằng chứng.' },
+      { q: 'CV ghi "thành thạo tiếng Anh" là sao em?', a: 'Dạ em xem phim có phụ đề tiếng Anh ạ.', good: false, why: 'CV "tô hồng" quá đà.' },
+      { q: 'Bao giờ em đi làm được?', a: 'Em cần báo trước chỗ cũ 30 ngày theo hợp đồng, xong là em đi làm ngay ạ.', good: true, why: 'Làm đúng hợp đồng với chỗ cũ là chuyên nghiệp.' },
+      { q: 'Vì sao em muốn làm ở đây?', a: 'Vì văn phòng gần nhà người yêu em ạ.', good: false, why: 'Lý do không liên quan gì tới công việc.' },
+      { q: 'Em làm việc nhóm thế nào?', a: 'Em hay chủ động chia việc theo thế mạnh, chốt deadline chung và cập nhật tiến độ mỗi ngày.', good: true, why: 'Cụ thể, biết phối hợp.' },
+    ],
+
     // signature events of this level
     decay: { types: ['cv_ok', 'interviewed', 'offer_draft'], after: 14, to: 'ghost', text: 'Ứng viên đã ghost. Vứt đi tìm người khác!' },
     powerCut: {
@@ -515,7 +533,8 @@ export const LEVELS = {
     process: {
       work: {
         laptop: { cv: { to: 'cv_ok', time: 2.5 }, survey: { to: 'survey_xls', time: 3 }, offer_notes: { to: 'offer_draft', time: 2 } },
-        interview: { cv_ok: { to: 'interviewed', time: 4 } },
+        // quiz: the player reads the candidate's answer and decides pass / reject (see `quiz` below)
+        interview: { cv_ok: { to: 'interviewed', time: 4, quiz: true, quizTime: 8 } },
       },
       auto: {
         cb: { survey_xls: { to: 'salary_report', time: 4 } },
@@ -529,7 +548,7 @@ export const LEVELS = {
       shortlist: { title: 'Shortlist', item: 'cv_ok', time: 60, reward: 35, steps: ['📄 CV', '💻 ATS lọc', '🛎️ Quầy'],
         how: ['Lấy CV ở Máy in CV', 'Đặt lên ATS, bấm thêm lần nữa rồi đứng lọc ~2,5 giây', 'Nộp ngay ở Quầy tiếp khách (để trên bàn lâu là ứng viên ghost)'] },
       interview: { title: 'Ứng viên đã phỏng vấn', item: 'interviewed', time: 90, reward: 70, steps: ['📄 CV', '💻 ATS lọc', '🎤 Talent Room'],
-        how: ['Làm CV đã lọc: CV → ATS', 'Vào Talent Room (phòng kính giữa văn phòng), đặt lên Ghế phỏng vấn', 'Bấm thêm lần nữa rồi đứng phỏng vấn ~4 giây', 'Nộp ở Quầy tiếp khách'] },
+        how: ['Làm CV đã lọc: CV → ATS', 'Vào Talent Room (phòng kính giữa văn phòng), đặt lên Ghế phỏng vấn: ứng viên ngồi vào ghế nóng', 'Bấm thêm lần nữa để phỏng vấn: đọc câu trả lời, trong 8 giây chọn ✅ Cho qua vòng hoặc ❌ Loại', 'Chọn đúng → Ứng viên đã phỏng vấn. Nhận nhầm người tệ → phải vứt. Loại người tệ → CV quay về, lọc người khác. Ngồi im quá 8 giây → ứng viên ghost', 'Nộp ở Quầy tiếp khách'] },
       salary: { title: 'Báo cáo lương', item: 'salary_report', time: 80, reward: 60, steps: ['📋 Tủ khảo sát', '💻 ATS', '📈 Bàn C&B'],
         how: ['Lấy Phiếu khảo sát ở Tủ khảo sát lương', 'Đặt lên ATS, đứng làm ~3 giây thành Bảng lương thô', 'Mang sang Bàn C&B của chị My (góc phải), chị My tự tính ~4 giây', 'Nộp Báo cáo lương ở Quầy tiếp khách'] },
       offer: { title: 'Offer đã ký', item: 'offer_signed', time: 140, reward: 150, join: ' · ',
@@ -538,6 +557,7 @@ export const LEVELS = {
     },
     tips: [
       '✋ Một nút làm mọi thứ: đứng sát trạm rồi bấm (lấy, đặt, ghép, làm việc, nộp)',
+      '🎤 Phỏng vấn: đọc câu trả lời của ứng viên rồi chọn Cho qua vòng / Loại (phím 1 / 2), có 8 giây',
       '👻 CV đã lọc, ứng viên đã phỏng vấn và offer nháp để trên bàn quá 14 giây là ứng viên ghost: làm xong thì mang đi luôn',
       '💥 ATS sập (có người sort cột): ra bàn IT của Phát ở góc C&B bấm restart',
       '🎲 Anh Khoa gọi icebreaker: tránh xa bảng KPI cạnh Talent Room',

@@ -221,7 +221,7 @@ Chọn ở sảnh (thẻ "Khách hàng") hoặc host đổi trong phòng chờ; 
   | --- | --- | --- |
   | 📄 CV gửi gấp | Máy in CV → quầy | 15k |
   | ✅ Shortlist | CV → ATS lọc | 35k |
-  | 🤝 Ứng viên đã phỏng vấn (từ 0:10) | CV → ATS → Talent Room (đứng phỏng vấn 4 giây) | 70k |
+  | 🤝 Ứng viên đã phỏng vấn (từ 0:10) | CV → ATS → Talent Room (phỏng vấn: chọn Cho qua vòng / Loại) | 70k |
   | 📈 Báo cáo lương (từ 0:15) | Phiếu khảo sát → ATS → Bàn C&B chị My (tự chạy) | 60k |
   | 💌 Offer đã ký (từ 0:40) | Ứng viên đã PV + Báo cáo lương ghép → anh Duy ký (30% "thêm chữ culture fit": sửa ở ATS) | 150k |
 
@@ -230,6 +230,12 @@ Chọn ở sảnh (thẻ "Khách hàng") hoặc host đổi trong phòng chờ; 
     "Ứng viên đã ghost" (nhấp nháy từ giây thứ 8). Đang cầm hoặc đang ở ghế phỏng vấn thì không sao.
   - 💥 **ATS sập** (1:12, 2:18): có người sort cột trong file 14.000 dòng, 3 máy ATS đứng hình, ra bàn IT của Phát restart.
   - 🎲 **Icebreaker** (0:48, 1:58): anh Khoa kéo ai đứng gần bảng KPI vào chơi 7 giây.
+  - 🎤 **Phỏng vấn thật** (Game Owner yêu cầu): đặt CV đã lọc lên ghế phỏng vấn thì một ứng viên ngồi vào ghế nóng;
+    bấm làm việc là hiện thẻ câu hỏi + câu trả lời của ứng viên, 8 giây chọn ✅ Cho qua vòng (phím 1) / ❌ Loại (phím 2).
+    Đúng người tốt → Ứng viên đã phỏng vấn · Loại đúng người tệ → CV quay về (lọc người khác) · Nhận nhầm → "Ứng viên
+    sai người sai chỗ" (vứt) · Loại oan → CV quay về · Hết giờ → ghost. 14 câu trong `quiz` của màn (không lặp tới khi
+    hết bộ). Engine: `rule.quiz`, `state.quizzes`, `answerQuiz()`; mạng: sự kiện `answer`. E2E:
+    `tests/e2e/mp-hr-interview.cjs`.
 - Kỹ thuật: `entrance: 'left'`, `decay`, `powerCut` có chữ riêng (`offSign`, `fixSign`, `offHint`…), trạm `interview`,
   `cb` (có `who`: người ngồi sau trạm), `standup.boardText`. Test: `tests/mp-hr.test.mjs`.
 

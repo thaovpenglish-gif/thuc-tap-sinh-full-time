@@ -9,7 +9,7 @@ import { moveActor } from '../core/physics.js';
 import { makePerson, nameTag } from '../art/people.js';
 import { textTexture } from '../art/kit.js';
 import { buildRoom, makeItem, makeBar, makeClient, itemIcon } from '../maps/mp-room.js';
-import { LEVELS, ITEMS, PLAYER_COLORS, clientName, createGame, addPlayer, removePlayer, act, step, setPlayerPos, hintFor, targetOf, speedOf, isFrozen, isTired, starsFor, starGoals } from '../game/mp/engine.js';
+import { LEVELS, ITEMS, PLAYER_COLORS, clientName, createGame, addPlayer, removePlayer, act, answerQuiz, step, setPlayerPos, hintFor, targetOf, speedOf, isFrozen, isTired, starsFor, starGoals } from '../game/mp/engine.js';
 import { joinRoom, myId, newRoomCode, normCode, cleanName } from '../net/mp-net.js';
 import { toast } from '../ui/toast.js';
 import { MP_CSS } from '../ui/mp-style.js';
@@ -36,7 +36,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
   }
   const root = document.createElement('div');
   root.id = 'mpRoot';
-  root.innerHTML = '<div id="mpHud" hidden></div><div id="mpScreen" class="mp-screen" hidden></div><div id="mpBook" class="mp-book" hidden></div>';
+  root.innerHTML = '<div id="mpHud" hidden></div><div id="mpScreen" class="mp-screen" hidden></div><div id="mpBook" class="mp-book" hidden></div><div id="mpQuiz" class="mp-quiz" hidden></div>';
   document.body.appendChild(root);
   const screen = $('#mpScreen');
   const hud = $('#mpHud');
@@ -195,6 +195,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     net.on('st', onSnapshot);
     net.on('pos', onPos);
     net.on('act', onAct);
+    net.on('answer', onAnswer);
     net.on('back', () => { if (!isHost) { endPlay(); roomScreen(); } });
     net.onMembers(onMembers);
     window.addEventListener('pagehide', () => net && net.leave());
@@ -372,6 +373,42 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     snapT = SNAP_EVERY; // send right away
   }
 
+  function onAnswer(msg) {
+    if (!isHost || !game || !game.players[msg.id]) return;
+    pushEvents(answerQuiz(game, msg.id, !!msg.pass));
+    snapT = SNAP_EVERY;
+  }
+
+  // ---------- interview card (HR): pass or reject the candidate ----------
+  let quizShown = null; // "station:q" of the card on screen
+  function answer(pass) {
+    if (!quizShown) return;
+    quizShown = null; $('#mpQuiz').hidden = true;
+    unlockAudio();
+    if (isHost) { pushEvents(answerQuiz(game, myId, pass)); snapT = SNAP_EVERY; }
+    else net.send('answer', { id: myId, pass });
+  }
+  function updateQuiz() {
+    const el = $('#mpQuiz');
+    const qz = mode === 'play' && game && game.quizzes && game.quizzes[myId];
+    const Q = qz && L.quiz && L.quiz[qz.q];
+    if (!Q) { if (!el.hidden) el.hidden = true; quizShown = null; return; }
+    const key = `${qz.station}:${qz.q}`;
+    if (quizShown !== key && quizShown !== 'answered:' + key) {
+      quizShown = key;
+      el.innerHTML = `<div class="mp-quiz-k">🎤 PHỎNG VẤN · bạn hỏi</div>
+        <div class="mp-quiz-q">"${esc(Q.q)}"</div>
+        <div class="mp-quiz-a"><span>🙋 Ứng viên:</span> "${esc(Q.a)}"</div>
+        <div class="mp-quiz-bar"><i id="mpQuizT"></i></div>
+        <div class="mp-quiz-btns"><button class="btn primary" id="mpPass">✅ Cho qua vòng${isTouch ? '' : ' <kbd>1</kbd>'}</button><button class="btn" id="mpReject">❌ Loại${isTouch ? '' : ' <kbd>2</kbd>'}</button></div>`;
+      $('#mpPass').onclick = () => answer(true);
+      $('#mpReject').onclick = () => answer(false);
+      el.hidden = false;
+    }
+    const bar = $('#mpQuizT');
+    if (bar) { const k = Math.max(0, qz.t / qz.total); bar.style.width = (k * 100).toFixed(1) + '%'; bar.style.background = k < 0.35 ? '#ff6f8a' : '#9be7c4'; }
+  }
+
   // ---------- guest ----------
   function onSnapshot(msg) {
     if (isHost) return;
@@ -427,6 +464,8 @@ export function startMulti({ scene, rig, input, onExit, params }) {
   const offKey = input.onKey((e, { inField }) => {
     if (inField) return;
     if (e.code === 'Space' || e.code === 'KeyE' || e.code === 'Enter') { if (mode === 'play') { e.preventDefault(); useAction(); } }
+    if (quizShown && (e.code === 'Digit1' || e.code === 'Numpad1')) { answer(true); return; }
+    if (quizShown && (e.code === 'Digit2' || e.code === 'Numpad2')) { answer(false); return; }
     if (e.code === 'KeyH') { toggleBook(); return; }
     if (e.code === 'Escape' && !$('#mpBook').hidden) { toggleBook(false); return; }
     if (e.code === 'Escape' && mode === 'play') confirmLeave();
@@ -666,6 +705,11 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       const it = s.item && game.items[s.item];
       syncItem(m.userData.slot, placed[s.id], it && it.type, (v) => { if (v) placed[s.id] = v; else delete placed[s.id]; });
       if (placed[s.id]) ghostBlink(placed[s.id], it);
+      if (m.userData.seats) {
+        const n = it ? parseInt(String(it.id).replace(/\D/g, ''), 10) || 0 : -1;
+        const sit = it && ['cv_ok', 'interviewed', 'bad_hire'].includes(it.type);
+        m.userData.seats.forEach((c, i) => { c.visible = sit && i === n % m.userData.seats.length; });
+      }
       let v = 0, col = '#9be7c4';
       if (s.busy) { v = s.progress; col = s.kind === 'boss' ? '#ff8fb1' : '#bfe3ff'; }
       else if (s.overdue > 0) { v = s.overdue / 8; col = Math.sin(animT * 14) > 0 ? '#ff6f8a' : '#ffd25a'; }
@@ -817,10 +861,11 @@ export function startMulti({ scene, rig, input, onExit, params }) {
   return {
     update(dt) {
       if (mode === 'play') { moveMe(dt); broadcastPos(dt); updateHud(dt); }
+      updateQuiz();
       render(dt);
       updateCamera(dt);
     },
     // test hooks (e2e)
-    debug: { get game() { return game; }, get mode() { return mode; }, get level() { return levelId; }, get code() { return code; }, me, useAction, get isHost() { return isHost; } },
+    debug: { get game() { return game; }, get mode() { return mode; }, get level() { return levelId; }, get levelData() { return L; }, get code() { return code; }, me, useAction, get isHost() { return isHost; } },
   };
 }
