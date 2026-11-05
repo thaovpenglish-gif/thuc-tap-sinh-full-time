@@ -151,8 +151,13 @@ export const LEVELS = {
       { recipe: 'contract', w: 2, after: 35 },
       { recipe: 'deck', w: 2.5, after: 25 },
     ],
-    firstOrders: [2, 9],
-    spawnGap: [26, 20, 16, 14],      // seconds between new orders for 1, 2, 3, 4 players
+    // pacing by team size (1, 2, 3, 4 players): alone = fewer, more patient clients
+    pace: [
+      { gap: 34, time: 1.4, max: 2, first: [2, 16] },
+      { gap: 24, time: 1.15, max: 3, first: [2, 10] },
+      { gap: 18, time: 1, max: 4, first: [2, 8] },
+      { gap: 14, time: 0.9, max: 4, first: [2, 6] },
+    ],
     stars: [200, 450, 700],          // thousand đồng for 1, 2, 3 stars (×0.6 when playing alone)
   },
 };

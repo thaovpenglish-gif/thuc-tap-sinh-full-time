@@ -200,3 +200,24 @@ test('a signed contract left in the printer too long is ruined too', () => {
   run(g, 4.1); assert.equal(g.items.k.type, 'contract_print');
   run(g, 8.1); assert.equal(g.items.k.type, 'ruined');
 });
+
+test('alone: clients come less often, wait longer, fewer at once than with 4 players', () => {
+  const spawned = (n) => { const g = game(n); let max = 0; for (let t = 0; t < 180; t += 0.25) { step(g, 0.25); max = Math.max(max, g.orders.length); } return { count: g.nextOrder - 1, max }; };
+  const solo = spawned(1), four = spawned(4);
+  assert.ok(solo.count < four.count, `solo ${solo.count} < four ${four.count}`);
+  assert.ok(solo.max <= 2 && four.max >= 3, `waiting at once: solo ${solo.max}, four ${four.max}`);
+  const g1 = game(1), g4 = game(4);
+  run(g1, 2.1); run(g4, 2.1);
+  assert.ok(g1.orders[0].total > g4.orders[0].total, 'more patient clients when alone');
+});
+
+test('when the lobby is empty the next client arrives within seconds', () => {
+  const g = game(1);
+  run(g, 17); // both opening orders are in
+  g.orders = [{ id: 50, recipe: 'tea', t: 40, total: 40, client: 0, spot: 0 }];
+  g.nextSpawn = g.elapsed + 30;
+  goTo(g, 'P0', 'tea'); act(g, 'P0'); goTo(g, 'P0', 'deliver'); act(g, 'P0');
+  assert.equal(g.orders.length, 0);
+  run(g, 5.3);
+  assert.equal(g.orders.length, 1);
+});

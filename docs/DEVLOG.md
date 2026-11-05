@@ -25,6 +25,8 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
 - More tasks (asked by the Game Owner): tea (pantry), Excel reconciliation, meeting minutes (new huddle table in the
   meeting room), signed contract (contract shelf → printer → boss). Station rules moved from the engine into a
   per-level `process` table (`DEFAULT_PROCESS` as fallback) so each company can define its own stations.
+- Pacing by team size (Game Owner: alone should be slower than 4 players): per-level `pace` rows for 1–4 players
+  (gap between clients, patience multiplier, clients waiting at once, opening orders); an empty lobby refills in 5 s.
 
 ## 2026-11-05 — QC round 1 and publish
 

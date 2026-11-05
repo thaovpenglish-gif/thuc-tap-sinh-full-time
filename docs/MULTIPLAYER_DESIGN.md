@@ -122,6 +122,16 @@ Mở `https://…/?mp=1` → menu chính → thẻ **Overdeadline & Overburnout*
   | ✅ Deck đề xuất | Slide + Bản in ghép ở bàn → chị Tuyết ký (30% bị "vài ý nhỏ" một lần) | 140k |
 
   Biên bản họp từ 0:15, deck từ 0:25, hợp đồng từ 0:35. Nộp sớm có tip tới +50%, trễ −20k.
+- **Nhịp khách theo số người** (`pace` trong `levels.js`, Game Owner: "1 người thì việc chậm hơn 4 người"):
+
+  | Số người | Khách mới mỗi | Thời gian chờ của khách | Tối đa chờ cùng lúc |
+  | --- | --- | --- | --- |
+  | 1 | 34 giây | ×1,4 | 2 |
+  | 2 | 24 giây | ×1,15 | 3 |
+  | 3 | 18 giây | ×1 | 4 |
+  | 4 | 14 giây | ×0,9 | 4 |
+
+  Sảnh trống thì khách kế tiếp tới sau 5 giây.
   Luật từng trạm nằm trong `process` của màn (`levels.js`), nên công ty khác có thể có trạm và việc riêng.
 - **Bản đồ = văn phòng T&M nhiều phòng** (18 × 12): Khu làm việc (kệ Brief/Data, 2 laptop, Bảo và Trang ngồi
   gõ máy) · Phòng in · Phòng Chủ tịch vách kính (bàn chị Tuyết) · Phòng in có thêm Kệ hồ sơ · hành lang (4 bàn ghép, thùng rác, bảng Scrum

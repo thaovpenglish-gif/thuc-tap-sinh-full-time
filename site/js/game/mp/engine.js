@@ -82,8 +82,8 @@ export function createGame(levelId, { seed = 1, players = [] } = {}) {
     money: 0,
     done: 0, failed: 0,
     nextItem: 1, nextOrder: 1,
-    nextSpawn: L.firstOrders[0],
-    firstOrders: [...L.firstOrders],
+    nextSpawn: 0,
+    firstOrders: [...paceFor(L, players.length).first],
     standup: { idx: 0, warn: false, ring: 0 },
     items: {},
     stations: {},
@@ -284,6 +284,8 @@ function deliver(state, p, held) {
   state.done++;
   state.orders = state.orders.filter((o) => o !== order);
   delete state.items[held.id]; p.held = null;
+  // lobby empty: the next client walks in soon instead of after a full gap
+  if (!state.orders.length && !state.firstOrders.length) state.nextSpawn = Math.min(state.nextSpawn, state.elapsed + 5);
   return [{ type: 'sfx', name: 'good' }, { type: 'served', order: order.id }, { type: 'toast', text: `✅ ${who} nhận ${R.title}: +${R.reward}k${tip ? ` (+${tip}k tip)` : ''}`, cls: 'good' }];
 }
 
@@ -311,18 +313,30 @@ function spawnOrder(state) {
   const taken = new Set(state.orders.map((o) => o.spot));
   let spot = 0;
   while (taken.has(spot)) spot++;
-  state.orders.push({ id: state.nextOrder++, recipe: pick.recipe, t: R.time, total: R.time, client, spot });
+  // fewer players → clients are more patient
+  const time = Math.round(R.time * pace(state).time);
+  state.orders.push({ id: state.nextOrder++, recipe: pick.recipe, t: time, total: time, client, spot });
   return [{ type: 'order', recipe: pick.recipe }, { type: 'sfx', name: 'ring' }];
 }
 
+// Order pacing by team size: the level's `pace` has one row per player count (1–4).
+//   gap: seconds between new clients · time: × each recipe's patience · max: clients waiting at once · first: opening orders
+const PACE_DEFAULT = [
+  { gap: 34, time: 1.4, max: 2, first: [2, 16] },
+  { gap: 24, time: 1.15, max: 3, first: [2, 10] },
+  { gap: 18, time: 1, max: 4, first: [2, 8] },
+  { gap: 14, time: 0.9, max: 4, first: [2, 6] },
+];
+function paceFor(L, n) {
+  const rows = L.pace || PACE_DEFAULT;
+  return rows[Math.max(1, Math.min(rows.length, n)) - 1];
+}
+export function pace(state) { return paceFor(LEVELS[state.level], Object.keys(state.players).length); }
 function maxOrders(state) {
   const spots = (LEVELS[state.level].clientSpots || []).length || 4;
-  return Math.min(spots, 2 + Object.keys(state.players).length);
+  return Math.min(spots, pace(state).max);
 }
-function spawnGap(state) {
-  const n = Math.max(1, Object.keys(state.players).length);
-  return LEVELS[state.level].spawnGap[Math.min(n, 4) - 1];
-}
+function spawnGap(state) { return pace(state).gap; }
 
 /** Advance the game by dt seconds. Returns events. */
 export function step(state, dt) {
