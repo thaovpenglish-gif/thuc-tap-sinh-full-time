@@ -203,6 +203,39 @@ function stationMesh(s, L) {
       icon = '⚡'; bg = '#ffe08a';
       break;
     }
+    case 'mac': {
+      counter('#ffffff', '#ffc8dd');
+      add(box(0.62, 0.42, 0.04, '#f4f4f6', 0.012), 0, TOP + 0.36, -0.15);
+      const scr = new THREE.Mesh(new THREE.PlaneGeometry(0.56, 0.34), new THREE.MeshBasicMaterial({ color: '#ff8fb1' }));
+      scr.position.set(0, TOP + 0.37, -0.12); g.add(scr);
+      add(box(0.08, 0.16, 0.06, '#c4c8d4', 0.008), 0, TOP + 0.08, -0.15);
+      icon = '🎨'; bg = '#ffc8dd';
+      break;
+    }
+    case 'copy': {
+      counter('#ffffff', '#e3d9ff');
+      add(box(0.5, 0.03, 0.34, '#fff8ef', 0.01), -0.1, TOP + 0.02, 0.05).rotation.y = 0.2;
+      add(cyl(0.05, 0.045, 0.1, '#ffffff', 0.01), 0.38, TOP + 0.05, -0.15);
+      icon = '✍️'; bg = '#e3d9ff';
+      break;
+    }
+    case 'studio': {
+      // backdrop paper + a camera on a tripod
+      add(box(STATION.w + 0.3, 1.5, 0.08, '#bfe3ff'), 0, 0.75, -0.42);
+      add(box(STATION.w, TOP - 0.3, STATION.d - 0.2, '#ffffff'), 0, (TOP - 0.3) / 2, 0.05);
+      add(cyl(0.03, 0.03, 1.1, '#3a3f55', 0.006), 0.55, 0.55, 0.35);
+      add(box(0.22, 0.16, 0.14, '#3a3f55', 0.01), 0.55, 1.15, 0.35);
+      icon = '🎬'; bg = '#bfe3ff';
+      break;
+    }
+    case 'kol': {
+      counter('#ffffff', '#ffe08a');
+      add(box(0.09, 0.16, 0.02, '#ff70a6', 0.006), -0.25, TOP + 0.08, 0);
+      const r = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.03, 8, 22), new THREE.MeshBasicMaterial({ color: '#fff6c9' }));
+      r.position.set(0.25, TOP + 0.35, -0.1); g.add(r);
+      icon = '🌟'; bg = '#ffe08a';
+      break;
+    }
     case 'coffee': {
       counter('#ffffff', '#ffe9a0');
       add(box(0.42, 0.5, 0.36, '#5a4a42', 0.02), -0.15, TOP + 0.25, -0.1);
@@ -366,6 +399,22 @@ function decorMesh(d, L) {
       add(box(2.4, 1.2, 0.5, '#ffe9a0'), 0, 0.6, 0);
       for (let r = 0; r < 2; r++) for (let i = 0; i < 6; i++) add(box(0.28, 0.24, 0.12, ['#e8b04a', '#c96a52', '#f2b134', '#ff8f8f'][(i + r) % 4], 0.008), -1.0 + i * 0.4, 0.45 + r * 0.45, 0.27);
       col = [1.2, 0.25];
+      break;
+    }
+    case 'courtyard': {
+      // the villa's light well: a low planter border, a big tree, a stone bench and the guitar nobody plays
+      const w = d.w || 5, dd = d.d || 2.4;
+      add(box(w, 0.35, 0.2, '#d9c7a8'), 0, 0.175, -dd / 2); add(box(w, 0.35, 0.2, '#d9c7a8'), 0, 0.175, dd / 2);
+      add(box(0.2, 0.35, dd, '#d9c7a8'), -w / 2, 0.175, 0); add(box(0.2, 0.35, dd, '#d9c7a8'), w / 2, 0.175, 0);
+      const grass = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.2, dd - 0.2), T('#9ed98a')); grass.rotation.x = -Math.PI / 2; grass.position.y = 0.05; g.add(grass);
+      add(cyl(0.16, 0.22, 1.6, '#8a5a3a'), -0.6, 0.8, 0);
+      [[0, 2.0, 0, 0.8], [-0.6, 1.8, 0.4, 0.6], [0.5, 1.75, -0.3, 0.6], [-1.1, 1.6, -0.2, 0.5]].forEach(([x, y, z, r]) => {
+        const l = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 12), T('#6fbf73')); outline(l, 0.02); l.position.set(x - 0.6, y, z); g.add(l);
+      });
+      add(box(1.2, 0.3, 0.4, '#c4c8d4'), 1.3, 0.3, 0.3);
+      add(box(0.14, 0.7, 0.05, '#c96a52', 0.01), 1.7, 0.6, 0.3).rotation.z = 0.3;
+      const tag = label(d.text || 'GIẾNG TRỜI', '🌳', '#b8f0d8'); tag.position.set(1.3, 1.25, 0.3); tag.scale.multiplyScalar(0.8); g.add(tag);
+      col = [w / 2, dd / 2];
       break;
     }
     case 'reception': {

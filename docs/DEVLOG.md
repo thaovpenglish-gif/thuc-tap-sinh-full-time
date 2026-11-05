@@ -71,6 +71,9 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
   ATS crash fixed at Phát's IT desk (powerCut with its own words), anh Khoa's icebreaker (standup).
 - HR: real interviews (Game Owner: "thêm phỏng vấn ứng viên"): a candidate takes the hot seat, an interview card shows
   the question and the candidate's answer, 8 s to pass (1) or reject (2); wrong calls cost, silence ghosts.
+- Level 4 **Trend Trễ Agency** "Sửa lần cuối (lần thứ 14)": an old villa around a light well; brief → copy / Mac /
+  studio / KOL desk → campaign deck approved by anh Tùng; clients send work back once ("feedback nhẹ"), KOL no-show
+  (powerCut on the KOL desk), chị Diệp's WIP (standup).
 
 ## 2026-11-05 — QC round 1 and publish
 

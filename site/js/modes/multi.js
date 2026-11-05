@@ -14,7 +14,7 @@ import { joinRoom, myId, newRoomCode, normCode, cleanName } from '../net/mp-net.
 import { toast } from '../ui/toast.js';
 import { MP_CSS } from '../ui/mp-style.js';
 
-const LEVEL_ORDER = ['tm', 'bama', 'hr']; // client companies available in the picker
+const LEVEL_ORDER = ['tm', 'bama', 'hr', 'agency']; // client companies available in the picker
 const MAX_PLAYERS = 4;
 const SPEED = 3.7;
 const SNAP_EVERY = 0.2;   // host snapshot interval (s)

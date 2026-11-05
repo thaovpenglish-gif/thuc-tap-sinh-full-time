@@ -50,6 +50,17 @@ export const ITEMS = {
   offer_signed: { label: 'Offer đã ký', icon: '💌', color: '#ff8fb1' },
   ghost: { label: 'Ứng viên đã ghost', icon: '👻', color: '#e4e4ea' },
   bad_hire: { label: 'Ứng viên "sai người sai chỗ"', icon: '🙅', color: '#ffc2b3' },
+  // Trend Trễ Agency
+  caption: { label: 'Caption', icon: '✍️', color: '#e3d9ff' },
+  caption_fb: { label: 'Caption "trẻ hơn chút"', icon: '🖍️', color: '#ffc2b3' },
+  kv: { label: 'Key Visual', icon: '🎨', color: '#ffc8dd' },
+  kv_fb: { label: 'KV "logo to lên chút"', icon: '🔍', color: '#ffc2b3' },
+  tiktok: { label: 'Video TikTok', icon: '🎬', color: '#bfe3ff' },
+  tiktok_fb: { label: 'TikTok "trend này cũ rồi"', icon: '🐢', color: '#ffc2b3' },
+  kol_post: { label: 'Bài đăng KOL', icon: '🌟', color: '#ffe08a' },
+  deck_draft: { label: 'Deck chiến dịch nháp', icon: '📑', color: '#c9b6ff' },
+  deck_pop: { label: 'Deck "chưa pop"', icon: '💥', color: '#ffc2b3' },
+  campaign: { label: 'Deck chiến dịch đã duyệt', icon: '🏆', color: '#ffd25a' },
 };
 
 // What each station kind does with an item. A level may override these with its own `process` table.
@@ -255,7 +266,7 @@ export function act(state, id) {
     if (!off.length) return [say(id, 'Điện vẫn đang có mà.')];
     off.forEach((x) => { x.off = false; });
     const L = LEVELS[state.level];
-    return [{ type: 'sfx', name: 'good' }, { type: 'toast', text: `⚡ ${p.name} ${(L.powerCut && L.powerCut.fixVerb) || 'bật lại cầu dao'}. ${(L.powerCut && L.powerCut.backLine) || 'Có điện rồi!'}`, cls: 'good' }];
+    return [{ type: 'sfx', name: 'good' }, { type: 'toast', text: `${(L.powerCut && L.powerCut.icon) || '⚡'} ${p.name} ${(L.powerCut && L.powerCut.fixVerb) || 'bật lại cầu dao'}. ${(L.powerCut && L.powerCut.backLine) || 'Có điện rồi!'}`, cls: 'good' }];
   }
   if (s.kind === 'source') {
     if (held) return [say(id, 'Tay đang cầm đồ rồi.')];
@@ -366,6 +377,15 @@ function deliver(state, p, held) {
   if (!order) return [say(p.id, `Không ai đặt ${ITEMS[held.type].label}. Khách: "Cái này là gì em?"`, 'bad'), { type: 'sfx', name: 'bad' }];
   const R = L.recipes[order.recipe];
   const who = clientName(state, order);
+  // "feedback nhẹ": the client may send the work back once, to be fixed and delivered again
+  if (R.revise && L.revise && !order.revised && rand(state) < L.revise.chance) {
+    order.revised = true;
+    held.type = R.revise;
+    const lines = L.revise.lines;
+    const line = lines[Math.floor(rand(state) * lines.length)];
+    return [{ type: 'sfx', name: 'bad' }, { type: 'revise', order: order.id },
+      { type: 'toast', text: `✏️ ${who}: "${line}" Mang ${ITEMS[R.revise].label} đi sửa (${R.fixAt || 'chỗ cũ'}) rồi nộp lại.`, cls: 'drama' }];
+  }
   const base = Math.round(R.reward * (order.bonus || 1));
   const tip = Math.round(base * 0.5 * (order.t / order.total));
   state.money += base + tip;
@@ -625,7 +645,7 @@ function levelEvents(state) {
     if (state.elapsed >= at) {
       state.cutIdx++; state.cutWarn = false;
       for (const id of P.stations) if (state.stations[id]) state.stations[id].off = true;
-      ev.push({ type: 'toast', text: `⚡ ${P.text}`, cls: 'bad' }, { type: 'sfx', name: 'bad' }, { type: 'power', on: false });
+      ev.push({ type: 'toast', text: `${P.icon || '⚡'} ${P.text}`, cls: 'bad' }, { type: 'sfx', name: 'bad' }, { type: 'power', on: false });
     }
   }
   return ev;
