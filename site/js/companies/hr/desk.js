@@ -10,12 +10,17 @@ const F = (k) => (r) => !!r.flags[k];
 export const DESK = {
   games: [
     // ---- hands-on (ui/action.js) ----
-    { id: 'hr_ghost', type: 'action', game: 'whack', title: 'Gọi ứng viên trước khi ghost', icon: '👻', time: 35, pass: 0.6, count: 16,
+    { id: 'hr_offer_pack', type: 'action', game: 'scale', title: 'Gói offer trong ngân sách', icon: '📦', time: 60, pass: 0.6, money: true, unitName: 'Offer', icon2: '📦', btn: '✅ GỬI OFFER',
+      items: [{ label: 'Lương cứng', emoji: '💰', w: 15000000 }, { label: 'Thưởng KPI', emoji: '🎯', w: 3000000 }, { label: 'Phụ cấp ăn trưa', emoji: '🍱', w: 1000000 }, { label: 'Xăng xe', emoji: '🛵', w: 500000 }],
+      targets: [[19500000, 20000000], [24500000, 25000000], [16000000, 16500000], [34000000, 35000000]], okText: 'Trong ngân sách, ứng viên vui!', overText: 'Vượt ngân sách, khách gạch!', underText: 'Thấp quá, ứng viên từ chối!',
+      prompt: 'Khách cho khung ngân sách. Bấm từng khoản để gói offer sát trần mà không vượt, lố thì bấm khay bỏ ra, xong thì GỬI OFFER.',
+      hint: 'Ứng viên thích offer sát trần. Khách thì không thích vượt trần.' },
+    { id: 'hr_ghost', type: 'action', game: 'whack', title: 'Gọi ứng viên trước khi ghost', icon: '👻', time: 45, pass: 0.6, count: 26,
       slotText: 'Pipeline tuần này', bg: '#3a2f55', slot: '#4d4170',
       target: { emoji: '👻', labels: ['Ứng viên Sales', 'Kỹ sư bảo trì', 'Kế toán trưởng', 'Thiết kế UI'], hit: 'Alo! Giữ được', miss: 'Ghost mất rồi', color: '#e3d9ff' },
       avoid: { emoji: '🤖', labels: ['CV do bot gửi', 'Spam headhunt', 'Hồ sơ trùng 5 lần'], hit: 'Gọi nhầm bot!' },
       prompt: 'Ứng viên đang mờ dần, sắp ghost. Bấm 👻 để gọi giữ chân. Đừng gọi 🤖 hồ sơ ảo.' },
-    { id: 'hr_screen', type: 'action', game: 'conveyor', mode: 'stamp', title: 'Duyệt CV qua vòng', icon: '📄', time: 40, pass: 0.6, count: 12,
+    { id: 'hr_screen', type: 'action', game: 'conveyor', mode: 'stamp', title: 'Duyệt CV qua vòng', icon: '📄', time: 55, pass: 0.6, count: 18,
       stampText: 'QUA VÒNG', hit: 'Qua vòng!', wrongHit: 'Duyệt nhầm CV!', miss: 'Lỡ ứng viên tốt!',
       target: { emoji: '📄', labels: ['Đúng kinh nghiệm JD', 'Có portfolio', 'Đủ chứng chỉ', 'Từng làm đúng mảng'] },
       avoid: { emoji: '🗑️', labels: ['Sai ngành hoàn toàn', 'CV để trống', 'Nộp nhầm vị trí', 'Thiếu kỹ năng bắt buộc'] },

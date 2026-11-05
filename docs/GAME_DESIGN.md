@@ -69,6 +69,11 @@ Main menu ──Solo──► Hồ sơ sự nghiệp (career runs + cloud save) 
   post, flag the problem lines, make the call, then see WHY; `chat` = message a candidate, client or vendor, the
   rapport meter decides the ending). Each sim draws one of 2–3 scenarios, recent ones avoided.
   Plus 2 shared office games in every desk rotation (`game/office.js`: máy hủy giấy, cắm lại dây mạng).
+- **Hands-on games are longer and escalate** (2–3× the old rounds; zones narrow, belts speed up, the grain turns,
+  "vài ý nhỏ" comes twice, a second network cabinet). New mechanics `scale` (cân / đếm tiền: hit a range, CHỐT) and
+  `stir` (trộn: circles at a speed inside the green band): Ba & Má cân khô 200g + trộn gia vị, Audit đếm quỹ,
+  Event xếp hành lý ≤ 20kg, Tech xếp service vào server, Agency chia ngân sách ads, HR gói offer, T&M khuấy cà phê.
+  The canvas grows with the screen (≈ 960 px wide on a laptop, nearly full screen on a phone held sideways).
 - **Desk picker**: the player chooses which desk game to play (cards tagged Tay chân / Đọc tài liệu / Nhắn tin;
   🎲 Bất kỳ prefers hands-on). **Altar**: thắp nhang Thần Tài mini-game once a day (+1 Uy tín when straight).
   Each company's `desk.tasks` adds errands whose leg plays one of its hands-on games (`play: '<desk game id>'`),

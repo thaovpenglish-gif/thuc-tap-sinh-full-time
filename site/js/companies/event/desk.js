@@ -12,11 +12,16 @@ const F = (k) => (r) => !!r.flags[k];
 export const DESK = {
   games: [
     // ---- hands-on (ui/action.js) ----
-    { id: 'event_balloon', type: 'action', game: 'hold', skin: 'balloon', title: 'Bơm bóng cổng chào', icon: '🎈', time: 40, pass: 0.6,
-      rounds: 5, color: '#ffe08a', label: 'KHỎE RE',
+    { id: 'event_luggage', type: 'action', game: 'scale', title: 'Xếp hành lý đoàn ≤ 20kg', icon: '🧳', time: 60, pass: 0.6, unit: 'kg', unitName: 'Vali', icon2: '🧳', btn: '✅ CHỐT VALI',
+      items: [{ label: 'Quần áo 3 ngày', emoji: '👕', w: 4.5, jitter: 0.3 }, { label: 'Quà cho sếp khách', emoji: '🎁', w: 6, jitter: 0.5 }, { label: 'Loa kéo dự phòng', emoji: '🔊', w: 7.5, jitter: 0.3 }, { label: 'Áo mưa cả đoàn', emoji: '🧥', w: 2, jitter: 0.2 }, { label: 'Băng rôn', emoji: '🎌', w: 1, jitter: 0.1 }],
+      targets: [[18.5, 20], [18.5, 20], [13.5, 15], [18.5, 20]], okText: 'Vừa ký, không mất phí!', overText: 'Quá ký, đóng phụ phí!', underText: 'Còn trống, nhét thêm đi!',
+      prompt: 'Hãng bay cho 20kg mỗi vali. Bấm đồ để xếp vào, nặng quá thì bấm cân lấy ra, sát 20kg mà không lố thì CHỐT. Vali thứ ba chỉ được 15kg.',
+      hint: 'Đồ đạc nặng không đều, nhìn số trên cân mà thêm bớt.' },
+    { id: 'event_balloon', type: 'action', game: 'hold', skin: 'balloon', title: 'Bơm bóng cổng chào', icon: '🎈', time: 55, pass: 0.6,
+      rounds: 7, color: '#ffe08a', label: 'KHỎE RE',
       prompt: 'Khách muốn cổng chào 500 quả bóng "to vừa, đừng to quá". Giữ để bơm, thả ra khi bóng chạm vòng xanh.',
       hint: 'Giữ chuột / chạm giữ màn hình (hoặc giữ Space). Bơm quá là BỤP.' },
-    { id: 'event_checkin', type: 'action', game: 'conveyor', mode: 'stamp', title: 'Soát vé check-in', icon: '🎟️', time: 40, pass: 0.6, count: 12,
+    { id: 'event_checkin', type: 'action', game: 'conveyor', mode: 'stamp', title: 'Soát vé check-in', icon: '🎟️', time: 55, pass: 0.6, count: 18,
       stampText: 'MỜI VÀO', hit: 'Mời vào!', wrongHit: 'Cho nhầm người vào!', miss: 'Khách hợp lệ bị bỏ sót!',
       target: { emoji: '🎟️', labels: ['Vé có tên trong danh sách', 'Vé QR còn hạn', 'Thẻ VIP đúng ngày', 'Khách mời có thư mời'] },
       avoid: { emoji: '⚠️', labels: ['Vé sự kiện năm ngoái', 'Ảnh chụp vé người khác', 'Không có tên trong danh sách', 'Vé in từ ảnh mờ'] },

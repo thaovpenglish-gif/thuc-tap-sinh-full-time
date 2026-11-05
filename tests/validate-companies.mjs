@@ -8,7 +8,7 @@ import { newRun } from '../site/js/game/save.js';
 const SPECIAL = new Set(['me', 'think', 'nar', 'kpi']);
 const FX_KEYS = new Set(['uy', 'dr', 'nl', 'rel', 'set', 'money', 'clock']);
 const MINI_TYPES = new Set(['pick', 'quiz', 'order', 'sort', 'action', 'doc', 'chat']);
-const ACTION_GAMES = new Set(['shred', 'hold', 'whack', 'conveyor', 'align', 'printjam', 'collate', 'wires', 'shredder']); // site/js/ui/action.js
+const ACTION_GAMES = new Set(['shred', 'hold', 'whack', 'conveyor', 'align', 'printjam', 'collate', 'wires', 'shredder', 'incense', 'scale', 'stir']); // site/js/ui/action.js
 const MAX_LINE = 240;
 const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
 

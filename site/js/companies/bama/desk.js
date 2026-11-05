@@ -9,13 +9,22 @@ const F = (k) => (r) => !!r.flags[k];
 export const DESK = {
   games: [
     // ---- hands-on (ui/action.js) ----
-    { id: 'bama_shred', type: 'action', game: 'shred', title: 'Xé khô gà', icon: '🍗', time: 45, pass: 0.6,
-      pieces: 2, strips: 5, item: 'Ức gà luộc',
+    { id: 'bama_scale', type: 'action', game: 'scale', title: 'Cân khô gà 200g mỗi túi', icon: '⚖️', time: 60, pass: 0.6, unitName: 'Túi',
+      items: [{ label: 'Miếng to', emoji: '🍗', w: 45, jitter: 2 }, { label: 'Miếng vừa', emoji: '🍗', w: 30, jitter: 2 }, { label: 'Miếng nhỏ', emoji: '🍗', w: 12, jitter: 1 }, { label: 'Vụn', emoji: '🍂', w: 5, jitter: 1 }],
+      targets: [[197, 203], [197, 203], [497, 503], [97, 103], [197, 203]], okText: 'Đúng ký!', overText: 'Lố ký, Má lỗ!', underText: 'Thiếu ký, khách chửi!',
+      prompt: 'Má dặn: túi 200g là 200g, lệch quá 3g là Má buồn. Bấm từng miếng khô cho lên cân, lố thì bấm cân để nhấc ra, đủ thì CHỐT. Có túi 500g, túi 100g.',
+      hint: 'Cân số ở trên. Miếng khô không đều nhau, nhìn số mà thêm bớt.' },
+    { id: 'bama_stir', type: 'action', game: 'stir', title: 'Trộn gia vị ướp gà', icon: '🥣', time: 55, pass: 0.6, bowls: 2, unitName: 'Thố',
+      ingredients: ['#e0a15a', '#d94f3a', '#5a9a3a', '#f1c40f', '#7a4a2a'], base: '#f3d9a6', mix: '#c9773a', what: 'độ thấm', okText: 'Thấm đều rồi!', splash: 'Văng sa tế!',
+      prompt: 'Cô Tư đổ gà xé, ớt, lá chanh, mắm, đường vào thố. Kéo vòng tròn trong thố để trộn. Giữ tốc độ trong vùng xanh: chậm thì không thấm, nhanh quá là văng sa tế.',
+      hint: 'Kéo chuột / ngón tay thành vòng tròn đều tay bên trong thố.' },
+    { id: 'bama_shred', type: 'action', game: 'shred', title: 'Xé khô gà', icon: '🍗', time: 60, pass: 0.6,
+      pieces: 3, strips: 5, item: 'Ức gà luộc',
       prompt: 'Cô Tư vừa luộc xong mẻ ức gà. Vuốt DỌC theo thớ để xé sợi. Vuốt ngang thớ là ra vụn, Má mà thấy là Má buồn.',
       hint: 'Kéo chuột hoặc vuốt tay theo hướng các đường thớ trên miếng thịt.',
       good: [['tu', 'Sợi đều, không vụn. Con xé giống cô hồi trẻ.']], bad: [['tu', 'Vụn thế này chỉ làm chà bông thôi con ơi.']] },
-    { id: 'bama_seal', type: 'action', game: 'hold', skin: 'seal', title: 'Hàn miệng túi khô gà', icon: '🔥', time: 40, pass: 0.6,
-      rounds: 5, label: 'KHÔ GÀ LÁ CHANH',
+    { id: 'bama_seal', type: 'action', game: 'hold', skin: 'seal', title: 'Hàn miệng túi khô gà', icon: '🔥', time: 55, pass: 0.6,
+      rounds: 7, label: 'KHÔ GÀ LÁ CHANH',
       prompt: 'Giữ để máy hàn nóng lên, thả ra khi kim vào vùng xanh. Non tay thì hở túi, quá tay thì cháy túi.',
       hint: 'Giữ chuột / chạm giữ màn hình (hoặc giữ Space), thả ra đúng lúc.' },
     // ---- work sims (ui/sims.js): real work of a dried-food producer ----

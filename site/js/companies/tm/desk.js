@@ -9,13 +9,17 @@ const F = (k) => (r) => !!r.flags[k];
 export const DESK = {
   games: [
     // ---- hands-on (ui/action.js) ----
-    { id: 'tm_align', type: 'action', game: 'align', title: 'Căn lề slide', icon: '📐', time: 45, pass: 0.6, twist: true,
+    { id: 'tm_phin', type: 'action', game: 'stir', title: 'Khuấy cà phê sữa cho chị Tuyết', icon: '☕', time: 50, pass: 0.6, bowls: 2, unitName: 'Ly',
+      ingredients: ['#3b2418', '#3b2418', '#fff4dc', '#fff4dc', '#6b3f22'], base: '#4a2c1a', mix: '#b07a4f', bowl: '#ffffff', what: 'độ hòa', okText: 'Màu nâu sữa chuẩn!', splash: 'Sóng sánh ra đĩa!',
+      prompt: 'Chị Tuyết uống cà phê sữa "khuấy đều, không được còn vệt sữa". Kéo vòng tròn trong ly, tốc độ trong vùng xanh. Khuấy mạnh quá là sóng sánh ra đĩa.',
+      hint: 'Kéo chuột / ngón tay thành vòng tròn đều tay bên trong ly.' },
+    { id: 'tm_align', twists: 2, type: 'action', game: 'align', title: 'Căn lề slide', icon: '📐', time: 60, pass: 0.6, twist: true,
       blocks: ['Tiêu đề: Thị trường trà sữa', 'Biểu đồ doanh thu', '3 insight', 'Nguồn: Hiệp hội 2026', 'Logo khách'],
       twistLine: '"Chị có vài ý nhỏ…" (chị Tuyết)', twistSub: '(hai khối vừa bị dời chỗ)',
       prompt: 'Chị Linh: "Slide lệch 2 pixel là khách mất niềm tin." Kéo từng khối vào đúng khung nét đứt.',
       hint: 'Kéo thả bằng chuột hoặc ngón tay. Gần đúng chỗ là khối tự hít vào.',
       good: [['linh', 'Thẳng. Chị không tìm được lỗi nào. Hơi khó chịu.']] },
-    { id: 'tm_ping', type: 'action', game: 'whack', title: 'Lọc thông báo trước 9h', icon: '🔔', time: 35, pass: 0.6, count: 16,
+    { id: 'tm_ping', type: 'action', game: 'whack', title: 'Lọc thông báo trước 9h', icon: '🔔', time: 45, pass: 0.6, count: 26,
       slotText: 'Teams · T&M', bg: '#2c2a4a', slot: '#3d3a63',
       target: { emoji: '📌', labels: ['Chị Tuyết: tóm tắt?', 'Khách: số trang?', 'Chị Linh: sửa slide 7', 'Họp 10h đổi phòng'], hit: 'Xử lý!', miss: 'Lỡ việc gấp' },
       avoid: { emoji: '🎈', labels: ['Team building tự nguyện', 'Ai ăn hộp cơm hồng?', 'Sticker mèo', 'Khảo sát văn hóa #4'], hit: 'Sa vào drama!' },
