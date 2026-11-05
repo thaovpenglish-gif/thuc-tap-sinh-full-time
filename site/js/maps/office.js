@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import { INK, T, outline, canvasTex, roundRect, textTexture, gradientMap } from '../art/kit.js';
 import { PROP_SLOTS } from './slots.js';
+import { STYLES, paintFloor, decorate } from './styles.js';
 export { SPOTS, SLOT_HELP, PROP_SLOTS, CAT_PATH, PLAYER_START, MEETING_SEAT, PLAYER_DESK, INTERACTABLE_IDS } from './slots.js';
 
 // T&M theme = the original office. Other companies override any of these fields.
@@ -84,21 +85,12 @@ export function buildWorld(scene, themeIn = {}) {
     plant: '#8fd6a0', pot: '#ffb39a', ink: INK,
     ...(th.palette || {}),
   };
+  const STY = STYLES[th.style] || STYLES.tm;
+  if (STY.wall) P.wall = STY.wall;
   const glassMat = new THREE.MeshBasicMaterial({ color: '#cfe9ff', transparent: true, opacity: 0.28, depthWrite: false });
 
   // ---------- floor & ceiling ----------
-  const floorTex = canvasTex(512, 512, (g, w, h) => {
-    g.fillStyle = '#f6e3c6'; g.fillRect(0, 0, w, h);
-    for (let j = 0; j < 8; j++) {
-      const off = (j % 2) * 128;
-      for (let i = -1; i < 3; i++) {
-        g.fillStyle = (i + j) % 3 === 0 ? '#f3dcbc' : (i + j) % 3 === 1 ? '#f8e8cf' : '#f5dfc2';
-        g.fillRect(i * 256 + off + 2, j * 64 + 2, 252, 60);
-      }
-    }
-    g.strokeStyle = 'rgba(160,110,70,0.25)'; g.lineWidth = 3;
-    for (let j = 0; j <= 8; j++) { g.beginPath(); g.moveTo(0, j * 64); g.lineTo(w, j * 64); g.stroke(); }
-  });
+  const floorTex = canvasTex(512, 512, (g, w, h) => paintFloor(STY.floor, g, w, h));
   floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping;
   floorTex.repeat.set(10, 7);
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 20), new THREE.MeshToonMaterial({ map: floorTex, gradientMap }));
@@ -440,8 +432,11 @@ export function buildWorld(scene, themeIn = {}) {
     }
   }
 
+  // ---------- company style: ceiling decoration + set pieces ----------
+  decorate(th.style, { box, cyl, sphere, plane, basic, textTexture, canvasTex, roundRect, INK, collideRect, animated, root });
+
   // ---------- lights ----------
-  root.add(new THREE.HemisphereLight('#ffffff', '#ffe9d6', 1.6));
+  root.add(new THREE.HemisphereLight(STY.light || '#ffffff', '#ffe9d6', 1.6));
   root.add(new THREE.AmbientLight('#ffffff', 0.45));
   const dir = new THREE.DirectionalLight('#fff6ea', 1.1);
   dir.position.set(-6, 10, 8); root.add(dir);
