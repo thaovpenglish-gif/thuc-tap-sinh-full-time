@@ -69,10 +69,13 @@ function showLetter(thenPlay) {
   $('#devLetter').hidden = false;
   $('#devLetter').scrollTop = 0;
   $('#letterGiao').hidden = !(SUPPORT_URL || FLAGS.giao);
+  $('#letterMp').hidden = !FLAGS.mp;
+  $('#letterMpGo').hidden = !FLAGS.mp;
   $('#letterGo').textContent = thenPlay ? 'Đã hiểu, vào chơi →' : 'Vào chơi Solo →';
   const close = () => { $('#devLetter').hidden = true; try { localStorage.setItem(LETTER_KEY, '1'); } catch { /* private mode */ } };
   $('#letterGo').onclick = () => { close(); startSolo(); };
   $('#letterClose').onclick = () => { close(); showMainMenu(); };
+  $('#letterMpGo').onclick = () => { close(); startMulti(); };
 }
 const letterSeen = () => { try { return !!localStorage.getItem(LETTER_KEY); } catch { return false; } };
 
@@ -87,6 +90,7 @@ function showMainMenu() {
   if (FLAGS.mp && mp) {
     mp.innerHTML = '<span class="mode-ico">🚨🏃‍♀️🏃</span><b>Overdeadline<br>&amp; Overburnout</b><span>SOS Advisory · co-op 1–4 người</span><em class="go">Bản thử →</em>';
     mp.onclick = () => startMulti();
+    $('#letterBtn').textContent = '💌 Thư từ người làm game · cách lưu tiến trình · 🚨 Multiplayer mới';
   }
 }
 

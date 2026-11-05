@@ -30,6 +30,8 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
 - Game Owner: show it on the main menu. The `mp` flag is now on by default (beta card); `?mp=0` hides it.
 - Game Owner got stuck ("lấy slide ở đâu?"): tickets now show the whole chain, and a 📖 recipe book (HUD button, `H`,
   room screen) explains every task step by step, with tips.
+- Developer letter: new "🚨 Mới: Overdeadline & Overburnout" section (what it is, invite, one button, 📖, burnout,
+  playing alone, beta + privacy note) and a "Chơi Overdeadline →" button; hidden with `?mp=0`.
 
 ## 2026-11-05 — QC round 1 and publish
 
