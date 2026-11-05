@@ -36,7 +36,7 @@ const OUT = process.env.SHOTS || '/tmp/claude-0';
   const auditButtons = async (where) => {
     const bad = await p.evaluate(() => {
       const out = [];
-      const modal = ['#salary', '#mini', '#incoming', '#overlay', '#phone', '#notebook', '#pause', '#soloMenu', '#companyMenu'].map((s) => document.querySelector(s)).find((m) => m && !m.hidden);
+      const modal = ['#deskPick', '#guide', '#salary', '#mini', '#incoming', '#overlay', '#phone', '#notebook', '#pause', '#soloMenu', '#companyMenu'].map((s) => document.querySelector(s)).find((m) => m && !m.hidden);
       document.querySelectorAll('button, a.link, summary').forEach((el) => {
         if (el.disabled || el.closest('[hidden]')) return;
         if (modal && !modal.contains(el)) return; // only the open modal is meant to be clickable
@@ -86,9 +86,11 @@ const OUT = process.env.SHOTS || '/tmp/claude-0';
         task: openTask ? openTask.legs[openTask.leg] : null,
         desk: R && R.today ? (R.today.desk || 0) : 0,
         deskChoice: [...document.querySelectorAll('#choices button')].findIndex((x) => /Làm việc tập trung/.test(x.textContent)),
+        deskPick: q('#deskPick') && !document.querySelector('#deskPick').hidden,
       };
     });
     if (st.day) days.add(st.day);
+    if (st.deskPick) { if (!audited.has('deskPick')) { audited.add('deskPick'); await auditButtons('desk picker'); } await p.evaluate(() => document.querySelector('#deskPick [data-any]').click()); await p.waitForTimeout(150); continue; }
     if (st.sal) { await auditButtons('salary'); const k = TIERS.indexOf(tierId); await p.evaluate((k) => { const c = document.querySelectorAll('.sal-card')[k]; c.click(); c.click(); }, k); await p.waitForTimeout(100); continue; }
     if (strategy !== 'rand') {
       const failed = await p.evaluate(() => { const x = document.querySelector('#mini:not([hidden]) .mini-result'); if (!x || x.dataset.seen) return null; x.dataset.seen = '1'; return x.classList.contains('no') ? x.textContent : ''; });

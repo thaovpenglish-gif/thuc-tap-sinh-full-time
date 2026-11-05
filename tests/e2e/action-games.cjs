@@ -10,7 +10,7 @@ const COS = process.argv.slice(2).length ? process.argv.slice(2) : ['office', 't
 // runs in the page: mount one game, let a bot play it through synthetic pointer events, resolve with the score
 const PLAY = async ({ co, id, mode, shot }) => {
   const { startAction } = await import('./js/ui/action.js');
-  const games = co === 'office' ? await (async () => { const o = await import('./js/game/office.js'); return [...o.PRINTER_GAMES, o.pourGame('Pha cà phê cho sếp'), o.pourGame('Pha một ấm trà'), ...o.DESK_OFFICE_GAMES].map((g, i) => (g.id === 'off_pour' ? { ...g, id: `off_pour${i}` } : g)); })()
+  const games = co === 'office' ? await (async () => { const o = await import('./js/game/office.js'); return [...o.PRINTER_GAMES, o.pourGame('Pha cà phê cho sếp'), o.pourGame('Pha một ấm trà'), ...o.DESK_OFFICE_GAMES, o.INCENSE_GAME].map((g, i) => (g.id === 'off_pour' ? { ...g, id: `off_pour${i}` } : g)); })()
     : (await import(`./js/companies/${co}/desk.js`)).DESK.games;
   const cfg = games.find((g) => g.id === id);
   let host = document.getElementById('actTest');
@@ -52,6 +52,16 @@ const PLAY = async ({ co, id, mode, shot }) => {
       if (it && (mode === 'perfect' || Math.random() < 0.5)) { ev('pointerdown', 200, 150); await sleep(40); }
       else if (mode !== 'perfect' && Math.random() < 0.03) ev('pointerdown', 200, 150);
       await sleep(6);
+    } else if (g === 'incense') {
+      if (s.phase === 'light') {
+        if (!s.holding) { ev('pointerdown', 260, 150); await sleep(10); continue; }
+        const stop = mode === 'perfect' ? s.light + 0.2 : s.flare + 0.5;
+        if (s.heat >= stop) { ev('pointerup', 260, 150); await sleep(30); }
+        await sleep(10);
+      } else if (s.phase === 'plant') {
+        if (mode === 'perfect' ? Math.abs(s.angle) < 0.03 : Math.abs(s.angle) > 0.45) { ev('pointerdown', 260, 150); await sleep(60); }
+        await sleep(5);
+      } else await sleep(60);
     } else if (g === 'printjam') {
       if (s.phase === 'print') { ev('pointerdown', 420, 64); await sleep(200); continue; }
       if (s.phase !== 'pull') { await sleep(100); continue; }
@@ -115,7 +125,7 @@ const PLAY = async ({ co, id, mode, shot }) => {
   const fails = [];
   for (const co of COS) {
     const ids = co === 'office'
-      ? ['off_jam', 'off_collate', 'off_net', 'off_pour0', 'off_pour1', 'off_shred', 'off_net_desk'].map((x) => x.replace('off_pour0', 'off_pour3').replace('off_pour1', 'off_pour4'))
+      ? ['off_jam', 'off_collate', 'off_net', 'off_pour0', 'off_pour1', 'off_shred', 'off_net_desk', 'off_incense'].map((x) => x.replace('off_pour0', 'off_pour3').replace('off_pour1', 'off_pour4'))
       : await p.evaluate(async (co) => (await import(`./js/companies/${co}/desk.js`)).DESK.games.filter((g) => g.type === 'action').map((g) => g.id), co);
     for (const id of ids) {
       const shotP = (async () => { await p.waitForFunction(() => window.__shotReady, null, { timeout: 60000 }).catch(() => {}); await p.locator('#actTest').screenshot({ path: `${OUT}/act_${id}.png` }).catch(() => {}); })();

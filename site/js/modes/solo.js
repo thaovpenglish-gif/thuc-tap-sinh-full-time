@@ -20,7 +20,7 @@ import { emptyProfile, newRun, addRun, updateRun, removeRun, listRuns, runLabel,
 import { planTasks, tick, visit, active, summary, currentLeg, shiftTasks, resolveAll, rng } from '../game/tasks.js';
 import * as C from '../game/career.js';
 import * as D from '../game/desk.js';
-import { officeGameFor, DESK_OFFICE_GAMES } from '../game/office.js';
+import { officeGameFor, DESK_OFFICE_GAMES, INCENSE_GAME } from '../game/office.js';
 import { COMPANY_LIST, companyMeta, companyName, loadCompany } from '../companies/index.js';
 import { net, clean } from '../net/legacy-net.js';
 import { createCloudPanel } from '../ui/cloudpanel.js';
@@ -571,10 +571,10 @@ export function startSolo({ scene, camera, input, onExit }) {
   // ---------- side tasks ----------
   function startSideTasks() {
     const d = day();
-    if (!d.sideTasks || !R.tier || !CO.sideTasks || !CO.sideTasks.length) { R.tasks = []; return; }
+    if (!d.sideTasks || !R.tier || !((CO.sideTasks || []).length || (CO.desk && CO.desk.tasks || []).length)) { R.tasks = []; return; }
     const count = R.status === 'official' ? Math.min(5, tier(R.tier).sideTasks + 1) : tier(R.tier).sideTasks;
     const absent = (id) => !isPresent(id) || (d.pos && d.pos[id] === 'away') || (d.steps || []).some((st) => st.pos && st.pos[id] === 'away');
-    const templates = CO.sideTasks.filter((t) => { try { return (!t.when || t.when(R)) && !absent(t.from) && !(t.legs || []).some((l) => l.npc && absent(l.npc)); } catch { return false; } });
+    const templates = [...CO.sideTasks, ...((CO.desk && CO.desk.tasks) || [])].filter((t) => { try { return (!t.when || t.when(R)) && !absent(t.from) && !(t.legs || []).some((l) => l.npc && absent(l.npc)); } catch { return false; } });
     R.tasks = planTasks({ templates, count, tierId: R.tier, startMin: 9 * 60 + 15, endMin: 16 * 60 + 30, seed: hash(R.id) + R.day * 7, scale: TASK_SCALE });
   }
   function taskTick() {
@@ -594,7 +594,8 @@ export function startSolo({ scene, camera, input, onExit }) {
     R.tasks = tasks;
     for (const e of events) {
       // printer / pantry legs are a hands-on mini-game (game/office.js): sloppy work costs time and a bit of reputation
-      const og = officeGameFor(e.leg, hash(R.id) + R.day * 17 + R.clock);
+      const og = officeGameFor(e.leg, hash(R.id) + R.day * 17 + R.clock, (CO.desk && CO.desk.games) || []);
+      if (og && og.id === INCENSE_GAME.id) R.flags.incense_day = R.day;
       if (og) {
         $('#dialog').hidden = true;
         const { score } = await runMinigame({ ...og, time: Math.round(og.time * mood().mini * (hungry() ? 0.75 : 1)), barNote: `Việc vặt: ${e.task.title}` });
@@ -690,11 +691,52 @@ export function startSolo({ scene, camera, input, onExit }) {
       return [map[who], text, dm];
     });
   }
+  // ---------- altar: thắp nhang Thần Tài (mini-game, once a day) ----------
+  async function altarVisit() {
+    const flavor = ((CO.objLines && CO.objLines.altar) || OBJ_LINES.altar).filter((x) => Array.isArray(x)).slice(0, 1);
+    if (R.flags.incense_day === R.day) { await dialogue.run([['nar', 'Nhang hôm nay đã thắp. Khói vẫn còn thơm, Thần Tài chắc đang bận phù hộ người khác.']]); return; }
+    await dialogue.run([...flavor, { c: '_altar', o: [
+      { t: '🪔 Thắp nhang (mini-game)', fx: { set: { _altar: 1 } } },
+      { t: 'Chắp tay vái một cái rồi đi', fx: { set: { _altar: 0 } } },
+    ] }]);
+    const play = R.flags._altar; delete R.flags._altar;
+    if (!play) return;
+    $('#dialog').hidden = true;
+    const { score } = await runMinigame({ ...INCENSE_GAME, time: Math.round(INCENSE_GAME.time * mood().mini * (hungry() ? 0.75 : 1)) });
+    R.flags.incense_day = R.day;
+    if (score >= (INCENSE_GAME.pass ?? 0.5) - 1e-9) await dialogue.run([['nar', 'Ba cây nhang thẳng tắp. Bạn khấn nhỏ: "Cho con qua review tuần này."'], { fx: { uy: 1, nl: 3 } }]);
+    else await dialogue.run([['nar', 'Nhang hơi xiêu vẹo. Bạn chỉnh lại, khấn thêm một câu xin lỗi cho chắc.']]);
+  }
+
+  // ---------- desk: pick which job to do (cards: hands-on / reading / chat) ----------
+  const KIND = { action: ['🖐️ Tay chân', 'k-act'], doc: ['📄 Đọc tài liệu', 'k-doc'], chat: ['💬 Nhắn tin', 'k-chat'] };
+  function pickDeskGame(games) {
+    return new Promise((resolve) => {
+      const el = document.getElementById('deskPick') || Object.assign(document.createElement('div'), { id: 'deskPick' });
+      document.body.appendChild(el);
+      const today = new Set((R.deskSeen || []).slice(-D.sessionsToday(R)));
+      const sorted = [...games].sort((a, b) => (a.type === 'action' ? 0 : 1) - (b.type === 'action' ? 0 : 1));
+      el.innerHTML = `<div class="dp-card"><div class="gd-head"><b>💻 Làm việc gì bây giờ?</b><button class="btn ghost" data-x="1" aria-label="Đóng">✕</button></div>
+        <div class="dp-grid">${sorted.map((g) => { const k = KIND[g.type] || KIND.action; return `<button class="dp-item" data-id="${esc(g.id)}"><span class="dp-ico">${esc(g.icon || '🧩')}</span><b>${esc(g.title)}</b><em class="${k[1]}">${k[0]}</em>${today.has(g.id) ? '<small>✓ đã làm hôm nay</small>' : ''}</button>`; }).join('')}</div>
+        <div class="gd-foot"><button class="btn primary" data-any="1">🎲 Bất kỳ (ưu tiên tay chân)</button></div></div>`;
+      el.hidden = false; document.body.classList.add('dp-open');
+      const close = (v) => { el.hidden = true; document.body.classList.remove('dp-open'); resolve(v); };
+      el.querySelectorAll('.dp-item').forEach((b) => { b.onclick = () => { sfx.choose(); close(games.find((g) => g.id === b.dataset.id)); }; });
+      el.querySelector('[data-any]').onclick = () => {
+        const acts = games.filter((g) => g.type === 'action');
+        const pool = acts.length && Math.random() < 0.75 ? acts : games;
+        close(D.pickGame(pool, R, hash(R.id) + R.day * 31 + (R.deskSeen || []).length) || games[0]);
+      };
+      el.querySelector('[data-x]').onclick = () => close(null);
+    });
+  }
   async function deskSession() {
-    const { games, chatter } = deskContent();
+    const { games: all, chatter } = deskContent();
     const n = D.sessionsToday(R), hp = !!R.today.hp;
     const seed = hash(R.id) + R.day * 31 + n * 7 + (R.deskSeen || []).length;
-    const game = D.pickGame(games, R, seed);
+    const usable = all.filter((g) => { try { return (!g.when || g.when(R)) && (!g.official || R.status === 'official'); } catch { return false; } });
+    $('#dialog').hidden = true;
+    const game = await pickDeskGame(usable);
     if (!game) return;
     const scenario = D.pickScenario(game, R.deskSc, seed + 5); // doc/chat: which document or conversation, no repeats
     const mini = D.sampleMini({ ...game, scenario }, seed + 1);
@@ -1089,6 +1131,7 @@ export function startSolo({ scene, camera, input, onExit }) {
       if (it.id === 'giao') await giaoTalk();
       else if (it.id === 'kpi') await dialogue.run([['nar', `${(CO && CO.catName) || 'Mèo KPI'} mở một mắt, nhìn bạn như nhìn một slide không có executive summary, rồi ngủ tiếp.`], { fx: { nl: 3 } }]);
       else if (it.id === 'coffee') await pantry();
+      else if (it.id === 'altar' && R.day > 0 && R.today) await altarVisit();
       else if (it.id === 'desk' && R.day > 0 && R.today) await desk();
       else if (it.kind === 'npc') {
         const lines = (CO.idle && CO.idle[it.id]) || ['…'];

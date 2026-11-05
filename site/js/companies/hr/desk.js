@@ -198,6 +198,15 @@ export const DESK = {
       ] },
   ],
 
+  // errands that lead into the hands-on games (`play` = a desk game id; engine: game/office.js officeGameFor)
+  tasks: [
+    { id: 'desk_ghost', title: 'Gọi giữ ứng viên trước khi họ ghost', from: 'ngan', base: 50, legs: [
+      { npc: 'ngan', line: ['ngan', 'Pipeline tuần này đang mờ dần. Em về máy gọi giữ từng người giúp chị, trước 4 giờ.'] },
+      { obj: 'desk', play: 'hr_ghost', line: ['nar', 'Bạn gọi xong. Ba người nghe máy, một người nhắn "đang họp", một người là bot.'] },
+      { npc: 'ngan', line: ['ngan', 'Giữ được người là giữ được khách. Tốt.'] },
+    ] },
+  ],
+
   chatter: [
     { id: 'hr_ch_kpi', chat: [['quan', 'Mình 52 CV rồi nha 💪'], ['vy', '52 CV mà 3 cái mở ra là ảnh cưới'], ['duy', 'Chất lượng hơn số lượng! …Nhưng mai ai dưới 40 thì họp nhé.'], ['ngan', 'Cái nào gửi khách được thì gửi chị. Còn lại đừng.']],
       scene: [

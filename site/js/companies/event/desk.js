@@ -191,6 +191,15 @@ export const DESK = {
       ] },
   ],
 
+  // errands that lead into the hands-on games (`play` = a desk game id; engine: game/office.js officeGameFor)
+  tasks: [
+    { id: 'desk_bong', title: 'Bơm bóng mẫu cho cổng chào', from: 'duy', base: 60, legs: [
+      { npc: 'duy', line: ['duy', 'Khách muốn xem mẫu cổng chào. Em bơm thử năm quả, to vừa, đừng to quá. Copy?'] },
+      { obj: 'desk', play: 'event_balloon', line: ['nar', 'Năm quả bóng nằm ngay ngắn. Một quả hơi xẹp, bạn giấu nó ra sau.'] },
+      { npc: 'duy', line: ['duy', 'Copy. Gửi ảnh cho khách. Plan B là bóng giấy, mong không phải dùng.'] },
+    ] },
+  ],
+
   chatter: [
     { id: 'event_ch_2307', chat: [['thao', 'Khách Bê Tông nhắn 23:07 tối qua: đổi backdrop sang "đỏ may mắn" ạ 🙏'], ['thao', 'Chị dạ được rồi'], ['tien', 'Backdrop in xong từ 18h hôm qua chị ơi'], ['duy', 'Plan B?'], ['thao', 'Plan B là… Tiến?']],
       scene: [
