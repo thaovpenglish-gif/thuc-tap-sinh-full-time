@@ -28,7 +28,7 @@ site/                       web tĩnh, deploy thẳng lên GitHub Pages (không 
   js/ui/                    toast, overlay, điện thoại, mini-game
   js/modes/solo.js          Solo T&M (góc nhìn thứ nhất)
   js/modes/legacy.js        chế độ cốt truyện cũ
-  js/modes/multi.js         Multiplayer "Overdeadline & Overburnout" (SOS Advisory, co-op, mở bằng ?mp=1)
+  js/modes/multi.js         Multiplayer "Overdeadline & Overburnout" (SOS Advisory, co-op, bản thử trên menu chính)
   js/game/mp/               luật chơi Multiplayer (engine.js) và dữ liệu màn (levels.js)
   js/maps/mp-room.js        dựng phòng 3D cho màn Multiplayer
   js/net/                   kết nối Supabase (mp-net.js: phòng chơi Multiplayer)
@@ -42,8 +42,8 @@ tests/                      unit test (npm test) + test tự chơi (tests/e2e)
 cd site && python3 -m http.server 8000
 ```
 
-Mở http://localhost:8000 (thêm `?legacy=1` để mở cốt truyện cũ, `?mp=1` để mở bản thử Multiplayer; thêm
-`&net=local` để thử 2 người bằng 2 tab trên cùng máy, không cần mạng).
+Mở http://localhost:8000 (thêm `?legacy=1` để mở cốt truyện cũ, `?mp=1&net=local` để thử Multiplayer
+2 người để thử 2 người bằng 2 tab trên cùng máy, không cần mạng).
 
 ## Kiểm thử
 
