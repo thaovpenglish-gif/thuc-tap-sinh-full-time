@@ -33,7 +33,7 @@ const OUT = process.env.SHOTS || '/tmp/claude-0';
   const auditButtons = async (where) => {
     const bad = await p.evaluate(() => {
       const out = [];
-      const modal = ['#salary', '#mini', '#incoming', '#overlay', '#phone', '#pause', '#soloMenu', '#companyMenu'].map((s) => document.querySelector(s)).find((m) => m && !m.hidden);
+      const modal = ['#salary', '#mini', '#incoming', '#overlay', '#phone', '#notebook', '#pause', '#soloMenu', '#companyMenu'].map((s) => document.querySelector(s)).find((m) => m && !m.hidden);
       document.querySelectorAll('button, a.link, summary').forEach((el) => {
         if (el.disabled || el.closest('[hidden]')) return;
         if (modal && !modal.contains(el)) return; // only the open modal is meant to be clickable

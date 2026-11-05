@@ -22,6 +22,7 @@ import * as C from '../game/career.js';
 import { COMPANY_LIST, companyMeta, companyName, loadCompany } from '../companies/index.js';
 import { net, clean } from '../net/legacy-net.js';
 import { createCloudPanel } from '../ui/cloudpanel.js';
+import { createNotebook } from '../ui/notebook.js';
 import { SUPPORT_URL } from '../config.js';
 import { FLAGS } from '../flags.js';
 
@@ -186,7 +187,7 @@ export function startSolo({ scene, camera, input, onExit }) {
       const d = Math.round(R.st[k] - before);
       if (d) toast(`${d > 0 ? '▲' : '▼'} ${lbl[k]} ${d > 0 ? '+' : ''}${d}`, k === 'dr' ? 'drama' : d > 0 ? 'good' : 'bad', 2);
     }
-    if (fx.money) { R.money += fx.money; toast(`${fx.money > 0 ? '💰 +' : '💸 −'}${fmtVND(Math.abs(fx.money))}`, fx.money > 0 ? 'good' : 'bad', 2.4); }
+    if (fx.money) { R.ledger = [...(R.ledger || []), { day: R.day, k: moneyCtx || 'Trong ngày', v: fx.money }].slice(-150); R.money += fx.money; toast(`${fx.money > 0 ? '💰 +' : '💸 −'}${fmtVND(Math.abs(fx.money))}`, fx.money > 0 ? 'good' : 'bad', 2.4); }
     if (fx.clock) R.clock += fx.clock;
     if (fx.rel) for (const [id, n] of Object.entries(fx.rel)) {
       R.rel[id] = (R.rel[id] || 0) + n;
@@ -195,6 +196,8 @@ export function startSolo({ scene, camera, input, onExit }) {
     if (fx.set) Object.assign(R.flags, fx.set);
     updateHUD();
   }
+  let moneyCtx = null; // label for the notebook's ledger while an effect is applied
+  const withCtx = (label, fn) => { moneyCtx = label; try { return fn(); } finally { moneyCtx = null; } };
   async function voteToast(id, idx) {
     if (String(id).startsWith('_')) return; // private choices (food, routine…) are not polled
     const rows = await net.vote(`${R.company}_${id}`, idx);
@@ -243,7 +246,11 @@ export function startSolo({ scene, camera, input, onExit }) {
     charInfo, fmt, applyFx,
     getState: () => R,
     pushChat: (list) => pushChat(list),
-    onChoice: (id, i) => voteToast(id, i),
+    onChoice: (id, i, text) => {
+      if (R && text && !String(id).startsWith('_')) R.decisions = [...(R.decisions || []), { day: R.day, text: fmt(text) }].slice(-120);
+      voteToast(id, i);
+    },
+    onLine: (spk, text) => { if (R && spk === 'think') R.thoughts = [...(R.thoughts || []), { day: R.day, time: fmtClock(R.clock), text }].slice(-300); },
     onSpeaker(spk) {
       if (callMode) document.querySelectorAll('#callTiles .tile').forEach((t) => t.classList.toggle('speaking', t.dataset.id === spk || (spk === 'think' && t.dataset.id === 'me')));
       else if (npcs[spk] && npcs[spk].mesh.position.distanceTo(player.pos) < 10) { fp.focus(npcs[spk].mesh.position); npcs[spk].talking = true; }
@@ -433,6 +440,13 @@ export function startSolo({ scene, camera, input, onExit }) {
     onOpen: () => { if (mode === 'play' || mode === 'pause') mode = 'phone'; fp.unlock(); $('#pause').hidden = true; $('#prompt').hidden = true; $('#taskList').hidden = true; },
     onClose: () => { if (mode === 'phone') { mode = 'play'; $('#crosshair').hidden = isTouch; fp.lock(); renderTasks(); } },
   });
+  const notebook = createNotebook({
+    getRun: () => R, charInfo, companyName, castIds: () => Object.keys(CO ? CO.cast : {}),
+    onOpen: () => { if (mode === 'play' || mode === 'pause') mode = 'notebook'; fp.unlock(); $('#pause').hidden = true; $('#prompt').hidden = true; $('#taskList').hidden = true; },
+    onClose: () => { if (mode === 'notebook') { mode = 'play'; $('#crosshair').hidden = isTouch; fp.lock(); renderTasks(); } },
+  });
+  $('#notebookBtn').hidden = false;
+  $('#notebookBtn').onclick = () => { if (R && ['play', 'pause', 'overlay', 'intro'].includes(mode)) notebook.show(); };
   function pushChat(list, delayStart = 400) {
     const runId = R.id;
     list.forEach(([from, text, dm], k) => {
@@ -514,7 +528,9 @@ export function startSolo({ scene, camera, input, onExit }) {
       ] },
     ].filter((o) => !o.when || o.when(R)).slice(0, 4);
     const broke = R.money < 35_000;
+    moneyCtx = 'Ăn uống';
     await dialogue.run([['nar', broke ? `Pantry. Ví còn ${R.money < 0 ? '−' : ''}${fmtVND(Math.abs(Math.round(R.money)))}. Không đủ tiền đặt cơm hay ra ngoài ăn, chỉ còn đồ miễn phí.` : `Pantry. Ví còn ${fmtVND(Math.round(R.money))}. Bụng thì còn ít hơn.`], { c: '_food', o: opts }]);
+    moneyCtx = null;
   }
 
   // ---------- day intro / end ----------
@@ -627,6 +643,12 @@ export function startSolo({ scene, camera, input, onExit }) {
     if (v) return v;
     if (type === 'finish') return { title: 'Hết 45 ngày thực tập', text: 'Bạn ôm giấy xác nhận thực tập và một thùng carton nhỏ. Thùng carton là của công ty, bạn phải trả lại.' };
     if (type === 'quit') return { title: 'Bạn nghỉ việc', text: 'Bạn bấm gửi email nghỉ việc. Lần đầu tiên trong nhiều tuần, bạn ngủ ngon.' };
+    if (type === 'resign') {
+      const d = (R.ended && R.ended.day) || R.day, n = companyName(R.company);
+      if (d <= 5) return { title: `Nghỉ thực tập ở ${n} sau ${d} ngày`, text: 'Bạn nhắn HR: "Em xin phép dừng thực tập ạ." HR trả lời sau ba ngày: "Ok em, chúc em thành công", kèm tên bạn bị gõ sai một chữ. Có những chỗ biết sớm là không hợp thì đi sớm.' };
+      if (d <= 20) return { title: `Nghỉ thực tập ở ${n} sau ${d} ngày`, text: 'Bạn bàn giao ba file Excel và một cây xương rồng. Đồng nghiệp tiễn bằng một sticker "bye bye 👋" trong group. Hai ngày sau group vẫn tag nhầm bạn vào việc.' };
+      return { title: `Nghỉ thực tập ở ${n} sau ${d} ngày`, text: 'Gần hết đợt rồi mà bạn vẫn quyết định dừng. Người ta hỏi "sao không cố nốt?". Bạn trả lời: "Vì em biết mình cần gì rồi." Câu trả lời đó đáng giá hơn giấy xác nhận.' };
+    }
     return { title: 'Bạn bị cho thôi việc', text: '"Tái cấu trúc." Một từ, một tháng lương, và một buổi chiều rất dài.' };
   }
 
@@ -641,9 +663,11 @@ export function startSolo({ scene, camera, input, onExit }) {
     const pending = [];
     let ended = null;
     const fromDay = R.day;
+    if (diary) R.diary = [...(R.diary || []), { day: fromDay, title: d.title, text: fmt(diary) }].slice(-60);
     if (!isInterview) {
       // pay accrues per workday; commute costs money; tasks still open count as late
       R.accrued = C.accrue(R);
+      withCtx('Xăng xe, gửi xe', () => { R.ledger = [...(R.ledger || []), { day: R.day, k: 'Xăng xe, gửi xe', v: -C.COMMUTE_COST }].slice(-150); });
       R.money -= C.COMMUTE_COST;
       if (R.week) R.week.late += R.tasks.filter((t) => t.status === 'open').length;
       if (d.ep && d.ep.end) { try { ended = typeof d.ep.end === 'function' ? d.ep.end(R) : d.ep.end; } catch (err) { console.error(err); ended = 'quit'; } }
@@ -686,12 +710,23 @@ export function startSolo({ scene, camera, input, onExit }) {
       ${isInterview ? `<div class="pct">💰 Mức đã deal: ${R.tier ? `${TIERS[R.tier].label}/tháng (${TIERS[R.tier].name})` : '—'} · Ví: ${fmtVND(Math.round(R.money))}</div>` : `<div class="pct">📋 Việc vặt: ${sum.done} xong · ${sum.late + (sum.open || 0)} trễ · 🚌 Đi lại −${fmtVND(C.COMMUTE_COST)} · 💰 Ví: ${fmtVND(Math.round(R.money))}</div>`}
       <div class="rels">${relChips()}</div>
       <p class="muted">💾 Đã lưu: ${esc(runLabel(R, (t) => TIERS[t].label, companyName))}</p>
-      <div class="btns"><button class="btn primary" id="nextCard">Tiếp tục →</button><button class="btn" id="dayPhone">💬 Xem Teams</button>${navBtn}</div>
+      <div class="btns"><button class="btn primary" id="nextCard">${isInterview ? 'Tiếp tục →' : 'Mai đi làm tiếp →'}</button><button class="btn" id="dayNote">📓 Sổ tay</button><button class="btn" id="dayPhone">💬 Teams</button>${navBtn}</div>
+      ${!isInterview && !ended ? '<div class="resign-row"><button class="link" id="resignBtn">🚪 Nghỉ việc ở đây (kết thúc lượt chơi này)</button></div>' : ''}
     `);
     R.tasks = [];
+    $('#dayNote').onclick = () => notebook.show('diary');
+    if ($('#resignBtn')) $('#resignBtn').onclick = () => resign(fromDay);
     wireNav();
     $('#nextCard').onclick = () => showNextPending();
     $('#dayPhone').onclick = () => phone.open();
+  }
+  function resign(fromDay) {
+    const official = R.status === 'official';
+    if (!confirm(`Nghỉ việc ở ${companyName(R.company)} sau ${fromDay} ngày?\nLượt chơi này sẽ kết thúc (vẫn giữ trong hồ sơ), bạn nhận nốt phần ${official ? 'lương' : 'phụ cấp'} đã làm rồi chọn công ty khác.`)) return;
+    R.day = fromDay; R.today = null;
+    R.ended = { type: official ? 'quit' : 'resign', day: fromDay }; R.done = true;
+    R.pending = [{ type: 'pay', day: fromDay }, { type: 'ending' }];
+    save(); showNextPending();
   }
   function routineDiary() {
     const m = mood();
@@ -726,7 +761,7 @@ export function startSolo({ scene, camera, input, onExit }) {
         if (fx.uy) bits.push(`Uy tín ${fx.uy > 0 ? '+' : ''}${fx.uy}`);
         if (fx.dr) bits.push(`Drama ${fx.dr > 0 ? '+' : ''}${fx.dr}`);
         overlay(`<div class="ov-kicker">SAU GIỜ LÀM</div><h2>${ev.emoji}</h2><p class="ov-text">${esc(fmt(c.after || ''))}</p>${bits.length ? `<div class="pct">${esc(bits.join(' · '))}</div>` : ''}<div class="btns"><button class="btn primary" id="lifeOk">Tiếp tục →</button></div>`);
-        $('#lifeOk').onclick = () => done(fx);
+        $('#lifeOk').onclick = () => withCtx(`Sau giờ làm ${ev.emoji}`, () => done(fx));
       }; });
       return;
     }
@@ -737,7 +772,7 @@ export function startSolo({ scene, camera, input, onExit }) {
         <table class="payslip"><tr><td>Tiền phòng (ở ghép) + điện nước</td><td>−${fmtVND(C.RENT)}</td></tr><tr class="total"><td>Ví còn</td><td>${after < 0 ? '−' : ''}${fmtVND(Math.abs(Math.round(after)))}</td></tr></table>
         ${after < 0 ? '<p class="muted">Ví âm. Đi làm vẫn phải đi, ăn vẫn phải ăn. Sẽ có cách… hoặc có drama.</p>' : ''}
         <div class="btns"><button class="btn primary" id="rentOk">Chuyển khoản →</button></div>`);
-      $('#rentOk').onclick = () => done({ money: -C.RENT });
+      $('#rentOk').onclick = () => withCtx('Tiền trọ', () => done({ money: -C.RENT }));
       return;
     }
     if (card.type === 'broke') {
@@ -755,7 +790,7 @@ export function startSolo({ scene, camera, input, onExit }) {
         const o = opts[Number(b.dataset.i)];
         if (o.debt) { R.debt = { ...o.debt, day: R.day }; R.rel[o.debt.who] = (R.rel[o.debt.who] || 0); }
         overlay(`<div class="ov-kicker">VÍ ÂM</div><h2>💸</h2><p class="ov-text">${esc(o.after)}</p><div class="btns"><button class="btn primary" id="brokeOk">Tiếp tục →</button></div>`);
-        $('#brokeOk').onclick = () => done(o.fx);
+        $('#brokeOk').onclick = () => withCtx(o.debt ? `Mượn ${charInfo(o.debt.who).name}` : 'Nhà gửi', () => done(o.fx));
       }; });
       return;
     }
@@ -773,8 +808,10 @@ export function startSolo({ scene, camera, input, onExit }) {
         R.payslips = [...(R.payslips || []), { day: card.day || R.day, net: slip.net, gross: slip.gross }];
         R.accrued = { intern: 0, official: 0 };
         R.money += slip.net;
+        if (slip.net) R.ledger = [...(R.ledger || []), { day: card.day || R.day, k: 'Lương', v: slip.net }].slice(-150);
         if (R.debt) {
-          const d0 = R.debt; R.debt = null; R.money -= d0.amount;
+          const d0 = R.debt; R.debt = null; R.money -= d0.amount; R.flags.debt_repaid = true;
+          R.ledger = [...(R.ledger || []), { day: card.day || R.day, k: `Trả nợ ${charInfo(d0.who).name}`, v: -d0.amount }].slice(-150);
           R.rel[d0.who] = (R.rel[d0.who] || 0) + 1;
           toast(`🤝 Đã trả ${esc(charInfo(d0.who).name)} ${fmtVND(d0.amount)}. Uy tín trong mắt người ta +1.`, 'good', 3);
         }
@@ -852,6 +889,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     $('#hud').hidden = true; $('#taskList').hidden = true; $('#mobile').hidden = true; $('#crosshair').hidden = true; $('#prompt').hidden = true;
     $('#pause').hidden = true; $('#companyMenu').hidden = true; $('#clickHint').hidden = true; stopRing(); closeCallFrame(); dialogue.hide();
     if (phone.isOpen) phone.close();
+    if (notebook.isOpen) notebook.close();
   }
   function showMenu() {
     mode = 'menu'; fp.unlock(); clearTimeout(ringTimer);
@@ -962,6 +1000,8 @@ export function startSolo({ scene, camera, input, onExit }) {
 
   input.onKey((e, { inField }) => {
     if (inField) { if (e.key === 'Escape' && phone.isOpen) phone.close(); return; }
+    if (notebook.isOpen) { if (e.code === 'KeyN' || e.code === 'Escape') { e.preventDefault(); notebook.close(); } return; }
+    if (e.code === 'KeyN' && R && (mode === 'play' || mode === 'pause')) { e.preventDefault(); notebook.show(); return; }
     if (mode === 'ringing') {
       if (e.code === 'KeyE' || e.code === 'Enter' || e.code === 'Space') { e.preventDefault(); acceptCall(); }
       if (e.code === 'Escape' || e.code === 'KeyX') declineCall();

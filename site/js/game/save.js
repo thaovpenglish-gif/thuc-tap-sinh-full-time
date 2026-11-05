@@ -29,6 +29,7 @@ export function newRun({ name, company = 'tm', now = Date.now(), id = randomId()
     plan: null,           // { [day]: episodeId } — built after the interview
     week: null, reviews: [], payslips: [], accrued: { intern: 0, official: 0 },
     mood: 'meh', ended: null, ties: [], seen: [], debt: null,
+    thoughts: [], decisions: [], ledger: [], diary: [], // the notebook
     createdAt: now, updatedAt: now, done: false,
   };
 }
@@ -62,7 +63,7 @@ export function runLabel(run, tierLabel = (t) => t, companyName = (c) => COMPANY
   const parts = [companyName(run.company)];
   if (run.status === 'official') parts.push('Nhân viên chính thức');
   else if (run.tier) parts.push(tierLabel(run.tier));
-  const END = { finish: 'Hết 45 ngày', quit: 'Đã nghỉ việc', layoff: 'Bị cho nghỉ' };
+  const END = { finish: 'Hết 45 ngày', quit: 'Đã nghỉ việc', layoff: 'Bị cho nghỉ', resign: 'Tự nghỉ thực tập' };
   parts.push(run.ended ? (END[run.ended.type] || 'Đã kết thúc') : run.day === 0 ? 'Vòng phỏng vấn' : `Ngày ${run.day}/45`);
   return parts.join(' · ');
 }
@@ -100,6 +101,8 @@ export function validateProfile(obj) {
       money: num(r.money, START_MONEY), day: num(r.day, 0), step: num(r.step, 0), clock: num(r.clock, 840),
       reviews: Array.isArray(r.reviews) ? r.reviews : [], payslips: Array.isArray(r.payslips) ? r.payslips : [],
       seen: Array.isArray(r.seen) ? r.seen.slice(-200) : [], ties: Array.isArray(r.ties) ? r.ties : [],
+      thoughts: Array.isArray(r.thoughts) ? r.thoughts.slice(-300) : [], decisions: Array.isArray(r.decisions) ? r.decisions.slice(-120) : [],
+      ledger: Array.isArray(r.ledger) ? r.ledger.slice(-150) : [], diary: Array.isArray(r.diary) ? r.diary.slice(-60) : [],
       accrued: isObj(r.accrued) ? r.accrued : { intern: 0, official: 0 },
       plan: isObj(r.plan) ? r.plan : null, week: isObj(r.week) ? r.week : null,
       updatedAt: num(r.updatedAt, 0),
