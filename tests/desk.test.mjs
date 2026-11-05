@@ -129,3 +129,16 @@ test('every company has its own hands-on desk games', async () => {
     assert.ok(DESK.games.filter((g) => g.type === 'action').length >= 2, id);
   }
 });
+
+test('office equipment: printer and pantry legs play a mini-game, other objects do not', async () => {
+  const O = await import('../site/js/game/office.js');
+  const ids = new Set();
+  for (let s = 0; s < 60; s++) ids.add(O.officeGameFor({ obj: 'printer', line: ['nar', 'x'] }, s).game);
+  assert.deepEqual([...ids].sort(), ['collate', 'printjam', 'wires']);
+  assert.equal(O.officeGameFor({ obj: 'coffee', line: ['nar', 'Bạn pha một ấm trà.'] }).label, 'TRÀ');
+  assert.equal(O.officeGameFor({ obj: 'coffee', line: ['nar', 'Pha cà phê cho sếp'] }).label, 'CÀ PHÊ');
+  assert.equal(O.officeGameFor({ obj: 'coffee', line: ['nar', 'Mua trà sữa'] }).label, 'TRÀ SỮA');
+  assert.equal(O.officeGameFor({ obj: 'altar' }), null);
+  assert.equal(O.officeGameFor({ npc: 'tuyet' }), null);
+  assert.ok(O.DESK_OFFICE_GAMES.length >= 2 && O.DESK_OFFICE_GAMES.every((g) => g.type === 'action' && g.id.startsWith('off_')));
+});

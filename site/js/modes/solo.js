@@ -20,6 +20,7 @@ import { emptyProfile, newRun, addRun, updateRun, removeRun, listRuns, runLabel,
 import { planTasks, tick, visit, active, summary, currentLeg, shiftTasks, resolveAll, rng } from '../game/tasks.js';
 import * as C from '../game/career.js';
 import * as D from '../game/desk.js';
+import { officeGameFor, DESK_OFFICE_GAMES } from '../game/office.js';
 import { COMPANY_LIST, companyMeta, companyName, loadCompany } from '../companies/index.js';
 import { net, clean } from '../net/legacy-net.js';
 import { createCloudPanel } from '../ui/cloudpanel.js';
@@ -516,6 +517,16 @@ export function startSolo({ scene, camera, input, onExit }) {
     if (!events.length) return false;
     R.tasks = tasks;
     for (const e of events) {
+      // printer / pantry legs are a hands-on mini-game (game/office.js): sloppy work costs time and a bit of reputation
+      const og = officeGameFor(e.leg, hash(R.id) + R.day * 17 + R.clock);
+      if (og) {
+        $('#dialog').hidden = true;
+        const { score } = await runMinigame({ ...og, time: Math.round(og.time * mood().mini * (hungry() ? 0.75 : 1)), barNote: `Việc vặt: ${e.task.title}` });
+        const ok = score >= (og.pass ?? 0.5) - 1e-9;
+        R.flags.minis = (R.flags.minis || 0) + 1; if (ok) R.flags.minis_ok = (R.flags.minis_ok || 0) + 1;
+        if (R.week) { R.week.minis++; if (ok) R.week.minisOk++; }
+        if (!ok) { applyFx({ uy: -1, clock: 10 }); toast('😬 Làm hơi ẩu, mất thêm 10 phút sửa lại.', 'bad', 3); }
+      }
       if (e.leg.line) await dialogue.say(e.leg.line[0], e.leg.line[1]);
       if (e.type === 'done') { applyFx({ uy: 2, nl: -2, rel: { [e.task.from]: 1 } }); if (R.week) R.week.done++; toast(`✅ Xong việc: ${esc(e.task.title)}`, 'good', 2.5); }
     }
@@ -563,7 +574,7 @@ export function startSolo({ scene, camera, input, onExit }) {
 
   // ---------- desk work (game/desk.js): a mini-game of real work, bonus pay, drama that still finds you ----------
   const deskContent = () => ({
-    games: (CO.desk && CO.desk.games && CO.desk.games.length) ? CO.desk.games : D.GENERIC_DESK.games,
+    games: [...((CO.desk && CO.desk.games && CO.desk.games.length) ? CO.desk.games : D.GENERIC_DESK.games), ...DESK_OFFICE_GAMES],
     chatter: (CO.desk && CO.desk.chatter && CO.desk.chatter.length) ? CO.desk.chatter : D.GENERIC_DESK.chatter,
   });
   async function desk() {

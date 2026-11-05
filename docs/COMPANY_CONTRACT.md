@@ -255,5 +255,8 @@ export const DESK = {
 - Games must be fair: one clearly right answer a working person would agree on; jokes go in the wrong options.
   Doc lines ≤ 140 characters, chat replies ≤ 140, messages ≤ 200. No `{ten}` inside mini-games.
 - Bots: `node tests/e2e/work-sims.cjs <id>` and `node tests/e2e/action-games.cjs <id>` (server on :8765) must print ok.
+- Shared office games (engine, not per company): side-task legs `{ obj: 'printer' }` and `{ obj: 'coffee' }` play a
+  mini-game (game/office.js), and the desk adds a shredder and a network-cable game. Write printer / pantry legs freely;
+  the pantry leg's text picks the drink (trà / trà sữa / cà phê).
 - Chatter choices: small fx (±1–3), one option usually helps a relation, one feeds Drama, one is "tắt thông báo".
   Choice ids unique within the company (they are polled: "x% người chơi chọn giống bạn").

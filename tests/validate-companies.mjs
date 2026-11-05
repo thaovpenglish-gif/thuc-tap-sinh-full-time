@@ -8,7 +8,7 @@ import { newRun } from '../site/js/game/save.js';
 const SPECIAL = new Set(['me', 'think', 'nar', 'kpi']);
 const FX_KEYS = new Set(['uy', 'dr', 'nl', 'rel', 'set', 'money', 'clock']);
 const MINI_TYPES = new Set(['pick', 'quiz', 'order', 'sort', 'action', 'doc', 'chat']);
-const ACTION_GAMES = new Set(['shred', 'hold', 'whack', 'conveyor', 'align']); // site/js/ui/action.js
+const ACTION_GAMES = new Set(['shred', 'hold', 'whack', 'conveyor', 'align', 'printjam', 'collate', 'wires', 'shredder']); // site/js/ui/action.js
 const MAX_LINE = 240;
 const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
 
@@ -90,7 +90,7 @@ export async function validateCompany(id) {
       const lab = (x) => x && Array.isArray(x.labels) && x.labels.length >= 2 && x.labels.every((l) => typeof l === 'string' && l.length <= 32);
       if (m.game === 'whack' && (!lab(m.target) || !lab(m.avoid))) E(`${at}: whack needs target/avoid { emoji, labels[≥2, ≤32 chars] }`);
       if (m.game === 'conveyor' && (m.mode || 'stamp') === 'stamp' && (!lab(m.target) || !lab(m.avoid))) E(`${at}: conveyor stamp needs target/avoid { emoji, labels[≥2, ≤32 chars] }`);
-      if (m.game === 'hold' && !['seal', 'balloon'].includes(m.skin || 'seal')) E(`${at}: hold.skin must be seal|balloon`);
+      if (m.game === 'hold' && !['seal', 'balloon', 'cup'].includes(m.skin || 'seal')) E(`${at}: hold.skin must be seal|balloon|cup`);
       if (m.game === 'align' && m.blocks && (m.blocks.length < 3 || m.blocks.length > 5)) E(`${at}: align needs 3–5 blocks`);
       if ((m.time || 30) < 30) W(`${at}: action games need ≥ 30 s (hunger and mood shorten it)`);
       return;

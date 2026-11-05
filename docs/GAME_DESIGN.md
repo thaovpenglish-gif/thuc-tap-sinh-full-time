@@ -67,7 +67,10 @@ Main menu ──Solo──► Hồ sơ sự nghiệp (career runs + cloud save) 
   (`ui/action.js`: xé khô gà, hàn túi, bơm bóng, đóng dấu băng chuyền, cắt clip theo nhịp, đập bug, căn lề slide…)
   and 3 work sims that need real trade knowledge (`ui/sims.js`: `doc` = read a CV / invoice / contract / code diff /
   post, flag the problem lines, make the call, then see WHY; `chat` = message a candidate, client or vendor, the
-  rapport meter decides the ending). Each sim draws one of 2–3 scenarios, recent ones avoided. 30 game
+  rapport meter decides the ending). Each sim draws one of 2–3 scenarios, recent ones avoided.
+  Plus 2 shared office games in every desk rotation (`game/office.js`: máy hủy giấy, cắm lại dây mạng).
+- **Office equipment** (`game/office.js`): side-task legs at the printer play gỡ giấy kẹt / xếp trang & bấm ghim /
+  cắm dây mạng máy in; legs at the pantry play rót cà phê / trà tới vạch. Sloppy (below 60%): −1 Uy tín, +10 phút. 30 game
   minutes, −6 energy (side tasks keep ticking), 3 rewarded sessions a day. Good session: +1 Uy tín, performance bonus
   (intern 20–30k, official 80–120k) paid on the payslip, +2 review points (cap +12/week). Drama can't be dodged: a
   group-chat burst lands mid-game (45%) and you react with one choice; 🎧 headphones cut that to 15% and cool Drama,
