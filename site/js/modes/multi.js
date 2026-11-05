@@ -77,24 +77,37 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     me.x = L.spawns[0].x; me.z = L.spawns[0].z;
     if (!$('#mpBook').hidden) toggleBook(true);
   }
+  // The client companies as buildings on a little street map, SOS Advisory's HQ in the middle.
+  // pos: left/top in % of the map; coming-soon buildings are under construction.
+  const MAP_POS = { tm: [3, 6], bama: [28, 6], hr: [53, 6], agency: [77, 6], event: [8, 63], audit: [52, 63], tech: [76, 63] };
+  const SHORT = { tm: 'T&M Partners', bama: 'Ba & Má', hr: 'Người Đúng Chỗ', agency: 'Trend Trễ', event: 'Đi Đâu Cũng Được', audit: 'Cân Đối & CS', tech: 'Nợ Kỹ Thuật Labs' };
+  function levelInfo(id) {
+    const X = LEVELS[id];
+    if (X) return `<b>${X.emoji} ${esc(X.client)} · ${esc(X.title)}</b><span>${esc(X.blurb)}</span>`;
+    const C = COMING_SOON.find((c) => c.id === id);
+    return C ? `<b>${C.emoji} ${esc(C.client)} · ${esc(C.title)} <span class="tag">🚧 Đang phát triển</span></b><span>${esc(C.teaser)} Chưa chơi được, thử 4 khách hàng kia trước nhé!</span>` : '';
+  }
   function levelPicker(canPick) {
-    return `<div class="mp-levels">${LEVEL_ORDER.map((id) => {
-      const X = LEVELS[id];
-      return `<button class="mp-level${id === levelId ? ' on' : ''}" data-level="${id}" ${canPick ? '' : 'disabled'}><span class="ico">${X.emoji}</span><b>${esc(X.client)}</b><small>${esc(X.title)}</small></button>`;
-    }).join('')}${COMING_SOON.map((X) => `<button class="mp-level soon" data-soon-level="${X.id}"><span class="ico">${X.emoji}</span><b>${esc(X.client)}</b><small>${esc(X.title)}</small><em>🚧 Đang phát triển</em></button>`).join('')}</div>
-    <div class="mp-soon-note" id="mpSoonNote" hidden></div>`;
+    const bld = (id, X, soon) => {
+      const [x, y] = MAP_POS[id] || [0, 0];
+      const on = id === levelId;
+      return `<button class="mp-bld${on ? ' on' : ''}${soon ? ' soon' : ''}" style="left:${x}%;top:${y}%" ${soon ? `data-soon-level="${id}"` : `data-level="${id}"`} ${canPick || soon ? '' : 'disabled'} title="${esc(X.client)}">
+        ${on ? '<span class="pin">📍</span>' : ''}${soon ? '<span class="crane">🏗️</span>' : ''}<span class="ico">${X.emoji}</span><b>${esc(SHORT[id] || X.client)}</b></button>`;
+    };
+    return `<div class="mp-map">
+        <div class="mp-road h"></div><div class="mp-road v" style="left:24.5%"></div><div class="mp-road v" style="left:73.5%"></div>
+        <span class="mp-tree" style="left:47%;top:12%">🌳</span><span class="mp-tree" style="left:2%;top:46%">🌴</span><span class="mp-tree" style="left:93%;top:44%">🌳</span><span class="mp-tree" style="left:34%;top:70%">🌷</span>
+        <div class="mp-hq" style="left:38%;top:42%">🚨 SOS Advisory</div>
+        ${LEVEL_ORDER.map((id) => bld(id, LEVELS[id], false)).join('')}
+        ${COMING_SOON.map((X) => bld(X.id, X, true)).join('')}
+      </div>
+      <div class="mp-map-info" id="mpMapInfo">${levelInfo(levelId)}</div>`;
   }
   function wirePicker(after) {
     screen.querySelectorAll('[data-level]').forEach((b) => { b.onclick = () => { setLevel(b.dataset.level); after(); }; });
-    // demo cards: show the teaser, nothing to play yet
+    // buildings under construction: show the teaser, nothing to play yet
     screen.querySelectorAll('[data-soon-level]').forEach((b) => {
-      b.onclick = () => {
-        const X = COMING_SOON.find((c) => c.id === b.dataset.soonLevel);
-        const note = screen.querySelector('#mpSoonNote');
-        if (!X || !note) return;
-        note.innerHTML = `<b>${X.emoji} ${esc(X.client)} · ${esc(X.title)}</b> <span class="tag">🚧 Đang phát triển</span><br>${esc(X.teaser)}<br><span class="muted">Màn này chưa chơi được. Trong lúc chờ, thử 4 khách hàng ở trên nhé!</span>`;
-        note.hidden = false;
-      };
+      b.onclick = () => { const info = screen.querySelector('#mpMapInfo'); if (info) { info.innerHTML = levelInfo(b.dataset.soonLevel); info.classList.add('soon'); } };
     });
   }
   rig.bounds = null;
@@ -125,18 +138,20 @@ export function startMulti({ scene, rig, input, onExit, params }) {
   function homeScreen(err = '', presetCode = '') {
     mode = 'home';
     hud.hidden = true; $('#mobile').hidden = true;
-    show(`<div class="mp-card">
+    show(`<div class="mp-card mp-two">
+      <div class="mp-col">
       <div class="kicker">MULTIPLAYER · CO-OP 1–4 NGƯỜI · BẢN THỬ</div>
       <div class="mp-logo">Overdeadline <span>& Overburnout</span></div>
-      <p>Bạn và đồng đội là nhân viên <b>SOS Advisory</b> <i>· Gọi là tới, tới là trễ</i>. Các công ty bên Solo gọi tới khi cháy deadline. Chạy qua lại, làm file, in, xin chữ ký, nộp cho khách trước khi hết giờ. Và nhớ nghỉ, không là burnout.</p>
+      <p>Bạn và đồng đội là nhân viên <b>SOS Advisory</b> <i>· Gọi là tới, tới là trễ</i>. Các công ty bên Solo gọi tới khi cháy deadline: làm file, in, xin chữ ký, nộp cho khách trước khi hết giờ. Và nhớ nghỉ, không là burnout.</p>
       <label class="mp-field">Tên của bạn<input class="mp-input" id="mpName" maxlength="14" placeholder="VD: Linh" value="${esc(name)}" autocomplete="off"></label>
-      <div class="mp-field">Khách hàng (màn chơi)${levelPicker(true)}</div>
       <div class="mp-row"><button class="btn primary" id="mpCreate">🚨 Tạo phòng</button><button class="btn" id="mpSolo">🧑‍💻 Tập một mình</button></div>
       <p class="mp-or">— hoặc vào phòng của bạn bè —</p>
       <div class="mp-row"><input class="mp-input mp-code-in" id="mpCode" maxlength="5" placeholder="MÃ" value="${esc(presetCode)}" autocomplete="off"><button class="btn" id="mpJoin">Vào phòng →</button></div>
       ${err ? `<div class="mp-err">${esc(err)}</div>` : ''}
       <div class="mp-help">💻 <kbd>WASD</kbd>/mũi tên đi · <kbd>Space</kbd>/<kbd>E</kbd> làm mọi thứ (lấy, đặt, làm việc, nộp).<br>📱 Cần điều khiển bên trái, nút tròn bên phải.</div>
       <div class="mp-row"><button class="mp-link" id="mpBack">← Menu chính</button></div>
+      </div>
+      <div class="mp-col"><div class="mp-field">🗺️ Chọn khách hàng (màn chơi) trên bản đồ</div>${levelPicker(true)}</div>
     </div>`);
     const readName = () => { name = cleanName($('#mpName').value); store.set('mp_name', name); return name; };
     $('#mpCreate').onclick = () => { unlockAudio(); readName(); createRoom(); };
@@ -155,22 +170,23 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     const slots = [];
     for (let i = 0; i < MAX_PLAYERS; i++) {
       const m = ms[i];
-      slots.push(m ? `<div class="mp-member"><i style="background:${m.color || PLAYER_COLORS[i]}"></i>${esc(m.name)}${m.id === myId ? ' (bạn)' : ''}<small>${m.host ? 'host' : ''}</small></div>` : '<div class="mp-member empty">Chỗ trống… mời thêm bạn</div>');
+      slots.push(m ? `<div class="mp-member"><i style="background:${m.color || PLAYER_COLORS[i]}"></i>${esc(m.name)}${m.id === myId ? ' (bạn)' : ''}<small>${m.host ? 'host' : ''}</small></div>` : '<div class="mp-member empty">Chỗ trống · mời bạn</div>');
     }
-    const recipes = Object.values(L.recipes).map((r) => `<div><b>${esc(r.title)}</b>${r.steps.map(esc).join(r.join || ' → ')} <span class="muted">· ${r.reward}k</span></div>`).join('');
-    show(`<div class="mp-card">
+    show(`<div class="mp-card mp-two">
+      <div class="mp-col">
       <div class="kicker">SOS ADVISORY · PHÒNG CHỜ</div>
       <h2>Mã phòng</h2>
       <div class="mp-code" id="mpCodeShow">${esc(code)}</div>
       <div class="mp-row"><button class="btn" id="mpInvite">📨 Mời bạn (gửi link)</button></div>
       <div class="mp-members">${slots.join('')}</div>
-      ${isHost ? `<div class="mp-field">Khách hàng (host chọn)${levelPicker(true)}</div>` : ''}
-      <div class="mp-client"><span class="ico">${L.emoji}</span><div><b>Khách hàng: ${esc(L.client)} · ${esc(L.title)}</b><span class="muted">${esc(L.blurb)}</span></div></div>
-      <div class="mp-recipes">${recipes}</div>
-      <div class="mp-row"><button class="btn ghost" id="mpBookRoom">📖 Xem cách làm từng việc</button></div>
       ${note ? `<div class="mp-err">${esc(note)}</div>` : ''}
       <div class="mp-row">${isHost ? '<button class="btn primary" id="mpStart">Bắt đầu ▶</button>' : '<span class="muted" style="font-weight:800">⏳ Chờ host bấm bắt đầu…</span>'}</div>
       <div class="mp-row"><button class="mp-link" id="mpLeave">← Rời phòng</button></div>
+      </div>
+      <div class="mp-col">
+        <div class="mp-field">🗺️ Khách hàng ${isHost ? '(bạn là host: bấm tòa nhà để chọn)' : '(host chọn)'}</div>${levelPicker(isHost)}
+        <div class="mp-row"><button class="btn ghost" id="mpBookRoom">📖 Xem cách làm từng việc</button></div>
+      </div>
     </div>`);
     $('#mpInvite').onclick = invite;
     $('#mpBookRoom').onclick = () => toggleBook(true);
