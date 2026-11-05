@@ -27,6 +27,7 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
   per-level `process` table (`DEFAULT_PROCESS` as fallback) so each company can define its own stations.
 - Pacing by team size (Game Owner: alone should be slower than 4 players): per-level `pace` rows for 1–4 players
   (gap between clients, patience multiplier, clients waiting at once, opening orders); an empty lobby refills in 5 s.
+- Game Owner: show it on the main menu. The `mp` flag is now on by default (beta card); `?mp=0` hides it.
 
 ## 2026-11-05 — QC round 1 and publish
 

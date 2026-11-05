@@ -1,6 +1,6 @@
 # Overdeadline & Overburnout — Multiplayer (SOS Advisory)
 
-> Trạng thái: **bản thử chơi được, ẩn sau `?mp=1`** (màn T&M). Chỗ nào ghi **[cần chốt]** là chưa quyết.
+> Trạng thái: **bản thử chơi được, mở trên menu chính** (nhãn "Bản thử", màn T&M). `?mp=0` để ẩn lại. Chỗ nào ghi **[cần chốt]** là chưa quyết.
 > Solo vẫn là `docs/GAME_DESIGN.md`. Multiplayer làm song song, không đụng logic Solo.
 > Đã chốt với Game Owner: tên công ty **SOS Advisory**, **chỉ hợp tác (co-op)**, cảm giác giống các game nấu ăn
 > co-op chơi ngay trong Messenger (kiểu *Ready, Set, Cook!*): bấm link là vào, ván ngắn, chơi tốt trên điện thoại.
@@ -97,12 +97,12 @@ Thứ tự độ khó gợi ý: T&M (hướng dẫn) → HR → Ba & Má → Age
   site/js/maps/mp/              bản đồ từng màn (dùng lại art/kit.js, art/people.js)
   tests/mp-*.test.mjs
   ```
-- **Ẩn sau cờ `?mp=1`** trong `flags.js` cho tới khi duyệt. Không có cờ thì nút vẫn hiện "Sắp ra mắt".
+- Cờ `mp` trong `flags.js`: mặc định bật (thẻ "Bản thử" trên menu chính); `?mp=0` ẩn lại thành "Sắp ra mắt".
 - Chỉ **thêm** vào file dùng chung (`main.js`, `index.html`, `style.css`), không sửa code Solo đang có.
 
 ## 8. Bản thử hiện có (màn T&M)
 
-Mở `https://…/?mp=1` → menu chính → thẻ **Overdeadline & Overburnout**.
+Menu chính → thẻ **Overdeadline & Overburnout** (bản thử).
 
 - **Sảnh**: nhập tên → *Tạo phòng* (mã 5 ký tự + nút "📨 Mời bạn": trên điện thoại mở bảng chia sẻ để gửi qua
   Messenger/Zalo, trên máy tính chép link) · *Vào phòng* bằng mã · *Tập một mình* (không cần mạng).
