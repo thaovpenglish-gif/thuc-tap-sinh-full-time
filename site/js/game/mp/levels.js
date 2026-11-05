@@ -212,7 +212,7 @@ export const LEVELS = {
     client: 'Ba & Má',
     emoji: '🍖',
     title: 'Chốt đơn mùa Tết',
-    blurb: 'Xưởng khô gà nhà Ba & Má vào mùa Tết: Út Mi live hô flash sale liên tục, Má đi tắt máy sấy cho "tiết kiệm điện", hộp quà phải qua Má duyệt.',
+    blurb: 'Nhà phố kiêm xưởng khô gà mùa Tết: Út Mi live hô flash sale liên tục, Má đi tắt lò sấy cho "tiết kiệm điện" (cầu dao ngay sau lưng Má), hộp quà phải qua Má duyệt.',
     bossName: 'Má',
     quotes: [
       'Má: "Thuê tụi con về mà Má phải tự gói hả? Cái này bao nhiêu tiền?"',
@@ -225,69 +225,87 @@ export const LEVELS = {
     duration: 180,
     room: { w: 18, d: 12 },
     wall: '#ffd3b8',
-    //  z=-6 ┌ Xưởng sơ chế ──────────┬ Phòng sấy ┬ Phòng Má · Két (kính: Má thấy hết) ┐
-    //       │ Gà Bò  Ướp Ướp  Xoài     │ Sấy Sấy   │          Bàn Má                    │
-    //  z=-1.2 ──[cửa]──────────────────[cửa]─────────[cửa]──────────────────────────────
-    //       │ Rác  Gói Gói Ghép Ghép           Ba đi tuần            Cầu dao │  hành lang
-    //  z=2.2 ──[cửa]──────┬──[cửa]───────────┬────[QUẦY GIAO HÀNG]──────────
-    //       │ Bếp cô Tư    │ Góc livestream    │ Cửa hàng (khách chờ) ← cửa vào
+    // A family shophouse + workshop (not the office plan of T&M):
+    //  z=-6 ┌──────────── XƯỞNG (sơ chế + lò sấy) ───────────┬──────── PHÒNG MÁ · KÉT ─────────┐
+    //       │ Tủ gà  Tủ bò  Thùng xoài          Bàn để khô     │ Ba  Két     Bàn Má     Cầu dao   │
+    //       │              [Lò sấy 1][Lò sấy 2]  (đảo giữa)    │                                 │
+    //       │ Bàn ướp Bàn ướp                                  ├─[cửa]──── kính ─────────────────┤ z=-2.2
+    //       │                                              [cửa]│ lối │ GÓC LIVESTREAM (kính)    │
+    //  z=1  ├─[cửa bếp]──┬────[mở rộng: sang khu gói]──────────┤ đi  │ Út Mi · đèn ring         │
+    //       │ BẾP CÔ TƯ   │ KHU ĐÓNG GÓI: Gói Gói               ├─────┴──────────────────────────┤ z=1
+    //       │ ăn thử      │                                     │ lối nhân viên ra quầy          │
+    //  z=3.2│ trà đá      │           Ghép Ghép      Rác        ├──────[QUẦY GIAO HÀNG]──────────┤
+    //       │             │                                     │ CỬA HÀNG (khách)  ← cửa ra phố │
+    //  z=6  └─────────────┴─────────────────────────────────────┴────────────────────────────────┘
     rooms: [
-      { name: 'XƯỞNG SƠ CHẾ', icon: '🔪', x0: -9, x1: -1, z0: -6, z1: -1.2, floor: '#fff1e0', sign: [-5.5, -1.2], color: '#ffe3c2' },
-      { name: 'PHÒNG SẤY', icon: '🔥', x0: -1, x1: 3, z0: -6, z1: -1.2, floor: '#ffe9d6', sign: [0.8, -1.2], color: '#ffc59e' },
-      { name: 'PHÒNG MÁ · KÉT', icon: '💰', x0: 3, x1: 9, z0: -6, z1: -1.2, floor: '#ffe6ef', sign: [5.2, -1.2], color: '#ffb3c7' },
-      { name: '', x0: -9, x1: 9, z0: -1.2, z1: 2.2, floor: '#fff8ef' },
-      { name: 'BẾP CÔ TƯ', icon: '🍲', x0: -9, x1: -4, z0: 2.2, z1: 6, floor: '#e3f2d0', sign: [-6.7, 2.2], color: '#bfe6b5' },
-      { name: 'GÓC LIVESTREAM', icon: '🔴', x0: -4, x1: 2.6, z0: 2.2, z1: 6, floor: '#ffe3ea', sign: [-1.7, 2.2], color: '#ff9fb2' },
-      { name: 'CỬA HÀNG', icon: '🛍️', x0: 2.6, x1: 9, z0: 2.2, z1: 6, floor: '#fff0b3', sign: [4.0, 2.2], color: '#ffe08a' },
+      { name: 'XƯỞNG SƠ CHẾ & SẤY', icon: '🔪', x0: -9, x1: 2, z0: -6, z1: 1, floor: '#f1ece4', sign: [-1.8, 1], color: '#ffe3c2' },
+      { name: 'PHÒNG MÁ · KÉT', icon: '💰', x0: 2, x1: 9, z0: -6, z1: -2.2, floor: '#ffe6ef', sign: [3.8, -2.2], color: '#ffb3c7' },
+      { name: '', x0: 2, x1: 4.6, z0: -2.2, z1: 1, floor: '#fff8ef' },
+      { name: 'GÓC LIVESTREAM', icon: '🔴', x0: 4.6, x1: 9, z0: -2.2, z1: 1, floor: '#ffe3ea', sign: [6.8, 1], color: '#ff9fb2' },
+      { name: 'BẾP CÔ TƯ', icon: '🍲', x0: -9, x1: -4.5, z0: 1, z1: 6, floor: '#e3f2d0', sign: [-6.4, 1], color: '#bfe6b5' },
+      { name: 'KHU ĐÓNG GÓI', icon: '📦', x0: -4.5, x1: 3, z0: 1, z1: 6, floor: '#fff1e0', sign: [-0.6, 5.95], color: '#ffd3b8' },
+      { name: '', x0: 3, x1: 9, z0: 1, z1: 3.2, floor: '#fff8ef' },
+      { name: 'CỬA HÀNG', icon: '🛍️', x0: 3, x1: 9, z0: 3.2, z1: 6, floor: '#fff0b3', sign: [4.2, 3.2], color: '#ffe08a' },
     ],
-    walls: TM_WALLS,
-    floorDoorMats: TM_MATS,
+    walls: [
+      // workshop | kitchen & packing (door to the kitchen, wide opening to packing)
+      { x0: -9, z0: 1, x1: -7.2, z1: 1 }, { x0: -5.6, z0: 1, x1: -3.8, z1: 1 }, { x0: 0.2, z0: 1, x1: 2, z1: 1 },
+      { x0: -4.5, z0: 1, x1: -4.5, z1: 6 },
+      // workshop | Má's office and the little hall (door at z −1.6…−0.2)
+      { x0: 2, z0: -6, x1: 2, z1: -1.6 }, { x0: 2, z0: -0.2, x1: 2, z1: 1 },
+      // Má's office: glass, door from the hall (x 3…4.6) — Má sees everything
+      { x0: 2, z0: -2.2, x1: 3, z1: -2.2, kind: 'glass' }, { x0: 4.6, z0: -2.2, x1: 9, z1: -2.2, kind: 'glass' },
+      // livestream corner: glass to the hall, wall to the staff lane
+      { x0: 4.6, z0: -2.2, x1: 4.6, z1: 1, kind: 'glass' }, { x0: 4.6, z0: 1, x1: 9, z1: 1 },
+      // shop: counter in the wall between the staff lane and the clients; packing | shop
+      { x0: 3, z0: 3.2, x1: 5.25, z1: 3.2 }, { x0: 7.15, z0: 3.2, x1: 9, z1: 3.2 },
+      { x0: 3, z0: 3.2, x1: 3, z1: 6 },
+    ],
+    floorDoorMats: [[-6.4, 1], [2, -0.9, 'v'], [3.8, -2.2], [9, 4.4, 'v']],
     decor: [
       // workshop
-      { kind: 'crates', x: -5.3, z: -2.4 }, { kind: 'window', x: -6, z: -6 }, { kind: 'window', x: -3, z: -6 },
-      { kind: 'person', x: -1.7, z: -2.0, npc: BM.cautam, face: -0.6 },
-      // drying room
-      { kind: 'boxes', x: 2.5, z: -1.75 }, { kind: 'boxes', x: -0.4, z: -2.0 },
-      // Má's office
-      { kind: 'safe', x: 8.3, z: -5.2 }, { kind: 'redchair', x: 8.2, z: -3.0 }, { kind: 'plant', x: 3.6, z: -5.3 }, { kind: 'window', x: 6, z: -6 },
-      // corridor
-      { kind: 'altar', x: -8.5, z: 1.7 }, { kind: 'person', x: 4.6, z: 1.6, npc: BM.hung, face: 0.4 },
+      { kind: 'crates', x: -4.0, z: -5.3 }, { kind: 'window', x: -6.5, z: -6 }, { kind: 'window', x: -1.5, z: -6 },
+      { kind: 'person', x: 0.9, z: -1.0, npc: BM.cautam, face: -0.6 }, { kind: 'boxes', x: -8.5, z: 0.4 },
+      // Má's office: Ba beside the safe, Má's red chair
+      { kind: 'safe', x: 8.3, z: -5.3 }, { kind: 'person', x: 7.1, z: -5.2, npc: BM.hung, face: 0.3 },
+      { kind: 'redchair', x: 3.2, z: -5.1 }, { kind: 'plant', x: 2.6, z: -2.8 }, { kind: 'window', x: 5.5, z: -6 },
+      // livestream corner (seen through the glass)
+      { kind: 'livetable', x: 7.0, z: -0.3 }, { kind: 'person', x: 7.0, z: -1.4, npc: BM.mi, face: 0 },
+      { kind: 'ringlight', x: 5.3, z: -0.5 }, { kind: 'person', x: 8.5, z: 0.4, npc: BM.khoa, face: -2.4 },
       // kitchen
-      { kind: 'fridge', x: -8.4, z: 5.2 }, { kind: 'cafetable', x: -5.4, z: 4.6, cat: true }, { kind: 'person', x: -4.7, z: 3.3, npc: BM.tu, face: -0.8 },
-      // livestream corner
-      { kind: 'livetable', x: -0.6, z: 4.7 }, { kind: 'ringlight', x: -0.6, z: 3.15 }, { kind: 'person', x: -0.6, z: 5.75, npc: BM.mi, face: Math.PI },
-      { kind: 'tv', x: -3.7, z: 4.3, text: ['LIVE 🔴', '1.204 mắt xem'] }, { kind: 'person', x: 1.7, z: 5.2, npc: BM.khoa, face: -2.4 },
+      { kind: 'fridge', x: -8.4, z: 5.3 }, { kind: 'cafetable', x: -6.2, z: 3.6, cat: true }, { kind: 'person', x: -5.1, z: 5.4, npc: BM.tu, face: -0.8 },
+      // packing area
+      { kind: 'crates', x: -3.6, z: 5.4 }, { kind: 'plant', x: 2.5, z: 1.5 },
       // shop
-      { kind: 'shelfgoods', x: 4.9, z: 5.5 }, { kind: 'scooter', x: 3.4, z: 5.2 },
-      { kind: 'reception', x: 7.6, z: 5.3, npc: BM.bay, sign: 'Giao hàng · Chú Bảy', icon: '🛵' },
+      { kind: 'shelfgoods', x: 5.2, z: 5.6 }, { kind: 'altar', x: 3.5, z: 5.6 }, { kind: 'person', x: 8.4, z: 5.6, npc: BM.bay, face: -2.6 },
     ],
 
-    spawns: [{ x: -6, z: 0.5 }, { x: 1.6, z: 0.6 }, { x: -6, z: 1.6 }, { x: 1.6, z: 1.6 }],
+    spawns: [{ x: -2.2, z: -0.3 }, { x: -0.6, z: -0.3 }, { x: -2.2, z: 0.4 }, { x: -0.6, z: 0.4 }],
     stations: [
-      { id: 'ga', kind: 'source', gives: 'ga', label: 'Tủ đông gà', x: -8, z: -5.3 },
-      { id: 'bo', kind: 'source', gives: 'bo', label: 'Tủ đông bò', x: -6.6, z: -5.3 },
-      { id: 'prep1', kind: 'prep', label: 'Bàn ướp', x: -4.6, z: -5.3 },
-      { id: 'prep2', kind: 'prep', label: 'Bàn ướp', x: -3.1, z: -5.3 },
-      { id: 'fruit', kind: 'source', gives: 'fruit', label: 'Thùng xoài', x: -7.4, z: -3.0 },
-      { id: 'dryer1', kind: 'dryer', label: 'Máy sấy 1', x: 0.4, z: -5.3 },
-      { id: 'dryer2', kind: 'dryer', label: 'Máy sấy 2', x: 1.8, z: -5.3 },
-      { id: 'c_dry', kind: 'counter', label: 'Bàn để khô', x: 1.6, z: -3.4 },
-      { id: 'boss', kind: 'boss', label: 'Bàn Má duyệt', x: 6, z: -4.4 },
-      { id: 'pack1', kind: 'pack', label: 'Bàn đóng gói', x: -3.6, z: 0.5 },
-      { id: 'pack2', kind: 'pack', label: 'Bàn đóng gói', x: -2.4, z: 0.5 },
-      { id: 'c3', kind: 'counter', label: 'Bàn ghép', x: -1.2, z: 0.5 },
-      { id: 'c4', kind: 'counter', label: 'Bàn ghép', x: 0, z: 0.5 },
-      { id: 'trash', kind: 'trash', label: 'Thùng rác', x: -8.3, z: 0.2 },
-      { id: 'breaker', kind: 'breaker', label: 'Cầu dao', x: 8.4, z: 0.6 },
+      { id: 'ga', kind: 'source', gives: 'ga', label: 'Tủ đông gà', x: -8.2, z: -5.3 },
+      { id: 'bo', kind: 'source', gives: 'bo', label: 'Tủ đông bò', x: -6.8, z: -5.3 },
+      { id: 'fruit', kind: 'source', gives: 'fruit', label: 'Thùng xoài', x: -5.4, z: -5.3 },
+      { id: 'c_dry', kind: 'counter', label: 'Bàn để khô', x: 0.8, z: -5.3 },
+      { id: 'dryer1', kind: 'dryer', label: 'Lò sấy 1', x: -2.9, z: -3.4 },
+      { id: 'dryer2', kind: 'dryer', label: 'Lò sấy 2', x: -1.5, z: -3.4 },
+      { id: 'prep1', kind: 'prep', label: 'Bàn ướp', x: -7.9, z: -1.8 },
+      { id: 'prep2', kind: 'prep', label: 'Bàn ướp', x: -6.5, z: -1.8 },
+      { id: 'boss', kind: 'boss', label: 'Bàn Má duyệt', x: 5.6, z: -4.6 },
+      { id: 'breaker', kind: 'breaker', label: 'Cầu dao (sau lưng Má)', x: 8.4, z: -3.2 },
+      { id: 'pack1', kind: 'pack', label: 'Bàn đóng gói', x: -3.0, z: 2.4 },
+      { id: 'pack2', kind: 'pack', label: 'Bàn đóng gói', x: -1.6, z: 2.4 },
+      { id: 'c3', kind: 'counter', label: 'Bàn ghép', x: -2.3, z: 4.6 },
+      { id: 'c4', kind: 'counter', label: 'Bàn ghép', x: -0.9, z: 4.6 },
+      { id: 'trash', kind: 'trash', label: 'Thùng rác', x: 1.8, z: 5.3 },
       { id: 'coffee', kind: 'coffee', label: 'Trà đá cô Tư', drink: 'Uống trà đá cô Tư 🧊', x: -6.6, z: 5.3 },
-      { id: 'an_thu', kind: 'source', gives: 'an_thu', label: 'Khô ăn thử', x: -8.2, z: 3.4 },
-      { id: 'deliver', kind: 'deliver', label: 'Quầy giao hàng', x: 6.2, z: 2.2, faces: 'up' },
+      { id: 'an_thu', kind: 'source', gives: 'an_thu', label: 'Khô ăn thử', x: -8.3, z: 3.0 },
+      { id: 'deliver', kind: 'deliver', label: 'Quầy giao hàng', x: 6.2, z: 3.2, faces: 'up' },
     ],
     boss: BM.hang,
 
     clients: [BM.tam, BM.sau, BM.tuan, BM.maicskh, BM.ngan, BM.dung, BM.shipper, BM.shopoi],
-    clientSpots: [{ x: 4.0, z: 3.4 }, { x: 5.6, z: 3.3 }, { x: 6.9, z: 3.3 }, { x: 8.2, z: 3.4 }],
-    clientDoor: [{ x: 10, z: 4.4 }, { x: 8.4, z: 4.4 }],
+    clientSpots: [{ x: 4.3, z: 4.3 }, { x: 5.6, z: 4.25 }, { x: 6.8, z: 4.25 }, { x: 8.0, z: 4.3 }],
+    clientDoor: [{ x: 10, z: 4.6 }, { x: 8.6, z: 4.6 }],
     clientLines: {
       wait: ['Shop ơi còn hàng hông?', 'Chốt đơn lẹ giùm chị', 'Đơn của chị đâu em?', 'Chị đợi nãy giờ á', 'Có freeship hông em?'],
       happy: ['Khô ngon quá shop ơi!', '5 sao nha!', 'Đúng vị nhà làm!', 'Lần sau chị mua tiếp'],
@@ -302,8 +320,8 @@ export const LEVELS = {
     },
     powerCut: {
       at: [80, 140], warn: 3, stations: ['dryer1', 'dryer2'],
-      warnText: 'Má đi ngang phòng sấy, tay cầm sổ…',
-      text: 'Má: "Máy sấy chạy mà không ai đứng coi? Tắt! Tốn điện!" Ra Cầu dao (cuối hành lang) bật lại.',
+      warnText: 'Má đi ngang xưởng, tay cầm sổ…',
+      text: 'Má: "Lò sấy chạy mà không ai đứng coi? Tắt! Tốn điện!" Cầu dao ở trong phòng Má, ngay sau lưng Má. Chạy vào bật lại!',
       backLine: 'Má (từ xa): "Ai bật đó?"',
     },
 
@@ -326,21 +344,21 @@ export const LEVELS = {
       an_thu: { title: 'Gói ăn thử', item: 'an_thu', time: 40, reward: 15, steps: ['🍢 Khô ăn thử (Bếp)', '🛎️ Quầy'],
         how: ['Vào Bếp cô Tư, lấy một gói ở Khô ăn thử', 'Mang thẳng ra Quầy giao hàng'] },
       fruit: { title: 'Xoài sấy (xá)', item: 'fruit_dry', time: 70, reward: 40, steps: ['🥭 Xoài', '🔪 Bàn ướp', '🔥 Sấy'],
-        how: ['Lấy Xoài ở Thùng xoài (xưởng)', 'Đặt lên Bàn ướp, bấm thêm lần nữa rồi đứng cắt ~2,5 giây', 'Mang vào Máy sấy, chờ ~5 giây rồi lấy ra ngay (để lâu là cháy)', 'Nộp ở Quầy giao hàng'] },
+        how: ['Lấy Xoài ở Thùng xoài (xưởng)', 'Đặt lên Bàn ướp, bấm thêm lần nữa rồi đứng cắt ~2,5 giây', 'Mang vào Lò sấy (giữa xưởng), chờ ~5 giây rồi lấy ra ngay (để lâu là cháy)', 'Nộp ở Quầy giao hàng'] },
       ga: { title: 'Khô gà lá chanh', item: 'goi_ga', time: 95, reward: 75, steps: ['🐔 Gà', '🔪 Ướp', '🔥 Sấy', '📦 Gói'],
-        how: ['Lấy Gà ở Tủ đông gà', 'Đặt lên Bàn ướp, bấm thêm lần nữa rồi đứng ướp ~3 giây', 'Mang vào Máy sấy, chờ ~6 giây rồi lấy ra ngay', 'Đặt lên Bàn đóng gói (hành lang), đứng gói ~2,5 giây', 'Nộp ở Quầy giao hàng'] },
+        how: ['Lấy Gà ở Tủ đông gà', 'Đặt lên Bàn ướp, bấm thêm lần nữa rồi đứng ướp ~3 giây', 'Mang vào Lò sấy, chờ ~6 giây rồi lấy ra ngay', 'Đặt lên Bàn đóng gói (khu đóng gói), đứng gói ~2,5 giây', 'Nộp ở Quầy giao hàng'] },
       bo: { title: 'Khô bò miếng', item: 'goi_bo', time: 100, reward: 85, steps: ['🐄 Bò', '🔪 Ướp', '🔥 Sấy', '📦 Gói'],
-        how: ['Lấy Bò ở Tủ đông bò', 'Ướp ở Bàn ướp ~3 giây', 'Sấy ở Máy sấy ~6 giây, lấy ra ngay', 'Gói ở Bàn đóng gói ~2,5 giây', 'Nộp ở Quầy giao hàng'] },
+        how: ['Lấy Bò ở Tủ đông bò', 'Ướp ở Bàn ướp ~3 giây', 'Sấy ở Lò sấy ~6 giây, lấy ra ngay', 'Gói ở Bàn đóng gói ~2,5 giây', 'Nộp ở Quầy giao hàng'] },
       hop: { title: 'Hộp quà Tết Phú Quý', item: 'hop_ok', time: 140, reward: 160, join: ' · ',
         steps: ['📦 Gói khô bò', '🥭 Xoài sấy', '🗂️ ghép', '💰 Má duyệt'],
-        how: ['Làm Gói khô bò: Bò → Bàn ướp → Máy sấy → Bàn đóng gói', 'Làm Xoài sấy: Xoài → Bàn ướp → Máy sấy', 'Đặt một món lên Bàn ghép, cầm món kia tới bấm để ghép thành Hộp quà', 'Mang vào Bàn Má duyệt. Má bắt "dán lại tem" thì mang về Bàn đóng gói dán rồi đưa Má lại', 'Nộp ở Quầy giao hàng'] },
+        how: ['Làm Gói khô bò: Bò → Bàn ướp → Lò sấy → Bàn đóng gói', 'Làm Xoài sấy: Xoài → Bàn ướp → Lò sấy', 'Đặt một món lên Bàn ghép, cầm món kia tới bấm để ghép thành Hộp quà', 'Mang vào Bàn Má duyệt. Má bắt "dán lại tem" thì mang về Bàn đóng gói dán rồi đưa Má lại', 'Nộp ở Quầy giao hàng'] },
     },
     tips: [
       '✋ Một nút làm mọi thứ: đứng sát trạm rồi bấm (lấy, đặt, ghép, làm việc, nộp)',
       '🔪 Bàn ướp và 📦 Bàn đóng gói: đặt đồ lên, bấm thêm lần nữa và đứng yên tới khi thanh chạy xong',
-      '🔥 Máy sấy tự chạy: đặt vào rồi đi làm việc khác, nhưng quay lại lấy kịp kẻo khô cháy',
+      '🔥 Lò sấy tự chạy: đặt vào rồi đi làm việc khác, nhưng quay lại lấy kịp kẻo khô cháy',
       '🔴 Út Mi hô flash sale: khách ùa vào, trả ×1,5 nhưng ít kiên nhẫn hơn',
-      '⚡ Má tắt máy sấy: chạy ra Cầu dao cuối hành lang bật lại',
+      '⚡ Má tắt lò sấy: cầu dao nằm trong phòng Má (góc phải), chạy vào bật lại',
       '🧊 Burnout gần đầy: vào Bếp cô Tư uống trà đá',
     ],
     orderPool: [

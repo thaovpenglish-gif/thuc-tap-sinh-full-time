@@ -35,6 +35,9 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
 - Level 2 **Ba & Má** "Chốt đơn mùa Tết": workshop → marinate → dryer → pack chain, gift box approved by Má,
   livestream flash sales (×1.5 pay, less patience) and Má switching the dryers off (breaker). Level picker on the
   home screen and in the room (host); guests rebuild the office when the level changes.
+- Game Owner: "layout y cái cũ". Ba & Má now has its own shophouse-workshop plan: big workshop with a dryer island,
+  glass office for Má with the breaker behind her, glass livestream corner, kitchen, packing area open to the workshop,
+  staff lane to the shop counter, street-front shop.
 
 ## 2026-11-05 — QC round 1 and publish
 
