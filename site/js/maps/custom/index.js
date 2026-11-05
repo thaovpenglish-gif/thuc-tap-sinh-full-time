@@ -3,5 +3,6 @@
 import { buildBama } from './bama.js';
 import { buildTech } from './tech.js';
 import { buildAgency } from './agency.js';
+import { buildAudit } from './audit.js';
 
-export const MAPS = { bama: buildBama, tech: buildTech, agency: buildAgency };
+export const MAPS = { bama: buildBama, tech: buildTech, agency: buildAgency, audit: buildAudit };

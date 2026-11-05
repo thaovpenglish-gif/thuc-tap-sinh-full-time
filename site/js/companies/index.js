@@ -9,7 +9,7 @@ export const COMPANY_LIST = [
     blurb: 'Văn hóa "flat", deploy chiều thứ Sáu, on-call cuối tuần và một vòng gọi vốn "sắp xong".', toxic: 3, ready: true },
   { id: 'agency', style: 'studio', map: 'agency', styleLive: true, name: 'Trend Trễ Agency', emoji: '📣', color: '#ffc8dd', industry: 'Marketing agency', scale: '~30 người',
     blurb: 'Khách sửa "lần cuối" lần thứ 14. KOL bùng. Viral thì có, nhưng viral ngược.', toxic: 4, ready: true },
-  { id: 'audit', style: 'corporate', name: 'Cân Đối & Cộng Sự', emoji: '🧮', color: '#b8f0d8', industry: 'Kế toán · kiểm toán', scale: '~300 người',
+  { id: 'audit', style: 'corporate', map: 'audit', name: 'Cân Đối & Cộng Sự', emoji: '🧮', color: '#b8f0d8', industry: 'Kế toán · kiểm toán', scale: '~300 người',
     blurb: 'Busy season, kiểm kê kho lúc 2 giờ sáng và những con số "rất sáng tạo" của khách hàng.', toxic: 4, ready: true },
   { id: 'event', style: 'warehouse', name: 'Đi Đâu Cũng Được', emoji: '🎪', color: '#ffe9a0', industry: 'Tổ chức sự kiện & du lịch', scale: '~15 người',
     blurb: 'Mưa giữa sự kiện ngoài trời, khách đổi ý lúc 23h, team building bắt buộc vui.', toxic: 3, ready: true },

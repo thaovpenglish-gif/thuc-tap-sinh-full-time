@@ -4,8 +4,25 @@
 import { $, esc } from '../core/util.js';
 import { fmtVND } from '../game/difficulty.js';
 import { RENT, weekdayName } from '../game/career.js';
+import { HANDBOOK } from '../content/snakes.js';
 
-const TABS = [['think', '💭 Suy nghĩ'], ['xp', '🧠 Kinh nghiệm'], ['money', '💰 Ví tiền'], ['diary', '📖 Nhật ký']];
+const TABS = [['think', '💭 Suy nghĩ'], ['xp', '🧠 Kinh nghiệm'], ['money', '💰 Ví tiền'], ['diary', '📖 Nhật ký'], ['snakes', '🐍 Cẩm nang']];
+
+/** The handbook "Cách ứng phó với những chú rắn" (content/snakes.js). Also used outside a run. */
+export function handbookHTML() {
+  const H = HANDBOOK;
+  const list = (t, xs) => (xs && xs.length ? `<div class="hb-k">${t}</div><ul>${xs.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : '');
+  return `<div class="hb"><h4>${esc(H.title)}: ${esc(H.subtitle)}</h4><p class="hb-intro">${esc(H.intro)}</p>
+    <button class="btn primary hb-practice" data-practice>🎯 Vào phòng luyện tập tình huống</button>
+    ${H.sections.map((s) => `<details class="hb-sec"><summary>${s.icon} ${esc(s.title)}</summary>
+      ${list('Dấu hiệu', s.signs)}<div class="hb-k">Vì sao họ như vậy</div><p>${esc(s.why)}</p>
+      ${list('Nên làm', s.doThis)}${list('Câu có thể nói', s.sayThis)}${list('Đừng', s.avoid)}
+      <div class="hb-rule">📌 ${esc(s.rule)}</div></details>`).join('')}
+    <h4>Quy luật sống sót &amp; hạnh phúc</h4>${H.goldenRules.map((r) => `<div class="hb-gold">${r.icon} ${esc(r.text)}</div>`).join('')}
+    <div class="hb-serious">⚠️ ${esc(H.whenSerious)}</div>
+    <details class="hb-src"><summary>Nguồn tham khảo</summary><ul>${H.sources.map((x) => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a></li>`).join('')}</ul></details>
+    <p class="hb-note">Cẩm nang mang tính tham khảo và giải trí, không thay thế tư vấn pháp lý hay tâm lý chuyên môn.</p></div>`;
+}
 
 /** Lessons unlocked by what happened in the run (engine-level, works for every company). */
 export function lessonsFor(r) {
@@ -31,7 +48,7 @@ export function lessonsFor(r) {
   return L;
 }
 
-/** opts: { getRun(), charInfo(id), companyName(id), castIds(), onOpen(), onClose() } */
+/** opts: { getRun(), charInfo(id), companyName(id), castIds(), onOpen(), onClose(), onPractice() } */
 export function createNotebook(opts) {
   const el = $('#notebook');
   let tab = 'think';
@@ -67,6 +84,7 @@ export function createNotebook(opts) {
         <h4>Phiếu lương đã nhận</h4>${(r.payslips || []).length ? r.payslips.map((p) => `<div class="nb-kv"><span>Ngày ${p.day}</span><b>${fmtVND(p.net)}</b></div>`).join('') : '<p class="nb-empty">Chưa nhận đồng nào.</p>'}
         <h4>Thu chi gần đây</h4>${ledger.length ? ledger.map((x) => `<div class="nb-kv"><span>Ngày ${x.day} · ${esc(x.k)}</span><b class="${x.v < 0 ? 'down' : 'up'}">${x.v < 0 ? '−' : '+'}${fmtVND(Math.abs(x.v))}</b></div>`).join('') : '<p class="nb-empty">Chưa có.</p>'}`;
     }
+    if (tab === 'snakes') return handbookHTML();
     const days = (r.diary || []).slice().reverse();
     return days.length ? days.map((d) => `<div class="nb-day"><div class="nb-when">${d.day === 0 ? 'Buổi phỏng vấn' : `Ngày ${d.day} · ${weekdayName(d.day)}`} · ${esc(d.title || '')}</div><p>${esc(d.text)}</p></div>`).join('')
       : '<p class="nb-empty">Trang đầu tiên sẽ được viết khi bạn hết buổi phỏng vấn.</p>';
@@ -80,6 +98,7 @@ export function createNotebook(opts) {
       <div class="nb-page">${page(r)}</div><div class="nb-foot">Phím <kbd>N</kbd> hoặc <kbd>Esc</kbd> để đóng</div></div>`;
     el.querySelectorAll('[data-tab]').forEach((b) => { b.onclick = () => { tab = b.dataset.tab; render(); }; });
     el.querySelector('.nb-close').onclick = close;
+    el.querySelectorAll('[data-practice]').forEach((b) => { b.onclick = () => opts.onPractice && opts.onPractice(); });
   }
   function show(t) { if (t) tab = t; open = true; render(); el.hidden = false; document.body.classList.add('nb-open'); opts.onOpen && opts.onOpen(); }
   function close() { if (!open) return; open = false; el.hidden = true; document.body.classList.remove('nb-open'); opts.onClose && opts.onClose(); }

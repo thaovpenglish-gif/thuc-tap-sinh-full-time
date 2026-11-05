@@ -23,6 +23,7 @@ import { COMPANY_LIST, companyMeta, companyName, loadCompany } from '../companie
 import { net, clean } from '../net/legacy-net.js';
 import { createCloudPanel } from '../ui/cloudpanel.js';
 import { createNotebook } from '../ui/notebook.js';
+import { createPractice } from '../ui/practice.js';
 import { SUPPORT_URL } from '../config.js';
 import { FLAGS } from '../flags.js';
 
@@ -447,8 +448,9 @@ export function startSolo({ scene, camera, input, onExit }) {
     onOpen: () => { if (mode === 'play' || mode === 'pause') mode = 'phone'; fp.unlock(); $('#pause').hidden = true; $('#prompt').hidden = true; $('#taskList').hidden = true; },
     onClose: () => { if (mode === 'phone') { mode = 'play'; $('#crosshair').hidden = isTouch; fp.lock(); renderTasks(); } },
   });
+  const practice = createPractice();
   const notebook = createNotebook({
-    getRun: () => R, charInfo, companyName, castIds: () => Object.keys(CO ? CO.cast : {}),
+    getRun: () => R, charInfo, companyName, castIds: () => Object.keys(CO ? CO.cast : {}), onPractice: () => practice.show(),
     onOpen: () => { if (mode === 'play' || mode === 'pause') mode = 'notebook'; fp.unlock(); $('#pause').hidden = true; $('#prompt').hidden = true; $('#taskList').hidden = true; },
     onClose: () => { if (mode === 'notebook') { mode = 'play'; $('#crosshair').hidden = isTouch; fp.lock(); renderTasks(); } },
   });
@@ -970,6 +972,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     showDayIntro();
   }
   $('#soloNew').onclick = () => showCompanies($('#soloName').value.trim());
+  $('#soloPractice').onclick = () => practice.show();
   $('#soloName').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#soloNew').click(); });
   $('#companyBack').onclick = () => { $('#companyMenu').hidden = true; showMenu(); };
   $('#companyName').addEventListener('input', () => { $('#soloName').value = $('#companyName').value; });
@@ -1008,6 +1011,7 @@ export function startSolo({ scene, camera, input, onExit }) {
 
   input.onKey((e, { inField }) => {
     if (inField) { if (e.key === 'Escape' && phone.isOpen) phone.close(); return; }
+    if (practice.isOpen) { if (e.code === 'Escape') { e.preventDefault(); practice.close(); } return; }
     if (notebook.isOpen) { if (e.code === 'KeyN' || e.code === 'Escape') { e.preventDefault(); notebook.close(); } return; }
     if (e.code === 'KeyN' && R && (mode === 'play' || mode === 'pause')) { e.preventDefault(); notebook.show(); return; }
     if (mode === 'ringing') {

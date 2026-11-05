@@ -447,3 +447,38 @@ body.in-call #hud .hud-obj, body.in-call #hud .hud-tr { visibility: hidden; }
 .resign-row { text-align: center; margin-top: 4px; }
 @media (max-width: 560px) { .nb-book { height: 94vh; } .nb-head, .nb-tabs, .nb-page, .nb-foot { padding-left: 46px; } }
 body.nb-open #toasts { display: none; }
+
+/* ---------- handbook (notebook tab) + practice room ---------- */
+.hb h4 { margin: 12px 0 2px; }
+.hb-intro { font-weight: 600; margin: 4px 0 8px; line-height: 1.55; }
+.hb-practice { margin: 4px 0 10px; }
+.hb-sec { border: 2px solid var(--ink); border-radius: 12px; background: #fff; margin: 6px 0; padding: 2px 10px; line-height: 1.5; }
+.hb-sec summary { cursor: pointer; font-weight: 900; padding: 6px 0; }
+.hb-sec ul { margin: 2px 0 6px; padding-left: 20px; } .hb-sec p { margin: 2px 0 6px; }
+.hb-k { font-size: 11.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-top: 6px; }
+.hb-rule, .pr-rule { background: var(--butter); border: 2px solid var(--ink); border-radius: 10px; padding: 6px 10px; margin: 6px 0 8px; font-weight: 800; line-height: 1.45; }
+.hb-gold { font-weight: 700; line-height: 1.5; margin: 3px 0; }
+.hb-serious { margin: 12px 0 6px; padding: 8px 10px; border-radius: 10px; background: #ffe3e8; border: 2px solid #c2415d; font-weight: 700; line-height: 1.5; }
+.hb-src { line-height: 1.5; font-size: 13px; } .hb-src summary { cursor: pointer; font-weight: 800; }
+.hb-note { font-size: 12px; color: var(--muted); font-style: italic; line-height: 1.4; }
+.practice-btn { width: 100%; margin: 10px 0 4px; background: #e8f5ef; }
+#practice { position: fixed; inset: 0; z-index: 62; display: grid; place-items: center; background: rgba(29, 29, 31, .45); padding: 12px; }
+#practice[hidden] { display: none; }
+.pr-card { width: min(620px, 100%); max-height: 94vh; display: flex; flex-direction: column; background: #fffdf6; border: 3px solid var(--ink); border-radius: 20px; box-shadow: var(--pop-lg); overflow: hidden; }
+.pr-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 2px solid var(--ink); background: #e8f5ef; }
+.pr-head b { font-size: 16px; } .pr-close { margin-left: auto; width: 34px; height: 34px; border-radius: 10px; border: var(--line); background: #fff; font-weight: 900; }
+.pr-body { overflow-y: auto; padding: 12px 16px 16px; font-size: 14.5px; line-height: 1.5; }
+.pr-intro { font-weight: 600; } .pr-meta { font-size: 12px; font-weight: 800; color: var(--muted); }
+.pr-title { margin: 6px 0 4px; font-size: 18px; } .pr-setup { margin: 0 0 10px; font-weight: 600; }
+.pr-opts { display: grid; gap: 8px; }
+.pr-opt { text-align: left; border: 2px solid var(--ink); border-radius: 12px; background: #fff; padding: 10px 12px; font: inherit; font-weight: 700; cursor: pointer; box-shadow: 2px 2px 0 var(--ink); }
+.pr-opt:not([disabled]):hover { background: var(--butter); }
+.pr-opt[disabled] { cursor: default; opacity: .9; }
+.pr-opt.best { background: #dff6e9; } .pr-opt.mid { background: #fff3c4; } .pr-opt.bad { background: #ffe3e8; }
+.pr-opt.picked { outline: 3px solid var(--ink); outline-offset: 2px; opacity: 1; }
+.pr-fb { display: block; font-weight: 600; font-size: 13.5px; margin-top: 4px; color: #3a3a40; }
+.pr-say { border-left: 4px solid var(--ink); padding: 2px 10px; margin: 6px 0 10px; font-style: italic; font-weight: 600; }
+.pr-say b { font-style: normal; display: block; font-size: 11.5px; text-transform: uppercase; color: var(--muted); }
+.pr-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.pr-score { font-size: 40px; font-weight: 900; text-align: center; }
+.pr-learn { font-weight: 700; margin: 3px 0; }
