@@ -99,3 +99,14 @@ test('tasks: max open, deadlines shift with clock jumps, fast-forward resolve', 
   const res = resolveAll(shifted, 1);
   assert.deepEqual(res.map((t) => t.status).sort(), ['done', 'late']);
 });
+
+test('one run: life events on roughly half the evenings, moods vary from day to day', () => {
+  const r = newRun({ name: 'x', id: 'abc12345' });
+  const hash = (str) => [...String(str)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+  for (const id of ['abc12345', 'zz9', 'q1w2e3r4', 'tech0001']) {
+    let n = 0; const moods = new Set();
+    for (let d = 1; d <= 45; d++) { if (C.pickLifeEvent({ ...r, id }, hash(id) + d * 13)) n++; moods.add(C.pickMood(r, hash(id) + d * 101)); }
+    assert.ok(n >= 12 && n <= 36, `run ${id}: ${n}/45 evenings`);
+    assert.ok(moods.size >= 5, `run ${id}: only ${moods.size} different moods`);
+  }
+});

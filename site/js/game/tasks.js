@@ -4,7 +4,11 @@ import { deadlineFor } from './difficulty.js';
 
 /** Small deterministic RNG so a day's tasks are reproducible from a seed. */
 export function rng(seed) {
-  let s = (seed >>> 0) || 1;
+  // scramble the seed first: nearby seeds (day 1, day 2…) must give unrelated sequences
+  let s = seed >>> 0;
+  s = Math.imul(s ^ (s >>> 16), 0x45d9f3b) >>> 0;
+  s = Math.imul(s ^ (s >>> 16), 0x45d9f3b) >>> 0;
+  s = (s ^ (s >>> 16)) >>> 0 || 1;
   return () => { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; };
 }
 
