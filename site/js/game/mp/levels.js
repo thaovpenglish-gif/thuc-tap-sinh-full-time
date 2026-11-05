@@ -75,6 +75,28 @@ const HR = {
   banhmi: { name: 'Cô Bánh Mì (gọi nhầm số)', short: 'Cô Bánh Mì', look: { shirt: '#ffe08a', pants: '#8a6a5a', hair: 'curly', hairColor: '#555555', tote: true } },
 };
 
+// Trend Trễ Agency people (looks copied from companies/agency/cast.js; brand managers are new bodies)
+const AG = {
+  tung: { name: 'Anh Tùng', look: { shirt: '#ff5d8f', pants: '#2b2d42', hair: 'quiff', hairColor: '#b8b8c0', glasses: true, mug: true } },
+  diep: { name: 'Chị Diệp', look: { shirt: '#ff9f1c', pants: '#3d405b', hair: 'bun', hairColor: '#2a1a12', phone: true, tote: true } },
+  khai: { name: 'Anh Khải', look: { shirt: '#2b2d42', pants: '#1d1d1f', hair: 'beanie', hairColor: '#1d1d1f', glasses: true } },
+  thi: { name: 'Thi', look: { shirt: '#c77dff', pants: '#4a4e69', hair: 'long', hairColor: '#3b2418', notes: true } },
+  vy: { name: 'Vỹ', look: { shirt: '#ff6b9a', pants: '#22223b', hair: 'curly', hairColor: '#5a3d8a', pods: true } },
+  loc: { name: 'Anh Lộc', look: { shirt: '#3a86ff', pants: '#2b2d42', hair: 'cap', hairColor: '#1d1d1f', mug: true } },
+  suong: { name: 'Sương', look: { shirt: '#2ec4b6', pants: '#3d405b', hair: 'pony', hairColor: '#1d1d1f', phone: true, glasses: true } },
+  kieu: { name: 'Chị Kiều', look: { shirt: '#ff70a6', pants: '#6d597a', hair: 'wavy', hairColor: '#8a4b2a', phone: true, tote: true } },
+  phat: { name: 'Anh Phát', look: { shirt: '#8d99ae', pants: '#2b2d42', hair: 'short', hairColor: '#1d1d1f', tote: true } },
+  linh: { name: 'Khánh Linh', look: { shirt: '#ffb703', pants: '#f2e6cf', hair: 'long', hairColor: '#7a3b1e', clip: true, phone: true } },
+  nguyet: { name: 'Chị Nguyệt (Mì Ông Táo)', short: 'Chị Nguyệt', look: { shirt: '#ffd166', pants: '#3d405b', hair: 'bun', hairColor: '#2a1a12', phone: true } },
+  tuanrx: { name: 'Anh Tuấn (Kem đánh răng Răng Xinh)', short: 'Anh Tuấn', look: { shirt: '#bde0fe', pants: '#2b2d42', hair: 'side', hairColor: '#1d1d1f', tie: '#3a86ff' } },
+  bin: { name: 'Bin 🔥 (cháu anh Tuấn)', short: 'Bin 🔥', look: { shirt: '#ffadad', pants: '#1d1d1f', hair: 'cap', hairColor: '#ff5d8f', pods: true } },
+  sen: { name: 'Chị Sen (Ngân hàng Sen Hồng)', short: 'Chị Sen', look: { shirt: '#ffc8dd', pants: '#3f3f55', hair: 'long', hairColor: '#1d1d1f', glasses: true } },
+  may: { name: 'Chị Mây (Trà Sữa Tâm Trạng)', short: 'Chị Mây', look: { shirt: '#c9b6ff', pants: '#f2e6cf', hair: 'pony', hairColor: '#7a3b1e', phone: true } },
+  hai: { name: 'Anh Hải (Bia Hơi Phố)', short: 'Anh Hải', look: { shirt: '#ffe08a', pants: '#4b5566', hair: 'short', hairColor: '#1d1d1f', mug: true } },
+  lua: { name: 'Anh Lúa (app Lúa Vàng)', short: 'Anh Lúa', look: { shirt: '#9ee8c8', pants: '#2b2d42', hair: 'quiff', hairColor: '#4a3226', pods: true } },
+  ken: { name: 'Anh Ken (quản lý KOL)', short: 'Anh Ken 🕶️', look: { shirt: '#1d1d1f', pants: '#1d1d1f', hair: 'side', hairColor: '#1d1d1f', glasses: true, phone: true } },
+};
+
 export const LEVELS = {
   tm: {
     id: 'tm',
@@ -570,6 +592,171 @@ export const LEVELS = {
       { recipe: 'interview', w: 2.5, after: 10 },
       { recipe: 'salary', w: 2, after: 15 },
       { recipe: 'offer', w: 2, after: 40 },
+    ],
+    pace: [
+      { gap: 34, time: 1.4, max: 2, first: [2, 16] },
+      { gap: 24, time: 1.15, max: 3, first: [2, 10] },
+      { gap: 18, time: 1, max: 4, first: [2, 8] },
+      { gap: 14, time: 0.9, max: 4, first: [2, 6] },
+    ],
+    stars: [200, 450, 700],
+  },
+  agency: {
+    id: 'agency',
+    client: 'Trend Trễ Agency',
+    emoji: '📣',
+    title: 'Sửa lần cuối (lần thứ 14)',
+    blurb: 'Agency trong một căn villa cũ có giếng trời. Client "feedback nhẹ" liên tục, KOL bùng vào phút chót, anh Tùng muốn mọi thứ phải "pop".',
+    bossName: 'Anh Tùng',
+    bossLine: 'Cái này được, nhưng chưa pop. Em hiểu ý anh chứ? Pop!',
+    notesChance: 0.3,
+    quotes: [
+      'Anh Tùng: "Cái này được, nhưng chưa pop. Lần sau làm lại từ brief."',
+      'Anh Khải: "Chưa đủ đau."',
+      'Chị Diệp: "Client seen 👍. Không phải chê, nhưng cũng không phải khen."',
+      'Anh Tùng: "POP! Thắng pitch rồi, cả nhà đi Đà Lạt. Lần này thật."',
+    ],
+    duration: 180,
+    room: { w: 18, d: 12 },
+    wall: '#ffc8dd',
+    // An old villa around a light well (players run circles around the tree):
+    //  z=-6 ┌──── PHÒNG CREATIVE ─────────┬──── PHÒNG ANH TÙNG ────┬──── MEDIA & KOL ─────────┐
+    //       │ Brief  Mac(Vỹ)  Mac  Copy(Thi)│     Bàn anh Tùng       │ Bàn KOL (Kiều)    Đt dự phòng│
+    //  z=-2 ├───[cửa]──────────────────────┴──[cửa]────────────────┴──[cửa]────────────────────┤
+    //       │ Ghép Ghép     ┌──── GIẾNG TRỜI (cây, ghế đá, guitar) ────┐   [Bảng WIP · Diệp]   │
+    //       │ Rác           └──────────────────────────────────────────┘                        │
+    //  z=2.5├──[cửa]───────┬───────[cửa]────────────┬──────────[QUẦY CLIENT]─────────────────────┤
+    //       │ STUDIO QUAY   │ PANTRY · Mì Ông Táo free │ PHÒNG CLIENT (khách chờ)    ← cửa vào      │
+    //  z=6  └───────────────┴──────────────────────────┴────────────────────────────────────────┘
+    rooms: [
+      { name: 'PHÒNG CREATIVE', icon: '🎨', x0: -9, x1: -2, z0: -6, z1: -2, floor: '#fff0f6', sign: [-5.8, -2], color: '#ffc8dd' },
+      { name: 'PHÒNG ANH TÙNG', icon: '💥', x0: -2, x1: 3, z0: -6, z1: -2, floor: '#f1ecff', sign: [0.5, -2], color: '#ff9fb2' },
+      { name: 'MEDIA & KOL', icon: '🌟', x0: 3, x1: 9, z0: -6, z1: -2, floor: '#e8f4ff', sign: [6.2, -2], color: '#bfe3ff' },
+      { name: '', x0: -9, x1: 9, z0: -2, z1: 2.5, floor: '#fbf6ee' },
+      { name: 'STUDIO QUAY', icon: '🎬', x0: -9, x1: -3.5, z0: 2.5, z1: 6, floor: '#eef3ff', sign: [-6.2, 2.5], color: '#bfe3ff' },
+      { name: 'PANTRY', icon: '🍜', x0: -3.5, x1: 2.5, z0: 2.5, z1: 6, floor: '#fff3c4', sign: [-0.8, 2.5], color: '#ffe9a0' },
+      { name: 'PHÒNG CLIENT', icon: '🤝', x0: 2.5, x1: 9, z0: 2.5, z1: 6, floor: '#f6efe3', sign: [3.4, 2.5], color: '#ffd3b8' },
+    ],
+    walls: [
+      { x0: -9, z0: -2, x1: -6.8, z1: -2 }, { x0: -4.8, z0: -2, x1: -2, z1: -2 },
+      { x0: -2, z0: -2, x1: -0.5, z1: -2 }, { x0: 1.5, z0: -2, x1: 3, z1: -2 },
+      { x0: 3, z0: -2, x1: 5.2, z1: -2 }, { x0: 7.2, z0: -2, x1: 9, z1: -2 },
+      { x0: -2, z0: -6, x1: -2, z1: -2 }, { x0: 3, z0: -6, x1: 3, z1: -2 },
+      { x0: -9, z0: 2.5, x1: -7.2, z1: 2.5 }, { x0: -5.2, z0: 2.5, x1: -3.5, z1: 2.5 },
+      { x0: -3.5, z0: 2.5, x1: -1.8, z1: 2.5 }, { x0: 0.2, z0: 2.5, x1: 2.5, z1: 2.5 },
+      { x0: 2.5, z0: 2.5, x1: 4.85, z1: 2.5 }, { x0: 6.75, z0: 2.5, x1: 9, z1: 2.5 },
+      { x0: -3.5, z0: 2.5, x1: -3.5, z1: 6 }, { x0: 2.5, z0: 2.5, x1: 2.5, z1: 6 },
+    ],
+    floorDoorMats: [[-5.8, -2], [0.5, -2], [6.2, -2], [-6.2, 2.5], [-0.8, 2.5], [9, 4.4, 'v']],
+    decor: [
+      // light well in the middle of the villa
+      { kind: 'courtyard', x: 0, z: 0.25, w: 5.2, d: 2.4, text: 'GIẾNG TRỜI · guitar không ai đánh' },
+      // creative room
+      { kind: 'person', x: -2.7, z: -3.0, npc: AG.khai, face: -0.8 }, { kind: 'window', x: -6, z: -6 },
+      { kind: 'crates', x: -8.4, z: -2.8, text: 'IDEAS BỊ GIẾT · 312', icon: '🗃️' },
+      // MD room
+      { kind: 'shelf', x: 2.4, z: -4.4 }, { kind: 'plant', x: -1.4, z: -5.4 }, { kind: 'window', x: 0.5, z: -6 },
+      // media & KOL
+      { kind: 'tv', x: 8.6, z: -4.4, text: ['CPM ĐANG CAO', 'Thuật toán đổi rồi'] }, { kind: 'person', x: 3.7, z: -2.7, npc: AG.loc, face: 0.6 },
+      { kind: 'person', x: 6.2, z: -5.5, npc: AG.suong, face: 0 },
+      // studio
+      { kind: 'ringlight', x: -4.4, z: 4.7 }, { kind: 'person', x: -8.3, z: 5.2, npc: AG.phat, face: 0.8 }, { kind: 'person', x: -4.4, z: 5.7, npc: AG.linh, face: Math.PI },
+      // pantry
+      { kind: 'crates', x: -2.8, z: 5.4, text: 'MÌ ÔNG TÁO · FREE', icon: '🍜' }, { kind: 'fridge', x: 1.9, z: 5.3 }, { kind: 'cafetable', x: 0.4, z: 4.0, cat: true },
+      // client room
+      { kind: 'sofa', x: 5.3, z: 5.4 }, { kind: 'plant', x: 3.0, z: 5.5 },
+    ],
+
+    spawns: [{ x: -4.0, z: -1.4 }, { x: 3.8, z: -1.4 }, { x: -4.0, z: 2.0 }, { x: 3.4, z: 2.0 }],
+    stations: [
+      { id: 'brief', kind: 'source', gives: 'brief', label: 'Kệ Brief · chị Diệp', x: -8.2, z: -4.9 },
+      { id: 'mac1', kind: 'mac', label: 'Mac · Vỹ', x: -6.6, z: -4.9, who: AG.vy },
+      { id: 'mac2', kind: 'mac', label: 'Mac', x: -5.2, z: -4.9 },
+      { id: 'copy', kind: 'copy', label: 'Bàn copy · Thi', x: -3.4, z: -4.9, who: AG.thi },
+      { id: 'boss', kind: 'boss', label: 'Bàn anh Tùng', x: 0.5, z: -4.4 },
+      { id: 'kol', kind: 'kol', label: 'Bàn KOL · chị Kiều', x: 5.0, z: -4.6, who: AG.kieu },
+      { id: 'breaker', kind: 'breaker', label: 'Đt dự phòng (gọi KOL khác)', x: 8.3, z: -3.0 },
+      { id: 'c1', kind: 'counter', label: 'Bàn ghép', x: -6.6, z: 0.2 },
+      { id: 'c2', kind: 'counter', label: 'Bàn ghép', x: -5.2, z: 0.2 },
+      { id: 'trash', kind: 'trash', label: 'Thùng rác', x: -8.5, z: 1.6 },
+      { id: 'studio', kind: 'studio', label: 'Studio quay TikTok', x: -6.2, z: 4.0 },
+      { id: 'coffee', kind: 'coffee', label: 'Cà phê + mì Ông Táo', drink: 'Ăn gói mì Ông Táo free 🍜', x: -1.0, z: 5.3 },
+      { id: 'deliver', kind: 'deliver', label: 'Quầy client', x: 5.8, z: 2.5, faces: 'up' },
+    ],
+    boss: AG.tung,
+
+    clients: [AG.nguyet, AG.tuanrx, AG.bin, AG.sen, AG.may, AG.hai, AG.lua, AG.ken],
+    clientSpots: [{ x: 3.8, z: 3.6 }, { x: 5.1, z: 3.55 }, { x: 6.5, z: 3.55 }, { x: 7.8, z: 3.6 }],
+    clientDoor: [{ x: 10, z: 4.4 }, { x: 8.4, z: 4.4 }],
+    clientLines: {
+      wait: ['Sửa lần cuối thôi em', 'Làm sao cho viral nhé', 'Sếp chị chưa duyệt đâu', 'Có bản nháp chưa em?', 'Bên kia báo giá rẻ hơn'],
+      happy: ['Ưng quá, chốt!', 'Viral rồi em ơi', 'Sếp chị khen', 'Lần này không sửa nữa'],
+      angry: ['Thôi chị tìm agency khác', 'Trễ deadline rồi em', 'Chị chưa trả phí đâu nha', 'Để chị nói anh Tùng'],
+    },
+
+    // signature events of this level
+    revise: {
+      chance: 0.4,
+      lines: ['Feedback nhẹ thôi: logo to lên chút', 'Trẻ hơn chút được không em?', 'Sếp chị muốn màu khác', 'Lần cuối thật, chị hứa', 'Bin cháu anh Tuấn góp ý tí', 'Làm sao cho nó viral hơn'],
+    },
+    powerCut: {
+      at: [66, 132], warn: 3, stations: ['kol'], icon: '🌟',
+      warnText: 'Chị Kiều: "Ủa KOL không seen tin nhắn chị…"',
+      text: 'KOL bùng! Bàn KOL ngừng nhận việc. Ra điện thoại dự phòng (góc Media) gọi KOL khác.',
+      offSign: 'KOL bùng', fixSign: 'Gọi KOL khác!', offHint: 'đang bị KOL bùng! Gọi KOL dự phòng ở góc Media 📞',
+      fixHint: 'Gọi KOL dự phòng 📞', fixVerb: 'gọi được KOL dự phòng', backLine: 'Chị Kiều: "KOL này sạch, chị check rồi."',
+    },
+    standup: {
+      board: { x: 5.6, z: 0.2 }, radius: 1.5, at: [50, 120], warn: 5, length: 7,
+      coach: AG.diep,
+      boardText: ['WIP 9:45', 'AI ĐANG CHÁY?', 'Ông Táo: KV v14'],
+      warnText: 'Chị Diệp: "Cả nhà ơi WIP nhanh 5 phút nha!" Tránh xa bảng WIP!',
+      line: 'Chị Diệp: "Em ơi… à không, chị chỉ hỏi tiến độ thôi."',
+    },
+
+    process: {
+      work: {
+        mac: { brief: { to: 'kv', time: 3.5 }, kv_fb: { to: 'kv', time: 2 }, deck_pop: { to: 'deck_draft', time: 2 } },
+        copy: { brief: { to: 'caption', time: 2.5 }, caption_fb: { to: 'caption', time: 1.5 } },
+        studio: { caption: { to: 'tiktok', time: 4 }, tiktok_fb: { to: 'tiktok', time: 2.5 } },
+      },
+      auto: {
+        kol: { kv: { to: 'kol_post', time: 4 } },
+        boss: { deck_draft: { to: 'campaign', time: 3, notes: 'deck_pop', fixAt: 'Máy Mac' } },
+      },
+      combos: [[['kv', 'caption'], 'deck_draft']],
+    },
+    recipes: {
+      caption: { title: 'Caption x30', item: 'caption', time: 50, reward: 25, revise: 'caption_fb', fixAt: 'Bàn copy',
+        steps: ['📝 Brief', '✍️ Bàn copy', '🛎️ Quầy'],
+        how: ['Lấy Brief ở Kệ Brief (phòng creative)', 'Đặt lên Bàn copy của Thi, bấm thêm lần nữa rồi đứng viết ~2,5 giây', 'Nộp ở Quầy client. Bị "trẻ hơn chút" thì mang về Bàn copy sửa rồi nộp lại'] },
+      kv: { title: 'Key Visual', item: 'kv', time: 70, reward: 45, revise: 'kv_fb', fixAt: 'Máy Mac',
+        steps: ['📝 Brief', '🎨 Mac', '🛎️ Quầy'],
+        how: ['Lấy Brief', 'Đặt lên Mac, đứng thiết kế ~3,5 giây', 'Nộp ở Quầy client. Bị "logo to lên chút" thì mang về Mac sửa ~2 giây rồi nộp lại'] },
+      tiktok: { title: 'Video TikTok', item: 'tiktok', time: 90, reward: 70, revise: 'tiktok_fb', fixAt: 'Studio',
+        steps: ['📝 Brief', '✍️ Copy', '🎬 Studio quay'],
+        how: ['Làm Caption: Brief → Bàn copy', 'Mang Caption xuống Studio quay (góc dưới bên trái), đứng quay ~4 giây', 'Nộp ở Quầy client. Bị "trend này cũ rồi" thì về Studio quay lại ~2,5 giây'] },
+      kol: { title: 'Bài đăng KOL', item: 'kol_post', time: 90, reward: 80,
+        steps: ['🎨 Key Visual', '🌟 Bàn KOL (tự chạy)', '🛎️ Quầy'],
+        how: ['Làm Key Visual: Brief → Mac', 'Đặt KV lên Bàn KOL của chị Kiều, chị tự lo ~4 giây', 'KOL bùng thì ra Điện thoại dự phòng ở góc Media gọi KOL khác', 'Nộp Bài đăng KOL ở Quầy client'] },
+      campaign: { title: 'Deck chiến dịch', item: 'campaign', time: 140, reward: 150, join: ' · ',
+        steps: ['🎨 KV', '✍️ Caption', '🗂️ ghép', '💥 anh Tùng duyệt'],
+        how: ['Làm Key Visual (Brief → Mac) và Caption (Brief → Bàn copy)', 'Đặt một món lên Bàn ghép (hành lang trái), cầm món kia tới bấm để ghép thành Deck nháp', 'Mang vào Bàn anh Tùng. Bị "chưa pop" thì mang về Mac sửa rồi đưa anh lại', 'Nộp Deck chiến dịch ở Quầy client'] },
+    },
+    tips: [
+      '✋ Một nút làm mọi thứ: đứng sát trạm rồi bấm (lấy, đặt, ghép, làm việc, nộp)',
+      '✏️ Client "feedback nhẹ": món bị trả lại vào tay bạn, mang đi sửa ở đúng chỗ rồi nộp lại (mỗi đơn chỉ bị sửa một lần)',
+      '🌟 KOL bùng: Bàn KOL ngừng, ra Điện thoại dự phòng ở góc Media gọi KOL khác',
+      '📋 Chị Diệp gọi WIP: tránh xa bảng WIP cạnh Quầy client',
+      '🌳 Giếng trời ở giữa: chạy vòng quanh nó, đừng đâm vào cây',
+      '🍜 Burnout gần đầy: vào Pantry ăn gói mì Ông Táo free',
+    ],
+    orderPool: [
+      { recipe: 'caption', w: 2 },
+      { recipe: 'kv', w: 2.5 },
+      { recipe: 'tiktok', w: 2.5, after: 12 },
+      { recipe: 'kol', w: 2, after: 20 },
+      { recipe: 'campaign', w: 2, after: 40 },
     ],
     pace: [
       { gap: 34, time: 1.4, max: 2, first: [2, 16] },

@@ -239,11 +239,37 @@ Chọn ở sảnh (thẻ "Khách hàng") hoặc host đổi trong phòng chờ; 
 - Kỹ thuật: `entrance: 'left'`, `decay`, `powerCut` có chữ riêng (`offSign`, `fixSign`, `offHint`…), trạm `interview`,
   `cb` (có `who`: người ngồi sau trạm), `standup.boardText`. Test: `tests/mp-hr.test.mjs`.
 
+## 8d. Màn 4: Trend Trễ Agency · "Sửa lần cuối (lần thứ 14)"
+
+- **Bản đồ riêng: villa cũ có giếng trời** (cây to, ghế đá, cây guitar không ai đánh) ở giữa, người chơi chạy vòng
+  quanh: Phòng creative (kệ brief chị Diệp, 2 Mac, Vỹ ngồi Mac, Thi ngồi bàn copy, anh Khải, thùng "ideas bị giết") ·
+  Phòng anh Tùng · Media & KOL (bàn KOL chị Kiều, điện thoại dự phòng, Lộc, Sương, màn hình "CPM đang cao") · hành lang
+  (2 bàn ghép, thùng rác, bảng WIP chị Diệp) · Studio quay TikTok (anh Phát, Khánh Linh, đèn ring) · Pantry mì Ông Táo
+  free · Phòng client (quầy client trên tường, sofa).
+- **Khách**: Chị Nguyệt (Mì Ông Táo), Anh Tuấn (Răng Xinh), Bin 🔥 (cháu anh Tuấn), Chị Sen (Ngân hàng Sen Hồng),
+  Chị Mây (Trà Sữa Tâm Trạng), Anh Hải (Bia Hơi Phố), Anh Lúa (app Lúa Vàng), Anh Ken (quản lý KOL).
+
+  | Việc | Cách làm | Tiền |
+  | --- | --- | --- |
+  | ✍️ Caption x30 | Brief → Bàn copy | 25k |
+  | 🎨 Key Visual | Brief → Mac | 45k |
+  | 🎬 Video TikTok (từ 0:12) | Brief → Bàn copy → Studio quay | 70k |
+  | 🌟 Bài đăng KOL (từ 0:20) | Key Visual → Bàn KOL (tự chạy) | 80k |
+  | 🏆 Deck chiến dịch (từ 0:40) | KV + Caption ghép → anh Tùng duyệt (30% "chưa pop": sửa ở Mac) | 150k |
+
+- **Cơ chế riêng**:
+  - ✏️ **Feedback nhẹ**: nộp Caption / KV / TikTok có 40% bị client trả lại ngay vào tay ("logo to lên chút", "trẻ hơn
+    chút"…), thành bản cần sửa; sửa ở đúng chỗ (Bàn copy / Mac / Studio) rồi nộp lại. Mỗi đơn chỉ bị một lần.
+    Engine: `L.revise`, `recipe.revise`, `recipe.fixAt`, sự kiện `revise`.
+  - 🌟 **KOL bùng** (1:06, 2:12): Bàn KOL ngừng (powerCut), ra Điện thoại dự phòng góc Media gọi KOL khác.
+  - 📋 **WIP của chị Diệp** (0:50, 2:00): ai đứng gần bảng WIP cạnh quầy client bị kéo vào họp 7 giây.
+- Test: `tests/mp-agency.test.mjs`.
+
 ## 9. Lộ trình
 
 1. ✅ **Bản thử** (`?mp=1`): màn T&M, 3 công thức, burnout, phòng online 1–4 người qua mã/link.
 2. Chơi thử thật với 2–4 người → chỉnh tốc độ đơn, thời gian, mốc sao.
-3. ✅ Màn Ba & Má, ✅ màn HR, chọn màn. Tiếp: Agency, Event, Audit, Tech, mở màn theo sao.
+3. ✅ Màn Ba & Má, ✅ HR, ✅ Agency, chọn màn. Tiếp: Event, Audit, Tech, mở màn theo sao.
 4. 3 màn còn lại, âm thanh/hiệu ứng, chuyển host khi host thoát, bỏ cờ `?mp=1`.
 
 ## 10. Câu hỏi còn mở

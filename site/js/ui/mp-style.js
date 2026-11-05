@@ -28,7 +28,7 @@ export const MP_CSS = `
 .mp-recipes { display: grid; gap: 6px; margin-top: 10px; font-size: 13.5px; }
 .mp-recipes div { background: #fff8ef; border: 2px solid var(--ink); border-radius: 12px; padding: 6px 10px; }
 .mp-recipes b { margin-right: 6px; }
-.mp-levels { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mp-levels { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
 .mp-level { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 8px; align-items: center; text-align: left; background: #fff; border: 2px solid var(--ink); border-radius: 14px; padding: 8px 10px; box-shadow: var(--pop); font-family: inherit; }
 .mp-level .ico { grid-row: span 2; font-size: 26px; }
 .mp-level b { font-size: 14px; } .mp-level small { color: var(--muted); font-weight: 700; font-size: 11.5px; }
