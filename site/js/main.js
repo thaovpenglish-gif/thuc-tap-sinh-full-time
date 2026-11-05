@@ -43,6 +43,18 @@ async function startSolo() {
   active = solo;
 }
 
+// Multiplayer "Overdeadline & Overburnout" (behind ?mp=1). Leaving it reloads the page: the room scene is torn down cleanly.
+async function startMulti() {
+  $('#mainMenu').hidden = true;
+  const { startMulti: start } = await import('./modes/multi.js');
+  active = start({
+    scene, camera, rig, input,
+    params: new URLSearchParams(location.search),
+    onExit: () => { location.href = location.pathname + '?mp=1'; },
+  });
+  window.__mp = active.debug; // e2e hooks (tests/e2e/mp-local.cjs)
+}
+
 async function startLegacy() {
   // The original story (Ba Mẹ & Partners), kept intact at ?legacy=1.
   $('#mainMenu').hidden = true;
@@ -71,12 +83,19 @@ function showMainMenu() {
   document.querySelectorAll('[data-soon]').forEach((b) => {
     b.onclick = () => { $('#menuNote').hidden = false; };
   });
+  const mp = document.querySelector('[data-soon="mp"]');
+  if (FLAGS.mp && mp) {
+    mp.innerHTML = '<span class="mode-ico">🚨🏃‍♀️🏃</span><b>Overdeadline<br>&amp; Overburnout</b><span>SOS Advisory · co-op 1–4 người</span><em class="go">Bản thử →</em>';
+    mp.onclick = () => startMulti();
+  }
 }
 
 async function boot() {
   try { await Promise.race([document.fonts.load('900 40px "Be Vietnam Pro"'), sleep(2500)]); } catch { /* fonts optional */ }
   if (FLAGS.legacyStory) {
     await startLegacy();
+  } else if (FLAGS.mp && new URLSearchParams(location.search).get('room')) {
+    await startMulti(); // opened from an invite link
   } else {
     showMainMenu();
   }
