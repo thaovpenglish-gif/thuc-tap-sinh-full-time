@@ -288,6 +288,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
 
   function beginPlay() {
     mode = 'play';
+    document.body.classList.add('mp-play'); // toasts move to the bottom so they never cover the stations
     round++;
     hideScreen();
     hud.hidden = false;
@@ -305,6 +306,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
   }
 
   function endPlay() {
+    document.body.classList.remove('mp-play');
     clearInterval(hostTimer); hostTimer = null;
     mode = mode === 'play' ? 'room' : mode;
     hud.hidden = true; $('#mobile').hidden = true;
@@ -547,7 +549,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     if (avatars[id]) return avatars[id];
     const mesh = makePerson({ shirt: info.color, pants: '#3a3f55', hair: HAIR[i % HAIR.length], hairColor: ['#2b1d1d', '#1d1d1f', '#5a3a2a', '#2a2a2a'][i % 4], pods: i === 1, glasses: i === 3 });
     const tag = nameTag(info.name + (id === myId ? ' (bạn)' : ''), null, { size: 'top', color: info.color });
-    tag.position.y = 2.05;
+    tag.position.y = 2.05; tag.scale.multiplyScalar(0.85);
     mesh.add(tag);
     const bar = makeBar(0.8, 0.1);
     bar.position.y = 2.38;
@@ -714,6 +716,8 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       // burnout bar
       const b = p.burnout / 100;
       a.bar.set(Math.max(0.02, b), b >= 0.7 ? (Math.sin(animT * 10) > 0 ? '#ff6f8a' : '#ffd25a') : b >= 0.4 ? '#ffd25a' : '#9be7c4');
+      // my own tag fades while I stand at a station, so it never hides that station's label
+      if (r.id === myId) { const fade = myTarget ? 0.2 : 1; a.tag.material.opacity += (fade - a.tag.material.opacity) * Math.min(1, dt * 10); a.bar.visible = !myTarget; }
       // status bubble
       const st = collapsed ? '🫠 burnout' : p.meeting > 0 ? '📋 đang họp' : p.working ? '💻 đang làm' : isTired(p) ? '🔥 mệt' : p.jitter > 0 ? '💓 run tay' : '';
       if (st !== a.statusText) {
@@ -780,6 +784,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
 
   // ---------- leave ----------
   function leaveNet() {
+    document.body.classList.remove('mp-play');
     clearTimeout(joinTimeout);
     clearInterval(hostTimer); hostTimer = null;
     if (net) { try { net.leave(); } catch { /* gone */ } }

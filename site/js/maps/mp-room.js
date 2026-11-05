@@ -14,7 +14,7 @@ const TOP = STATION.h;
 function label(text, icon, bg = '#ffffff') {
   const tex = textTexture([`${icon} ${text}`], { w: 512, h: 128, sizes: [64], bg, radius: 40 });
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
-  sp.scale.set(1.3, 0.325, 1);
+  sp.scale.set(1.15, 0.29, 1);
   sp.renderOrder = 5;
   return sp;
 }
@@ -25,8 +25,9 @@ export function makeBar(width = 0.9, height = 0.13) {
   const bg = new THREE.Sprite(new THREE.SpriteMaterial({ color: INK, depthTest: false, transparent: true }));
   bg.scale.set(width + 0.06, height + 0.06, 1);
   const fill = new THREE.Sprite(new THREE.SpriteMaterial({ color: '#9be7c4', depthTest: false, transparent: true }));
+  // Both sprites sit at the group origin; the fill's left edge is set with its screen-space `center`, so the bar
+  // stays straight even when its parent (a person) turns around.
   fill.center.set(0, 0.5);
-  fill.position.x = -width / 2;
   fill.scale.set(0.001, height, 1);
   bg.renderOrder = 10; fill.renderOrder = 11;
   g.add(bg, fill);
@@ -34,6 +35,7 @@ export function makeBar(width = 0.9, height = 0.13) {
   g.set = (v, color) => {
     g.visible = v > 0.001;
     fill.scale.x = Math.max(0.001, Math.min(1, v)) * width;
+    fill.center.x = (width / 2) / fill.scale.x;
     if (color) fill.material.color.set(color);
   };
   return g;
@@ -371,8 +373,9 @@ const EXTRA = {
 /** A client (T&M person) who walks into the lobby; bubble + patience bar above the head. */
 export function makeClient(c) {
   const p = makePerson(c.look);
-  const tag = nameTag(c.name, null, { size: 'top' });
-  tag.position.y = 1.95; tag.scale.multiplyScalar(0.85);
+  // short name on the head (the ticket shows the full one), small enough for 4 clients side by side
+  const tag = nameTag(c.short || c.name, null, { size: 'top' });
+  tag.position.y = 1.95; tag.scale.multiplyScalar(0.7);
   p.add(tag);
   const bar = makeBar(0.8, 0.1);
   bar.position.y = 2.25;
