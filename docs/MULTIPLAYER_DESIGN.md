@@ -109,12 +109,23 @@ Mở `https://…/?mp=1` → menu chính → thẻ **Overdeadline & Overburnout*
   Link mời có dạng `?mp=1&room=ABCDE`; tên đã lưu thì bấm link là vào thẳng phòng.
 - **Phòng chờ**: tối đa 4 người, màu theo thứ tự vào phòng, host bấm *Bắt đầu*. Ai vào lúc nhóm đang chơi thì
   chờ ván sau. Host rời phòng → mọi người được báo và về sảnh.
-- **Một ván**: đếm ngược 3 giây, 3 phút, 3 công thức: *Slide nhanh* (Brief → Laptop, 30k), *Báo cáo số liệu*
-  (Data → Laptop → Máy in, 60k), *Deck đề xuất* (Slide + Bản in ghép ở bàn → chị Tuyết ký, 140k; 30% bị
-  "vài ý nhỏ" một lần, phải về laptop sửa). Nộp sớm có tip tới +50%, trễ −20k.
+- **Một ván**: đếm ngược 3 giây, 3 phút, 7 loại việc:
+
+  | Việc | Cách làm | Tiền |
+  | --- | --- | --- |
+  | 🍵 Trà cho khách | Ấm trà (Pantry) → quầy | 15k |
+  | 🖼️ Slide nhanh | Brief → Laptop | 30k |
+  | 📗 File Excel đối chiếu | Data → Laptop | 35k |
+  | 🗒️ Biên bản họp | Brief → Bàn họp nhanh (Phòng họp, đứng làm 4 giây) | 50k |
+  | 📄 Báo cáo số liệu | Data → Laptop → Máy in | 60k |
+  | 🖋️ Hợp đồng ký tên | Kệ hồ sơ (Phòng in) → Máy in → chị Tuyết ký | 90k |
+  | ✅ Deck đề xuất | Slide + Bản in ghép ở bàn → chị Tuyết ký (30% bị "vài ý nhỏ" một lần) | 140k |
+
+  Biên bản họp từ 0:15, deck từ 0:25, hợp đồng từ 0:35. Nộp sớm có tip tới +50%, trễ −20k.
+  Luật từng trạm nằm trong `process` của màn (`levels.js`), nên công ty khác có thể có trạm và việc riêng.
 - **Bản đồ = văn phòng T&M nhiều phòng** (18 × 12): Khu làm việc (kệ Brief/Data, 2 laptop, Bảo và Trang ngồi
-  gõ máy) · Phòng in · Phòng Chủ tịch vách kính (bàn chị Tuyết) · hành lang (4 bàn ghép, thùng rác, bảng Scrum
-  của anh Đạt chắn giữa lối) · Pantry (cà phê, tủ lạnh, Mèo KPI) · Phòng họp · **Sảnh khách** (lễ tân chị Gấm,
+  gõ máy) · Phòng in · Phòng Chủ tịch vách kính (bàn chị Tuyết) · Phòng in có thêm Kệ hồ sơ · hành lang (4 bàn ghép, thùng rác, bảng Scrum
+  của anh Đạt chắn giữa lối) · Pantry (cà phê, ấm trà, tủ lạnh, Mèo KPI) · Phòng họp (bàn họp nhanh) · **Sảnh khách** (lễ tân chị Gấm,
   sofa). Mỗi phòng một màu sàn, biển tên treo trên cửa.
 - **Khách thật**: mỗi đơn là một người T&M (chị Hân, Khang, chị Linh, chị Hạ, Mai, An, chị Quỳnh, Long) đi từ cửa
   sảnh vào, ngồi chờ ở một trong 4 chỗ, trên đầu có icon món cần và thanh kiên nhẫn; gần hết giờ thì giục

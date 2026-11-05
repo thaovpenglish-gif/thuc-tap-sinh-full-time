@@ -126,6 +126,15 @@ function stationMesh(s, L) {
       break;
     }
     case 'counter': counter('#ffffff', s.z === 0 ? '#fff1b8' : '#f6efe3'); icon = '🗂️'; bg = '#fff1b8'; break;
+    case 'huddle': {
+      // a small round meeting table with a notepad and two stools
+      add(cyl(0.55, 0.5, TOP - 0.06, '#b8f0d8'), 0, (TOP - 0.06) / 2, 0);
+      add(cyl(0.6, 0.6, 0.06, '#ffffff', 0.02), 0, TOP - 0.03, 0);
+      add(box(0.34, 0.03, 0.42, '#fff8ef', 0.01), -0.12, TOP + 0.01, 0).rotation.y = 0.3;
+      [[-0.85, 0.2], [0.85, -0.2]].forEach(([x, z]) => add(cyl(0.2, 0.2, 0.42, '#a8dcc0', 0.015), x, 0.21, z));
+      icon = '🗣️'; bg = '#b8f0d8';
+      break;
+    }
     case 'deliver': {
       add(box(STATION.w + 0.7, TOP - 0.08, STATION.d, '#9be7c4'), 0, (TOP - 0.08) / 2, 0);
       add(box(STATION.w + 0.76, 0.08, STATION.d + 0.06, '#ffffff', 0.02), 0, TOP - 0.04, 0);

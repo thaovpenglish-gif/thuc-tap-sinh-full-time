@@ -163,3 +163,40 @@ test('serving and expiring tell the lobby which client leaves', () => {
   assert.ok(act(g, 'P0').some((e) => e.type === 'served' && e.order === 5));
   assert.ok(step(g, 0.1).some((e) => e.type === 'gone' && e.order === 6));
 });
+
+test('new T&M tasks: tea, excel, meeting minutes, signed contract', () => {
+  const g = game();
+  g.orders = [
+    { id: 1, recipe: 'tea', t: 40, total: 40, client: 0, spot: 0 },
+    { id: 2, recipe: 'minutes', t: 70, total: 70, client: 1, spot: 1 },
+    { id: 3, recipe: 'contract', t: 90, total: 90, client: 2, spot: 2 },
+  ];
+  // tea: straight from the pantry
+  goTo(g, 'P0', 'tea'); act(g, 'P0');
+  assert.equal(g.items[g.players.P0.held].type, 'tea');
+  goTo(g, 'P0', 'deliver'); act(g, 'P0');
+  assert.equal(g.done, 1);
+  // minutes: brief worked at the huddle table
+  goTo(g, 'P0', 'brief'); act(g, 'P0');
+  goTo(g, 'P0', 'huddle'); act(g, 'P0'); act(g, 'P0');
+  assert.equal(g.players.P0.working, 'huddle');
+  run(g, 4.2);
+  assert.equal(g.items[g.stations.huddle.item].type, 'minutes');
+  act(g, 'P0'); goTo(g, 'P0', 'deliver'); act(g, 'P0');
+  assert.equal(g.done, 2);
+  // contract: shelf → printer → boss
+  goTo(g, 'P0', 'contracts'); act(g, 'P0');
+  goTo(g, 'P0', 'printer'); act(g, 'P0'); run(g, 4.2);
+  assert.equal(g.items[g.stations.printer.item].type, 'contract_print');
+  act(g, 'P0'); goTo(g, 'P0', 'boss'); act(g, 'P0'); run(g, 2.7);
+  assert.equal(g.items[g.stations.boss.item].type, 'contract_signed', 'contracts never get "vài ý nhỏ"');
+  act(g, 'P0'); goTo(g, 'P0', 'deliver'); act(g, 'P0');
+  assert.equal(g.done, 3);
+});
+
+test('a signed contract left in the printer too long is ruined too', () => {
+  const g = game();
+  g.items.k = { id: 'k', type: 'contract' }; g.stations.printer.item = 'k';
+  run(g, 4.1); assert.equal(g.items.k.type, 'contract_print');
+  run(g, 8.1); assert.equal(g.items.k.type, 'ruined');
+});

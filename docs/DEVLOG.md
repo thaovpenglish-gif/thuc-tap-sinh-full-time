@@ -21,6 +21,10 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
   (work area, print room, glass chairperson's office, corridor with the Scrum board, pantry, meeting room, client
   lobby with reception) and every order is a T&M person who walks into the lobby, waits with a bubble + patience bar,
   and leaves happy or angry. Orders carry `client` and `spot`; engine emits `served` / `gone`.
+- Deployed to `main` (behind `?mp=1`) and tested over real Supabase on the live site.
+- More tasks (asked by the Game Owner): tea (pantry), Excel reconciliation, meeting minutes (new huddle table in the
+  meeting room), signed contract (contract shelf → printer → boss). Station rules moved from the engine into a
+  per-level `process` table (`DEFAULT_PROCESS` as fallback) so each company can define its own stations.
 
 ## 2026-11-05 — QC round 1 and publish
 

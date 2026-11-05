@@ -68,7 +68,7 @@ export const LEVELS = {
       { kind: 'desk', x: -7.6, z: -2.55, npc: 'bao' }, { kind: 'desk', x: -5.9, z: -2.55, npc: 'trang' },
       { kind: 'plant', x: -1.6, z: -1.8 }, { kind: 'window', x: -6, z: -6 }, { kind: 'window', x: -3, z: -6 },
       // print room
-      { kind: 'boxes', x: 2.3, z: -2.2 }, { kind: 'boxes', x: -0.4, z: -2.0 },
+      { kind: 'boxes', x: 2.5, z: -1.75 }, { kind: 'boxes', x: -0.4, z: -2.0 },
       // boss room
       { kind: 'plant', x: 8.3, z: -5.3 }, { kind: 'shelf', x: 8.3, z: -3.2 }, { kind: 'window', x: 6, z: -6 },
       // corridor
@@ -97,6 +97,9 @@ export const LEVELS = {
       { id: 'c4', kind: 'counter', label: 'Bàn ghép', x: 0, z: 0.5 },
       { id: 'trash', kind: 'trash', label: 'Thùng rác', x: -8.3, z: 0.2 },
       { id: 'coffee', kind: 'coffee', label: 'Cà phê', x: -6.6, z: 5.3 },
+      { id: 'tea', kind: 'source', gives: 'tea', label: 'Ấm trà', x: -8.2, z: 3.4 },
+      { id: 'contracts', kind: 'source', gives: 'contract', label: 'Kệ hồ sơ', x: 1.6, z: -3.4 },
+      { id: 'huddle', kind: 'huddle', label: 'Bàn họp nhanh', x: 1.5, z: 3.5 },
       { id: 'deliver', kind: 'deliver', label: 'Quầy lễ tân', x: 6.2, z: 2.2, faces: 'up' },
     ],
     boss: TM.tuyet,
@@ -118,15 +121,35 @@ export const LEVELS = {
       warnText: 'Anh Đạt: "Cả nhà ơi 5 giây nữa stand-up nha!" Tránh xa bảng Scrum giữa hành lang!',
       line: 'Anh Đạt: "15 phút thôi."',
     },
+    // what each station kind does here (see DEFAULT_PROCESS in engine.js)
+    process: {
+      work: {
+        laptop: { data: { to: 'excel', time: 3.5 }, brief: { to: 'slide', time: 3 }, deck_notes: { to: 'deck', time: 2 } },
+        huddle: { brief: { to: 'minutes', time: 4 } },
+      },
+      auto: {
+        printer: { excel: { to: 'print', time: 5, overdue: 8 }, contract: { to: 'contract_print', time: 4, overdue: 8 } },
+        boss: { deck: { to: 'deck_signed', time: 3, notes: 'deck_notes' }, contract_print: { to: 'contract_signed', time: 2.5 } },
+      },
+      combos: [[['slide', 'print'], 'deck']],
+    },
     recipes: {
+      tea: { title: 'Trà cho khách', item: 'tea', time: 40, reward: 15, steps: ['🍵 Ấm trà (Pantry)'] },
+      excel: { title: 'File Excel đối chiếu', item: 'excel', time: 60, reward: 35, steps: ['📊 Data', '💻 Laptop'] },
+      minutes: { title: 'Biên bản họp', item: 'minutes', time: 70, reward: 50, steps: ['📝 Brief', '🗣️ Bàn họp nhanh'] },
+      contract: { title: 'Hợp đồng ký tên', item: 'contract_signed', time: 90, reward: 90, steps: ['📃 Kệ hồ sơ', '🖨️ In', '✍️ Chị Tuyết ký'] },
       slide: { title: 'Slide nhanh', item: 'slide', time: 55, reward: 30, steps: ['📝 Brief', '💻 Laptop'] },
       report: { title: 'Báo cáo số liệu', item: 'print', time: 75, reward: 60, steps: ['📊 Data', '💻 Laptop', '🖨️ In'] },
       deck: { title: 'Deck đề xuất', item: 'deck_signed', time: 120, reward: 140, steps: ['🖼️ Slide', '+ 📄 Bản in', '✍️ Chị Tuyết ký'] },
     },
     orderPool: [
-      { recipe: 'slide', w: 3 },
-      { recipe: 'report', w: 3 },
-      { recipe: 'deck', w: 3, after: 25 },
+      { recipe: 'tea', w: 1.5 },
+      { recipe: 'slide', w: 2.5 },
+      { recipe: 'excel', w: 2 },
+      { recipe: 'report', w: 2.5 },
+      { recipe: 'minutes', w: 2, after: 15 },
+      { recipe: 'contract', w: 2, after: 35 },
+      { recipe: 'deck', w: 2.5, after: 25 },
     ],
     firstOrders: [2, 9],
     spawnGap: [26, 20, 16, 14],      // seconds between new orders for 1, 2, 3, 4 players
