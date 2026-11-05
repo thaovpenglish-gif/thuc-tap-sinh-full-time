@@ -34,6 +34,7 @@ export function createDialogue(hooks) {
     $('#dlgRole').textContent = info.role;
     $('#choices').innerHTML = '';
     hooks.onSpeaker && hooks.onSpeaker(spk);
+    hooks.onLine && hooks.onLine(spk, text);
     return type(text);
   }
 
@@ -93,7 +94,7 @@ export function createDialogue(hooks) {
         const opts = n.o.map((o, i) => ({ ...o, i })).filter((o) => !o.when || o.when(st));
         if (!opts.length) continue;
         const p = await choose(opts);
-        hooks.onChoice && hooks.onChoice(n.c, p.i);
+        hooks.onChoice && hooks.onChoice(n.c, p.i, p.t);
         hooks.applyFx(p.fx);
         if (p.then) await run(p.then);
       } else if (n.if) {
