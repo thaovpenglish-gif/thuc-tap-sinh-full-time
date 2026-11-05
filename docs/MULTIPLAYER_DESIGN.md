@@ -148,6 +148,9 @@ Menu chính → thẻ **Overdeadline & Overburnout** (bản thử).
 - **Sao**: 200k / 450k / 700k (chơi một mình ×0,6). **[cần chỉnh sau khi chơi thử thật]**
 - **Điều khiển**: `WASD`/mũi tên + `Space`/`E`; điện thoại: cần điều khiển + nút tròn LÀM. Gợi ý hành động hiện
   ở giữa dưới màn hình, trạm đang đứng gần có vòng vàng.
+- **📖 Công thức** (nút trên HUD, phím `H`, nút trong phòng chờ): cách làm từng việc từng bước + mẹo. Game vẫn chạy
+  khi mở (online không tạm dừng được). Ticket ghi đủ chuỗi, ví dụ Deck: "🖼️ Slide (📝→💻) · 📄 Bản in (📊→💻→🖨️) ·
+  🗂️ ghép · ✍️ ký". Dữ liệu: `steps` (ticket), `how` (sổ), `tips` trong `levels.js`.
 
 ### File
 

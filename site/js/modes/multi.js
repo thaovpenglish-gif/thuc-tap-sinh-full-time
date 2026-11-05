@@ -36,7 +36,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
   }
   const root = document.createElement('div');
   root.id = 'mpRoot';
-  root.innerHTML = '<div id="mpHud" hidden></div><div id="mpScreen" class="mp-screen" hidden></div>';
+  root.innerHTML = '<div id="mpHud" hidden></div><div id="mpScreen" class="mp-screen" hidden></div><div id="mpBook" class="mp-book" hidden></div>';
   document.body.appendChild(root);
   const screen = $('#mpScreen');
   const hud = $('#mpHud');
@@ -122,7 +122,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       const m = ms[i];
       slots.push(m ? `<div class="mp-member"><i style="background:${m.color || PLAYER_COLORS[i]}"></i>${esc(m.name)}${m.id === myId ? ' (bạn)' : ''}<small>${m.host ? 'host' : ''}</small></div>` : '<div class="mp-member empty">Chỗ trống… mời thêm bạn</div>');
     }
-    const recipes = Object.values(L.recipes).map((r) => `<div><b>${esc(r.title)}</b>${r.steps.map(esc).join(' → ')} <span class="muted">· ${r.reward}k</span></div>`).join('');
+    const recipes = Object.values(L.recipes).map((r) => `<div><b>${esc(r.title)}</b>${r.steps.map(esc).join(r.join || ' → ')} <span class="muted">· ${r.reward}k</span></div>`).join('');
     show(`<div class="mp-card">
       <div class="kicker">SOS ADVISORY · PHÒNG CHỜ</div>
       <h2>Mã phòng</h2>
@@ -131,11 +131,13 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       <div class="mp-members">${slots.join('')}</div>
       <div class="mp-client"><span class="ico">${L.emoji}</span><div><b>Khách hàng: ${esc(L.client)} · ${esc(L.title)}</b><span class="muted">${esc(L.blurb)}</span></div></div>
       <div class="mp-recipes">${recipes}</div>
+      <div class="mp-row"><button class="btn ghost" id="mpBookRoom">📖 Xem cách làm từng việc</button></div>
       ${note ? `<div class="mp-err">${esc(note)}</div>` : ''}
       <div class="mp-row">${isHost ? '<button class="btn primary" id="mpStart">Bắt đầu ▶</button>' : '<span class="muted" style="font-weight:800">⏳ Chờ host bấm bắt đầu…</span>'}</div>
       <div class="mp-row"><button class="mp-link" id="mpLeave">← Rời phòng</button></div>
     </div>`);
     $('#mpInvite').onclick = invite;
+    $('#mpBookRoom').onclick = () => toggleBook(true);
     $('#mpLeave').onclick = () => leaveAll(false);
     if (isHost) $('#mpStart').onclick = () => hostStart();
   }
@@ -394,11 +396,32 @@ export function startMulti({ scene, rig, input, onExit, params }) {
   const offKey = input.onKey((e, { inField }) => {
     if (inField) return;
     if (e.code === 'Space' || e.code === 'KeyE' || e.code === 'Enter') { if (mode === 'play') { e.preventDefault(); useAction(); } }
+    if (e.code === 'KeyH') { toggleBook(); return; }
+    if (e.code === 'Escape' && !$('#mpBook').hidden) { toggleBook(false); return; }
     if (e.code === 'Escape' && mode === 'play') confirmLeave();
   });
 
   function confirmLeave() {
     if (confirm(code === 'SOLO' ? 'Bỏ ván tập này?' : 'Rời phòng? Đồng đội sẽ phải gánh phần của bạn 🥲')) leaveAll(false);
+  }
+
+  // ---------- 📖 recipe book (the game keeps running: it is online) ----------
+  function bookHtml() {
+    const items = Object.values(L.recipes).map((r) => `<div class="mp-rec">
+      <div class="mp-rec-h"><b>${ITEMS[r.item].icon} ${esc(r.title)}</b><span>${r.reward}k</span></div>
+      <ol>${(r.how || r.steps).map((x) => `<li>${esc(x)}</li>`).join('')}</ol></div>`).join('');
+    const tips = (L.tips || []).map((t) => `<li>${esc(t)}</li>`).join('');
+    return `<div class="mp-book-head"><b>📖 Công thức · ${esc(L.client)}</b><button class="icon-btn" id="mpBookClose" title="Đóng (H)">✕</button></div>
+      <p class="muted mp-book-sub">Game vẫn chạy khi mở sổ này. Bấm ${isTouch ? '✕' : '<kbd>H</kbd> hoặc ✕'} để đóng.</p>
+      ${items}
+      ${tips ? `<div class="mp-rec tips"><div class="mp-rec-h"><b>💡 Mẹo</b></div><ul>${tips}</ul></div>` : ''}`;
+  }
+  function toggleBook(force) {
+    const el = $('#mpBook');
+    const open = force === undefined ? el.hidden : force;
+    if (open) { el.innerHTML = bookHtml(); $('#mpBookClose').onclick = () => toggleBook(false); el.scrollTop = 0; }
+    el.hidden = !open;
+    const b = $('#mpBookBtn'); if (b) b.classList.toggle('on', open);
   }
 
   // ---------- HUD ----------
@@ -409,11 +432,12 @@ export function startMulti({ scene, rig, input, onExit, params }) {
         <div class="mp-orders" id="mpOrders"></div>
         <div style="width:170px;flex:none" class="mp-spacer"></div>
       </div>
-      <div class="mp-side"><button class="icon-btn" id="mpExit" title="Rời phòng (Esc)">🚪</button><div class="mp-team" id="mpTeam"></div></div>
+      <div class="mp-side"><div class="mp-btns"><button class="icon-btn mp-book-btn" id="mpBookBtn" title="Công thức (H)">📖</button><button class="icon-btn" id="mpExit" title="Rời phòng (Esc)">🚪</button></div><div class="mp-team" id="mpTeam"></div></div>
       <div class="mp-hint" id="mpHint" hidden></div>
       <div class="mp-banner" id="mpBanner" hidden></div>
       ${isTouch ? '<button id="mpAct">LÀM<br>✋</button>' : ''}`;
     $('#mpExit').onclick = confirmLeave;
+    $('#mpBookBtn').onclick = () => toggleBook();
     const ab = $('#mpAct');
     if (ab) ab.addEventListener('touchstart', (e) => { e.preventDefault(); useAction(); }, { passive: false });
     lastOrdersKey = '';
@@ -428,7 +452,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     const banner = $('#mpBanner');
     if (countdown > 0) {
       banner.hidden = false; banner.className = 'mp-banner big';
-      banner.innerHTML = countdown > 0.5 ? String(Math.ceil(countdown - 0.5)) : 'GO!';
+      banner.innerHTML = (countdown > 0.5 ? String(Math.ceil(countdown - 0.5)) : 'GO!') + `<small>Không biết làm sao? Bấm 📖${isTouch ? '' : ' (H)'} xem công thức</small>`;
     } else if (p && p.meeting > 0) {
       banner.hidden = false; banner.className = 'mp-banner';
       banner.innerHTML = `📋 Đang stand-up… ${Math.ceil(p.meeting)}s<small>Anh Đạt: "15 phút thôi."</small>`;
@@ -454,7 +478,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       lastOrdersKey = key;
       box.innerHTML = game.orders.map((o) => {
         const R = L.recipes[o.recipe];
-        return `<div class="mp-ticket" data-o="${o.id}"><small class="who">${esc(clientName(game, o))} cần</small><b>${ITEMS[R.item].icon} ${esc(R.title)}</b><div class="st">${R.steps.map(esc).join(' → ')}</div><div class="tb"><i></i></div></div>`;
+        return `<div class="mp-ticket" data-o="${o.id}"><small class="who">${esc(clientName(game, o))} cần</small><b>${ITEMS[R.item].icon} ${esc(R.title)}</b><div class="st">${R.steps.map(esc).join(R.join || ' → ')}</div><div class="tb"><i></i></div></div>`;
       }).join('') || '<div class="mp-ticket"><b>☕ Chưa có việc</b><div class="st">Tranh thủ uống cà phê…</div></div>';
     }
     for (const o of game.orders) {
