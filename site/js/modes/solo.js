@@ -598,7 +598,9 @@ export function startSolo({ scene, camera, input, onExit }) {
     const seed = hash(R.id) + R.day * 31 + n * 7 + (R.deskSeen || []).length;
     const game = D.pickGame(games, R, seed);
     if (!game) return;
-    const mini = D.sampleMini(game, seed + 1);
+    const scenario = D.pickScenario(game, R.deskSc, seed + 5); // doc/chat: which document or conversation, no repeats
+    const mini = D.sampleMini({ ...game, scenario }, seed + 1);
+    if (game.type === 'doc' || game.type === 'chat') R.deskSc = [...(R.deskSc || []), `${game.id}#${scenario}`].slice(-80);
     const bar = Math.max(mini.pass ?? 0.5, R.tier ? tier(R.tier).qa : 0);
     const barNote = `Cần ≥ ${Math.round(bar * 100)}% để tính là làm tốt${R.tier && tier(R.tier).qa > (mini.pass ?? 0.5) ? ` (mức ${TIERS[R.tier].label} duyệt khắt khe)` : ''}.`;
     const cfg = { ...mini, pass: bar, barNote, time: Math.round((mini.time || 30) * mood().mini * (hungry() ? 0.75 : 1)) };

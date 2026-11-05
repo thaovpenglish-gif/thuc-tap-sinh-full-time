@@ -54,6 +54,7 @@ npm test
 node tests/e2e/solo-tm-playthrough.cjs t5 last tasks
 node tests/e2e/solo-career.cjs tm t3 first 3 routine desk   # có ngồi bàn làm việc
 node tests/e2e/action-games.cjs                             # bot chơi thử mọi mini-game tay chân (xé gà, hàn túi…)
+node tests/e2e/work-sims.cjs                                # bot chơi thử mọi game đọc tài liệu / nhắn tin, mọi tình huống
 node tests/e2e/legacy-playthrough.cjs first
 npm run test:mp   # Multiplayer: 2 người trong 1 trình duyệt (cần server ở cổng 8765)
 ```

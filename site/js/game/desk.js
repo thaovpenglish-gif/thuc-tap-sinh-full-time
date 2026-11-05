@@ -4,6 +4,8 @@
 // engine-level path to promotion ("làm chăm chỉ"). Drama cannot be dodged: group-chat drama bursts in while you
 // work ("chatter"), less often with headphones on, but a missed ping hurts more.
 // Content per company lives in companies/<id>/desk.js ({ games, chatter }); see docs/COMPANY_CONTRACT.md §12.
+// Games are hands-on (type 'action', ui/action.js) or work simulations (type 'doc' / 'chat', ui/sims.js); the old
+// pick/quiz/order/sort card games remain only as the generic fallback below and inside story scenes.
 import { rng } from './tasks.js';
 
 export const DESK_MINUTES = 30;          // game minutes one session takes (side-task deadlines keep running)
@@ -29,25 +31,26 @@ export const canWork = (run) => sessionsToday(run) < DESK_PER_DAY;
  * Pick the next game: never one already played in this run until the pool runs out, then the least recent.
  * Games may carry `when(run)` and `official: true`. Returns a game object or null.
  */
-export const ACTION_SHARE = 0.65;        // hands-on games (type 'action') come up this often when the company has any
 export function pickGame(games, run, seed) {
   const all = (games || []).filter((g) => { try { return (!g.when || g.when(run)) && (!g.official || run.status === 'official'); } catch { return false; } });
   if (!all.length) return null;
   const seen = run.deskSeen || [];
-  // the hands-on games are the fun ones: they repeat freely (like a cooking game); the rest rotate without repeats
-  const acts = all.filter((g) => g.type === 'action'), rest = all.filter((g) => g.type !== 'action');
-  const r0 = rng(seed + 7)();
-  if (acts.length && (r0 < ACTION_SHARE || !rest.length)) {
-    const last = seen[seen.length - 1];
-    const pool = acts.length > 1 ? acts.filter((g) => g.id !== last) : acts;
-    return [...pool].sort((a, b) => seen.lastIndexOf(a.id) - seen.lastIndexOf(b.id))[0];
-  }
-  const ok = rest;
-  const fresh = ok.filter((g) => !seen.includes(g.id));
-  const r = rng(seed);
-  if (fresh.length) return fresh[Math.floor(r() * fresh.length)];
-  // all seen: the one seen longest ago
-  return [...ok].sort((a, b) => seen.lastIndexOf(a.id) - seen.lastIndexOf(b.id))[0];
+  // rotate: never the game just played; never-played games first (random), then the one played longest ago
+  const last = seen[seen.length - 1];
+  const pool = all.length > 1 ? all.filter((g) => g.id !== last) : all;
+  const fresh = pool.filter((g) => !seen.includes(g.id));
+  if (fresh.length) return fresh[Math.floor(rng(seed)() * fresh.length)];
+  return [...pool].sort((a, b) => seen.lastIndexOf(a.id) - seen.lastIndexOf(b.id))[0];
+}
+
+/** Which scenario of a doc/chat bank to play: avoid the ones in `recent` (scenario keys "gameId#index"). */
+export function pickScenario(game, recent, seed) {
+  const list = game.type === 'doc' ? game.docs : game.convos;
+  if (!Array.isArray(list) || !list.length) return 0;
+  const idx = list.map((_, i) => i);
+  const fresh = idx.filter((i) => !(recent || []).includes(`${game.id}#${i}`));
+  const src = fresh.length ? fresh : idx;
+  return src[Math.floor(rng(seed)() * src.length)];
 }
 
 /** Pick a chatter (group-chat drama) the same way, avoiding repeats. */
@@ -78,6 +81,14 @@ export function sampleMini(game, seed) {
   const { id, when, official, show, ask, good, bad, ...m } = game; // good/bad = reaction scenes, played by solo.js
   void id; void when; void official; void good; void bad;
   if (m.type === 'action') return m;
+  // doc / chat banks: one scenario per play (`scenario` index chosen by pickScenario, or by the seed)
+  if (m.type === 'doc' || m.type === 'chat') {
+    const key = m.type === 'doc' ? 'docs' : 'convos';
+    const list = m[key] || [];
+    const k = Number.isInteger(game.scenario) ? game.scenario : Math.floor(r() * list.length);
+    const { [key]: _bank, scenario, ...rest } = m; void _bank; void scenario;
+    return { ...rest, ...(list[k] || list[0] || {}) };
+  }
   if (m.type === 'pick' && show && m.items.length > show) {
     const need = m.pick || 1;
     const right = shuffleWith(m.items.filter((x) => x.correct), r);

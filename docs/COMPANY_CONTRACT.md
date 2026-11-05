@@ -205,7 +205,7 @@ Mini-game examples: `pick` `{ type:'pick', title, icon, prompt, pick: 3, time: 3
 ## 12. Desk work ("Ngồi vào bàn") — `desk.js`
 
 Between story beats the player can sit at their own desk (`desk` object) and do one short mini-game of real work
-for this company: ~30 game minutes, −6 energy, side tasks keep ticking. A good session = +1 Uy tín, a small
+for this company (the 5 games rotate, never the same twice in a row): ~30 game minutes, −6 energy, side tasks keep ticking. A good session = +1 Uy tín, a small
 performance bonus on the payslip, points in the Friday review. 3 sessions a day. Enough good sessions open a second
 road to promotion (engine: `game/desk.js` `workPromoReady`). **Drama cannot be dodged**: a group-chat burst
 (`chatter`) lands in the middle of the work (45%; 15% with headphones on, but then the missed ping costs Uy tín
@@ -213,12 +213,8 @@ and a relation point), and the player reacts with one choice.
 
 ```js
 export const DESK = {
-  games: [   // ≥ 8 banks; ≥ 1 of each type pick/quiz/order/sort; the REAL day-to-day work of this industry
-    { id: 'co_unique', type: 'pick', title, icon, prompt, pick: 3, show: 7, time: 40, pass: 0.66, items: [...] },
-    { id: '…', type: 'quiz', ask: 3, questions: [...] },     // bank of 4–6 questions, 3 asked per play
-    { id: '…', type: 'sort', show: 7, bins: [...], items: [...] },  // bank of 8–12 cards, 7 shown
-    { id: '…', type: 'order', items: [...] },                 // 4–6 steps, shown whole (no `show`)
-    // ≥ 2 HANDS-ON games (type 'action', ui/action.js) — the fun ones, picked ~65% of the time, they may repeat:
+  games: [   // exactly 5: 2 HANDS-ON (type 'action', ui/action.js) + 3 WORK SIMS (type 'doc' / 'chat', ui/sims.js)
+    // hands-on: physical work of the trade, skill + timing
     { id: '…', type: 'action', game: 'shred', title, icon, prompt, hint, time: 45, pass: 0.6, pieces: 2, strips: 5, item: 'Ức gà luộc' },
     { id: '…', type: 'action', game: 'hold', skin: 'seal' | 'balloon', rounds: 5, label, color },   // hold → release in the green zone
     { id: '…', type: 'action', game: 'whack', count: 16, slotText, bg, slot,                     // tap targets, never the avoid ones
@@ -227,7 +223,17 @@ export const DESK = {
       target: { emoji, labels }, avoid: { labels } },   // stamp only the valid sheets (same icon: the label must be read)
     { id: '…', type: 'action', game: 'conveyor', mode: 'beat', count: 14, target: { emoji } },  // rhythm: tap on the line
     { id: '…', type: 'action', game: 'align', blocks: [3–5 labels], twist: true, twistLine },   // drag into outlines
-    // optional: when(run), official: true (only after promotion), good: [...scene], bad: [...scene]
+    // work sims: the trade's real documents and conversations — need REAL professional knowledge to win
+    { id: '…', type: 'doc', title, icon, prompt, time: 80, pass: 0.6, docs: [          // 2–3 documents, one per play
+      { kind: 'cv' | 'invoice' | 'contract' | 'code' | 'post' | 'paper', head: 'Document title', meta: 'the brief / JD / rule to check against',
+        lines: [ { h: 'SECTION' }, 'a normal line', { t: 'a problem line', bad: 'WHY it is a problem (the lesson)' }, … ],  // 6–18 lines, 2–4 problems
+        verdict: { q: 'Bước tiếp theo?', options: ['…', '…', '…'], correct: 0, why: 'one-line explanation' } },
+    ] },
+    { id: '…', type: 'chat', title, icon, prompt, time: 85, pass: 0.6, convos: [       // 2–3 conversations, one per play
+      { who: { name, emoji, role, app: 'Zalo' | 'Teams' | 'LinkedIn' | … }, start: ['their first message'],
+        turns: [ { them?: 'their next message', options: [ { t: 'reply', s: 2 | 1 | 0, react: 'their reaction' }, … ] }, … ],  // 3–5 turns, 3 options
+        end: { good: 'how it ends well', bad: 'how it ends badly' } },
+    ] },
   ],
   chatter: [ // ≥ 6 group-chat dramas, funny, in character, 3–5 messages each
     { id: 'co_ch_x', chat: [['castId', 'tin nhắn'], ['castId', 'tin nhắn', true /* DM */]],
@@ -239,10 +245,15 @@ export const DESK = {
 };
 ```
 
+- Work sims are where the trade knowledge lives (reference: `site/js/companies/hr/desk.js`): a document full of
+  realistic, specific details (names, numbers, dates) where 2–4 lines are real professional red flags, plus traps that
+  LOOK suspicious but are fine (flagging them costs points); chats where the best reply is what a good professional
+  would actually write. **The best reply must not be the longest**: keep it concise, make wrong replies long and
+  plausible-sounding (the validator warns). Each `bad` reason / verdict `why` teaches one real rule of the trade.
 - Hands-on games should feel like the industry's physical work (khô gà: xé gà, hàn túi; sự kiện: bơm bóng, soát vé…).
   New mechanics go in `ui/action.js` (+ a bot in `tests/e2e/action-games.cjs`). Labels ≤ 32 characters.
-- Games must be fair: one clearly right answer a working person would agree on; jokes go in the wrong options and
-  `sub` hints. `pick` banks may hold more correct items than `pick` (any `pick` of them = 100%).
-- `show` ≤ 9, `pick` ≤ `show`, `ask` ≤ questions. Lines ≤ 200 characters. No `{ten}` inside mini-games.
+- Games must be fair: one clearly right answer a working person would agree on; jokes go in the wrong options.
+  Doc lines ≤ 140 characters, chat replies ≤ 140, messages ≤ 200. No `{ten}` inside mini-games.
+- Bots: `node tests/e2e/work-sims.cjs <id>` and `node tests/e2e/action-games.cjs <id>` (server on :8765) must print ok.
 - Chatter choices: small fx (±1–3), one option usually helps a relation, one feeds Drama, one is "tắt thông báo".
   Choice ids unique within the company (they are polled: "x% người chơi chọn giống bạn").

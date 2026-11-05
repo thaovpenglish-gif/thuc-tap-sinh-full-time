@@ -63,9 +63,11 @@ Main menu ──Solo──► Hồ sơ sự nghiệp (career runs + cloud save) 
 - **After-work life events** (55% of evenings, never the same twice in a row): CSGT fines (amounts from
   NĐ 168/2024), spoiled food, rent increase, mom calls, cancelled rides, floods, side gigs… some with choices.
 - **Desk work** (`game/desk.js`, content `companies/<id>/desk.js`, contract §12): press E on your own desk between
-  beats → one mini-game of the company's real work: hands-on canvas games (`ui/action.js`: xé khô gà, hàn túi, bơm
-  bóng, đóng dấu băng chuyền, cắt clip theo nhịp, đập bug, căn lề slide…) ~65% of the time, otherwise the
-  pick/quiz/order/sort banks (no repeats). 30 game
+  beats → one of the company's 5 desk games (rotating, never twice in a row): 2 hands-on canvas games
+  (`ui/action.js`: xé khô gà, hàn túi, bơm bóng, đóng dấu băng chuyền, cắt clip theo nhịp, đập bug, căn lề slide…)
+  and 3 work sims that need real trade knowledge (`ui/sims.js`: `doc` = read a CV / invoice / contract / code diff /
+  post, flag the problem lines, make the call, then see WHY; `chat` = message a candidate, client or vendor, the
+  rapport meter decides the ending). Each sim draws one of 2–3 scenarios, recent ones avoided. 30 game
   minutes, −6 energy (side tasks keep ticking), 3 rewarded sessions a day. Good session: +1 Uy tín, performance bonus
   (intern 20–30k, official 80–120k) paid on the payslip, +2 review points (cap +12/week). Drama can't be dodged: a
   group-chat burst lands mid-game (45%) and you react with one choice; 🎧 headphones cut that to 15% and cool Drama,
@@ -112,7 +114,7 @@ site/js/game/difficulty.js   salary tiers, 10% withholding rule (pure)
 site/js/companies/           registry + one folder per company (content only)
 site/js/maps/office.js       themed office builder (signs, nameplates, palette, props); maps/slots.js = spots (pure)
 site/js/story/dialogue.js    scene language runner (lines, choices, if, fx, chat, extra nodes)
-site/js/ui/                  minigame (pick/quiz/order/sort/action), action (canvas cooking-style games), cloudpanel, phone (Teams + confessions), toast, overlay
+site/js/ui/                  minigame (pick/quiz/order/sort/action/doc/chat), action (canvas cooking-style games), sims (doc + chat work sims), cloudpanel, phone (Teams + confessions), toast, overlay
 site/js/net/                 cloud.js (save RPCs), legacy-net.js (votes, confessions, presence)
 tests/                       unit tests (npm test), validate-companies.mjs, e2e/solo-career.cjs, e2e/legacy-playthrough.cjs
 ```

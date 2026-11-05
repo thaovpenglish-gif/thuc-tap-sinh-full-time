@@ -30,18 +30,21 @@ test('games do not repeat until the pool runs out, then the least recent comes b
   assert.equal(D.pickGame(games, { ...r, deskSeen: seen }, 99).id, seen[0]);
 });
 
-test('hands-on (action) games come up most of the time and never twice in a row', () => {
-  const games = [{ id: 'q1', type: 'quiz' }, { id: 'q2', type: 'pick' }, { id: 'q3', type: 'sort' }, { id: 'a1', type: 'action' }, { id: 'a2', type: 'action' }];
-  let act = 0, last = null, repeats = 0;
+test('the desk games rotate: each one comes up, never the same twice in a row', () => {
+  const games = ['a1', 'a2', 'd1', 'c1', 'c2'].map((id) => ({ id, type: id[0] === 'a' ? 'action' : id[0] === 'd' ? 'doc' : 'chat' }));
   const seen = [];
-  for (let s = 0; s < 400; s++) {
-    const g = D.pickGame(games, run({ deskSeen: [...seen] }), s * 13 + 1);
-    if (g.type === 'action') { act++; if (g.id === last) repeats++; }
-    last = g.id; seen.push(g.id);
-  }
-  assert.ok(Math.abs(act / 400 - D.ACTION_SHARE) < 0.08, `action share ${act / 400}`);
-  assert.equal(repeats, 0);
-  assert.equal(D.sampleMini({ id: 'x', type: 'action', game: 'shred', good: [['nar', 'x']] }, 1).good, undefined, 'reaction scenes stay with the bank');
+  for (let s = 0; s < 60; s++) seen.push(D.pickGame(games, run({ deskSeen: [...seen] }), s * 13 + 1).id);
+  for (let i = 1; i < seen.length; i++) assert.notEqual(seen[i], seen[i - 1]);
+  assert.deepEqual(new Set(seen.slice(0, 5)), new Set(games.map((g) => g.id)), 'all five within the first five sessions');
+});
+
+test('doc / chat banks: one scenario per play, recent ones avoided', () => {
+  const doc = { id: 'd', type: 'doc', docs: [{ head: 'A', lines: [] }, { head: 'B', lines: [] }, { head: 'C', lines: [] }], good: [['nar', 'x']] };
+  assert.equal(D.sampleMini({ ...doc, scenario: 1 }, 3).head, 'B');
+  assert.equal(D.sampleMini({ ...doc, scenario: 1 }, 3).docs, undefined, 'the bank is not passed to the UI');
+  for (let s = 0; s < 20; s++) assert.equal(D.pickScenario(doc, ['d#0', 'd#2'], s), 1);
+  const chat = { id: 'c', type: 'chat', convos: [{ who: { name: 'X' } }, { who: { name: 'Y' } }] };
+  assert.ok(['X', 'Y'].includes(D.sampleMini({ ...chat, scenario: D.pickScenario(chat, [], 4) }, 4).who.name));
 });
 
 test('official-only and gated games are skipped for interns', () => {
@@ -111,11 +114,13 @@ test('the generic desk content (fallback) passes the content checks', async () =
   assert.ok(D.GENERIC_DESK.chatter.every((c) => c.chat.length >= 2 && c.scene.some((n) => n.c)));
 });
 
-test('T&M desk content validates', async () => {
-  const { errors, warns, stats } = await validateCompany('tm');
-  assert.deepEqual(errors, []);
-  assert.deepEqual(warns.filter((w) => /desk/.test(w)), []);
-  assert.ok(stats.deskGames >= 8 && stats.deskChatter >= 6);
+test('every company: 5 desk games (2 hands-on + 3 work sims), content validates', async () => {
+  for (const id of ['tm', 'bama', 'tech', 'agency', 'audit', 'event', 'hr']) {
+    const { errors, warns, stats } = await validateCompany(id);
+    assert.deepEqual(errors, [], id);
+    assert.deepEqual(warns.filter((w) => /desk/.test(w)), [], id);
+    assert.ok(stats.deskGames >= 5 && stats.deskChatter >= 6, id);
+  }
 });
 
 test('every company has its own hands-on desk games', async () => {
