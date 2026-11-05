@@ -176,11 +176,40 @@ tests/e2e/mp-local.cjs      2 người trong 1 trình duyệt: tạo phòng, và
 - Đã test trên bản deploy qua Supabase thật (2 trình duyệt riêng: tạo phòng, vào bằng link, bắt đầu, hành động
   của khách tới host). Chưa test trên điện thoại thật qua 4G/wifi.
 
+## 8b. Màn 2: Ba & Má · "Chốt đơn mùa Tết"
+
+Chọn ở sảnh (thẻ "Khách hàng") hoặc host đổi trong phòng chờ; máy của mọi người tự dựng lại văn phòng.
+
+- **Bản đồ** (cùng khung 7 khu với T&M): Xưởng sơ chế (tủ đông gà, tủ đông bò, thùng xoài, 2 bàn ướp, Cậu Tám) ·
+  Phòng sấy (2 máy sấy, bàn để khô) · Phòng Má · Két (vách kính: Má thấy hết, két, ghế đỏ) · hành lang (2 bàn đóng
+  gói, 2 bàn ghép, thùng rác, bàn thờ Thần Tài, Ba đi tuần, **Cầu dao** cuối hành lang) · Bếp cô Tư (khô ăn thử,
+  trà đá, Mèo Khô Gà) · Góc livestream (Út Mi, đèn ring, màn hình LIVE, anh Khoa) · Cửa hàng (kệ khô, xe Chú Bảy,
+  quầy giao hàng).
+- **Khách**: Chị Tâm (nhà phân phối), Cô Sáu Tạp Hóa, Kevin Tuấn, Chị Mai CSKH, Ngân, Anh Dũng, anh shipper,
+  khách "shop ơi".
+
+  | Việc | Cách làm | Tiền |
+  | --- | --- | --- |
+  | 🍢 Gói ăn thử | Khô ăn thử (Bếp) → quầy | 15k |
+  | 🥭 Xoài sấy (xá) | Xoài → Bàn ướp (cắt) → Máy sấy | 40k |
+  | 🐔 Khô gà lá chanh | Gà → Bàn ướp → Máy sấy → Bàn đóng gói | 75k |
+  | 🐄 Khô bò miếng (từ 0:20) | Bò → Bàn ướp → Máy sấy → Bàn đóng gói | 85k |
+  | 🧧 Hộp quà Tết Phú Quý (từ 0:40) | Gói khô bò + Xoài sấy ghép → Má duyệt (30% "dán lại tem" ở Bàn đóng gói) | 160k |
+
+- **Cơ chế riêng**:
+  - 🔴 **Flash sale** (0:50, 1:52, 2:38; báo trước 4 giây): Út Mi hô, 2 khách ùa vào cùng lúc (ăn thử, xoài, khô gà),
+    trả ×1,5 nhưng kiên nhẫn ×0,8. Ticket có 🔥.
+  - ⚡ **Má tắt điện** (1:20, 2:20; báo trước 3 giây): 2 máy sấy ngừng, hiện "⚡ Mất điện"; Cầu dao nhấp nháy
+    "Bật lại đây!". Ai bật thì Má hỏi "Ai bật đó?".
+  - 🔥 Đồ để trong máy sấy quá 9 giây thành **Khô cháy khét**.
+- Kỹ thuật: thêm vào engine `flash`, `powerCut`, trạm `breaker`, `rule.ruin/ruinText`, `rule.fixAt`; mặt bằng
+  dùng chung `TM_WALLS`/`TM_MATS`. Test: `tests/mp-bama.test.mjs`.
+
 ## 9. Lộ trình
 
 1. ✅ **Bản thử** (`?mp=1`): màn T&M, 3 công thức, burnout, phòng online 1–4 người qua mã/link.
 2. Chơi thử thật với 2–4 người → chỉnh tốc độ đơn, thời gian, mốc sao.
-3. Thêm 3 màn (HR, Ba & Má, Agency) + chọn màn + mở màn theo sao.
+3. ✅ Màn Ba & Má + chọn màn. Tiếp: HR, Agency, mở màn theo sao.
 4. 3 màn còn lại, âm thanh/hiệu ứng, chuyển host khi host thoát, bỏ cờ `?mp=1`.
 
 ## 10. Câu hỏi còn mở

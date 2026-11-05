@@ -148,6 +148,39 @@ function stationMesh(s, L) {
       icon = '🗑️'; bg = '#e4e4ea';
       break;
     }
+    case 'prep': {
+      // cutting board, knife and a bowl of marinade
+      counter('#ffffff', '#ffe3c2');
+      add(box(0.62, 0.04, 0.4, '#e8b98a', 0.012), 0, TOP + 0.02, 0.05);
+      add(box(0.3, 0.02, 0.05, '#c4c8d4', 0.006), 0.36, TOP + 0.03, -0.18).rotation.y = 0.4;
+      add(cyl(0.12, 0.09, 0.08, '#ffffff', 0.012), -0.38, TOP + 0.04, -0.2);
+      icon = '🔪'; bg = '#ffe3c2';
+      break;
+    }
+    case 'dryer': {
+      // a tall steel cabinet with trays and an orange heat window
+      add(box(STATION.w, 1.45, STATION.d, '#d9dde6'), 0, 0.725, 0);
+      const win = new THREE.Mesh(new THREE.PlaneGeometry(0.75, 0.7), new THREE.MeshBasicMaterial({ color: '#ffb46b' }));
+      win.position.set(0, 0.85, STATION.d / 2 + 0.01); g.add(win);
+      for (let i = 0; i < 3; i++) add(box(0.7, 0.02, 0.05, '#8d93a6', 0.004), 0, 0.62 + i * 0.2, STATION.d / 2 + 0.02);
+      g.userData.heat = win;
+      icon = '🔥'; bg = '#ffc59e';
+      break;
+    }
+    case 'pack': {
+      counter('#ffffff', '#ffd3b8');
+      add(box(0.36, 0.22, 0.28, '#e8c69a', 0.012), -0.3, TOP + 0.11, -0.15);
+      add(cyl(0.09, 0.09, 0.06, '#c9b6ff', 0.01), 0.35, TOP + 0.03, -0.2);
+      icon = '📦'; bg = '#ffd3b8';
+      break;
+    }
+    case 'breaker': {
+      add(box(0.25, 1.0, 0.7, '#6a6f80'), 0.25, 1.0, 0);
+      add(box(0.06, 0.3, 0.08, '#ff6f8a', 0.008), 0.1, 1.05, 0);
+      add(cyl(0.04, 0.04, 1.0, '#6a6f80', 0.008), 0.25, 0.25, 0);
+      icon = '⚡'; bg = '#ffe08a';
+      break;
+    }
     case 'coffee': {
       counter('#ffffff', '#ffe9a0');
       add(box(0.42, 0.5, 0.36, '#5a4a42', 0.02), -0.15, TOP + 0.25, -0.1);
@@ -157,19 +190,23 @@ function stationMesh(s, L) {
     }
   }
   const lb = label(s.label, icon, bg);
-  lb.position.set(0, s.kind === 'boss' ? 2.35 : 1.75, s.z > 0 ? -0.1 : 0);
+  lb.position.set(0, s.kind === 'boss' ? 2.35 : s.kind === 'dryer' ? 2.1 : 1.75, s.z > 0 ? -0.1 : 0);
   if (s.kind === 'boss') lb.scale.multiplyScalar(1.15);
   g.add(lb);
   const bar = makeBar();
   bar.position.set(0, 1.35, 0.2);
   g.add(bar);
   const slot = new THREE.Group();
-  slot.position.set(0, TOP + (s.kind === 'laptop' ? 0.06 : s.kind === 'printer' ? 0.32 : 0.02), s.kind === 'laptop' ? 0.18 : s.kind === 'printer' ? 0.18 : 0);
+  slot.position.set(0, s.kind === 'dryer' ? 1.47 : TOP + (s.kind === 'laptop' ? 0.06 : s.kind === 'printer' ? 0.32 : 0.02), s.kind === 'laptop' ? 0.18 : s.kind === 'printer' ? 0.18 : 0);
   g.add(slot);
   const ring = new THREE.Mesh(new THREE.RingGeometry(0.62, 0.72, 40), new THREE.MeshBasicMaterial({ color: '#ffd25a', transparent: true, opacity: 0.9, depthWrite: false }));
   ring.rotation.x = -Math.PI / 2; ring.position.set(0, 0.02, s.z < 0 ? 0.7 : s.z > 0 ? -0.7 : 0.7); ring.visible = false;
   g.add(ring);
-  g.userData = { slot, bar, ring, label: lb };
+  // power-cut warning (dryers) / "flip me" sign (breaker), shown by the mode
+  const off = label(s.kind === 'breaker' ? 'Bật lại đây!' : 'Mất điện', '⚡', '#ff8f8f');
+  off.position.set(0, (s.kind === 'dryer' ? 2.1 : 1.75) + 0.45, 0.1); off.visible = false;
+  g.add(off);
+  g.userData = { ...g.userData, slot, bar, ring, label: lb, off };
   return g;
 }
 
@@ -235,7 +272,7 @@ function decorMesh(d, L) {
     }
     case 'tv': {
       add(box(0.12, 0.9, 1.6, '#3a3f55'), 0, 1.2, 0);
-      const sc = new THREE.Mesh(new THREE.PlaneGeometry(1.45, 0.75), new THREE.MeshBasicMaterial({ map: textTexture(['Q4 OKR', 'Synergy ↑ · Burnout ↑'], { w: 512, h: 260, sizes: [70, 34], bg: '#bfe3ff' }) }));
+      const sc = new THREE.Mesh(new THREE.PlaneGeometry(1.45, 0.75), new THREE.MeshBasicMaterial({ map: textTexture(d.text || ['Q4 OKR', 'Synergy ↑ · Burnout ↑'], { w: 512, h: 260, sizes: [70, 34], bg: d.text ? '#ffd3dc' : '#bfe3ff' }) }));
       sc.rotation.y = Math.PI / 2; sc.position.set(0.07, 1.2, 0); g.add(sc);
       col = [0.1, 0.8];
       break;
@@ -246,10 +283,71 @@ function decorMesh(d, L) {
       col = [1.3, 0.4];
       break;
     }
+    case 'person': {
+      const who = TMLOOK(L, d.npc);
+      if (who) { const p = makePerson(who.look); p.rotation.y = d.face || 0; g.add(p); g.userData.idler = p; }
+      col = [0.3, 0.3];
+      break;
+    }
+    case 'crates': {
+      [[-0.35, 0, 0], [0.35, 0, 0.05], [0, 0.42, 0]].forEach(([x, y, z], i) => add(box(0.62, 0.42, 0.5, i === 2 ? '#f0d4ae' : '#e8c69a'), x, 0.21 + y, z));
+      const tag = label('KHÔ GÀ LÁ CHANH', '📦', '#fff1b8'); tag.position.set(0, 1.25, 0); tag.scale.multiplyScalar(0.75); g.add(tag);
+      col = [0.7, 0.3];
+      break;
+    }
+    case 'safe': {
+      add(box(0.8, 0.9, 0.7, '#6a6f80'), 0, 0.45, 0);
+      add(cyl(0.1, 0.1, 0.05, '#ffd25a', 0.01), 0, 0.5, 0.36).rotation.x = Math.PI / 2;
+      const tag = label('Két của Má', '💰', '#ffb3c7'); tag.position.set(0, 1.35, 0); tag.scale.multiplyScalar(0.75); g.add(tag);
+      col = [0.4, 0.35];
+      break;
+    }
+    case 'redchair': {
+      add(cyl(0.26, 0.26, 0.45, '#ff5a6e', 0.015), 0, 0.22, 0); add(box(0.55, 0.55, 0.1, '#ff5a6e', 0.012), 0, 0.72, -0.24);
+      const tag = label('Ghế đỏ (đừng ngồi)', '🪑', '#ffffff'); tag.position.set(0, 1.35, 0); tag.scale.multiplyScalar(0.7); g.add(tag);
+      col = [0.3, 0.3];
+      break;
+    }
+    case 'altar': {
+      add(box(0.7, 0.8, 0.45, '#c0392b'), 0, 0.4, 0); add(box(0.75, 0.05, 0.5, '#ffd25a', 0.01), 0, 0.82, 0);
+      add(cyl(0.05, 0.06, 0.12, '#ffd25a', 0.008), 0, 0.92, 0);
+      [-0.2, 0.2].forEach((x) => add(cyl(0.07, 0.07, 0.07, '#ff8fa3', 0.008), x, 0.88, 0.05));
+      col = [0.35, 0.25];
+      break;
+    }
+    case 'livetable': {
+      add(box(2.6, 0.72, 1.0, '#ffffff'), 0, 0.36, 0);
+      ['#e8b04a', '#c96a52', '#f2b134', '#ff8f8f', '#b8f0d8'].forEach((c, i) => add(box(0.3, 0.12, 0.22, c, 0.01), -1.0 + i * 0.5, 0.78, (i % 2) * 0.2 - 0.1));
+      col = [1.3, 0.5];
+      break;
+    }
+    case 'ringlight': {
+      add(cyl(0.04, 0.04, 1.4, '#3a3f55', 0.008), 0, 0.7, 0);
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.05, 10, 30), new THREE.MeshBasicMaterial({ color: '#fff6c9' }));
+      ring.position.set(0, 1.55, 0); g.add(ring);
+      add(box(0.12, 0.22, 0.02, '#3a3f55', 0.006), 0, 1.55, 0.01);
+      const tag = label('LIVE', '🔴', '#ff9fb2'); tag.position.set(0, 2.1, 0); tag.scale.multiplyScalar(0.6); g.add(tag);
+      g.userData.live = tag;
+      col = [0.2, 0.2];
+      break;
+    }
+    case 'scooter': {
+      add(box(0.3, 0.35, 1.2, '#ff8fa3'), 0, 0.42, 0); add(box(0.32, 0.3, 0.45, '#ff8fa3'), 0, 0.75, -0.2);
+      [-0.45, 0.45].forEach((z) => { const w = add(cyl(0.2, 0.2, 0.1, '#3a3f55', 0.012), 0, 0.2, z); w.rotation.z = Math.PI / 2; });
+      add(box(0.5, 0.35, 0.4, '#e8c69a', 0.012), 0, 0.92, 0.35);
+      col = [0.25, 0.65];
+      break;
+    }
+    case 'shelfgoods': {
+      add(box(2.4, 1.2, 0.5, '#ffe9a0'), 0, 0.6, 0);
+      for (let r = 0; r < 2; r++) for (let i = 0; i < 6; i++) add(box(0.28, 0.24, 0.12, ['#e8b04a', '#c96a52', '#f2b134', '#ff8f8f'][(i + r) % 4], 0.008), -1.0 + i * 0.4, 0.45 + r * 0.45, 0.27);
+      col = [1.2, 0.25];
+      break;
+    }
     case 'reception': {
       add(box(1.6, 1.0, 0.6, '#ffe9a0'), 0, 0.5, 0); add(box(1.7, 0.06, 0.7, '#ffffff', 0.015), 0, 1.03, 0);
       if (d.npc && TMLOOK(L, d.npc)) { const p = makePerson(TMLOOK(L, d.npc).look); p.position.set(0, 0, 0.6); p.rotation.y = Math.PI; g.add(p); }
-      const sign = label('Lễ tân · Chị Gấm', '🛎️', '#ffe9a0'); sign.position.set(0, 2.2, 0); sign.scale.multiplyScalar(0.9); g.add(sign);
+      const sign = label(d.sign || 'Lễ tân · Chị Gấm', d.icon || '🛎️', '#ffe9a0'); sign.position.set(0, 2.2, 0); sign.scale.multiplyScalar(0.9); g.add(sign);
       col = [0.8, 0.3];
       break;
     }
@@ -258,6 +356,7 @@ function decorMesh(d, L) {
 }
 // the look of a named T&M person used by decor (receptionist, people at desks)
 function TMLOOK(L, id) {
+  if (id && typeof id === 'object') return id; // a person given directly ({ name, look })
   const all = [...(L.clients || []), L.boss, L.standup && L.standup.coach].filter(Boolean);
   const names = { bao: 'Bảo', trang: 'Trang', gam: 'Chị Gấm' };
   if (names[id]) return EXTRA[id] || all.find((c) => c.name === names[id]);
@@ -350,11 +449,15 @@ export function buildRoom(scene, L) {
   }
   // decor
   const typers = [];
+  const idlers = [];
+  const lives = [];
   let cat = null;
   for (const d of L.decor || []) {
     const { mesh, col } = decorMesh(d, L);
     root.add(mesh);
     if (mesh.userData.typer) typers.push(mesh.userData.typer);
+    if (mesh.userData.idler) idlers.push(mesh.userData.idler);
+    if (mesh.userData.live) lives.push(mesh.userData.live);
     if (mesh.userData.cat) cat = mesh.userData.cat;
     if (col) colliders.push({ minX: d.x - col[0], maxX: d.x + col[0], minZ: d.z - col[1] - (d.kind === 'desk' && d.npc ? 0.6 : 0), maxZ: d.z + col[1] });
   }
@@ -408,6 +511,8 @@ export function buildRoom(scene, L) {
     animate(t) {
       typers.forEach((p, i) => { const a = p.userData.parts; if (a) { a.armL.rotation.x = -1 + Math.sin(t * 18 + i) * 0.15; a.armR.rotation.x = -1 - Math.sin(t * 18 + i) * 0.15; } });
       if (cat) cat.scale.y = 1 + Math.sin(t * 2) * 0.04;
+      idlers.forEach((p, i) => { const a = p.userData.parts; if (a) { a.armR.rotation.x = -0.4 + Math.sin(t * 3 + i * 2) * 0.35; a.head && (a.head.rotation.y = Math.sin(t * 0.8 + i) * 0.3); } });
+      lives.forEach((l) => { l.visible = Math.sin(t * 4) > -0.3; });
     },
     dispose() { scene.remove(root); },
   };
