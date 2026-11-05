@@ -74,12 +74,15 @@ Main menu ──Solo──► Hồ sơ sự nghiệp (career runs + cloud save) 
 | id | Name | Industry · scale | Manager | Official salary |
 |---|---|---|---|---|
 | tm | T&M Partners | Strategy consulting · ~20 | Chị Tuyết | 15 tr |
-| bama | Ba & Má | Family dried-food producer (khô gà/heo/bò, trái cây sấy) · ~20 + workshop; reuses the legacy cast | (see module) | 10 tr |
-| tech | Nợ Kỹ Thuật Labs | Tech startup · ~80 | (see module) | 15 tr |
-| agency | Trend Trễ Agency | Marketing agency · ~30 | (see module) | 10 tr |
-| audit | Cân Đối & Cộng Sự | Accounting & audit · ~300 | (see module) | 15 tr |
-| event | Đi Đâu Cũng Được | Events & travel · ~15 | (see module) | 10 tr |
-| hr | Người Đúng Chỗ HR | HR consulting & headhunting · ~10 | (see module) | 10 tr |
+| bama | Ba & Má | Family dried-food producer (khô gà/heo/bò, trái cây sấy) · ~20 + workshop; reuses the legacy cast | Cô Hằng ("Má") | 10 tr |
+| tech | Nợ Kỹ Thuật Labs | Tech startup · ~80 | Chị Diệp (Senior PM) | 15 tr |
+| agency | Trend Trễ Agency | Marketing agency · ~30 | Chị Diệp (Account Manager) | 10 tr |
+| audit | Cân Đối & Cộng Sự | Accounting & audit · ~300 | Chị Thảo (Audit Manager) | 15 tr |
+| event | Đi Đâu Cũng Được | Events & travel · ~15 | Anh Duy (Event Producer) | 10 tr |
+| hr | Người Đúng Chỗ HR | HR consulting & headhunting · ~10 | Chị Ngân (Senior Consultant) | 10 tr |
+
+Each company: 15–17 intern episodes + 4 official-arc episodes, 32–36 routine beats, 12–13 side tasks, ~750–950
+dialogue lines. Promotion conditions and arcs are summarised at the top of each company's `extras.js` / `content.js`.
 
 Each module follows **`docs/COMPANY_CONTRACT.md`** (cast, idle lines, office theme, interview, 10–20 episodes,
 ≥ 24 routine beats, side tasks, review lines, promotion + arc, endings, food, life events). A company with
@@ -120,5 +123,9 @@ a mini-game makes it publish its answer key (used by the e2e to check that a per
 
 - Real email verification (OTP) needs custom SMTP in Supabase; current cloud save uses email + game password.
 - Family-tie proposals for T&M are random per run (Game Owner OK'd "random"); revisit if canon is fixed.
+- Chị Giáo (donations) appears once `SUPPORT_URL` is set in `site/js/config.js` (planned after moving off public GitHub).
+- Private repo plan: move source + docs to a private repo, add an esbuild bundle/minify step, deploy via Cloudflare
+  Pages/Netlify (free with private repos) or GitHub Pro; then make this public repo private. Shipped JS stays readable
+  by players in any case.
 - Company-specific 3D props are light (themes + a few prop types); bespoke maps per company could come later.
 - Multiplayer (Office Chaos) is deferred.

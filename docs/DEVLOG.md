@@ -3,6 +3,34 @@
 Diary of what was built, decided and fixed, newest first. Design reference: `docs/GAME_DESIGN.md`.
 Content format: `docs/COMPANY_CONTRACT.md`.
 
+## 2026-11-05 — QC round 1 and publish
+
+**Story QC** (one picky-player agent per company read every scene; ~250 fixes in total): times that contradicted each
+other, people talking in person while "on the phone" or "out of the office", mini-game fail lines that named a mistake the
+player may not have made, ambiguous quiz answers (e.g. tech "Hourensou", HR CV screening), a discriminatory pick that could
+pass the HR job-description game (now needs a perfect score), endings that did not match the player's last choice,
+intern-only wording in episodes that can run after promotion, missing legal disclaimers, severance claims under 12 months.
+
+**Engine additions driven by QC**
+- Episode `when` / `internOnly`; `end` may be a function (the player's last choice decides quit vs layoff).
+- Side-task `when`; errands are not planned for people who are away that day.
+- Cast `present(run)` (people who quit leave the office); `pos: 'away'`; Teams callers are hidden from their desks.
+- Routine beats `once: true`; optional company `reviewer(run)`; a step can host the Friday review (`review: true`).
+- Promotion arc: first episode on the first official workday, prefers days without an intern episode, compresses when
+  late and always keeps the final episode. Ranged episodes are spread uniformly over their range.
+- `when` is never re-evaluated in the middle of a scene (a mid-scene flag change used to skip the next scene).
+- Mini-game bars: t0 .33 · t1 .5 · t3 .66 · t5 .8 (2/3 passes at 3 triệu; 5/6 at 5 triệu). Order games are scored
+  by the longest correctly ordered run. Pick games score right picks only.
+- Random seeds are scrambled (nearby seeds gave the same first number: a run had a life event every evening or never,
+  and the same mood every day).
+
+**Automated checks**: validator OK for all 7 companies; 32 unit tests; full 45-day e2e runs for every company
+(perfect-play, worst-play and random strategies, fast-forward and 3D) with no JS errors, no covered buttons, and every
+perfect mini-game play passing.
+
+**Also**: letter from the developer before Solo (what the game is, how saving works, disclaimer); Chị Giáo (developer
+NPC for donations, hidden until `SUPPORT_URL` is set; preview `?giao=1`).
+
 ## 2026-11-04 (night) — Solo v2: 7 companies, 45-day careers
 
 **Asked by the Game Owner (Thảo):** keep T&M and bring back the old family company as a second company
