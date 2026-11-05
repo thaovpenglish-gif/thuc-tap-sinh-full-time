@@ -11,9 +11,9 @@ export const COMPANY_LIST = [
     blurb: 'Khách sửa "lần cuối" lần thứ 14. KOL bùng. Viral thì có, nhưng viral ngược.', toxic: 4, ready: true },
   { id: 'audit', style: 'corporate', map: 'audit', styleLive: true, name: 'Cân Đối & Cộng Sự', emoji: '🧮', color: '#b8f0d8', industry: 'Kế toán · kiểm toán', scale: '~300 người',
     blurb: 'Busy season, kiểm kê kho lúc 2 giờ sáng và những con số "rất sáng tạo" của khách hàng.', toxic: 4, ready: true },
-  { id: 'event', style: 'warehouse', map: 'event', name: 'Đi Đâu Cũng Được', emoji: '🎪', color: '#ffe9a0', industry: 'Tổ chức sự kiện & du lịch', scale: '~15 người',
+  { id: 'event', style: 'warehouse', map: 'event', styleLive: true, name: 'Đi Đâu Cũng Được', emoji: '🎪', color: '#ffe9a0', industry: 'Tổ chức sự kiện & du lịch', scale: '~15 người',
     blurb: 'Mưa giữa sự kiện ngoài trời, khách đổi ý lúc 23h, team building bắt buộc vui.', toxic: 3, ready: true },
-  { id: 'hr', style: 'cozy', name: 'Người Đúng Chỗ HR', emoji: '🧲', color: '#e3d9ff', industry: 'Tư vấn nhân sự · headhunt', scale: '~10 người',
+  { id: 'hr', style: 'cozy', map: 'hr', name: 'Người Đúng Chỗ HR', emoji: '🧲', color: '#e3d9ff', industry: 'Tư vấn nhân sự · headhunt', scale: '~10 người',
     blurb: 'Công ty tư vấn nhân sự có quy trình nhân sự nội bộ… tệ nhất mà bạn từng thấy.', toxic: 2, ready: true },
 ];
 export const companyMeta = (id) => COMPANY_LIST.find((c) => c.id === id) || { id, name: id, emoji: '🏢', color: '#ddd', ready: false };

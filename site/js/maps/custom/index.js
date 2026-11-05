@@ -5,5 +5,6 @@ import { buildTech } from './tech.js';
 import { buildAgency } from './agency.js';
 import { buildAudit } from './audit.js';
 import { buildEvent } from './event.js';
+import { buildHR } from './hr.js';
 
-export const MAPS = { bama: buildBama, tech: buildTech, agency: buildAgency, audit: buildAudit, event: buildEvent };
+export const MAPS = { bama: buildBama, tech: buildTech, agency: buildAgency, audit: buildAudit, event: buildEvent, hr: buildHR };
