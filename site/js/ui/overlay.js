@@ -5,6 +5,7 @@ import { $ } from '../core/util.js';
 export function overlay(html) {
   $('#ovCard').innerHTML = html;
   $('#overlay').hidden = false;
+  if (!document.body.classList.contains('ov-open')) $('#toasts').innerHTML = ''; // stale toasts would cover the card
   document.body.classList.add('ov-open');
   $('#overlay').scrollTop = 0;
 }

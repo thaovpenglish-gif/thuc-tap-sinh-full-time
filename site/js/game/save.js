@@ -3,8 +3,8 @@
 
 export const SAVE_VERSION = 2;
 const COMPANY_NAMES = { tm: 'T&M Partners', bama: 'Ba & Má' };
-const MAX_RUNS = 16;
-export const START_MONEY = 2_000_000;
+const MAX_RUNS = 40;
+export const START_MONEY = 4_000_000;
 
 const randomId = () => Math.random().toString(36).slice(2, 10);
 
@@ -28,7 +28,7 @@ export function newRun({ name, company = 'tm', now = Date.now(), id = randomId()
     salary: 0,            // current monthly pay (set by the tier, then by promotion)
     plan: null,           // { [day]: episodeId } — built after the interview
     week: null, reviews: [], payslips: [], accrued: { intern: 0, official: 0 },
-    mood: 'meh', ended: null, ties: [], seen: [],
+    mood: 'meh', ended: null, ties: [], seen: [], debt: null,
     createdAt: now, updatedAt: now, done: false,
   };
 }
@@ -62,7 +62,8 @@ export function runLabel(run, tierLabel = (t) => t, companyName = (c) => COMPANY
   const parts = [companyName(run.company)];
   if (run.status === 'official') parts.push('Nhân viên chính thức');
   else if (run.tier) parts.push(tierLabel(run.tier));
-  parts.push(run.ended ? 'Đã kết thúc' : run.day === 0 ? 'Vòng phỏng vấn' : `Ngày ${run.day}/45`);
+  const END = { finish: 'Hết 45 ngày', quit: 'Đã nghỉ việc', layoff: 'Bị cho nghỉ' };
+  parts.push(run.ended ? (END[run.ended.type] || 'Đã kết thúc') : run.day === 0 ? 'Vòng phỏng vấn' : `Ngày ${run.day}/45`);
   return parts.join(' · ');
 }
 

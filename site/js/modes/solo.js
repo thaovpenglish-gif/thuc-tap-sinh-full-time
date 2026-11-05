@@ -82,7 +82,8 @@ export function startSolo({ scene, camera, input, onExit }) {
     if (world) world.dispose();
     for (const n of Object.values(npcs)) scene.remove(n.mesh);
     npcs = {};
-    world = buildWorld(scene, co.theme || {});
+    const style = FLAGS.officeStyles || (co.meta && co.meta.styleLive) ? ((co.theme && co.theme.style) || (co.meta && co.meta.style) || 'tm') : 'tm';
+    world = buildWorld(scene, { ...(co.theme || {}), style });
     worldCo = co.id;
     const people = { ...co.cast, ...(GIAO_ON ? { giao: GIAO } : {}) };
     for (const [id, def] of Object.entries(people)) {
@@ -146,7 +147,8 @@ export function startSolo({ scene, camera, input, onExit }) {
     if (!R) return;
     const off = R.status === 'official';
     const t = off ? ' · Chính thức' : R.tier ? ` · ${TIERS[R.tier].label}` : '';
-    $('#hudDay').textContent = R.day === 0 ? `Phỏng vấn${t}` : `Ngày ${R.day}/45 · ${C.weekdayName(R.day)}${t}`;
+    const wd = innerWidth < 560 ? C.weekdayName(R.day).replace('Thứ ', 'T').replace('Hai', '2').replace('Ba', '3').replace('Tư', '4').replace('Năm', '5').replace('Sáu', '6').replace('Bảy', '7').replace('Chủ Nhật', 'CN') : C.weekdayName(R.day);
+    $('#hudDay').textContent = R.day === 0 ? `Phỏng vấn${t}` : `Ngày ${R.day}/45 · ${wd}${t}`;
     $('#barUy').style.width = R.st.uy + '%';
     $('#barDr').style.width = R.st.dr + '%';
     $('#barNl').style.width = Math.max(0, R.st.nl) + '%';
@@ -281,6 +283,8 @@ export function startSolo({ scene, camera, input, onExit }) {
   // ---------- story flow ----------
   async function playStep(step) {
     stepLocked = true;
+    // a reload in the middle of this step must not apply its effects twice: keep the state from before it
+    try { const { stepSnap, ...plain } = R; void stepSnap; R.stepSnap = JSON.parse(JSON.stringify(plain)); } catch { R.stepSnap = null; }
     startDialogMode();
     if (step.seat === 'mr_seat') fp.teleport(MEETING_SEAT[0], MEETING_SEAT[1], 0, 1.05);
     if (step.call) { openCallFrame(step.call); placeNPCs(true); }
@@ -290,6 +294,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     if (step.call) { closeCallFrame(); for (const id of step.call.people) if (npcs[id]) npcs[id].mesh.visible = isPresent(id) && spotFor(id) !== 'away'; }
     if (step.seat) player.eye = 1.38;
     R.step++;
+    R.stepSnap = null;
     if (R.day > 0) applyFx({ nl: -3 });
     if (R.day > 0 && R.st.nl <= C.FAINT) await faint();
     save();
@@ -406,6 +411,7 @@ export function startSolo({ scene, camera, input, onExit }) {
   }
   function openCallFrame(call) {
     callMode = call;
+    document.body.classList.add('in-call');
     $('#callTitle').textContent = call.title;
     $('#callTiles').innerHTML = call.people.map((id) => {
       const c = charInfo(id);
@@ -416,7 +422,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     clearInterval(callClock);
     callClock = setInterval(() => { sec += 7; $('#callTime').textContent = `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`; }, 1000);
   }
-  function closeCallFrame() { callMode = null; clearInterval(callClock); $('#callFrame').hidden = true; }
+  function closeCallFrame() { document.body.classList.remove('in-call'); callMode = null; clearInterval(callClock); $('#callFrame').hidden = true; }
 
   // ---------- phone ----------
   const phone = createPhone({
@@ -500,13 +506,15 @@ export function startSolo({ scene, camera, input, onExit }) {
       ...(CO.food || []).map((f) => ({ ...f })),
       { t: ate ? 'Lục hộp bánh trong pantry (hình như hết rồi)' : 'Ăn vặt trong pantry (miễn phí, +12)', fx: ate ? { nl: 1 } : { nl: 12, set: { snack_day: R.day } }, then: [['nar', ate ? 'Hộp bánh trống trơn. Có ai đó để lại tờ giấy: "Đã ăn. Xin lỗi. —Không phải mình".' : 'Một gói bánh quy và nửa hộp mứt từ Tết năm ngoái. Tạm ổn.']] },
       { t: coffees >= 2 ? 'Pha cà phê lần thứ ba (tim bắt đầu đập nhanh)' : 'Pha cà phê gói (miễn phí, +15)', fx: coffees >= 2 ? { nl: 4, dr: 1, set: { coffee_day: R.day, coffees: coffees + 1 } } : { nl: 15, set: { coffee_day: R.day, coffees: coffees + 1 } }, then: [['nar', coffees >= 2 ? 'Tay bạn hơi run. Bạn gõ "Kính gửi anh chị" thành "Kính gửi anh chịiiii".' : 'Cà phê 3in1. Vị ngọt của sự cam chịu.']] },
-      { t: 'Đặt cơm văn phòng (35.000đ, +35, chờ 20 phút)', fx: { money: -35_000, nl: 35, clock: 20 }, then: [['nar', 'Shipper gọi bốn lần vì không tìm thấy tòa nhà. Cơm nguội nhưng no.']] },
-      { t: 'Ra ngoài ăn tử tế (65.000đ, +55, mất 45 phút)', fx: { money: -65_000, nl: 55, clock: 45 }, then: [
+      ...(R.tier === 't0' ? [{ t: 'Cơm trưa miễn phí của công ty (quyền lợi mức 0 đồng, +30)', when: (s) => s.flags.lunch_day !== s.day, fx: { nl: 30, clock: 20, set: { lunch_day: R.day } }, then: [['nar', 'Một hộp cơm "suất nhân viên". Không có thịt kho, nhưng có lòng tốt.']] }] : []),
+      { t: 'Đặt cơm văn phòng (35.000đ, +35, chờ 20 phút)', when: (s) => s.money >= 35_000, fx: { money: -35_000, nl: 35, clock: 20 }, then: [['nar', 'Shipper gọi bốn lần vì không tìm thấy tòa nhà. Cơm nguội nhưng no.']] },
+      { t: 'Ra ngoài ăn tử tế (65.000đ, +55, mất 45 phút)', when: (s) => s.money >= 65_000, fx: { money: -65_000, nl: 55, clock: 45 }, then: [
         ['nar', 'Một tô bún đầy đủ topping. Bạn thấy mình là người lớn.'],
         { if: (s) => (hash(s.id) + s.clock) % 3 === 0, then: [[CO.manager, 'Em đi ăn lâu thế? Chị tìm em nãy giờ.'], { fx: { uy: -2 } }] },
       ] },
-    ].slice(0, 4);
-    await dialogue.run([['nar', `Pantry. Ví còn ${fmtVND(Math.round(R.money))}. Bụng thì còn ít hơn.`], { c: '_food', o: opts }]);
+    ].filter((o) => !o.when || o.when(R)).slice(0, 4);
+    const broke = R.money < 35_000;
+    await dialogue.run([['nar', broke ? `Pantry. Ví còn ${R.money < 0 ? '−' : ''}${fmtVND(Math.abs(Math.round(R.money)))}. Không đủ tiền đặt cơm hay ra ngoài ăn, chỉ còn đồ miễn phí.` : `Pantry. Ví còn ${fmtVND(Math.round(R.money))}. Bụng thì còn ít hơn.`], { c: '_food', o: opts }]);
   }
 
   // ---------- day intro / end ----------
@@ -536,7 +544,7 @@ export function startSolo({ scene, camera, input, onExit }) {
         while (beats.length < n && copy.length) beats.push(copy.splice(Math.floor(r() * copy.length), 1)[0].id);
         R.seen = [...(R.seen || []), ...beats].slice(-200);
       }
-      R.today = { day: R.day, ep: epId, beats, mood: C.pickMood(R, seed), quick: false };
+      R.today = { day: R.day, ep: epId, beats, mood: R.money < 0 ? 'broke' : C.pickMood(R, seed), quick: false };
       const m = C.moodInfo(R.today.mood);
       R.st.nl = clamp(R.st.nl + m.nl, 5, 100);
       R.flags.drank_today = false;
@@ -645,8 +653,10 @@ export function startSolo({ scene, camera, input, onExit }) {
       const next = C.nextWorkday(R.day);
       const finalDay = !ended && next > C.MAX_DAYS;
       if (finalDay) ended = 'finish';
-      if (R.day >= C.PAYDAY && !R.flags.paid30 && !ended) { R.flags.paid30 = true; pending.push({ type: 'pay' }); }
-      else if (ended) pending.push({ type: 'pay' });
+      if (R.day >= C.PAYDAY && !R.flags.paid30 && !ended) { R.flags.paid30 = true; pending.push({ type: 'pay', day: R.day }); }
+      else if (ended) pending.push({ type: 'pay', day: R.day });
+      if (!ended && C.rentDue(R.day, next)) pending.push({ type: 'rent' });
+      if (!ended) pending.push({ type: 'broke' }); // shown only if the wallet is negative by then
       if (ended) pending.push({ type: 'ending' });
       else if (C.isFriday(R.day)) pending.push({ type: 'weekend' });
     } else {
@@ -659,8 +669,10 @@ export function startSolo({ scene, camera, input, onExit }) {
         for (const t of R.ties) R.flags['tie_' + t] = true;
       }
     }
+    if (isInterview) pending.push({ type: 'rent' });
     if (!ended) R.day = isInterview ? 1 : C.nextWorkday(R.day);
     R.step = 0; R.today = null;
+    const endStats = statGrid(); // before the overnight rest
     R.st.nl = clamp(R.st.nl + 45, 0, 100);
     if (ended) { R.ended = { type: ended, day: fromDay }; R.done = true; }
     R.pending = pending;
@@ -669,7 +681,8 @@ export function startSolo({ scene, camera, input, onExit }) {
       <div class="ov-kicker">${isInterview ? 'HẾT BUỔI PHỎNG VẤN' : `HẾT NGÀY ${fromDay} · ${C.weekdayName(fromDay).toUpperCase()}`}</div>
       <h2>${esc(d.title)}: xong!</h2>
       ${diary ? `<div class="diary">📓 ${esc(fmt(diary))}</div>` : ''}
-      ${statGrid()}
+      ${endStats}
+      ${isInterview ? '' : '<p class="muted small-note">🌙 Ngủ một đêm: +45 năng lượng.</p>'}
       ${isInterview ? `<div class="pct">💰 Mức đã deal: ${R.tier ? `${TIERS[R.tier].label}/tháng (${TIERS[R.tier].name})` : '—'} · Ví: ${fmtVND(Math.round(R.money))}</div>` : `<div class="pct">📋 Việc vặt: ${sum.done} xong · ${sum.late + (sum.open || 0)} trễ · 🚌 Đi lại −${fmtVND(C.COMMUTE_COST)} · 💰 Ví: ${fmtVND(Math.round(R.money))}</div>`}
       <div class="rels">${relChips()}</div>
       <p class="muted">💾 Đã lưu: ${esc(runLabel(R, (t) => TIERS[t].label, companyName))}</p>
@@ -700,7 +713,8 @@ export function startSolo({ scene, camera, input, onExit }) {
     if (card.type === 'life') {
       const ev = [...C.LIFE_EVENTS, ...(CO.lifeEvents || [])].find((e) => e.id === card.id);
       if (!ev) { done(); return; }
-      const choices = ev.choices || [{ t: 'Ừ thì… đời mà', fx: ev.fx, after: ev.after }];
+      const good = ev.fx && ((ev.fx.money || 0) >= 0 && (ev.fx.nl || 0) >= 0);
+      const choices = ev.choices || [{ t: good ? 'Tuyệt, tận hưởng thôi' : 'Ừ thì… đời mà', fx: ev.fx, after: ev.after }];
       overlay(`<div class="ov-kicker">SAU GIỜ LÀM</div><h2>${ev.emoji} Trên đường về…</h2><p class="ov-text">${esc(fmt(ev.text))}</p>
         <div class="btns life-choices">${choices.map((c, i) => `<button class="btn${i ? '' : ' primary'}" data-i="${i}">${esc(c.t)}</button>`).join('')}</div>`);
       document.querySelectorAll('.life-choices [data-i]').forEach((b) => { b.onclick = () => {
@@ -709,8 +723,39 @@ export function startSolo({ scene, camera, input, onExit }) {
         const bits = [];
         if (fx.money) bits.push(`${fx.money > 0 ? '+' : '−'}${fmtVND(Math.abs(fx.money))}`);
         if (fx.nl) bits.push(`Năng lượng ${fx.nl > 0 ? '+' : ''}${fx.nl}`);
+        if (fx.uy) bits.push(`Uy tín ${fx.uy > 0 ? '+' : ''}${fx.uy}`);
+        if (fx.dr) bits.push(`Drama ${fx.dr > 0 ? '+' : ''}${fx.dr}`);
         overlay(`<div class="ov-kicker">SAU GIỜ LÀM</div><h2>${ev.emoji}</h2><p class="ov-text">${esc(fmt(c.after || ''))}</p>${bits.length ? `<div class="pct">${esc(bits.join(' · '))}</div>` : ''}<div class="btns"><button class="btn primary" id="lifeOk">Tiếp tục →</button></div>`);
         $('#lifeOk').onclick = () => done(fx);
+      }; });
+      return;
+    }
+    if (card.type === 'rent') {
+      const after = R.money - C.RENT;
+      overlay(`<div class="ov-kicker">${R.day <= 1 ? 'TRƯỚC NGÀY ĐẦU ĐI LÀM' : 'ĐẦU THÁNG MỚI'}</div><h2>🏠 Tiền trọ tháng này</h2>
+        <p class="ov-text">Chủ trọ nhắn: "Em ơi, tiền nhà tháng này nha em 🙂". Phòng ở ghép, quạt trần, wifi "có lúc".</p>
+        <table class="payslip"><tr><td>Tiền phòng (ở ghép) + điện nước</td><td>−${fmtVND(C.RENT)}</td></tr><tr class="total"><td>Ví còn</td><td>${after < 0 ? '−' : ''}${fmtVND(Math.abs(Math.round(after)))}</td></tr></table>
+        ${after < 0 ? '<p class="muted">Ví âm. Đi làm vẫn phải đi, ăn vẫn phải ăn. Sẽ có cách… hoặc có drama.</p>' : ''}
+        <div class="btns"><button class="btn primary" id="rentOk">Chuyển khoản →</button></div>`);
+      $('#rentOk').onclick = () => done({ money: -C.RENT });
+      return;
+    }
+    if (card.type === 'broke') {
+      if (R.money >= 0) { done(); return; }
+      const ids = Object.keys(CO.cast).filter((id) => CO.cast[id].body !== false && CO.cast[id].look && isPresent(id));
+      const who = R.debt ? null : C.lender(R, ids);
+      const opts = [];
+      if (who) opts.push({ t: `Mượn ${charInfo(who).name} ${fmtVND(C.LOAN)}`, fx: { money: C.LOAN }, after: `${charInfo(who).name} chuyển khoản ngay, kèm sticker "nhớ trả nha 🙂". Lương về sẽ tự trừ để trả.`, debt: { who, amount: C.LOAN } });
+      if (!R.flags.mom_help) opts.push({ t: 'Gọi về nhà', fx: { money: C.MOM_HELP, dr: 2, nl: -5, set: { mom_help: true } }, after: 'Mẹ chuyển một triệu, kèm mười bốn tin nhắn hỏi bao giờ lên chính thức, và một tấm ảnh nồi thịt kho.' });
+      opts.push({ t: 'Nhịn. Mì gói tới cuối tháng', fx: { nl: -15, set: { noodles: true } }, after: 'Bạn mua một thùng mì. Ngày mai bạn đi làm với năng lượng của một gói mì.' });
+      overlay(`<div class="ov-kicker">VÍ ÂM</div><h2>💸 Ví còn −${fmtVND(Math.abs(Math.round(R.money)))}</h2>
+        <p class="ov-text">Khi ví âm: không đặt cơm hay ăn ngoài được, chỉ còn đồ miễn phí ở pantry, và sáng nào mood cũng là "Cháy túi".${R.debt ? ` Bạn còn nợ ${esc(charInfo(R.debt.who).name)} ${fmtVND(R.debt.amount)}.` : ''}</p>
+        <div class="btns life-choices">${opts.map((o, i) => `<button class="btn${i ? '' : ' primary'}" data-i="${i}">${esc(o.t)}</button>`).join('')}</div>`);
+      document.querySelectorAll('.life-choices [data-i]').forEach((b) => { b.onclick = () => {
+        const o = opts[Number(b.dataset.i)];
+        if (o.debt) { R.debt = { ...o.debt, day: R.day }; R.rel[o.debt.who] = (R.rel[o.debt.who] || 0); }
+        overlay(`<div class="ov-kicker">VÍ ÂM</div><h2>💸</h2><p class="ov-text">${esc(o.after)}</p><div class="btns"><button class="btn primary" id="brokeOk">Tiếp tục →</button></div>`);
+        $('#brokeOk').onclick = () => done(o.fx);
       }; });
       return;
     }
@@ -718,24 +763,30 @@ export function startSolo({ scene, camera, input, onExit }) {
       const slip = C.payslip({ accrued: R.accrued || { intern: 0, official: 0 }, tierId: R.tier, commit: !!R.flags.tax_commit, officialSalary: R.status === 'official' ? R.salary : 0 });
       overlay(`<div class="ov-kicker">PHIẾU LƯƠNG</div><h2>💰 ${slip.net > 0 ? 'Ting ting!' : 'Phiếu lương… 0 đồng'}</h2>
         <table class="payslip">${slip.lines.map((l) => `<tr><td>${esc(l.k)}</td><td>${l.v < 0 ? '−' : ''}${fmtVND(Math.abs(l.v))}</td></tr>`).join('')}
-        <tr class="total"><td>Thực nhận</td><td>${fmtVND(slip.net)}</td></tr></table>
+        <tr class="total"><td>Thực nhận</td><td>${fmtVND(slip.net)}</td></tr>
+        ${R.debt ? `<tr><td>Trả nợ ${esc(charInfo(R.debt.who).name)}</td><td>−${fmtVND(R.debt.amount)}</td></tr>` : ''}</table>
         <p class="muted">${slip.net === 0 ? 'Phụ cấp 0 đồng. Bạn nhận được… kinh nghiệm. Và giấy xác nhận.' : `Tiền vào ví. Ví sẽ có ${fmtVND(Math.round(R.money + slip.net))}.`}</p>
         <p class="sal-note">Thuế, bảo hiểm được đơn giản hóa để giải trí, không phải tư vấn pháp lý.</p>
         <div class="btns"><button class="btn primary" id="payOk">Nhận lương →</button></div>`);
       sfx.good();
       $('#payOk').onclick = () => {
-        R.payslips = [...(R.payslips || []), { day: R.day, net: slip.net, gross: slip.gross }];
+        R.payslips = [...(R.payslips || []), { day: card.day || R.day, net: slip.net, gross: slip.gross }];
         R.accrued = { intern: 0, official: 0 };
         R.money += slip.net;
+        if (R.debt) {
+          const d0 = R.debt; R.debt = null; R.money -= d0.amount;
+          R.rel[d0.who] = (R.rel[d0.who] || 0) + 1;
+          toast(`🤝 Đã trả ${esc(charInfo(d0.who).name)} ${fmtVND(d0.amount)}. Uy tín trong mắt người ta +1.`, 'good', 3);
+        }
         done();
       };
       return;
     }
     if (card.type === 'weekend') {
       const line = WEEKEND_LINES[hash(R.id + R.day) % WEEKEND_LINES.length];
-      overlay(`<div class="ov-kicker">CUỐI TUẦN</div><h2>🛌 Thứ Bảy, Chủ Nhật</h2><p class="ov-text">${esc(line)}</p><p class="muted">Năng lượng hồi đầy. Tuần mới bắt đầu.</p><div class="btns"><button class="btn primary" id="wkOk">Sang thứ Hai →</button>${navBtn}</div>`);
+      overlay(`<div class="ov-kicker">CUỐI TUẦN</div><h2>🛌 Thứ Bảy, Chủ Nhật</h2><p class="ov-text">${esc(line)}</p><p class="muted">Hai ngày nghỉ: +40 năng lượng. Tuần mới bắt đầu.</p><div class="btns"><button class="btn primary" id="wkOk">Sang thứ Hai →</button>${navBtn}</div>`);
       wireNav();
-      $('#wkOk').onclick = () => { R.st.nl = 100; done(); };
+      $('#wkOk').onclick = () => { R.st.nl = clamp(R.st.nl + 40, 0, 100); done(); };
       return;
     }
     // ending
@@ -840,6 +891,8 @@ export function startSolo({ scene, camera, input, onExit }) {
     const name = clean($('#companyName').value.trim()).slice(0, 16);
     if (!name) { $('#companyName').focus(); $('#companyName').placeholder = 'Nhập tên đã nào!'; toast('✍️ Nhập tên trên thẻ nhân viên trước nhé', 'bad', 2.5); return; }
     if (applying) return;
+    const open = listRuns(profile).find((r) => r.company === id && !r.ended);
+    if (open && !confirm(`Bạn đang có một lượt dở ở ${meta.name} (${open.name}, ngày ${open.day}). Vẫn bắt đầu lượt mới? Lượt cũ vẫn được giữ trong hồ sơ.`)) return;
     applying = true;
     unlockAudio();
     let co;
@@ -861,7 +914,8 @@ export function startSolo({ scene, camera, input, onExit }) {
     if (!r) return;
     let co;
     try { co = await loadCompany(r.company); } catch (err) { console.error(err); toast('😵 Không tải được công ty của lượt này.', 'bad', 3); return; }
-    CO = co; R = r;
+    if (r.stepSnap) { profile = updateRun(profile, id, { ...r.stepSnap, stepSnap: null }); }
+    CO = co; R = profile.runs[id];
     profile = { ...profile, activeId: id };
     $('#soloMenu').hidden = true;
     enterCompany(CO);
@@ -927,17 +981,19 @@ export function startSolo({ scene, camera, input, onExit }) {
   });
 
   // ---------- per-frame ----------
-  let elapsed = 0, clockAcc = 0, taskAcc = 0, hungryWarned = false;
+  let elapsed = 0, clockAcc = 0, taskAcc = 0, hungryWarned = false, lastReal = performance.now();
   function update(dt) {
+    const now = performance.now();
+    const realDt = Math.min(1, Math.max(0, (now - lastReal) / 1000)); lastReal = now; // game time follows real time even at low fps
     elapsed += dt;
     if (world) world.update(elapsed);
     const step = R && CO ? currentStep() : null;
 
     if (mode === 'play' && R) {
-      clockAcc += dt * CLOCK_RATE;
+      clockAcc += realDt * CLOCK_RATE;
       if (clockAcc >= 1) { R.clock += Math.floor(clockAcc); clockAcc -= Math.floor(clockAcc); $('#hudTime').textContent = fmtClock(R.clock); }
       if (R.day > 0) {
-        R.st.nl = Math.max(0, R.st.nl - dt * CLOCK_RATE * C.DRAIN_PER_MIN * mood().drain);
+        R.st.nl = Math.max(0, R.st.nl - realDt * CLOCK_RATE * C.DRAIN_PER_MIN * mood().drain);
         $('#barNl').style.width = R.st.nl + '%';
         const h = hungry();
         $('#barNl').parentElement.classList.toggle('low', h);
@@ -945,7 +1001,7 @@ export function startSolo({ scene, camera, input, onExit }) {
         if (!h) hungryWarned = false;
         if (R.st.nl <= C.FAINT && !fainting) { startDialogMode(); faint().then(() => { save(); endDialogMode(); updateHUD(); }); }
       }
-      taskAcc += dt;
+      taskAcc += realDt;
       if (taskAcc > 1) { taskAcc = 0; taskTick(); }
     }
 
