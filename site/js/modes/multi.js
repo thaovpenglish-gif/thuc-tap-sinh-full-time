@@ -8,8 +8,8 @@ import { isTouch } from '../core/input.js';
 import { moveActor } from '../core/physics.js';
 import { makePerson, nameTag } from '../art/people.js';
 import { textTexture } from '../art/kit.js';
-import { buildRoom, makeItem, makeBar } from '../maps/mp-room.js';
-import { LEVELS, ITEMS, PLAYER_COLORS, createGame, addPlayer, removePlayer, act, step, setPlayerPos, hintFor, targetOf, speedOf, isFrozen, isTired, starsFor, starGoals } from '../game/mp/engine.js';
+import { buildRoom, makeItem, makeBar, makeClient, itemIcon } from '../maps/mp-room.js';
+import { LEVELS, ITEMS, PLAYER_COLORS, clientName, createGame, addPlayer, removePlayer, act, step, setPlayerPos, hintFor, targetOf, speedOf, isFrozen, isTired, starsFor, starGoals } from '../game/mp/engine.js';
 import { joinRoom, myId, newRoomCode, normCode, cleanName } from '../net/mp-net.js';
 import { toast } from '../ui/toast.js';
 import { MP_CSS } from '../ui/mp-style.js';
@@ -266,6 +266,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     for (const id of Object.keys(avatars)) removeAvatar(id);
     for (const k of Object.keys(placed)) { placed[k].removeFromParent(); delete placed[k]; }
     for (const k of Object.keys(floorItems)) { floorItems[k].removeFromParent(); delete floorItems[k]; }
+    for (const k of Object.keys(npcs)) { scene.remove(npcs[k].mesh); delete npcs[k]; }
     const idx = Math.max(0, roster.findIndex((p) => p.id === myId));
     const sp = L.spawns[idx % L.spawns.length];
     me.x = sp.x; me.z = sp.z; me.r = Math.PI;
@@ -365,6 +366,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       if (e.seq <= lastEvSeq) continue;
       lastEvSeq = e.seq;
       if (e.to && e.to !== myId) continue;
+      if (e.type === 'served' || e.type === 'gone') { moods[e.order] = e.type === 'served' ? 'happy' : 'angry'; continue; }
       if (e.type === 'toast') toast(esc(e.text), e.cls || '', 3.2);
       else if (e.type === 'sfx' && sfx[e.name]) sfx[e.name]();
       else if (e.type === 'over' && isHost) finishView();
@@ -452,7 +454,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       lastOrdersKey = key;
       box.innerHTML = game.orders.map((o) => {
         const R = L.recipes[o.recipe];
-        return `<div class="mp-ticket" data-o="${o.id}"><b>${ITEMS[R.item].icon} ${esc(R.title)}</b><div class="st">${R.steps.map(esc).join(' → ')}</div><div class="tb"><i></i></div></div>`;
+        return `<div class="mp-ticket" data-o="${o.id}"><small class="who">${esc(clientName(game, o))} cần</small><b>${ITEMS[R.item].icon} ${esc(R.title)}</b><div class="st">${R.steps.map(esc).join(' → ')}</div><div class="tb"><i></i></div></div>`;
       }).join('') || '<div class="mp-ticket"><b>☕ Chưa có việc</b><div class="st">Tranh thủ uống cà phê…</div></div>';
     }
     for (const o of game.orders) {
@@ -518,10 +520,80 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     setter(m);
   }
 
+  // ---------- clients in the lobby (visual only, driven by the host's order list) ----------
+  const npcs = {};   // order id -> { mesh, phase: in|wait|out, path, line, bubble, said }
+  const moods = {};  // order id -> happy | angry (from served / gone events)
+  function sayOver(npc, text) {
+    if (npc.said === text) return;
+    if (npc.line) npc.mesh.remove(npc.line);
+    npc.line = text ? speechSprite(text) : null;
+    if (npc.line) { npc.line.position.y = 3.05; npc.mesh.add(npc.line); }
+    npc.said = text;
+  }
+  const speechTex = {};
+  function speechSprite(text) {
+    if (!speechTex[text]) speechTex[text] = textTexture([text], { w: 512, h: 120, sizes: [50], bg: '#ffffff', radius: 50 });
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: speechTex[text], transparent: true, depthWrite: false }));
+    sp.scale.set(1.7, 0.4, 1); sp.renderOrder = 12;
+    return sp;
+  }
+  function updateClients(dt) {
+    const pick = (arr, k) => arr[Math.abs(k) % arr.length];
+    const lines = L.clientLines || { wait: [''], happy: [''], angry: [''] };
+    const live = new Set();
+    for (const o of game.orders) {
+      live.add(String(o.id));
+      let n = npcs[o.id];
+      if (!n) {
+        const c = (L.clients || [])[o.client] || { name: 'Khách', look: { shirt: '#ddd' } };
+        const mesh = makeClient(c);
+        const [door0, door1] = L.clientDoor;
+        mesh.position.set(door0.x, 0, door0.z);
+        scene.add(mesh);
+        const bubble = itemIcon(L.recipes[o.recipe].item);
+        bubble.position.y = 2.62; bubble.scale.set(0.55, 0.55, 1);
+        mesh.add(bubble);
+        const spot = L.clientSpots[o.spot % L.clientSpots.length];
+        n = npcs[o.id] = { mesh, phase: 'in', path: [door1, spot], bubble, line: null, said: '' };
+      }
+      // patience
+      const k = Math.max(0, o.t / o.total);
+      n.mesh.userData.bar.set(Math.max(0.02, k), k < 0.3 ? (Math.sin(animT * 10) > 0 ? '#ff6f8a' : '#ffd25a') : k < 0.6 ? '#ffd25a' : '#9be7c4');
+      if (n.phase === 'wait') sayOver(n, k < 0.35 ? pick(lines.wait, o.id) : '');
+    }
+    for (const [id, n] of Object.entries(npcs)) {
+      if (!live.has(id) && n.phase !== 'out') {
+        const happy = moods[id] !== 'angry';
+        n.phase = 'out';
+        n.path = [L.clientDoor[1], L.clientDoor[0]];
+        n.mesh.remove(n.bubble);
+        n.mesh.userData.bar.set(0);
+        sayOver(n, (happy ? '😍 ' : '😤 ') + pick(happy ? lines.happy : lines.angry, +id));
+      }
+      // walk along the path
+      const target = n.path[0];
+      const parts = n.mesh.userData.parts;
+      if (target) {
+        const dx = target.x - n.mesh.position.x, dz = target.z - n.mesh.position.z;
+        const d = Math.hypot(dx, dz), v = 2.4 * dt;
+        if (d <= v) { n.mesh.position.x = target.x; n.mesh.position.z = target.z; n.path.shift(); }
+        else { n.mesh.position.x += dx / d * v; n.mesh.position.z += dz / d * v; n.mesh.rotation.y = Math.atan2(dx, dz); }
+        if (parts) { const sw = Math.sin(animT * 10) * 0.5; parts.legL.rotation.x = sw; parts.legR.rotation.x = -sw; }
+      } else {
+        if (parts) { parts.legL.rotation.x = 0; parts.legR.rotation.x = 0; }
+        if (n.phase === 'in') { n.phase = 'wait'; }
+        if (n.phase === 'wait') n.mesh.rotation.y = angleLerp(n.mesh.rotation.y, Math.PI, 0.15); // face the counter
+        if (n.phase === 'out') { scene.remove(n.mesh); delete npcs[id]; delete moods[id]; }
+      }
+    }
+  }
+
   let animT = 0;
   function render(dt) {
     animT += dt;
+    world.animate(animT);
     if (!game) return;
+    updateClients(dt);
     // stations
     const myP = game.players[myId];
     const myTarget = myP && !isFrozen(myP) ? targetOf(game, { ...myP, x: me.x, z: me.z }).station : null;
@@ -638,12 +710,12 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     const portrait = innerWidth < innerHeight;
     // landscape: the whole room on screen; portrait: follow me inside the room
     if (portrait) {
-      rig.zoom = 1.02;
-      rig.target.set(Math.max(-3.2, Math.min(3.2, me.x)), 0, Math.max(-1.8, Math.min(2.2, me.z)) + 0.6);
+      rig.zoom = 1.0;
+      rig.target.set(Math.max(-5, Math.min(5, me.x)), 0, Math.max(-3, Math.min(3, me.z)) + 0.6);
     } else {
       const aspect = innerWidth / innerHeight;
-      rig.zoom = Math.max(1.0, Math.min(1.5, 1.6 / Math.max(1, aspect) + 0.3));
-      look.set(me.x * 0.12, 0, me.z * 0.08 + 0.8);
+      rig.zoom = Math.max(1.2, Math.min(1.85, 1.95 / Math.max(1, aspect) + 0.42));
+      look.set(me.x * 0.1, 0, me.z * 0.06 + 1.0);
       rig.target.copy(look);
     }
     rig.update(dt);

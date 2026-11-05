@@ -112,6 +112,14 @@ Mở `https://…/?mp=1` → menu chính → thẻ **Overdeadline & Overburnout*
 - **Một ván**: đếm ngược 3 giây, 3 phút, 3 công thức: *Slide nhanh* (Brief → Laptop, 30k), *Báo cáo số liệu*
   (Data → Laptop → Máy in, 60k), *Deck đề xuất* (Slide + Bản in ghép ở bàn → chị Tuyết ký, 140k; 30% bị
   "vài ý nhỏ" một lần, phải về laptop sửa). Nộp sớm có tip tới +50%, trễ −20k.
+- **Bản đồ = văn phòng T&M nhiều phòng** (18 × 12): Khu làm việc (kệ Brief/Data, 2 laptop, Bảo và Trang ngồi
+  gõ máy) · Phòng in · Phòng Chủ tịch vách kính (bàn chị Tuyết) · hành lang (4 bàn ghép, thùng rác, bảng Scrum
+  của anh Đạt chắn giữa lối) · Pantry (cà phê, tủ lạnh, Mèo KPI) · Phòng họp · **Sảnh khách** (lễ tân chị Gấm,
+  sofa). Mỗi phòng một màu sàn, biển tên treo trên cửa.
+- **Khách thật**: mỗi đơn là một người T&M (chị Hân, Khang, chị Linh, chị Hạ, Mai, An, chị Quỳnh, Long) đi từ cửa
+  sảnh vào, ngồi chờ ở một trong 4 chỗ, trên đầu có icon món cần và thanh kiên nhẫn; gần hết giờ thì giục
+  ("Em ơi xong chưa?"). Nộp ở **Quầy lễ tân** (ô cửa giữa hành lang và sảnh): khách "😍 Quá xịn" rồi về;
+  trễ thì "😤 Thôi khỏi!" và bỏ đi. Ticket trên HUD ghi "Chị Hân cần…".
 - **Bẫy của màn**: máy in để quá 8 giây thành `v3_FINAL_sửa_lần_cuối` (hỏng) · stand-up lúc 0:55 và 2:00
   (cảnh báo 5 giây, ai trong vòng hồng quanh bảng Scrum bị kẹt họp 7 giây).
 - **Burnout**: làm laptop +7/giây, cầm đồ +0,8/giây, rảnh tay −1,6/giây, cà phê −35 (ly thứ 3 trong 45 giây:
@@ -126,7 +134,7 @@ Mở `https://…/?mp=1` → menu chính → thẻ **Overdeadline & Overburnout*
 site/js/game/mp/engine.js   luật chơi thuần (host chạy): item, trạm, ticket, burnout, stand-up, sao
 site/js/game/mp/levels.js   dữ liệu màn (T&M); thêm công ty = thêm một object ở đây
 site/js/net/mp-net.js       phòng: Supabase Realtime (mặc định) · BroadcastChannel (?net=local, test 2 tab) · none
-site/js/maps/mp-room.js     dựng phòng 3D từ danh sách trạm
+site/js/maps/mp-room.js     dựng văn phòng 3D: phòng, vách (thường/kính), trang trí, trạm, khách
 site/js/modes/multi.js      sảnh, phòng chờ, vòng chơi, HUD, kết quả
 site/js/ui/mp-style.js      CSS (nằm trong JS để được gắn ?v= khi deploy)
 tests/mp-engine.test.mjs    unit test luật chơi (npm test)

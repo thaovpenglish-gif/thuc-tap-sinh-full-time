@@ -17,6 +17,10 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
   rules (`game/mp/engine.js`), positions sent by each client. `?net=local` uses BroadcastChannel for 2-tab tests;
   "Tập một mình" needs no network.
 - New files only (plus additive hooks in `main.js`, `flags.js`); Solo code untouched. 10 unit tests + 2-player e2e.
+- Game Owner feedback "chưa giống văn phòng nhiều phòng, chưa thấy khách": the T&M level is now a multi-room office
+  (work area, print room, glass chairperson's office, corridor with the Scrum board, pantry, meeting room, client
+  lobby with reception) and every order is a T&M person who walks into the lobby, waits with a bubble + patience bar,
+  and leaves happy or angry. Orders carry `client` and `spot`; engine emits `served` / `gone`.
 
 ## 2026-11-05 — QC round 1 and publish
 

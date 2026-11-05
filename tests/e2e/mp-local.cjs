@@ -51,16 +51,16 @@ const assert = (c, m) => { if (!c) throw new Error('ASSERT: ' + m); };
   const use = (p) => p.evaluate(() => window.__mp.useAction());
   const hostSees = (fn) => A.waitForFunction(fn, null, { timeout: 6000 });
 
-  await at(B, -6.2, -3.3); await B.waitForTimeout(400); await use(B);
+  await at(B, -8, -4.6); await B.waitForTimeout(400); await use(B);
   await hostSees(() => { const g = window.__mp.game; const p = Object.values(g.players).find((q) => q.name === 'Guest'); return p && p.held && g.items[p.held].type === 'brief'; });
-  await at(B, -2.8, -3.3); await B.waitForTimeout(400); await use(B); await B.waitForTimeout(300); await use(B);
+  await at(B, -4.6, -4.6); await B.waitForTimeout(400); await use(B); await B.waitForTimeout(300); await use(B);
   await hostSees(() => window.__mp.game.stations.lap1.progress > 0);
   await shot(B, 'mp-guest-working');
   await hostSees(() => { const g = window.__mp.game; return g.stations.lap1.item && g.items[g.stations.lap1.item].type === 'slide'; });
   await use(B); // pick up the slide
   // make sure a slide order is open, then deliver
   await A.evaluate(() => { const g = window.__mp.game; if (!g.orders.some((o) => o.recipe === 'slide')) g.orders.push({ id: 999, recipe: 'slide', t: 50, total: 55 }); });
-  await at(B, 2.6, 3.3); await B.waitForTimeout(400); await use(B);
+  await at(B, 6.2, 1.5); await B.waitForTimeout(400); await use(B);
   await hostSees(() => window.__mp.game.done >= 1);
   await B.waitForFunction(() => window.__mp.game.done >= 1, null, { timeout: 4000 });
   const money = await B.evaluate(() => window.__mp.game.money);

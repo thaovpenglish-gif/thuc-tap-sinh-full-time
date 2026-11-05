@@ -144,3 +144,22 @@ test('wrong item at the client counter is refused', () => {
   assert.ok(g.players.P0.held, 'still holding the brief');
   assert.equal(g.done, 0);
 });
+
+test('each waiting order has its own client and its own lobby seat', () => {
+  const g = game(4);
+  run(g, 120, 0.25);
+  const open = g.orders;
+  assert.ok(open.length >= 2, 'several orders open');
+  assert.equal(new Set(open.map((o) => o.client)).size, open.length, 'no client twice');
+  assert.equal(new Set(open.map((o) => o.spot)).size, open.length, 'no seat twice');
+  for (const o of open) assert.ok(o.spot < L.clientSpots.length && o.client < L.clients.length);
+});
+
+test('serving and expiring tell the lobby which client leaves', () => {
+  const g = game();
+  g.orders = [{ id: 5, recipe: 'slide', t: 50, total: 55, client: 1, spot: 0 }, { id: 6, recipe: 'report', t: 0.05, total: 75, client: 2, spot: 1 }];
+  g.items.s = { id: 's', type: 'slide' }; g.players.P0.held = 's';
+  goTo(g, 'P0', 'deliver');
+  assert.ok(act(g, 'P0').some((e) => e.type === 'served' && e.order === 5));
+  assert.ok(step(g, 0.1).some((e) => e.type === 'gone' && e.order === 6));
+});

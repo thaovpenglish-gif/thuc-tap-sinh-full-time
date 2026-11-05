@@ -264,12 +264,19 @@ function deliver(state, p, held) {
   const order = state.orders.find((o) => L.recipes[o.recipe].item === held.type);
   if (!order) return [say(p.id, `Không ai đặt ${ITEMS[held.type].label}. Khách: "Cái này là gì em?"`, 'bad'), { type: 'sfx', name: 'bad' }];
   const R = L.recipes[order.recipe];
+  const who = clientName(state, order);
   const tip = Math.round(R.reward * 0.5 * (order.t / order.total));
   state.money += R.reward + tip;
   state.done++;
   state.orders = state.orders.filter((o) => o !== order);
   delete state.items[held.id]; p.held = null;
-  return [{ type: 'sfx', name: 'good' }, { type: 'toast', text: `✅ ${R.title}: +${R.reward}k${tip ? ` (+${tip}k tip)` : ''}`, cls: 'good' }];
+  return [{ type: 'sfx', name: 'good' }, { type: 'served', order: order.id }, { type: 'toast', text: `✅ ${who} nhận ${R.title}: +${R.reward}k${tip ? ` (+${tip}k tip)` : ''}`, cls: 'good' }];
+}
+
+/** The client (from the level's cast) who placed this order. */
+export function clientName(state, order) {
+  const c = LEVELS[state.level].clients;
+  return c && c[order.client] ? c[order.client].name : 'Khách';
 }
 
 function spawnOrder(state) {
@@ -279,11 +286,25 @@ function spawnOrder(state) {
   let r = rand(state) * total, pick = pool[0];
   for (const o of pool) { r -= o.w; if (r <= 0) { pick = o; break; } }
   const R = L.recipes[pick.recipe];
-  state.orders.push({ id: state.nextOrder++, recipe: pick.recipe, t: R.time, total: R.time });
+  // who walks in (not someone already waiting) and where they sit in the lobby
+  const n = (L.clients || []).length;
+  let client = 0;
+  if (n) {
+    const busy = new Set(state.orders.map((o) => o.client));
+    const free = [...Array(n).keys()].filter((i) => !busy.has(i));
+    client = free.length ? free[Math.floor(rand(state) * free.length)] : 0;
+  }
+  const taken = new Set(state.orders.map((o) => o.spot));
+  let spot = 0;
+  while (taken.has(spot)) spot++;
+  state.orders.push({ id: state.nextOrder++, recipe: pick.recipe, t: R.time, total: R.time, client, spot });
   return [{ type: 'order', recipe: pick.recipe }, { type: 'sfx', name: 'ring' }];
 }
 
-function maxOrders(state) { return Math.min(4, 2 + Object.keys(state.players).length); }
+function maxOrders(state) {
+  const spots = (LEVELS[state.level].clientSpots || []).length || 4;
+  return Math.min(spots, 2 + Object.keys(state.players).length);
+}
 function spawnGap(state) {
   const n = Math.max(1, Object.keys(state.players).length);
   return LEVELS[state.level].spawnGap[Math.min(n, 4) - 1];
@@ -313,7 +334,7 @@ export function step(state, dt) {
     for (const o of expired) {
       state.failed++;
       state.money -= TUNING.failPenalty;
-      ev.push({ type: 'toast', text: `😤 Trễ deadline "${L.recipes[o.recipe].title}". Khách complain: −${TUNING.failPenalty}k`, cls: 'bad' }, { type: 'sfx', name: 'bad' });
+      ev.push({ type: 'gone', order: o.id }, { type: 'toast', text: `😤 ${clientName(state, o)} bỏ về: trễ "${L.recipes[o.recipe].title}". −${TUNING.failPenalty}k`, cls: 'bad' }, { type: 'sfx', name: 'bad' });
     }
   }
 

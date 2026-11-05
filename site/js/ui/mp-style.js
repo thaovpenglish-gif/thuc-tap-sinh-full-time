@@ -42,6 +42,7 @@ export const MP_CSS = `
 .mp-orders { display: flex; gap: 8px; flex: 1; min-width: 0; overflow: hidden; }
 .mp-ticket { background: #fff; border: var(--line); border-radius: 14px; box-shadow: var(--pop); padding: 7px 9px 8px; width: 150px; flex: none; animation: tin .25s ease; }
 .mp-ticket b { display: block; font-size: 13px; font-weight: 900; line-height: 1.2; }
+.mp-ticket .who { display: block; font-size: 10.5px; font-weight: 800; color: var(--muted); line-height: 1.2; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mp-ticket .st { font-size: 11px; font-weight: 700; color: #3a3f55; margin: 3px 0 5px; line-height: 1.35; }
 .mp-ticket .tb { height: 8px; border: 2px solid var(--ink); border-radius: 99px; overflow: hidden; background: #f2ede4; }
 .mp-ticket .tb i { display: block; height: 100%; background: var(--mint); }
