@@ -6,6 +6,11 @@
 //              { emoji, labels[], hit?, miss?, color? }).
 //   conveyor · items slide past a zone; tap when one is inside (mode 'stamp': only good ones; mode 'beat': timing).
 //   align    · drag blocks into their dashed outlines; optional twist re-shuffles some ("vài ý nhỏ").
+//   printjam · máy in kẹt giấy: drag each scrap out along its arrow, slowly (too fast = it tears), then press IN.
+//   collate  · xếp trang & bấm ghim: tap pages 1→N (flip face-down ones first), staple when the rings meet.
+//   wires    · cắm lại dây mạng: drag each plug to the port with the same colour and shape.
+//   shredder · máy hủy giấy: drag each sheet down into the shredder or right into the filing cabinet.
+//   hold has a third skin 'cup' (rót cà phê / trà tới vạch; cfg.orders = notes per cup).
 // Everything is original sticker-style art: rounded shapes, thick ink outlines, pastel fills, emoji.
 import { sfx } from '../core/audio.js';
 
@@ -15,6 +20,7 @@ const FONT = "'Be Vietnam Pro', system-ui, sans-serif";
 const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
+const shuffleArr = (a) => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
 
 function rr(g, x, y, w, h, r) {
   g.beginPath();
@@ -192,6 +198,11 @@ function hold(S, cfg, done) {
   const skin = cfg.skin || 'seal';
   const rounds = cfg.rounds || 5;
   const width = cfg.zone || 0.16;
+  const WORDS = {
+    seal: { ok: 'Kín, đẹp!', under: 'Hở miệng túi!', over: 'Cháy túi!', hold: 'GIỮ để hàn', unit: '🔥 Túi' },
+    balloon: { ok: 'Vừa đẹp!', under: 'Còn xẹp quá!', over: 'BỤP!', hold: 'GIỮ để bơm', unit: '🎈 Bóng' },
+    cup: { ok: 'Vừa vạch!', under: 'Lưng ly rồi!', over: 'Tràn ra bàn!', hold: 'GIỮ để rót', unit: '☕ Ly' },
+  }[skin] || {};
   let r = 0, p = 0, holding = false, state = 'idle', wait = 0, goods = 0, perfect = 0, rate = 0.5, zone = [0.6, 0.76], result = '';
   const next = () => { p = 0; state = 'idle'; holding = false; rate = rnd(0.38, 0.72) * (1 + r * 0.06); const c = rnd(0.5, 0.82); zone = [c - width / 2, c + width / 2]; };
   next();
@@ -200,9 +211,9 @@ function hold(S, cfg, done) {
     holding = false;
     if (p >= zone[0] && p <= zone[1]) {
       goods++; const mid = (zone[0] + zone[1]) / 2, isP = Math.abs(p - mid) < width * 0.18; if (isP) perfect++;
-      state = 'ok'; sfx.good(); result = isP ? 'Hoàn hảo!' : (skin === 'seal' ? 'Kín, đẹp!' : 'Vừa đẹp!');
+      state = 'ok'; sfx.good(); result = isP ? 'Hoàn hảo!' : WORDS.ok;
       S.pop(W / 2 - 40, 46, result, '#2f8a4c', 22);
-    } else { state = 'under'; sfx.bad(); result = skin === 'seal' ? 'Hở miệng túi!' : 'Còn xẹp quá!'; S.pop(W / 2 - 40, 70, result, '#c0392b', 20); }
+    } else { state = 'under'; sfx.bad(); result = WORDS.under; S.pop(W / 2 - 40, 70, result, '#c0392b', 20); }
     wait = 0.8;
   };
   const press = () => { if (state === 'idle') { state = 'filling'; holding = true; } };
@@ -216,8 +227,8 @@ function hold(S, cfg, done) {
   S.loop((dt) => {
     if (state === 'filling' && holding) {
       p += rate * dt;
-      if (p > 1) { state = 'over'; holding = false; sfx.bad(); S.shake = 0.3; wait = 0.9; result = skin === 'seal' ? 'Cháy túi!' : 'BỤP!'; S.pop(W / 2 - 40, 70, result, '#c0392b', 24);
-        if (skin === 'seal') S.burst(W / 2 - 40, 110, '#555', 18, 90); else S.burst(W / 2 - 40, 150, cfg.color || PINK, 22, 220); }
+      if (p > 1) { state = 'over'; holding = false; sfx.bad(); S.shake = 0.3; wait = 0.9; result = WORDS.over; S.pop(W / 2 - 40, 70, result, '#c0392b', 24);
+        if (skin === 'seal') S.burst(W / 2 - 40, 110, '#555', 18, 90); else if (skin === 'cup') S.burst(W / 2 - 40, 96, cfg.color || '#7a4a2a', 18, 150); else S.burst(W / 2 - 40, 150, cfg.color || PINK, 22, 220); }
     }
     if (wait > 0) { wait -= dt; if (wait <= 0) { r++; if (r >= rounds) { state = 'end'; setTimeout(done, 200); } else next(); } }
     g.fillStyle = CREAM; g.fillRect(0, 0, W, H);
@@ -235,6 +246,24 @@ function hold(S, cfg, done) {
       if (state === 'ok') { g.save(); g.translate(cx + 42, top + 132); g.rotate(-0.25); sticker(g, -36, -14, 72, 28, MINT, 8); text(g, 'ĐẠT', 0, 0, { size: 15, weight: 900 }); g.restore(); }
       if (state === 'over') { g.fillStyle = '#333'; rr(g, cx - 80, top, 160, 18, 6); g.fill(); }
       if (state === 'under') { g.fillStyle = '#e0a15a'; for (let i = 0; i < 4; i++) { rr(g, cx - 30 + i * 18, top + 160 + (S.t * 60 % 40), 12, 5, 2); g.fill(); } }
+    } else if (skin === 'cup') {
+      // a glass on a saucer: the drink rises with p, the target band is marked on the glass; order note on the left
+      const top = 92, bot = 262, tw = 130, bw = 100, lvl = (k) => bot - 8 - Math.min(1.08, k) * (bot - top - 14);
+      const xAt = (y, side) => cx + side * (bw / 2 + (tw - bw) / 2 * (bot - y) / (bot - top));
+      if (cfg.orders) { const o = cfg.orders[r % cfg.orders.length]; sticker(g, 16, 44, 120, 46, BUTTER, 10, 2.5); text(g, o, 76, 67, { size: 12, weight: 900, max: 110 }); }
+      if (state === 'filling') { g.strokeStyle = cfg.color || '#7a4a2a'; g.lineWidth = 7; g.lineCap = 'round'; g.beginPath(); g.moveTo(cx + 8, 40); g.lineTo(cx + 8, lvl(p)); g.stroke(); }
+      sticker(g, cx - 40, 34, 80, 26, '#c9c9d6', 8); // the pot / machine spout
+      g.beginPath(); g.ellipse(cx + 3, bot + 7, 90, 12, 0, 0, 7); g.fillStyle = INK; g.fill();
+      g.beginPath(); g.ellipse(cx, bot + 4, 90, 12, 0, 0, 7); g.fillStyle = '#fff'; g.fill(); g.lineWidth = 3; g.strokeStyle = INK; g.stroke();
+      const ly = lvl(p);
+      g.beginPath(); g.moveTo(xAt(ly, -1), ly); g.lineTo(xAt(ly, 1), ly); g.lineTo(xAt(bot, 1), bot); g.lineTo(xAt(bot, -1), bot); g.closePath();
+      g.fillStyle = cfg.color || '#7a4a2a'; g.fill();
+      if (p > 0.05) { g.fillStyle = 'rgba(255,240,220,.55)'; g.fillRect(xAt(ly, -1) + 4, ly, xAt(ly, 1) - xAt(ly, -1) - 8, 6); }
+      g.beginPath(); g.moveTo(xAt(top, -1), top); g.lineTo(xAt(bot, -1), bot); g.lineTo(xAt(bot, 1), bot); g.lineTo(xAt(top, 1), top);
+      g.lineWidth = 3.5; g.strokeStyle = INK; g.stroke();
+      for (const z of zone) { const y = lvl(z); g.setLineDash([6, 4]); g.lineWidth = 2.5; g.strokeStyle = '#2f8a4c'; g.beginPath(); g.moveTo(xAt(y, -1) - 8, y); g.lineTo(xAt(y, 1) + 8, y); g.stroke(); g.setLineDash([]); }
+      if (state === 'over') { g.fillStyle = cfg.color || '#7a4a2a'; g.beginPath(); g.ellipse(cx + 60, bot + 6, 40, 7, 0, 0, 7); g.fill(); }
+      if (cfg.label) text(g, cfg.label, cx, top - 14, { size: 12, weight: 900 });
     } else {
       // balloon: radius grows with p, target ring at the zone
       const R = 22 + p * 98, ringA = 22 + zone[0] * 98, ringB = 22 + zone[1] * 98, by = 160;
@@ -256,8 +285,8 @@ function hold(S, cfg, done) {
     g.fillStyle = MINT; g.fillRect(mx + 3, my + mh - zone[1] * mh, 28, (zone[1] - zone[0]) * mh);
     g.fillStyle = state === 'over' ? PEACH : BUTTER; const fh = Math.min(1, p) * (mh - 6); rr(g, mx + 5, my + mh - 3 - fh, 24, fh, 6); g.fill();
     g.lineWidth = 2; g.strokeStyle = INK; g.beginPath(); g.moveTo(mx - 6, my + mh - zone[0] * mh); g.lineTo(mx + 40, my + mh - zone[0] * mh); g.moveTo(mx - 6, my + mh - zone[1] * mh); g.lineTo(mx + 40, my + mh - zone[1] * mh); g.stroke();
-    text(g, state === 'idle' ? (skin === 'seal' ? 'GIỮ để hàn' : 'GIỮ để bơm') : state === 'filling' ? 'THẢ ở vùng xanh!' : result, W - 75, my + mh + 18, { size: 12, weight: 900 });
-    hud(g, `${skin === 'seal' ? '🔥 Túi' : '🎈 Bóng'} ${Math.min(rounds, r + 1)}/${rounds}`, `Đạt: ${goods}${perfect ? ` · ✨${perfect}` : ''}`);
+    text(g, state === 'idle' ? WORDS.hold : state === 'filling' ? 'THẢ ở vùng xanh!' : result, W - 75, my + mh + 18, { size: 12, weight: 900 });
+    hud(g, `${WORDS.unit} ${Math.min(rounds, r + 1)}/${rounds}`, `Đạt: ${goods}${perfect ? ` · ✨${perfect}` : ''}`);
   });
   return {
     score: () => clamp01(goods / rounds),
@@ -467,7 +496,252 @@ function align(S, cfg, done) {
   };
 }
 
-const GAMES = { shred, hold, whack, conveyor, align };
+// ---------------------------------------------------------------------------------------------- printjam
+// Máy in kẹt giấy: drag each crumpled scrap out along its arrow. Pull too fast and it tears (a stub stays behind).
+function printjam(S, cfg, done) {
+  const { g, cv } = S;
+  const TEAR = cfg.tear || 650; // logical px per second, averaged over the last ~120 ms (single events are too jumpy)
+  const dirs = [[0, 1], [0, 1], [-1, 0.25], [1, 0.25], [0, 1]];
+  const scraps = Array.from({ length: cfg.jams || 3 }, (_, i) => {
+    const [dx, dy] = dirs[(i + Math.floor(Math.random() * 5)) % dirs.length]; const L = Math.hypot(dx, dy);
+    return { x: 150 + i * 95 + rnd(-10, 10), y: 150, dx: dx / L, dy: dy / L, pulled: 0, need: 90, size: 1, out: false, fly: 0, seed: Math.random() * 9 };
+  });
+  let samples = [];
+  let grab = null, last = null, tears = 0, phase = 'pull', printT = 0, tension = 0, finished = false;
+  const at = (sc) => ({ x: sc.x + sc.dx * sc.pulled, y: sc.y + sc.dy * sc.pulled });
+  const down = (e) => {
+    const q = S.at(e);
+    if (phase === 'print') { if (Math.hypot(q.x - 420, q.y - 64) < 34) { phase = 'printing'; sfx.choose(); } return; }
+    const sc = scraps.find((o) => !o.out && Math.hypot(q.x - at(o).x, q.y - at(o).y) < 40 * o.size + 10);
+    if (!sc) return;
+    try { cv.setPointerCapture(e.pointerId); } catch { /* synthetic */ }
+    grab = sc; last = { ...q, t: performance.now() }; samples = [];
+  };
+  const move = (e) => {
+    if (!grab) return;
+    const q = S.at(e), now = performance.now();
+    const along = (q.x - last.x) * grab.dx + (q.y - last.y) * grab.dy;
+    samples.push({ t: now, d: Math.max(0, along) });
+    while (samples.length && now - samples[0].t > 120) samples.shift();
+    const v = samples.reduce((a, x) => a + x.d, 0) / 0.12; // px/s over a fixed 120 ms window
+    tension = tension * 0.6 + Math.min(1.4, v / TEAR) * 0.4;
+    last = { ...q, t: now };
+    if (v > TEAR) { // checked before the pull counts: a fast yank tears even on its last centimetre
+      // torn: the pulled part comes away, a smaller stub stays stuck
+      tears++; sfx.bad(); S.shake = 0.2; S.pop(at(grab).x, at(grab).y - 20, 'Roẹt! Rách rồi', '#c0392b', 16);
+      S.burst(at(grab).x, at(grab).y, '#fff', 10, 120);
+      grab.size = Math.max(0.45, grab.size * 0.7); grab.pulled = 0; grab = null; tension = 0;
+      return;
+    }
+    if (along > 0) grab.pulled = Math.min(grab.need, grab.pulled + along);
+    if (grab.pulled >= grab.need) { grab.out = true; grab.fly = 0.01; sfx.blip(1.4); S.pop(at(grab).x, at(grab).y - 20, 'Ra rồi!', '#2f8a4c', 16); grab = null; tension = 0; if (scraps.every((o) => o.out)) { phase = 'print'; sfx.ding(); } }
+  };
+  const up = () => { grab = null; tension = 0; };
+  cv.addEventListener('pointerdown', down); cv.addEventListener('pointermove', move); cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  S.loop((dt) => {
+    g.fillStyle = CREAM; g.fillRect(0, 0, W, H);
+    // printer body with the front panel open
+    sticker(g, 60, 40, 400, 230, cfg.color || '#d9dcef', 22);
+    sticker(g, 90, 92, 340, 130, '#3a3d55', 12, 2.5);
+    for (const y of [138, 162]) { g.fillStyle = '#1f2133'; rr(g, 100, y - 9, 320, 18, 9); g.fill(); g.strokeStyle = '#555a7a'; g.lineWidth = 2; for (let x = 108 + (S.t * 30 % 14); x < 418; x += 14) { g.beginPath(); g.moveTo(x, y - 7); g.lineTo(x, y + 7); g.stroke(); } }
+    text(g, cfg.label || 'MÁY IN TẦNG 2', 160, 64, { size: 13, weight: 900 });
+    // print button
+    const pulse = phase === 'print' ? 1 + Math.sin(S.t * 8) * 0.08 : 1;
+    g.save(); g.translate(420, 64); g.scale(pulse, pulse);
+    g.beginPath(); g.arc(2, 2, 22, 0, 7); g.fillStyle = INK; g.fill();
+    g.beginPath(); g.arc(0, 0, 22, 0, 7); g.fillStyle = phase === 'pull' ? '#bbb' : MINT; g.fill(); g.lineWidth = 3; g.strokeStyle = INK; g.stroke();
+    text(g, 'IN', 0, 1, { size: 13, weight: 900 }); g.restore();
+    // scraps
+    for (const sc of scraps) {
+      const p = at(sc);
+      if (sc.out) { sc.fly += dt * 1.5; if (sc.fly > 1) continue; g.globalAlpha = 1 - sc.fly; }
+      const ox = sc.out ? sc.dx * sc.fly * 160 : 0, oy = sc.out ? sc.dy * sc.fly * 160 - sc.fly * 60 : 0;
+      g.save(); g.translate(p.x + ox, p.y + oy); g.rotate(Math.sin(sc.seed) * 0.4 + (sc.out ? sc.fly * 3 : 0)); g.scale(sc.size, sc.size);
+      g.beginPath(); for (let k = 0; k < 9; k++) { const a = k / 9 * Math.PI * 2, rr2 = 30 + Math.sin(k * 2.3 + sc.seed) * 7; g.lineTo(Math.cos(a) * rr2 * 1.1, Math.sin(a) * rr2 * 0.8); } g.closePath();
+      g.fillStyle = '#fff'; g.fill(); g.lineWidth = 2.5; g.strokeStyle = INK; g.stroke();
+      g.strokeStyle = 'rgba(0,0,0,.25)'; g.lineWidth = 1.5; for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(-18 + k * 6, -10 + k * 7); g.lineTo(14 - k * 4, -6 + k * 9); g.stroke(); }
+      g.restore(); g.globalAlpha = 1;
+      if (!sc.out) {
+        // arrow showing which way to pull
+        const ax = p.x + sc.dx * 48, ay = p.y + sc.dy * 48, a = Math.atan2(sc.dy, sc.dx);
+        g.save(); g.translate(ax, ay); g.rotate(a); g.globalAlpha = 0.6 + Math.sin(S.t * 6) * 0.3;
+        g.fillStyle = BUTTER; g.strokeStyle = INK; g.lineWidth = 2.5; g.beginPath(); g.moveTo(-10, -7); g.lineTo(6, -7); g.lineTo(6, -13); g.lineTo(20, 0); g.lineTo(6, 13); g.lineTo(6, 7); g.lineTo(-10, 7); g.closePath(); g.fill(); g.stroke();
+        g.restore(); g.globalAlpha = 1;
+      }
+    }
+    // tension meter while pulling
+    if (grab) { const p = at(grab); const t = Math.min(1, tension); sticker(g, p.x - 34, p.y - 58, 68, 12, '#fff', 6, 2); g.fillStyle = t > 0.85 ? '#e74c3c' : t > 0.55 ? '#f5b041' : '#58d68d'; rr(g, p.x - 32, p.y - 56, 64 * t, 8, 4); g.fill(); }
+    if (phase === 'printing') {
+      printT += dt;
+      for (let k = 0; k < 4; k++) { const tt = Math.min(1, Math.max(0, printT * 2 - k * 0.35)); if (tt > 0) sticker(g, 200 + k * 6, 230 + tt * 40 - k * 4, 120, 20, '#fff', 3, 2); }
+      if (printT > 1.3 && !finished) { finished = true; sfx.good(); S.pop(260, 200, tears ? 'In xong (hơi nhàu)' : 'In xong, phẳng phiu!', '#2f8a4c', 20); setTimeout(done, 500); }
+    }
+    hud(g, `🖨️ Gỡ giấy kẹt · còn ${scraps.filter((o) => !o.out).length}`, tears ? `Rách: ${tears}` : 'Kéo TỪ TỪ theo mũi tên');
+    if (phase === 'print') text(g, 'Bấm IN →', 360, 64, { size: 13, weight: 900, color: '#2f8a4c' });
+  });
+  return {
+    score: () => clamp01(1 - tears * 0.25) * (phase === 'pull' ? scraps.filter((o) => o.out).length / scraps.length : 1),
+    stop: () => cv.removeEventListener('pointerdown', down),
+    info: () => ({ phase, tears, scraps: scraps.map((o) => ({ ...at(o), dx: o.dx, dy: o.dy, out: o.out, left: o.need - o.pulled })) }),
+  };
+}
+
+// ---------------------------------------------------------------------------------------------- collate
+// Xếp trang & bấm ghim: tap the pages 1 → N (face-down ones must be flipped first), then staple when the ring hits.
+function collate(S, cfg, done) {
+  const { g, cv } = S;
+  const sets = cfg.sets || 2, N = Math.min(6, cfg.pages || 5);
+  let set = 0, nextN = 1, pages = [], mistakes = 0, phase = 'pages', ring = 0, stapled = 0, wait = 0, finished = false;
+  const deal = () => {
+    // two rows that never overlap (pages are 82 × 100), left of the stack area
+    const slots = shuffleArr([[24, 40], [122, 36], [220, 42], [56, 166], [154, 170], [252, 164]]).slice(0, N);
+    pages = slots.map(([x, y], i) => ({ n: i + 1, x: x + rnd(-5, 5), y: y + rnd(-4, 4), a: rnd(-0.15, 0.15), down: Math.random() < 0.3, done: false, fly: 0 }));
+    nextN = 1; phase = 'pages';
+  };
+  deal();
+  const hit = (q) => [...pages].reverse().find((p) => !p.done && q.x >= p.x && q.x <= p.x + 82 && q.y >= p.y && q.y <= p.y + 100);
+  const tap = (e) => {
+    const q = S.at(e);
+    if (phase === 'staple') {
+      const d = Math.abs(ring - 22);
+      if (d < 9) { stapled++; sfx.choose(); S.pop(400, 120, 'Cạch! Ghim đẹp', '#2f8a4c', 18); }
+      else { mistakes++; sfx.bad(); S.pop(400, 120, 'Ghim lệch!', '#c0392b', 17); }
+      phase = 'wait'; wait = 0.6; return;
+    }
+    if (phase !== 'pages') return;
+    const p = hit(q); if (!p) return;
+    if (p.down) { p.down = false; sfx.blip(0.8); return; } // flip it over first
+    if (p.n === nextN) { p.done = true; p.fly = 0.01; nextN++; sfx.blip(1 + nextN * 0.08); if (nextN > N) { phase = 'staple'; ring = 70; } }
+    else { mistakes++; sfx.bad(); S.shake = 0.15; S.pop(p.x + 40, p.y - 6, `Chưa tới trang ${p.n}!`, '#c0392b', 14); }
+  };
+  const kd = (e) => { if (e.code === 'Space' && phase === 'staple') { e.preventDefault(); e.stopPropagation(); tap({ clientX: -1, clientY: -1 }); } };
+  cv.addEventListener('pointerdown', tap); window.addEventListener('keydown', kd, true);
+  S.loop((dt) => {
+    if (phase === 'staple') { ring -= dt * 55; if (ring < 8) { mistakes++; sfx.bad(); S.pop(400, 120, 'Lỡ nhịp ghim!', '#c0392b', 16); phase = 'wait'; wait = 0.6; } }
+    if (phase === 'wait') { wait -= dt; if (wait <= 0) { set++; if (set >= sets) { if (!finished) { finished = true; setTimeout(done, 200); } phase = 'end'; } else deal(); } }
+    g.fillStyle = '#e8dcc8'; g.fillRect(0, 0, W, H);
+    for (let y = 30; y < H; y += 26) { g.strokeStyle = 'rgba(120,90,50,.12)'; g.lineWidth = 2; g.beginPath(); g.moveTo(0, y); g.lineTo(W, y + 4); g.stroke(); }
+    // the stack area
+    const sx = 360, sy = 110;
+    g.setLineDash([6, 5]); g.lineWidth = 2; g.strokeStyle = 'rgba(29,29,31,.35)'; rr(g, sx, sy, 82, 100, 6); g.stroke(); g.setLineDash([]);
+    const stacked = pages.filter((p) => p.done && p.fly >= 1).length;
+    for (let k = 0; k < stacked; k++) sticker(g, sx + k * 1.5, sy - k * 1.5, 82, 100, '#fff', 4, 2);
+    if (stacked) text(g, String(Math.min(N, stacked)), sx + 41 + stacked * 1.5, sy + 50 - stacked * 1.5, { size: 26, weight: 900, color: '#bbb' });
+    for (const p of pages) {
+      if (p.done) { p.fly = Math.min(1, p.fly + dt * 3); if (p.fly >= 1) continue; }
+      const k = p.done ? p.fly : 0, x = p.x + (sx - p.x) * k, y = p.y + (sy - p.y) * k;
+      g.save(); g.translate(x + 41, y + 50); g.rotate(p.a * (1 - k));
+      sticker(g, -41, -50, 82, 100, p.down ? '#c9cde3' : '#fff', 4, 2.5);
+      if (p.down) text(g, '↺', 0, 0, { size: 30, weight: 900, color: '#6b6e8a' });
+      else { for (let l = 0; l < 5; l++) { g.fillStyle = '#d6d6de'; g.fillRect(-30, -34 + l * 10, l === 0 ? 40 : 60, 4); } text(g, String(p.n), 0, 26, { size: 26, weight: 900 }); }
+      g.restore();
+    }
+    if (phase === 'staple') {
+      g.beginPath(); g.arc(sx + 10, sy + 10, 22, 0, 7); g.fillStyle = 'rgba(184,240,216,.6)'; g.fill(); g.lineWidth = 2; g.strokeStyle = '#2f8a4c'; g.stroke();
+      g.beginPath(); g.arc(sx + 10, sy + 10, Math.max(1, ring), 0, 7); g.lineWidth = 3; g.strokeStyle = '#c0392b'; g.stroke();
+      text(g, 'Bấm khi vòng đỏ khớp vòng xanh!', sx + 40, sy - 22, { size: 12, weight: 900 });
+    }
+    hud(g, `📑 Bộ ${Math.min(sets, set + 1)}/${sets} · tới trang ${Math.min(N, nextN)}`, mistakes ? `Lỗi: ${mistakes}` : 'Lật trang úp ↺ trước');
+  });
+  return {
+    score: () => clamp01((Math.min(set, sets) / sets) - mistakes * 0.12 + (phase === 'end' ? 0 : 0)),
+    stop: () => { cv.removeEventListener('pointerdown', tap); window.removeEventListener('keydown', kd, true); },
+    info: () => ({ phase, nextN, ring, pages: pages.map((p) => ({ n: p.n, x: p.x + 41, y: p.y + 50, down: p.down, done: p.done })) }),
+  };
+}
+
+// ---------------------------------------------------------------------------------------------- wires
+// Cắm lại dây mạng: drag from each left plug to the port of the same colour + shape on the right.
+function wires(S, cfg, done) {
+  const { g, cv } = S;
+  const KINDS = [['#e74c3c', '●'], ['#3498db', '▲'], ['#f1c40f', '■'], ['#2ecc71', '◆'], ['#9b59b6', '★']].slice(0, cfg.count || 4);
+  const left = KINDS.map((k, i) => ({ k: i, x: 90, y: 70 + i * (190 / (KINDS.length - 1 || 1)), done: false }));
+  const order = shuffleArr(KINDS.map((_, i) => i));
+  const right = order.map((k, i) => ({ k, x: 430, y: 70 + i * (190 / (KINDS.length - 1 || 1)) }));
+  let drag = null, pos = null, mistakes = 0, links = 0, finished = false;
+  const down = (e) => { const q = S.at(e); const l = left.find((o) => !o.done && Math.hypot(q.x - o.x, q.y - o.y) < 26); if (!l) return; try { cv.setPointerCapture(e.pointerId); } catch { /* synthetic */ } drag = l; pos = q; };
+  const move = (e) => { if (drag) pos = S.at(e); };
+  const up = (e) => {
+    if (!drag) return; const q = e ? S.at(e) : pos; const l = drag; drag = null;
+    const rp = right.find((o) => Math.hypot(q.x - o.x, q.y - o.y) < 30);
+    if (!rp) return;
+    if (rp.k === l.k && !left.some((o) => o.done && o.k === rp.k)) { l.done = true; l.to = rp; links++; sfx.choose(); S.burst(rp.x, rp.y, MINT, 8, 100); S.pop(rp.x - 40, rp.y - 18, 'Tách! Đèn xanh', '#2f8a4c', 14); if (left.every((o) => o.done) && !finished) { finished = true; sfx.good(); setTimeout(done, 600); } }
+    else { mistakes++; sfx.bad(); S.shake = 0.2; S.burst(rp.x, rp.y, '#f5b041', 10, 140); S.pop(rp.x - 40, rp.y - 18, 'Chập! Sai cổng', '#c0392b', 14); }
+  };
+  cv.addEventListener('pointerdown', down); cv.addEventListener('pointermove', move); cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', () => { drag = null; });
+  const cable = (a, b, col) => { g.strokeStyle = INK; g.lineWidth = 9; g.lineCap = 'round'; g.beginPath(); g.moveTo(a.x, a.y); g.bezierCurveTo(a.x + 120, a.y, b.x - 120, b.y, b.x, b.y); g.stroke(); g.strokeStyle = col; g.lineWidth = 5; g.stroke(); };
+  S.loop(() => {
+    g.fillStyle = '#2b2d42'; g.fillRect(0, 0, W, H);
+    sticker(g, 360, 40, 120, 240, '#3c3f5c', 14, 2.5); text(g, cfg.label || 'SWITCH', 420, 30, { size: 12, color: '#fff' });
+    sticker(g, 40, 40, 100, 240, '#3c3f5c', 14, 2.5); text(g, cfg.from || 'DÂY', 90, 30, { size: 12, color: '#fff' });
+    for (const l of left) if (l.done) cable(l, l.to, KINDS[l.k][0]);
+    if (drag && pos) cable(drag, pos, KINDS[drag.k][0]);
+    for (const r2 of right) { const lit = left.some((o) => o.done && o.k === r2.k); sticker(g, r2.x - 22, r2.y - 16, 44, 32, lit ? '#1e8449' : '#1f2133', 6, 2.5); text(g, KINDS[r2.k][1], r2.x, r2.y + 1, { size: 16, color: KINDS[r2.k][0] }); g.beginPath(); g.arc(r2.x + 32, r2.y, 4, 0, 7); g.fillStyle = lit ? '#58d68d' : '#555'; g.fill(); }
+    for (const l of left) { g.beginPath(); g.arc(l.x + 2, l.y + 2, 17, 0, 7); g.fillStyle = INK; g.fill(); g.beginPath(); g.arc(l.x, l.y, 17, 0, 7); g.fillStyle = KINDS[l.k][0]; g.fill(); g.lineWidth = 2.5; g.strokeStyle = INK; g.stroke(); text(g, KINDS[l.k][1], l.x, l.y + 1, { size: 14, color: '#fff' }); }
+    text(g, `🔌 ${cfg.title || 'Cắm lại dây mạng'} · ${links}/${left.length}`, W / 2, 18, { size: 13, color: '#fff' });
+    text(g, mistakes ? `Chập: ${mistakes}` : 'Kéo từ dây trái sang cổng cùng màu, cùng hình', W / 2, H - 12, { size: 12, color: 'rgba(255,255,255,.75)' });
+  });
+  return {
+    score: () => clamp01(links / left.length - mistakes * 0.2),
+    stop: () => cv.removeEventListener('pointerdown', down),
+    info: () => ({ left: left.map((o) => ({ x: o.x, y: o.y, k: o.k, done: o.done })), right: right.map((o) => ({ x: o.x, y: o.y, k: o.k })) }),
+  };
+}
+
+// ---------------------------------------------------------------------------------------------- shredder
+// Máy hủy giấy: one sheet at a time — drag it DOWN into the shredder or RIGHT into the filing cabinet.
+function shredder(S, cfg, done) {
+  const { g, cv } = S;
+  const SH = cfg.target || { labels: ['Bản nháp có số CCCD', 'Bảng lương in thừa', 'Mật khẩu viết trên giấy', 'CV hết hạn lưu trữ', 'Báo giá cũ đã hủy'] };
+  const KEEP = cfg.avoid || { labels: ['Hợp đồng gốc đã ký', 'Hóa đơn tháng này', 'Biên bản bàn giao', 'Giấy bảo hành máy'] };
+  const count = cfg.count || 8;
+  const deck = Array.from({ length: count }, () => { const s2 = Math.random() < 0.55; return { shred: s2, label: pick((s2 ? SH : KEEP).labels) }; });
+  let i = 0, x = 0, y = 0, drag = null, right = 0, wrong = 0, anim = null, strips = [], finished = false;
+  const HX = 200, HY = 140;
+  const down = (e) => { if (anim || i >= deck.length) return; const q = S.at(e); if (Math.abs(q.x - (HX + x)) < 80 && Math.abs(q.y - (HY + y)) < 70) { try { cv.setPointerCapture(e.pointerId); } catch { /* synthetic */ } drag = { x: q.x - x, y: q.y - y }; } };
+  const move = (e) => { if (!drag) return; const q = S.at(e); x = q.x - drag.x; y = q.y - drag.y; };
+  const up = () => {
+    if (!drag) return; drag = null;
+    const to = y > 60 && y > x ? 'shred' : x > 80 ? 'keep' : null;
+    if (!to) { x = 0; y = 0; return; }
+    const d = deck[i], ok = (to === 'shred') === d.shred;
+    if (ok) { right++; sfx.choose(); S.pop(to === 'shred' ? 200 : 420, 120, to === 'shred' ? 'Rẹt rẹt!' : 'Lưu rồi!', '#2f8a4c', 16); }
+    else { wrong++; sfx.bad(); S.shake = 0.2; S.pop(to === 'shred' ? 200 : 420, 120, d.shred ? 'Giấy mật mà để lại!' : 'Hủy nhầm hồ sơ gốc!', '#c0392b', 15); }
+    anim = { to, t: 0 };
+  };
+  cv.addEventListener('pointerdown', down); cv.addEventListener('pointermove', move); cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  S.loop((dt) => {
+    g.fillStyle = CREAM; g.fillRect(0, 0, W, H);
+    // shredder (bottom) and cabinet (right)
+    sticker(g, 110, 236, 180, 60, '#8d93ab', 10); g.fillStyle = INK; rr(g, 130, 236, 140, 8, 3); g.fill(); text(g, '🗑️ MÁY HỦY ↓', 200, 272, { size: 13, color: '#fff' });
+    sticker(g, 400, 70, 100, 170, '#c9a27a', 10); for (let k = 0; k < 3; k++) { sticker(g, 412, 84 + k * 50, 76, 40, '#e0bf98', 6, 2); g.fillStyle = INK; rr(g, 440, 100 + k * 50, 20, 6, 3); g.fill(); } text(g, 'TỦ LƯU →', 450, 58, { size: 13 });
+    for (let k = strips.length - 1; k >= 0; k--) { const s2 = strips[k]; s2.y += dt * 120; s2.life -= dt; if (s2.life <= 0) { strips.splice(k, 1); continue; } g.fillStyle = '#fff'; g.strokeStyle = INK; g.lineWidth = 1; rr(g, s2.x, s2.y, 5, 22, 2); g.fill(); g.stroke(); }
+    if (anim) {
+      anim.t += dt * 3;
+      if (anim.to === 'shred') { y = 60 + anim.t * 120; if (Math.random() < 0.6) strips.push({ x: 140 + Math.random() * 120, y: 244, life: 0.6 }); } else { x = 80 + anim.t * 220; }
+      if (anim.t >= 1) { anim = null; i++; x = 0; y = 0; if (i >= deck.length && !finished) { finished = true; setTimeout(done, 300); } }
+    }
+    if (i < deck.length) {
+      const d = deck[i];
+      g.save(); if (anim && anim.to === 'shred') { g.beginPath(); g.rect(0, 0, W, 240); g.clip(); }
+      g.translate(HX + x, HY + y); g.rotate(x * 0.002);
+      sticker(g, -70, -62, 140, 124, '#fff', 6, 2.5);
+      for (let l = 0; l < 4; l++) { g.fillStyle = '#e1e1ea'; g.fillRect(-54, 10 + l * 10, l === 3 ? 60 : 108, 4); }
+      const words = d.label.split(' '); const half = Math.ceil(words.length / 2);
+      text(g, words.slice(0, half).join(' '), 0, -34, { size: 13, weight: 900, max: 124 }); text(g, words.slice(half).join(' '), 0, -16, { size: 13, weight: 900, max: 124 });
+      g.restore();
+      if (!anim) text(g, `Tờ ${i + 1}/${deck.length}`, HX, 218, { size: 12, color: '#777' });
+    }
+    hud(g, `🗂️ ${cfg.title || 'Hủy hay lưu?'}`, `✅ ${right}${wrong ? ` · sai ${wrong}` : ''}`);
+  });
+  return {
+    score: () => clamp01((right - wrong) / deck.length),
+    stop: () => cv.removeEventListener('pointerdown', down),
+    info: () => ({ i, n: deck.length, cur: deck[i] ? { shred: deck[i].shred, x: HX + x, y: HY + y } : null, busy: !!anim }),
+  };
+}
+
+const GAMES = { shred, hold, whack, conveyor, align, printjam, collate, wires, shredder };
 export const ACTION_GAMES = Object.keys(GAMES);
 
 export function startAction(host, cfg, { onDone }) {
