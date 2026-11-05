@@ -1,10 +1,15 @@
 // Small, repeatable mini-games shown as a sticker card (keyboard 1–9 / Enter, or tap).
-// Types: 'pick' (choose N right items), 'quiz' (one question at a time), 'order' (tap items in the right order).
+// Types: 'pick' (choose N right items), 'quiz' (one question at a time), 'order' (tap items in the right order),
+// 'sort' (one card at a time, tap its bin: { bins: ['A', 'B'], items: [{ text, sub?, bin: index }] }),
+// 'action' (hands-on canvas game from ui/action.js: { game: 'shred'|'hold'|'whack'|'conveyor'|'align', ...params }),
+// 'doc' / 'chat' (work simulations from ui/sims.js: read a document and flag problems / message a candidate or client).
 // runMinigame(config) -> Promise<{ score: 0..1 }>. config.pass = the bar shown to the player AND used by the caller.
 // pick: score = right picks / min(pick, #correct) — a wrong pick costs the slot it took, nothing more.
 // After finishing, the answers are revealed (right = green, wrong pick = red, missed = dashed) so players learn.
 import { esc } from '../core/util.js';
 import { sfx } from '../core/audio.js';
+import { startAction } from './action.js';
+import { startSim } from './sims.js';
 
 function shuffle(a) { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; }
 
@@ -51,8 +56,14 @@ export function runMinigame(cfg) {
       const ok = score >= need - 1e-9;
       (ok ? sfx.good : sfx.bad)();
       reveal();
-      foot.innerHTML = `<div class="mini-result ${ok ? 'ok' : 'no'}">${ok ? '✅ Qua' : '❌ Chưa qua'} · ${Math.round(score * 100)}% <small>(cần ${Math.round(need * 100)}%)</small></div>`;
-      setTimeout(() => { el.hidden = true; if (window.__miniDebug) window.__miniDebug = null; resolve({ score }); }, 1900);
+      // documents need time to read the explanations: longer hold + a button to move on
+      const long = cfg.type === 'doc' || cfg.type === 'chat';
+      foot.innerHTML = `<div class="mini-result ${ok ? 'ok' : 'no'}">${ok ? '✅ Qua' : '❌ Chưa qua'} · ${Math.round(score * 100)}% <small>(cần ${Math.round(need * 100)}%)</small></div>${long ? '<button class="btn mini-close">Tiếp tục ↵</button>' : ''}`;
+      let closed = false;
+      const close = () => { if (closed) return; closed = true; window.removeEventListener('keydown', closeKey, true); el.hidden = true; if (window.__miniDebug) window.__miniDebug = null; resolve({ score }); };
+      const closeKey = (e) => { if (e.code === 'Enter' || e.code === 'Space') { e.preventDefault(); e.stopPropagation(); close(); } };
+      if (long) { foot.querySelector('.mini-close').onclick = close; setTimeout(() => window.addEventListener('keydown', closeKey, true), 300); }
+      setTimeout(close, cfg.type === 'doc' ? 12000 : cfg.type === 'chat' ? 4000 : 1900);
     }
 
     if (cfg.type === 'pick') {
@@ -117,6 +128,50 @@ export function runMinigame(cfg) {
       evaluate = () => right / cfg.questions.length;
       render();
       return; // quiz manages its own key listener
+    } else if (cfg.type === 'doc' || cfg.type === 'chat') {
+      el.querySelector('.mini-card').classList.add('sim');
+      const sim = startSim(body, foot, cfg, { onDone: () => finish() });
+      evaluate = () => sim.score();
+      reveal = () => { sim.stop(); sim.reveal(); };
+      if (window.__miniDebug !== undefined) window.__miniDebug = { type: 'action', win: () => { evaluate = () => 1; finish(); }, info: () => sim.info() };
+    } else if (cfg.type === 'action') {
+      el.querySelector('.mini-card').classList.add('act');
+      const game = startAction(body, cfg, { onDone: () => finish() });
+      evaluate = () => game.score();
+      reveal = () => game.stop();
+      if (window.__miniDebug !== undefined) window.__miniDebug = { type: 'action', win: () => game.win() };
+    } else if (cfg.type === 'sort') {
+      // one card at a time, tap the right bin (keys 1–n); score = right / all cards (unanswered = wrong)
+      const items = shuffle(cfg.items);
+      const got = [];
+      let qi = 0, busy = false;
+      body.innerHTML = `<div class="mini-sort"><small class="mini-sort-n"></small><div class="mini-sort-card"></div></div>
+        <div class="mini-bins">${cfg.bins.map((b, k) => `<button class="mini-opt mini-bin" data-b="${k}"><span class="num">${k + 1}</span><span>${esc(b)}</span></button>`).join('')}</div>`;
+      const card = body.querySelector('.mini-sort-card'), num = body.querySelector('.mini-sort-n');
+      const show = () => {
+        card.className = 'mini-sort-card';
+        card.innerHTML = `<b>${esc(items[qi].text)}</b>${items[qi].sub ? `<small>${esc(items[qi].sub)}</small>` : ''}`;
+        num.textContent = `Thẻ ${qi + 1}/${items.length}`;
+        if (window.__miniDebug !== undefined) window.__miniDebug = { type: 'sort', answer: [items[qi].bin] };
+      };
+      const answer = (b) => {
+        if (done || busy || !items[qi] || !cfg.bins[b]) return;
+        const good = items[qi].bin === b;
+        got.push(good); (good ? sfx.choose : sfx.bad)();
+        card.classList.add(good ? 'right' : 'wrong');
+        if (!good) card.insertAdjacentHTML('beforeend', `<em>→ ${esc(cfg.bins[items[qi].bin])}</em>`);
+        busy = true;
+        setTimeout(() => { busy = false; qi++; if (qi >= items.length) finish(); else show(); }, good ? 260 : 650);
+      };
+      evaluate = () => got.filter(Boolean).length / items.length;
+      reveal = () => {
+        card.className = 'mini-sort-card';
+        card.innerHTML = `<b>${got.filter(Boolean).length}/${items.length} thẻ đúng chỗ</b>`;
+        body.querySelectorAll('.mini-bin').forEach((x) => { x.disabled = true; });
+      };
+      body.querySelectorAll('.mini-bin').forEach((x) => { x.onclick = () => answer(Number(x.dataset.b)); });
+      onKey = (e) => { if (/^Digit[1-9]$/.test(e.code)) { e.preventDefault(); e.stopPropagation(); answer(Number(e.code.slice(5)) - 1); } };
+      show();
     } else if (cfg.type === 'order') {
       const items = shuffle(cfg.items.map((it, i) => ({ ...it, i })));
       const seq = [];

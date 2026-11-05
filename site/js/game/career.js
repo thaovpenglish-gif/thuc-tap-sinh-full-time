@@ -168,6 +168,7 @@ export function payslip({ accrued, tierId, commit, officialSalary = 0, penalties
   const lines = [];
   const intern = Math.round(accrued.intern || 0);
   const official = Math.round(accrued.official || 0);
+  const bonus = Math.round(accrued.bonus || 0); // performance bonus from desk work (game/desk.js), paid as-is
   if (intern) lines.push({ k: `Phụ cấp thực tập (${tierInfo(tierId).label}/tháng)`, v: intern });
   let deduct = 0;
   if (intern >= TAX_THRESHOLD && !commit) { const w = Math.round(intern * TAX_RATE); lines.push({ k: 'Khấu trừ thuế TNCN 10% (không có bản cam kết)', v: -w }); deduct += w; }
@@ -181,19 +182,22 @@ export function payslip({ accrued, tierId, commit, officialSalary = 0, penalties
     if (taxable > 0) { const t = Math.round(taxable * 0.05 * (official / monthly)); lines.push({ k: 'Thuế TNCN', v: -t }); deduct += t; }
     else lines.push({ k: 'Thuế TNCN (dưới mức giảm trừ gia cảnh)', v: 0 });
   }
+  if (bonus) lines.push({ k: `Thưởng năng suất (${accrued.deskOk || 0} lần làm tốt ở bàn)`, v: bonus });
   if (penalties) { lines.push({ k: 'Phạt đi muộn / quên chấm công', v: -penalties }); deduct += penalties; }
-  const gross = intern + official;
+  const gross = intern + official + bonus;
   return { lines, gross, net: gross - deduct };
 }
 
 // ---------- weekly performance review ----------
-export function emptyWeek(run) { return { from: run.day, uy0: run.st.uy, done: 0, late: 0, minis: 0, minisOk: 0, lateIn: 0 }; }
+export function emptyWeek(run) { return { from: run.day, uy0: run.st.uy, done: 0, late: 0, minis: 0, minisOk: 0, lateIn: 0, desk: 0, deskOk: 0 }; }
 
 /** Score 0..100 → grade A/B/C/D. relBoss = relationship with the reviewer. */
 export function gradeWeek(week, run, relBoss = 0) {
   const uyGain = run.st.uy - (week.uy0 ?? run.st.uy);
   const miniRate = week.minis ? week.minisOk / week.minis : 0.6;
-  let score = 55 + uyGain * 1.5 + week.done * 5 - week.late * 8 + (miniRate - 0.5) * 30 + relBoss * 2 - run.st.dr * 0.15 - (week.lateIn || 0) * 6;
+  // desk work: +2 per good session, capped at +12 a week (the review notices steady work, not grinding)
+  const desk = Math.min(12, (week.deskOk || 0) * 2);
+  let score = 55 + uyGain * 1.5 + week.done * 5 - week.late * 8 + (miniRate - 0.5) * 30 + relBoss * 2 - run.st.dr * 0.15 - (week.lateIn || 0) * 6 + desk;
   score = Math.max(0, Math.min(100, Math.round(score)));
   const grade = score >= 78 ? 'A' : score >= 58 ? 'B' : score >= 40 ? 'C' : 'D';
   return { score, grade };

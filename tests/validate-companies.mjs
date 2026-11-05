@@ -7,7 +7,8 @@ import { newRun } from '../site/js/game/save.js';
 
 const SPECIAL = new Set(['me', 'think', 'nar', 'kpi']);
 const FX_KEYS = new Set(['uy', 'dr', 'nl', 'rel', 'set', 'money', 'clock']);
-const MINI_TYPES = new Set(['pick', 'quiz', 'order']);
+const MINI_TYPES = new Set(['pick', 'quiz', 'order', 'sort', 'action', 'doc', 'chat']);
+const ACTION_GAMES = new Set(['shred', 'hold', 'whack', 'conveyor', 'align']); // site/js/ui/action.js
 const MAX_LINE = 240;
 const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
 
@@ -47,15 +48,71 @@ export async function validateCompany(id) {
     for (const k of ['uy', 'dr', 'nl', 'money', 'clock']) if (fx[k] !== undefined && !Number.isFinite(fx[k])) E(`${at}: fx.${k} must be a number`);
   }
   function checkMini(m, at) {
-    if (!MINI_TYPES.has(m.type)) return E(`${at}: mini.type must be pick|quiz|order`);
+    if (!MINI_TYPES.has(m.type)) return E(`${at}: mini.type must be pick|quiz|order|sort|action|doc|chat`);
     if (!m.title) E(`${at}: mini.title missing`);
     if (m.pass !== undefined && !(m.pass > 0 && m.pass <= 1)) E(`${at}: pass must be in (0, 1]`);
-    const n = m.type === 'quiz' ? (m.questions || []).length : (m.items || []).length;
-    const perItem = m.type === 'quiz' ? 6 : m.type === 'order' ? 2.5 : 3;
+    if (m.type === 'doc' || m.type === 'chat') {
+      const list = m.type === 'doc' ? m.docs : m.convos;
+      if (!Array.isArray(list) || list.length < 2) return E(`${at}: ${m.type} needs a bank of ≥ 2 scenarios (${m.type === 'doc' ? 'docs' : 'convos'})`);
+      if ((m.time || 30) < 50) W(`${at}: reading games need ≥ 50 s (hunger and mood shorten it)`);
+      const long = (t, k, max = 200) => { if (typeof t !== 'string' || !t) E(`${at}.${k}: text missing`); else if (t.length > max) W(`${at}.${k}: ${t.length} chars (max ${max})`); if (/\{ten\}/.test(t || '')) E(`${at}.${k}: no {ten} in mini-games`); };
+      list.forEach((d, i) => {
+        if (m.type === 'doc') {
+          long(d.head, `docs[${i}].head`, 90);
+          if (!Array.isArray(d.lines) || d.lines.length < 6 || d.lines.length > 18) E(`${at}.docs[${i}]: 6–18 lines`);
+          const rows = (d.lines || []).filter((l) => !(l && l.h));
+          const bad = rows.filter((l) => l && l.bad);
+          if (bad.length > 5) W(`${at}.docs[${i}]: ${bad.length} problems (aim 2–4)`);
+          if (!bad.length && !d.verdict) E(`${at}.docs[${i}]: a clean document needs a verdict`);
+          rows.forEach((l, k) => { long(typeof l === 'string' ? l : l.t, `docs[${i}].lines[${k}]`, 140); if (l && l.bad) long(l.bad, `docs[${i}].lines[${k}].bad`, 160); });
+          if (d.verdict) { const v = d.verdict; if (!v.q || !Array.isArray(v.options) || v.options.length < 2 || v.options.length > 4 || !(v.correct >= 0 && v.correct < v.options.length)) E(`${at}.docs[${i}].verdict malformed`); }
+        } else {
+          if (!d.who || !d.who.name) E(`${at}.convos[${i}]: who.name missing`);
+          (d.start || []).forEach((t, k) => long(t, `convos[${i}].start[${k}]`));
+          if (!Array.isArray(d.turns) || d.turns.length < 3 || d.turns.length > 6) E(`${at}.convos[${i}]: 3–6 turns`);
+          (d.turns || []).forEach((t, k) => {
+            if (t.them) long(t.them, `convos[${i}].turns[${k}].them`);
+            if (!Array.isArray(t.options) || t.options.length < 2 || t.options.length > 3) return E(`${at}.convos[${i}].turns[${k}]: 2–3 options`);
+            if (!t.options.some((o) => o.s === 2)) E(`${at}.convos[${i}].turns[${k}]: needs a best option (s: 2)`);
+            t.options.forEach((o, n) => { long(o.t, `convos[${i}].turns[${k}].o[${n}]`, 140); if (![0, 1, 2].includes(o.s)) E(`${at}.convos[${i}].turns[${k}].o[${n}]: s must be 0|1|2`); if (o.react) long(o.react, `convos[${i}].turns[${k}].o[${n}].react`); });
+          });
+          if (!d.end || !d.end.good || !d.end.bad) E(`${at}.convos[${i}]: end { good, bad } missing`);
+          // the best reply must not always be the longest one (players would just pick by length)
+          const longest = (d.turns || []).filter((t) => (t.options || []).length && [...t.options].sort((x, y) => y.t.length - x.t.length)[0].s === 2).length;
+          if ((d.turns || []).length && longest / d.turns.length > 0.7) W(`${at}.convos[${i}]: the best reply is the longest in ${longest}/${d.turns.length} turns (vary lengths)`);
+        }
+      });
+      return;
+    }
+    if (m.type === 'action') {
+      if (!ACTION_GAMES.has(m.game)) return E(`${at}: action.game must be one of ${[...ACTION_GAMES].join('|')}`);
+      if (!m.prompt) W(`${at}: action game without a prompt (players need to know what to do)`);
+      const lab = (x) => x && Array.isArray(x.labels) && x.labels.length >= 2 && x.labels.every((l) => typeof l === 'string' && l.length <= 32);
+      if (m.game === 'whack' && (!lab(m.target) || !lab(m.avoid))) E(`${at}: whack needs target/avoid { emoji, labels[≥2, ≤32 chars] }`);
+      if (m.game === 'conveyor' && (m.mode || 'stamp') === 'stamp' && (!lab(m.target) || !lab(m.avoid))) E(`${at}: conveyor stamp needs target/avoid { emoji, labels[≥2, ≤32 chars] }`);
+      if (m.game === 'hold' && !['seal', 'balloon'].includes(m.skin || 'seal')) E(`${at}: hold.skin must be seal|balloon`);
+      if (m.game === 'align' && m.blocks && (m.blocks.length < 3 || m.blocks.length > 5)) E(`${at}: align needs 3–5 blocks`);
+      if ((m.time || 30) < 30) W(`${at}: action games need ≥ 30 s (hunger and mood shorten it)`);
+      return;
+    }
+    // banks (desk games) show only `show` items / `ask` questions per play
+    const n = m.type === 'quiz' ? Math.min(m.ask || Infinity, (m.questions || []).length) : Math.min(m.show || Infinity, (m.items || []).length);
+    const perItem = m.type === 'quiz' ? 6 : m.type === 'order' ? 2.5 : m.type === 'sort' ? 3.2 : 3;
     if ((m.time || 30) * 0.64 < n * perItem) W(`${at}: time ${m.time || 30}s may be too short for ${n} items when hungry + sleepy (×0.64)`);
-    if (m.type === 'pick') { if (!Array.isArray(m.items) || m.items.length < 3 || m.items.length > 9) E(`${at}: pick needs 3–9 items`); else if (!m.items.some((x) => x.correct)) E(`${at}: pick has no correct item`); if ((m.pick || 1) > (m.items || []).filter((x) => x.correct).length) E(`${at}: pick ${m.pick} > correct items: a perfect answer could not reach 100%`); }
+    const maxItems = m.show ? 14 : 9;
+    if (m.show && (m.items || []).length && m.show > m.items.length) E(`${at}: show ${m.show} > ${m.items.length} items`);
+    if (m.show && m.show > 9) E(`${at}: show must be ≤ 9 (keys 1–9)`);
+    if (m.type === 'sort') {
+      if (!Array.isArray(m.bins) || m.bins.length < 2 || m.bins.length > 4) E(`${at}: sort needs 2–4 bins`);
+      if (!Array.isArray(m.items) || m.items.length < 3 || m.items.length > 14) E(`${at}: sort needs 3–14 items`);
+      else m.items.forEach((x, i) => { if (!x.text || !(x.bin >= 0 && x.bin < (m.bins || []).length)) E(`${at}: sort item ${i} needs text and a valid bin`); });
+      if (m.bins && m.items && m.bins.some((_, b) => !m.items.some((x) => x.bin === b))) W(`${at}: a bin has no item`);
+    }
+    if (m.type === 'quiz' && m.ask && m.ask > (m.questions || []).length) E(`${at}: ask ${m.ask} > ${(m.questions || []).length} questions`);
+    if (m.type === 'pick') { if (!Array.isArray(m.items) || m.items.length < 3 || m.items.length > maxItems) E(`${at}: pick needs 3–${maxItems} items`); else if (!m.items.some((x) => x.correct)) E(`${at}: pick has no correct item`); if ((m.pick || 1) > (m.items || []).filter((x) => x.correct).length) E(`${at}: pick ${m.pick} > correct items: a perfect answer could not reach 100%`); }
     if (m.type === 'quiz') { if (!Array.isArray(m.questions) || !m.questions.length) E(`${at}: quiz needs questions`); else m.questions.forEach((q, i) => { if (!q.q || !Array.isArray(q.options) || q.options.length < 2 || q.options.length > 4 || !(q.correct >= 0 && q.correct < q.options.length)) E(`${at}: quiz question ${i} malformed`); }); }
-    if (m.type === 'order') { if (!Array.isArray(m.items) || m.items.length < 3 || m.items.length > 9) E(`${at}: order needs 3–9 items`); else { const o = m.items.map((x) => x.order).sort((a, b) => a - b); if (o.some((v, i) => v !== i)) E(`${at}: order values must be 0..n-1`); } }
+    if (m.type === 'pick' && m.show && (m.pick || 1) > m.show) E(`${at}: pick ${m.pick} > show ${m.show}`);
+    if (m.type === 'order') { if (m.show) E(`${at}: order games are shown whole (no show)`); if (!Array.isArray(m.items) || m.items.length < 3 || m.items.length > 9) E(`${at}: order needs 3–9 items`); else { const o = m.items.map((x) => x.order).sort((a, b) => a - b); if (o.some((v, i) => v !== i)) E(`${at}: order values must be 0..n-1`); } }
   }
   let lines = 0;
   function walk(nodes, at, ctx) {
@@ -184,8 +241,40 @@ export async function validateCompany(id) {
   });
   eps.forEach((e) => { (e.steps || []).forEach((s, k) => { try { if (s.when) s.when(fresh); } catch (err) { E(`${e.id}.steps[${k}].when throws`); } probe(s.scene, `${e.id}.steps[${k}]`); }); try { if (e.diary) e.diary(fresh); } catch (err) { E(`${e.id}.diary throws: ${err.message}`); } });
   routine.forEach((b) => { try { if (b.when) b.when(fresh); } catch (err) { E(`${b.id}.when throws`); } probe(b.scene, b.id); });
+  // desk work (§12): games + chatter (group-chat drama while you work) + optional promoOffer
+  const dk = co.desk;
+  let deskGames = 0, deskChatter = 0;
+  if (!dk) W('no desk content: the generic desk games are used (aim: desk.js with ≥ 8 games, ≥ 6 chatter)');
+  else {
+    const gIds = new Set(), cIds = new Set();
+    (dk.games || []).forEach((g, i) => {
+      const at = `desk.games[${i}:${g.id}]`;
+      if (!g.id || gIds.has(g.id)) E(`${at}: id missing or duplicate`); gIds.add(g.id);
+      checkMini(g, at);
+      if (g.when && typeof g.when !== 'function') E(`${at}: when must be a function`);
+      walk(g.good || [], `${at}.good`, {}); walk(g.bad || [], `${at}.bad`, {});
+    });
+    (dk.chatter || []).forEach((c, i) => {
+      const at = `desk.chatter[${i}:${c.id}]`;
+      if (!c.id || cIds.has(c.id)) E(`${at}: id missing or duplicate`); cIds.add(c.id);
+      if (!Array.isArray(c.chat) || c.chat.length < 2) E(`${at}: chat needs ≥ 2 messages`);
+      (c.chat || []).forEach((m, k) => { if (!Array.isArray(m) || !cast[m[0]] || typeof m[1] !== 'string') E(`${at}.chat[${k}]: must be [castId, text, dm?]`); else if (m[1].length > MAX_LINE) W(`${at}.chat[${k}]: too long`); });
+      walk(c.scene || [], `${at}.scene`, {});
+      if (!JSON.stringify(c.scene || []).includes('"c":')) W(`${at}: scene has no choice (the player should react)`);
+      if (c.when && typeof c.when !== 'function') E(`${at}: when must be a function`);
+    });
+    if (dk.promoOffer) { walk(dk.promoOffer, 'desk.promoOffer', {}); if (!JSON.stringify(dk.promoOffer).includes('accept_official')) E('desk.promoOffer must set flag accept_official'); }
+    deskGames = (dk.games || []).length; deskChatter = (dk.chatter || []).length;
+    if (deskGames < 5) W(`only ${deskGames} desk games (aim ≥ 5)`);
+    if (deskChatter < 6) W(`only ${deskChatter} desk chatter (aim ≥ 6)`);
+    const types = (dk.games || []).map((g) => g.type);
+    if (types.some((t) => !['action', 'doc', 'chat'].includes(t))) W('desk.games: use hands-on (action) and work sims (doc/chat); card games (pick/quiz/order/sort) feel like a test');
+    if (types.filter((t) => t === 'action').length < 2) W('desk.games: aim for ≥ 2 hands-on (action) games');
+    if (types.filter((t) => t === 'doc' || t === 'chat').length < 3) W('desk.games: aim for ≥ 3 work sims (doc/chat) that need real trade knowledge');
+  }
+
   // flags read in when()/if()/diary()/promotion but never set anywhere (dead branches)
-  const setFlags = new Set(['tax_commit', 'accept_official', 'promo_offered', 'official_day', 'paid30', 'drank_today', 'minis', 'minis_ok', 'snack_day', 'coffee_day', 'coffees', 'last_life']);
+  const setFlags = new Set(['tax_commit', 'accept_official', 'promo_offered', 'official_day', 'paid30', 'drank_today', 'minis', 'minis_ok', 'snack_day', 'coffee_day', 'coffees', 'last_life', 'desk_ok_total', 'promo_by_work']);
   const readFlags = new Map();
   const scanFn = (fn, at) => { if (typeof fn !== 'function') return; for (const m of fn.toString().matchAll(/flags(?:\.|\[['"])(\w+)/g)) if (!readFlags.has(m[1])) readFlags.set(m[1], at); };
   const scanNodes = (nodes, at) => (nodes || []).forEach((n, i) => {
@@ -199,12 +288,13 @@ export async function validateCompany(id) {
   allSteps.forEach((s2, i) => { scanFn(s2.when, `step ${s2.who}#${i}`); scanNodes(s2.scene, `step ${s2.who}#${i}`); });
   eps.forEach((e) => scanFn(e.diary, `${e.id}.diary`)); scanFn(co.interview?.diary, 'interview.diary');
   if (pr) { scanFn(pr.when, 'promotion.when'); scanNodes(pr.offer, 'promotion.offer'); }
+  if (dk) { (dk.games || []).forEach((g) => { scanFn(g.when, `desk.${g.id}`); scanNodes(g.good, `desk.${g.id}`); scanNodes(g.bad, `desk.${g.id}`); }); (dk.chatter || []).forEach((c) => { scanFn(c.when, `desk.${c.id}`); scanNodes(c.scene, `desk.${c.id}`); }); scanNodes(dk.promoOffer, 'desk.promoOffer'); }
   if (co.endings) Object.values(co.endings).forEach((v) => scanFn(v, 'endings'));
   (co.ties || []).forEach((t) => setFlags.add('tie_' + t.id));
   // T&M Day 1 lives in story files but its flags count as set (scanned above through episodes)
   for (const [f, at] of readFlags) if (!setFlags.has(f)) W(`flag "${f}" is read (${at}) but never set — that branch can never trigger`);
   void where;
-  return { errors, warns, stats: { cast: Object.keys(cast).length, bodies: bodies.size, episodes: intern.length, official: official.length, routine: routine.length, sideTasks: st.length, lines } };
+  return { errors, warns, stats: { cast: Object.keys(cast).length, bodies: bodies.size, episodes: intern.length, official: official.length, routine: routine.length, sideTasks: st.length, deskGames, deskChatter, lines } };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

@@ -4,6 +4,7 @@ import { INTERVIEW } from './interview.js';
 import { EPISODES, ARC } from './episodes.js';
 import { ROUTINE, SIDE_TASKS } from './routine.js';
 import { THEME, REVIEW, PROMOTION, ENDINGS, TIES, OBJ_LINES, FOOD, LIFE_EVENTS } from './extras.js';
+import { DESK } from './desk.js';
 
 export default {
   id: 'audit',
@@ -24,4 +25,5 @@ export default {
   objLines: OBJ_LINES,
   food: FOOD,
   lifeEvents: LIFE_EVENTS,
+  desk: DESK,
 };
