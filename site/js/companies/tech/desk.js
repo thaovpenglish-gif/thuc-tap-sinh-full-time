@@ -222,6 +222,15 @@ export const DESK = {
       ] },
   ],
 
+  // errands that lead into the hands-on games (`play` = a desk game id; engine: game/office.js officeGameFor)
+  tasks: [
+    { id: 'desk_bug', title: 'Đập bug gấp trước giờ demo', from: 'diep', base: 50, legs: [
+      { npc: 'diep', line: ['diep', 'Nửa tiếng nữa demo cho nhà đầu tư. Em về máy đập hết bug trên màn hình chính giúp chị.'] },
+      { obj: 'desk', play: 'tech_whack', line: ['nar', 'Bạn đập xong. Một con bug bò ra từ file README, nhưng nhà đầu tư không đọc README.'] },
+      { npc: 'diep', line: ['diep', 'Demo chạy. Không ai biết em vừa cứu cả vòng gọi vốn. Chị biết.'] },
+    ] },
+  ],
+
   chatter: [
     { id: 'tech_ch_friday', chat: [['tung', 'Em deploy hotfix nhỏ nha, 5 phút thôi 🚀'], ['thac', 'Hôm nay thứ mấy?'], ['tung', 'Thứ Sáu ạ. 16:58.'], ['thac', 'Ai deploy?'], ['bot', '✅ Deploy thành công 🙏']],
       scene: [

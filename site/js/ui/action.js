@@ -10,6 +10,7 @@
 //   collate  · xếp trang & bấm ghim: tap pages 1→N (flip face-down ones first), staple when the rings meet.
 //   wires    · cắm lại dây mạng: drag each plug to the port with the same colour and shape.
 //   shredder · máy hủy giấy: drag each sheet down into the shredder or right into the filing cabinet.
+//   incense  · thắp nhang Thần Tài: hold the lighter until each tip glows (not too long), plant each stick upright.
 //   hold has a third skin 'cup' (rót cà phê / trà tới vạch; cfg.orders = notes per cup).
 // Everything is original sticker-style art: rounded shapes, thick ink outlines, pastel fills, emoji.
 import { sfx } from '../core/audio.js';
@@ -741,7 +742,112 @@ function shredder(S, cfg, done) {
   };
 }
 
-const GAMES = { shred, hold, whack, conveyor, align, printjam, collate, wires, shredder };
+// ---------------------------------------------------------------------------------------------- incense
+// Thắp nhang Thần Tài: (1) hold the lighter under each of 3 sticks until the tip glows (too long = it flares up),
+// (2) each lit stick swings above the bowl: tap when it is upright to plant it straight. Straight sticks, straight smoke.
+function incense(S, cfg, done) {
+  const { g, cv } = S;
+  const N = 3, LIGHT = 0.9, FLARE = 1.9; // seconds of flame: lit after LIGHT, flares after FLARE
+  const sticks = Array.from({ length: N }, (_, i) => ({ x: 150 + i * 55, heat: 0, lit: false, flared: false, planted: false, tilt: 0 }));
+  let phase = 'light', cur = 0, holding = false, swing = 0, swingSpeed = 2.2, mistakes = 0, wait = 0, finished = false, smokeT = 0;
+  const press = () => {
+    if (phase === 'light') holding = true;
+    else if (phase === 'plant') {
+      const s2 = sticks[cur], ang = Math.sin(swing) * 0.6;
+      s2.planted = true; s2.tilt = ang;
+      const a = Math.abs(ang);
+      if (a < 0.08) { sfx.choose(); S.pop(260, 120, 'Thẳng tắp!', '#2f8a4c', 18); }
+      else if (a < 0.2) { sfx.blip(1); S.pop(260, 120, 'Hơi nghiêng', '#8a5a2a', 16); mistakes += 0.5; }
+      else { sfx.bad(); S.pop(260, 120, 'Nghiêng quá!', '#c0392b', 17); mistakes += 1; }
+      cur++; swing = Math.random() * 3; swingSpeed = 2.2 + cur * 0.5;
+      if (cur >= N) { phase = 'smoke'; smokeT = 0; }
+    }
+  };
+  const release = () => {
+    if (phase !== 'light' || !holding) return;
+    holding = false;
+    const s2 = sticks[cur];
+    if (s2.heat >= LIGHT && !s2.flared) { s2.lit = true; sfx.blip(1.3); S.pop(s2.x, 70, 'Bén rồi!', '#2f8a4c', 15); cur++; }
+    else if (!s2.flared) { S.pop(s2.x, 70, 'Chưa bén, châm tiếp', '#8a5a2a', 13); }
+    if (cur >= N) { phase = 'plant'; cur = 0; swing = 0; }
+  };
+  const down = (e) => { try { cv.setPointerCapture(e.pointerId); } catch { /* synthetic */ } press(); };
+  const kd = (e) => { if (e.code === 'Space') { e.preventDefault(); e.stopPropagation(); if (!e.repeat) press(); } };
+  const ku = (e) => { if (e.code === 'Space') { e.preventDefault(); e.stopPropagation(); release(); } };
+  cv.addEventListener('pointerdown', down); cv.addEventListener('pointerup', release); cv.addEventListener('pointercancel', release);
+  window.addEventListener('keydown', kd, true); window.addEventListener('keyup', ku, true);
+  const drawStick = (x, baseY, len, tilt, s2, glow) => {
+    g.save(); g.translate(x, baseY); g.rotate(tilt);
+    g.fillStyle = '#c0392b'; g.fillRect(-2.5, -len * 0.3, 5, len * 0.3); // red handle
+    g.fillStyle = '#7a4a2a'; g.fillRect(-2.5, -len, 5, len * 0.7);       // incense body
+    g.strokeStyle = INK; g.lineWidth = 1.2; g.strokeRect(-2.5, -len, 5, len);
+    if (s2.lit || glow > 0) { g.beginPath(); g.arc(0, -len, 4 + glow * 3, 0, 7); g.fillStyle = s2.lit ? '#ff6b3d' : `rgba(255,140,60,${0.3 + glow * 0.7})`; g.fill(); }
+    if (s2.flared) { g.beginPath(); g.moveTo(-9, -len); g.quadraticCurveTo(0, -len - 40, 9, -len); g.fillStyle = '#ffb13d'; g.fill(); g.strokeStyle = INK; g.stroke(); }
+    g.restore();
+  };
+  S.loop((dt) => {
+    g.fillStyle = '#fbe3c4'; g.fillRect(0, 0, W, H);
+    // altar: red backboard, gold frame, bowl of sand
+    sticker(g, 70, 26, 380, 200, '#e0574f', 14);
+    g.strokeStyle = '#f5c542'; g.lineWidth = 6; rr(g, 86, 40, 348, 172, 10); g.stroke();
+    text(g, cfg.label || 'THẦN TÀI · ÔNG ĐỊA', 260, 56, { size: 13, weight: 900, color: '#ffe9a0' });
+    sticker(g, 150, 232, 220, 52, '#f5c542', 10);
+    g.beginPath(); g.ellipse(260, 236, 106, 14, 0, 0, 7); g.fillStyle = '#d8c39a'; g.fill(); g.lineWidth = 2.5; g.strokeStyle = INK; g.stroke();
+    text(g, '福', 260, 260, { size: 18, weight: 900, color: '#c0392b' });
+    // planted sticks
+    sticks.forEach((s2, i) => { if (s2.planted) drawStick(220 + i * 40, 238, 110, s2.tilt, s2, 0); });
+    if (phase === 'light') {
+      const s2 = sticks[cur];
+      if (holding && s2) {
+        s2.heat += dt;
+        if (s2.heat > FLARE && !s2.flared) { s2.flared = true; mistakes += 1; holding = false; sfx.bad(); S.shake = 0.25; S.pop(s2.x, 60, 'Bùng lửa! Phẩy tắt rồi châm lại', '#c0392b', 14); setTimeout(() => { s2.flared = false; s2.heat = 0; }, 700); }
+      }
+      // the bundle held in the hand, the lighter under the current stick
+      sticks.forEach((st, i) => drawStick(st.x, 200, 120, -0.05 + i * 0.05, st, i === cur ? Math.min(1, st.heat / LIGHT) : 0));
+      const s3 = sticks[cur];
+      if (s3) {
+        const lx = s3.x + 2, ly = 92; // the flame reaches the stick's tip (y ≈ 80)
+        sticker(g, lx - 12, ly + 6, 24, 40, SKY, 6, 2.5);
+        if (holding) { const f = 1 + Math.sin(S.t * 30) * 0.15; g.beginPath(); g.moveTo(lx - 6, ly + 6); g.quadraticCurveTo(lx, ly - 22 * f, lx + 6, ly + 6); g.fillStyle = '#ffb13d'; g.fill(); g.lineWidth = 1.5; g.strokeStyle = INK; g.stroke(); }
+        // flame-time meter
+        const t = Math.min(1, s3.heat / FLARE);
+        const MX = 474;
+        sticker(g, MX - 13, 120, 26, 100, '#fff', 8, 2.5);
+        const zTop = 120 + 100 * (1 - FLARE / FLARE), zLit = 120 + 100 * (1 - LIGHT / FLARE);
+        g.fillStyle = 'rgba(184,240,216,.9)'; g.fillRect(MX - 10, zTop + 3, 20, zLit - zTop - 3);
+        g.fillStyle = t > 0.9 ? '#e74c3c' : BUTTER; rr(g, MX - 9, 217 - t * 94, 18, t * 94, 5); g.fill();
+        text(g, 'THẢ ở', MX, 236, { size: 10, weight: 900 }); text(g, 'vùng xanh', MX, 248, { size: 10, weight: 900 });
+      }
+    } else if (phase === 'plant' && cur < N) {
+      swing += dt * swingSpeed;
+      const ang = Math.sin(swing) * 0.6;
+      // the stick sways around its foot, right above the bowl; a hand holds the foot
+      drawStick(260, 196, 120, ang, sticks[cur], 0);
+      sticker(g, 246, 190, 28, 20, '#ffd9b8', 8, 2.5);
+      g.setLineDash([5, 5]); g.strokeStyle = 'rgba(47,138,76,.7)'; g.lineWidth = 2; g.beginPath(); g.moveTo(260, 70); g.lineTo(260, 230); g.stroke(); g.setLineDash([]);
+    } else if (phase === 'smoke') {
+      smokeT += dt;
+      sticks.forEach((s2, i) => {
+        const x0 = 220 + i * 40 + Math.sin(s2.tilt) * 110, y0 = 238 - Math.cos(s2.tilt) * 110;
+        for (let k = 0; k < 6; k++) { const yy = y0 - ((smokeT * 40 + k * 18) % 110); const drift = s2.tilt * (y0 - yy) * 0.8 + Math.sin(yy * 0.08 + i) * 4; g.beginPath(); g.arc(x0 + drift, yy, 4 + (y0 - yy) * 0.05, 0, 7); g.fillStyle = 'rgba(255,255,255,.55)'; g.fill(); }
+      });
+      if (smokeT > 1.6 && !finished) {
+        finished = true;
+        const straight = mistakes < 1;
+        S.pop(260, 100, straight ? (cfg.omen || 'Khói bay thẳng: tuần này thuận lợi!') : 'Khói bay xiên… chắc tại quạt trần', straight ? '#2f8a4c' : '#8a5a2a', 16);
+        if (straight) sfx.good(); setTimeout(done, 900);
+      }
+    }
+    hud(g, `🪔 ${phase === 'light' ? `Châm nhang ${Math.min(N, cur + 1)}/${N}` : phase === 'plant' ? `Cắm nhang ${Math.min(N, cur + 1)}/${N}` : 'Khấn…'}`, phase === 'plant' ? 'Bấm khi nhang THẲNG ĐỨNG' : mistakes ? `Lỗi: ${mistakes}` : (phase === 'light' ? 'GIỮ để châm' : ''));
+  });
+  return {
+    score: () => clamp01((phase === 'smoke' || finished ? 1 : (sticks.filter((s2) => s2.lit).length + sticks.filter((s2) => s2.planted).length) / (2 * N)) - mistakes * 0.2),
+    stop: () => { cv.removeEventListener('pointerdown', down); window.removeEventListener('keydown', kd, true); window.removeEventListener('keyup', ku, true); },
+    info: () => ({ phase, cur, holding, heat: sticks[cur] ? sticks[cur].heat : 0, light: LIGHT, flare: FLARE, angle: Math.sin(swing) * 0.6, finished }),
+  };
+}
+
+const GAMES = { shred, hold, whack, conveyor, align, printjam, collate, wires, shredder, incense };
 export const ACTION_GAMES = Object.keys(GAMES);
 
 export function startAction(host, cfg, { onDone }) {

@@ -130,7 +130,7 @@ test('every company has its own hands-on desk games', async () => {
   }
 });
 
-test('office equipment: printer and pantry legs play a mini-game, other objects do not', async () => {
+test('office equipment: printer, pantry and altar legs play a mini-game; `play` legs play a company game', async () => {
   const O = await import('../site/js/game/office.js');
   const ids = new Set();
   for (let s = 0; s < 60; s++) ids.add(O.officeGameFor({ obj: 'printer', line: ['nar', 'x'] }, s).game);
@@ -138,7 +138,11 @@ test('office equipment: printer and pantry legs play a mini-game, other objects 
   assert.equal(O.officeGameFor({ obj: 'coffee', line: ['nar', 'Bạn pha một ấm trà.'] }).label, 'TRÀ');
   assert.equal(O.officeGameFor({ obj: 'coffee', line: ['nar', 'Pha cà phê cho sếp'] }).label, 'CÀ PHÊ');
   assert.equal(O.officeGameFor({ obj: 'coffee', line: ['nar', 'Mua trà sữa'] }).label, 'TRÀ SỮA');
-  assert.equal(O.officeGameFor({ obj: 'altar' }), null);
+  assert.equal(O.officeGameFor({ obj: 'altar' }).game, 'incense');
+  assert.equal(O.officeGameFor({ obj: 'plant' }), null);
+  const desk = [{ id: 'bama_shred', type: 'action', game: 'shred' }];
+  assert.equal(O.officeGameFor({ obj: 'coffee', play: 'bama_shred' }, 1, desk).game, 'shred', 'play wins over the pantry');
+  assert.equal(O.officeGameFor({ npc: 'dung', play: 'nope' }, 1, desk), null);
   assert.equal(O.officeGameFor({ npc: 'tuyet' }), null);
   assert.ok(O.DESK_OFFICE_GAMES.length >= 2 && O.DESK_OFFICE_GAMES.every((g) => g.type === 'action' && g.id.startsWith('off_')));
 });

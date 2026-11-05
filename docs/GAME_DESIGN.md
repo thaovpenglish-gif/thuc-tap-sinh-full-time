@@ -69,6 +69,10 @@ Main menu ──Solo──► Hồ sơ sự nghiệp (career runs + cloud save) 
   post, flag the problem lines, make the call, then see WHY; `chat` = message a candidate, client or vendor, the
   rapport meter decides the ending). Each sim draws one of 2–3 scenarios, recent ones avoided.
   Plus 2 shared office games in every desk rotation (`game/office.js`: máy hủy giấy, cắm lại dây mạng).
+- **Desk picker**: the player chooses which desk game to play (cards tagged Tay chân / Đọc tài liệu / Nhắn tin;
+  🎲 Bất kỳ prefers hands-on). **Altar**: thắp nhang Thần Tài mini-game once a day (+1 Uy tín when straight).
+  Each company's `desk.tasks` adds errands whose leg plays one of its hands-on games (`play: '<desk game id>'`),
+  e.g. Ba & Má "Phụ cô Tư xé gà", "Hàn túi cho đơn livestream".
 - **Office equipment** (`game/office.js`): side-task legs at the printer play gỡ giấy kẹt / xếp trang & bấm ghim /
   cắm dây mạng máy in; legs at the pantry play rót cà phê / trà tới vạch. Sloppy (below 60%): −1 Uy tín, +10 phút. 30 game
   minutes, −6 energy (side tasks keep ticking), 3 rewarded sessions a day. Good session: +1 Uy tín, performance bonus

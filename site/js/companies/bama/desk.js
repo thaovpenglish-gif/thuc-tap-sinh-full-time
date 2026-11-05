@@ -222,6 +222,20 @@ export const DESK = {
       ] },
   ],
 
+  // errands that lead into the hands-on games (`play` = a desk game id; engine: game/office.js officeGameFor)
+  tasks: [
+    { id: 'desk_xega', title: 'Phụ cô Tư xé gà cho mẻ sấy chiều', from: 'tu', base: 60, legs: [
+      { npc: 'tu', line: ['tu', 'Con rảnh hông? Xé phụ cô hai miếng ức gà. Xé dọc thớ nghe, xé ngang là thành chà bông.'] },
+      { obj: 'coffee', play: 'bama_shred', line: ['nar', 'Bạn xé xong hai miếng. Tay thơm mùi gà luộc và lá chanh.'] },
+      { npc: 'tu', line: ['tu', 'Sợi được. Mai cô cho con xé tiếp. Đó là lời khen đó.'] },
+    ] },
+    { id: 'desk_hantui', title: 'Hàn túi cho đơn livestream tối nay', from: 'mi', base: 70, legs: [
+      { npc: 'mi', line: ['mi', 'Tối nay live mà túi chưa hàn! Ra xưởng hàn giúp em năm túi với, anh Dũng chỉ chỗ.'] },
+      { npc: 'dung', play: 'bama_seal', line: ['dung', 'Máy hàn đây. Nghe tiếng "xèo" là thả. Nghe tiếng "khét" là trễ.'] },
+      { npc: 'mi', line: ['mi', 'Năm túi đẹp! Tối nay em khoe trên live là "đóng gói thủ công".'] },
+    ] },
+  ],
+
   chatter: [
     { id: 'bama_ch_dashboard', chat: [['tuan', 'Team ơi dashboard real-time live rồi 🚀 Đơn, ROAS, tồn kho, all in one'], ['hang', 'Cái này bao nhiêu tiền?'], ['tuan', 'Free trial 14 ngày, Mom'], ['hang', 'Ngày thứ 15 Má tắt.'], ['khoa', 'Ngày thứ 15 là Chủ nhật. Router cũng tắt.']],
       scene: [

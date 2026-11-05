@@ -1,5 +1,5 @@
 // Office equipment mini-games, shared by every company (pure data + choice, no DOM). Side-task legs that use the
-// printer or the pantry play one of these (modes/solo.js handleTaskVisit); two of them also join every company's
+// printer, the pantry or the altar play one of these (a leg with `play: '<desk game id>'` plays that company game) (modes/solo.js handleTaskVisit); two of them also join every company's
 // desk rotation (game/desk.js content + these). Mechanics live in ui/action.js.
 import { rng } from './tasks.js';
 
@@ -29,9 +29,19 @@ export function pourGame(text = '') {
     hint: 'Giữ chuột / chạm giữ màn hình (hoặc giữ Space), thả ra đúng lúc.' };
 }
 
-/** Which mini-game a side-task leg plays, or null (only the printer and the pantry have one). */
-export function officeGameFor(leg, seed = 1) {
-  if (!leg || !leg.obj) return null;
+export const INCENSE_GAME = { id: 'off_incense', type: 'action', game: 'incense', title: 'Thắp nhang Thần Tài', icon: '🪔', time: 40, pass: 0.6,
+  prompt: 'Giữ bật lửa dưới từng cây nhang tới khi đầu nhang đỏ (thả ở vùng xanh, giữ lâu quá là bùng lửa). Rồi bấm đúng lúc cây nhang thẳng đứng để cắm cho thẳng.',
+  hint: 'Giữ chuột / chạm giữ màn hình (hoặc giữ Space) để châm. Bấm một cái để cắm.' };
+
+/**
+ * Which mini-game a side-task leg plays, or null. A leg may name a company desk game with `play: '<desk game id>'`
+ * (`deskGames` = the company's DESK.games); otherwise the printer, the pantry and the altar have their own.
+ */
+export function officeGameFor(leg, seed = 1, deskGames = []) {
+  if (!leg) return null;
+  if (leg.play) return deskGames.find((g) => g.id === leg.play) || null;
+  if (!leg.obj) return null;
+  if (leg.obj === 'altar') return INCENSE_GAME;
   if (leg.obj === 'printer') return PRINTER_GAMES[Math.floor(rng(seed)() * PRINTER_GAMES.length)];
   if (leg.obj === 'coffee') return pourGame(leg.line ? leg.line[1] : '');
   return null;

@@ -263,6 +263,19 @@ export async function validateCompany(id) {
       if (!JSON.stringify(c.scene || []).includes('"c":')) W(`${at}: scene has no choice (the player should react)`);
       if (c.when && typeof c.when !== 'function') E(`${at}: when must be a function`);
     });
+    // errands that lead into desk games (`play` = a desk game id)
+    (dk.tasks || []).forEach((t, i) => {
+      const at = `desk.tasks[${i}:${t.id}]`;
+      if (!t.id || !t.title || !cast[t.from]) E(`${at}: needs id, title, from (cast id)`);
+      if ((co.sideTasks || []).some((x) => x.id === t.id)) E(`${at}: id clashes with a sideTasks id`);
+      (t.legs || []).forEach((l, k) => {
+        if (l.npc && !bodies.has(l.npc)) E(`${at}.legs[${k}]: npc "${l.npc}" must have a body`);
+        if (l.obj && !INTERACTABLE_IDS.includes(l.obj)) E(`${at}.legs[${k}]: obj "${l.obj}" unknown`);
+        if (l.play && !(dk.games || []).some((g) => g.id === l.play)) E(`${at}.legs[${k}]: play "${l.play}" is not a desk game id`);
+        if (l.line && !known(l.line[0])) E(`${at}.legs[${k}]: line speaker unknown`);
+      });
+      if (!(t.legs || []).some((l) => l.play)) W(`${at}: no leg plays a desk game`);
+    });
     if (dk.promoOffer) { walk(dk.promoOffer, 'desk.promoOffer', {}); if (!JSON.stringify(dk.promoOffer).includes('accept_official')) E('desk.promoOffer must set flag accept_official'); }
     deskGames = (dk.games || []).length; deskChatter = (dk.chatter || []).length;
     if (deskGames < 5) W(`only ${deskGames} desk games (aim ≥ 5)`);

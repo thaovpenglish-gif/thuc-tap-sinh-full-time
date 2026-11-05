@@ -212,6 +212,15 @@ export const DESK = {
       ] },
   ],
 
+  // errands that lead into the hands-on games (`play` = a desk game id; engine: game/office.js officeGameFor)
+  tasks: [
+    { id: 'desk_cut', title: 'Cắt lại clip theo nhịp cho khách', from: 'diep', base: 60, legs: [
+      { npc: 'diep', line: ['diep', 'Khách bảo clip "chưa bắt nhịp". Em cắt lại theo nhạc giúp chị, khách cần trước 5 giờ.'] },
+      { obj: 'desk', play: 'agency_cut', line: ['nar', 'Bạn cắt xong. Clip giờ nhảy theo nhạc. Khách sẽ bảo "ok nhưng thử nhạc khác".'] },
+      { npc: 'diep', line: ['diep', 'Gửi rồi. Khách thả tim. Một tim. Như vậy là duyệt.'] },
+    ] },
+  ],
+
   chatter: [
     { id: 'agency_ch_v14', chat: [['vy', '(đính kèm: KV_v14_FINAL_THATSU_dungsua.psd)'], ['diep', 'Chị Nguyệt bảo sửa lần cuối nha Vỹ'], ['vy', 'Lần cuối thứ mấy ạ?'], ['thi', 'Lần cuối là một trạng thái, không phải con số.']],
       scene: [

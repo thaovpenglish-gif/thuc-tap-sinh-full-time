@@ -197,6 +197,15 @@ export const DESK = {
       ] },
   ],
 
+  // errands that lead into the hands-on games (`play` = a desk game id; engine: game/office.js officeGameFor)
+  tasks: [
+    { id: 'desk_canle', title: 'Căn lại lề slide cho chị Linh', from: 'linh', base: 60, legs: [
+      { npc: 'linh', line: ['linh', 'Slide 7 lệch hai pixel. Khách sẽ thấy. Em căn lại giúp chị, ở máy em ấy.'] },
+      { obj: 'desk', play: 'tm_align', line: ['nar', 'Bạn căn xong. Rồi căn lại lần nữa vì "vài ý nhỏ".'] },
+      { npc: 'linh', line: ['linh', 'Thẳng. Chị không tìm được lỗi nào. Hơi khó chịu.'] },
+    ] },
+  ],
+
   chatter: [
     { id: 'tm_ch_minor', chat: [['tuyet', 'Chị có vài ý nhỏ cho deck nha'], ['tuyet', '(đính kèm: Y_kien_nho.docx · 11 trang)'], ['linh', '11 trang là nhỏ ạ chị?'], ['an', '🫠']],
       scene: [

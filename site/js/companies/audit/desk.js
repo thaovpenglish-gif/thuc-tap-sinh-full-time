@@ -196,6 +196,15 @@ export const DESK = {
       ] },
   ],
 
+  // errands that lead into the hands-on games (`play` = a desk game id; engine: game/office.js officeGameFor)
+  tasks: [
+    { id: 'desk_stamp', title: 'Đóng dấu chồng chứng từ trước 5 giờ', from: 'thao', base: 60, legs: [
+      { npc: 'thao', line: ['thao', 'Chồng chứng từ này chị cần trước 5 giờ. Tờ nào hợp lệ mới đóng dấu. Tờ nào không, để lại chị xem.'] },
+      { obj: 'desk', play: 'audit_stamp', line: ['nar', 'Bạn đóng xong. Tay hơi mỏi, mắt hơi hoa, nhưng không tờ nào lọt.'] },
+      { npc: 'thao', line: ['thao', 'Chị soát lại mười tờ ngẫu nhiên. Đúng cả mười. Em được nghỉ năm phút.'] },
+    ] },
+  ],
+
   chatter: [
     { id: 'audit_ch_3am', chat: [['thao', '[03:07] Chị gửi 27 review note rồi nhé'], ['thao', 'Không gấp đâu. 8 giờ sáng họp.'], ['khoa', 'Anh chưa ngủ nên anh đọc rồi'], ['tuan', '(sticker con mèo ngất)']],
       scene: [

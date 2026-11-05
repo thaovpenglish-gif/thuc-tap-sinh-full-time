@@ -571,3 +571,14 @@ body.nb-open #toasts { display: none; }
 .gd-pin { width: 100%; }
 .gd-foot { padding: 10px 14px; border-top: var(--line); display: flex; justify-content: flex-end; background: #fffdf6; }
 body.gd-open #toasts { display: none; }
+/* desk: pick the job */
+#deskPick { position: fixed; inset: 0; z-index: 41; display: grid; place-items: center; background: rgba(255, 248, 239, .65); backdrop-filter: blur(3px); padding: 12px; }
+.dp-card { width: min(620px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: #fff; border: 3px solid var(--ink); border-radius: 22px; box-shadow: var(--pop-lg); overflow: hidden; animation: tin .2s ease; }
+.dp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; padding: 12px; overflow-y: auto; }
+.dp-item { display: grid; grid-template-columns: auto 1fr; column-gap: 8px; row-gap: 3px; align-items: center; justify-items: start; text-align: left; padding: 8px 10px; border: var(--line); border-radius: 14px; background: var(--cream); box-shadow: var(--pop); font: inherit; cursor: pointer; transition: transform .08s; }
+.dp-item:hover { transform: translate(-1px, -1px); }
+.dp-ico { font-size: 24px; grid-row: span 3; align-self: start; } .dp-item b { font-size: 13.5px; line-height: 1.3; }
+body.dp-open #toasts { display: none; }
+.dp-item em { white-space: nowrap; font-style: normal; font-size: 11.5px; font-weight: 900; padding: 2px 8px; border: 2px solid var(--ink); border-radius: 99px; }
+.dp-item em.k-act { background: var(--mint); } .dp-item em.k-doc { background: var(--lilac); } .dp-item em.k-chat { background: var(--sky); }
+.dp-item small { font-weight: 700; color: var(--muted); }

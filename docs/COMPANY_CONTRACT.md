@@ -240,6 +240,8 @@ export const DESK = {
       scene: [['think', 'one line'], { c: 'co_desk_x', o: [ 2–3 options with fx ] }],
       when: (run) => bool },  // optional; chatter whose speakers have left (present() false) is skipped automatically
   ],
+  tasks: [ { id, title, from, base, legs: [ { npc }, { obj | npc, play: '<desk game id>', line }, { npc } ] } ],
+                        // optional: errands that lead into the hands-on games (merged into sideTasks)
   promoOffer: [ ... ],  // optional: the manager's offer when the player is promoted for hard work; must set
                         // accept_official true/false (like promotion.offer). Without it a generic offer is used.
 };
