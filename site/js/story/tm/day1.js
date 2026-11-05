@@ -15,7 +15,7 @@ export const STANDUP_MINI = {
 
 export const LMS_MINI = {
   type: 'quiz', title: 'E-learning: Văn hóa T&M (bản 2016)', icon: '🎞️',
-  prompt: 'Bài kiểm tra cuối video. Đúng 2/3 là qua, nhận chứng chỉ.', time: 30, pass: 0.66,
+  prompt: 'Bài kiểm tra cuối video: ba câu. Qua thì nhận chứng chỉ.', time: 30, pass: 0.66,
   questions: [
     { q: 'Giá trị cốt lõi số 1 của T&M là gì?', options: ['Excellence', 'Excellence. Eventually.', 'Ăn trưa đúng giờ'], correct: 0 },
     { q: 'Khi không biết ai phụ trách một việc, em nên…', options: ['Hỏi chị Thư', 'Tra quy trình trên hệ thống', 'Hỏi Mèo KPI'], correct: 1 },
@@ -107,7 +107,7 @@ export const DAY1 = {
         ['dat', 'Cảm ơn Khang. Cái đó mình đưa vào parking lot nhé. {ten}, your turn!'],
         { mini: STANDUP_MINI,
           good: [['dat', 'PERFECT format! Mọi người thấy chưa, intern còn chuẩn hơn cả team.'], ['an', '(nhỏ) Chuẩn thật. Nhanh nữa.'], { fx: { uy: 3, rel: { dat: 2, an: 1 } } }],
-          bad: [['nar', 'Bạn nói Today trước Yesterday. Anh Đạt nhăn mặt như vừa thấy một story không có acceptance criteria.'], ['dat', 'Không sao, lần sau mình theo format nha. Format là văn hóa.'], { fx: { rel: { dat: -1, ha: 1 } } }],
+          bad: [['nar', 'Bạn báo cáo lộn thứ tự. Anh Đạt nhăn mặt như vừa thấy một story không có acceptance criteria.'], ['dat', 'Không sao, lần sau mình theo format nha. Format là văn hóa.'], { fx: { rel: { dat: -1, ha: 1 } } }],
         },
         ['nar', 'Daily stand-up "mười lăm phút" kết thúc lúc 9:45. Anh Đạt ghi lên bảng: "Velocity: tốt".'],
       ],
@@ -117,6 +117,7 @@ export const DAY1 = {
       scene: [
         ['phuong', 'Em ngồi đây xem video "Văn hóa T&M" nhé. Bốn mươi phút thôi. Hơi cũ nhưng giá trị vẫn còn nguyên!'],
         ['nar', 'Video mở đầu bằng logo cũ, nhạc nền piano và câu "T&M Partners: Leading the Future (2016)".'],
+        ['nar', 'Slide hai: "Giá trị cốt lõi số 1: EXCELLENCE". Slide ba: "Mọi quy trình nằm trên T&M Portal 2016", kèm dòng gõ thêm năm 2019: "(và file Excel QuyTrinh_FINAL)".'],
         { c: 'd1_lms', o: [
           { t: 'Xem hết 40 phút.', fx: { nl: -8, rel: { phuong: 2 } }, then: [['nar', 'Bạn biết thêm rằng năm 2016 công ty từng có một ban "Chuyển đổi số". Ban đó đã chuyển đổi thành Excel.']] },
           { t: 'Tua nhanh lên câu hỏi cuối.', fx: { dr: 2 }, then: [['phuong', 'Ơ, em tua hả? Hệ thống báo rồi nè. Em xem lại đoạn "Giá trị cốt lõi" nhé.'], { fx: { nl: -3, rel: { phuong: -1 } } }] },
@@ -286,9 +287,9 @@ export const SIDE_TASKS = [
     { npc: 'quynh', line: ['quynh', 'Khách chuyển chưa thì phải xem sao kê… À đây, chuyển rồi, hôm thứ Năm.'] },
     { npc: 'mai', line: ['mai', 'Tuyệt, chị báo khách luôn. Em nhanh ghê.'] },
   ] },
-  { id: 'room', title: 'Nhờ chị Gấm đặt phòng họp 16:00 cho chị Linh', from: 'an', base: 80, legs: [
-    { npc: 'an', line: ['an', 'Em đặt giúp anh phòng họp 16:00 cho chị Linh với. Nhắc chị Gấm hai lần nhé.'] },
-    { npc: 'gam', line: ['gam', 'Phòng họp 16:00 hả… hôm nay hả? Ơ, chị ghi rồi. Lần này bút bi.'] },
+  { id: 'room', title: 'Nhờ chị Gấm đặt phòng họp 9:00 sáng mai cho chị Linh', from: 'an', base: 80, legs: [
+    { npc: 'an', line: ['an', 'Em đặt giúp anh phòng họp 9:00 sáng mai cho chị Linh với. Nhắc chị Gấm hai lần nhé.'] },
+    { npc: 'gam', line: ['gam', 'Phòng họp 9:00 sáng mai hả… mai hả? Ơ, chị ghi rồi. Lần này bút bi.'] },
     { npc: 'an', line: ['an', 'Bút bi thật hả? Tốt quá.'] },
   ] },
   { id: 'print', title: 'In 3 bản hợp đồng gốc cho Nhi', from: 'nhi', base: 60, legs: [

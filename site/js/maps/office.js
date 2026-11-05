@@ -1,44 +1,38 @@
-// T&M Partners office (Solo, first-person). Based on the legacy office kit; layout follows the T&M org chart.
+// Office map for Solo (first person). One layout, themed per company (signs, nameplates, palette, props).
+// Spots are named slots; T&M cast ids are kept as slot names, generic aliases are added below (boss, n1…n6, c1…c3…).
 import * as THREE from 'three';
 import { INK, T, outline, canvasTex, roundRect, textTexture, gradientMap } from '../art/kit.js';
+import { PROP_SLOTS } from './slots.js';
+export { SPOTS, SLOT_HELP, PROP_SLOTS, CAT_PATH, PLAYER_START, MEETING_SEAT, PLAYER_DESK, INTERACTABLE_IDS } from './slots.js';
 
-// Named spots: [x, z, rotY]  (rotY 0 = facing +z / south, PI = facing north)
-// [x, z, rotY]  (rotY 0 = facing +z / south, PI = facing north)
-export const SPOTS = {
-  // leadership & EA row along the north window
-  tuyet: [-11, -8.5, 0],
-  thu: [-5.6, -9.1, 0], nhi: [-4.0, -9.1, 0],
-  linh: [-2.4, -9.1, 0], an: [-0.8, -9.1, 0], ha: [2.4, -9.1, 0],
-  // Hạ's team + interns cluster
-  long: [-4.2, -2.6, 0], trang: [-2.2, -2.6, 0], bao: [-2.2, 1.65, Math.PI],
-  mai: [5, -3.25, 0],
-  han: [2.4, 3.15, 0], khang: [3.6, 2.4, -0.6],
-  quynh: [11, -8.5, 0], gam: [-4, 5.3, 0],
-  binh: [5.5, 4.3, Math.PI / 2], phuong: [8.5, 8.95, Math.PI],
-  dat: [2.6, -6.0, -0.4],
-  // scenes
-  reception_side: [-1.6, 6.6, -Math.PI / 2],
-  pantry_bao: [12.6, 3.4, -Math.PI / 2],
-  mr_head: [-14.2, 0.5, Math.PI / 2], mr_n1: [-13, -0.85, 0], mr_n2: [-12, -0.85, 0],
-  lunch1: [10.9, -0.15, 0], lunch2: [11.6, -0.15, 0], lunch3: [12.3, -0.15, 0], lunch4: [10.9, 2.55, Math.PI], lunch5: [12.3, 2.55, Math.PI],
-  window: [-2.5, -9.1, Math.PI],
-  su_dat: [0.5, -5.75, 0],
+// T&M theme = the original office. Other companies override any of these fields.
+export const DEFAULT_THEME = {
+  logo: ['T&M PARTNERS', 'Strategy & Management Consulting', '"We deliver excellence. Eventually."'],
+  skyline: 'WE DELIVER EXCELLENCE', bossWall: 'Excellence', banner: 'EXCELLENCE  ·  EVENTUALLY',
+  signs: { boss: 'CHAIRPERSON', finance: 'FINANCE', meeting: 'PHÒNG HỌP', standup: 'DAILY STAND-UP · 9:00 · 15 PHÚT (*)', pantry: 'PANTRY · Góp 25k/bữa' },
+  desks: {
+    c1: ['Long · BA', ['Từ điển', 'Hân – Việt v0.3'], '#62b38a'], c2: ['Trang · Junior', ['Việc đã nhận', 'trang 4/4'], '#ff8fb1'],
+    me: ['Intern · Bạn', ['PowerPoint', 'Deck_FINAL?'], '#e07a5f'], c3: ['Bảo · Senior Intern', ['Bảo-pedia', '3 năm · 412 trang'], '#9b7bff'],
+    n1: ['Thư · EA', ['Ai làm gì', '(không chính thức)'], '#5b9bd5'], n2: ['Nhi · EA', ['Lịch chị Tuyết', '47 cuộc họp'], '#e0a030'],
+    n3: ['Linh · Strategy', ['Cần tuyển', 'từ 2023…'], '#4a5bd8'], n4: ['An · Strategy', ['Deck_FINAL_REAL', '10:42'], '#3a7bd5'],
+    n5: ['Minh · part-time', ['Offline', 'Đang thi'], '#9aa0ad'], n6: ['Hạ · Research', ['Literature', 'review (217 tr.)'], '#5a9a5a'],
+    hr: ['Phương · HR', ['Team building', 'thứ Bảy #7'], '#ff7a6b'], senior: ['Mai · Senior', ['Proposal', 'đã approve ✓'], '#9b7bff'],
+  },
+  whiteboard: ['BIG PITCHER 🚀', 'Aligment strategry', 'với perfomance', 'Re-branding mindset', '(Long: big PICTURE ạ)'],
+  scrum: { cols: ['TO DO', 'DOING', 'DONE'], notes: [
+    ['Big pitcher (??)', 'Literature review rút gọn', 'Tuyển người cho chị Linh', 'Thẻ từ intern mới'],
+    ['Deck FINAL_REAL', 'Kanban thật (bí mật)', 'Sửa máy in (lần 4)'],
+    ['Stand-up 45 phút', 'Team building #6'],
+  ] },
+  board: ['TẾT 2015 🧧', 'Team building Vũng Tàu (đã hủy?)', 'Sinh nhật chị Tuyết'],
+  palette: {},
+  props: [],
+  labels: {},
 };
-{
-  const cx = 0.5, cz = -4.3, rx = 2.6, rz = 1.65;
-  const angles = [0.62, 0.78, 0.94, 1.1, 1.26, 0.38, 0.22, 0.06, -0.1, -0.26];
-  angles.forEach((a, i) => {
-    const x = cx + rx * Math.cos(a * Math.PI), z = cz + rz * Math.sin(a * Math.PI);
-    SPOTS['su' + (i + 1)] = [x, z, Math.atan2(cx - x, cz - z)];
-  });
-}
-// Mèo KPI wanders between these points
-export const CAT_PATH = [[-3.2, 3.2], [1.5, 3.0], [6.0, 1.5], [11.0, 3.6], [6.0, -1.0], [0.5, -2.8], [-5.5, -4.6], [-5.8, 2.6]];
-export const PLAYER_START = [0, 8.6, 0]; // x, z, yaw (yaw 0 looks north)
-export const MEETING_SEAT = [-11, 2.1];
-export const PLAYER_DESK = [-4.2, 1.6];
 
-export function buildWorld(scene) {
+export function buildWorld(scene, themeIn = {}) {
+  const th = { ...DEFAULT_THEME, ...themeIn, signs: { ...DEFAULT_THEME.signs, ...(themeIn.signs || {}) }, desks: { ...DEFAULT_THEME.desks, ...(themeIn.desks || {}) }, labels: { ...(themeIn.labels || {}) } };
+  const L = (id, d) => th.labels[id] || d;
   const colliders = [];
   const interactables = [];
   const animated = [];
@@ -88,6 +82,7 @@ export function buildWorld(scene) {
     wall: '#fff4e6', lilac: '#e3d9ff', peach: '#ffe0d6', mint: '#d6f5e8', butter: '#fff1b8', sky: '#d9eeff',
     desk: '#fffaf2', deskLeg: '#c9b6ff', chair: '#b8f0d8', chair2: '#ffc8dd', wood: '#f2c99a', woodDark: '#d9a273',
     plant: '#8fd6a0', pot: '#ffb39a', ink: INK,
+    ...(th.palette || {}),
   };
   const glassMat = new THREE.MeshBasicMaterial({ color: '#cfe9ff', transparent: true, opacity: 0.28, depthWrite: false });
 
@@ -167,7 +162,7 @@ export function buildWorld(scene) {
       x += bw + 10; n++;
     }
     g.fillStyle = '#ffffff'; roundRect(g, 1280, 150, 420, 110, 20); g.fill(); g.strokeStyle = INK; g.lineWidth = 6; g.stroke();
-    g.fillStyle = INK; g.font = '900 48px Be Vietnam Pro, Arial'; g.textAlign = 'center'; g.fillText('WE DELIVER EXCELLENCE', 1490, 218);
+    g.fillStyle = INK; g.font = '900 48px Be Vietnam Pro, Arial'; g.textAlign = 'center'; g.fillText(th.skyline, 1490, 218);
   });
   const sky = new THREE.Mesh(new THREE.PlaneGeometry(40, 10), new THREE.MeshBasicMaterial({ map: skyTex }));
   sky.position.set(0, 1.5, -16); root.add(sky);
@@ -203,12 +198,12 @@ export function buildWorld(scene) {
   box(0.7, 0.12, 0.65, '#9fb4ff', -11, 0.45, -8.95, false);
   cyl(0.1, 0.08, 0.1, '#c98f6a', -11.5, 0.8, -7.3);
   for (let i = 0; i < 3; i++) cyl(0.045, 0.035, 0.05, '#ffffff', -11.2 + i * 0.12, 0.8, -7.1, 12, 0.01);
-  const nhan = textTexture(['Excellence'], { w: 512, h: 256, bg: '#fff8ef', sizes: [96], weights: [900] });
+  const nhan = textTexture([th.bossWall], { w: 512, h: 256, bg: '#fff8ef', sizes: [96], weights: [900] });
   plane(1.4, 0.7, basic(nhan), -11, 1.8, -9.88, 0);
   cyl(0.22, 0.18, 0.4, P.pot, -8, 0, -9.2);
   for (let i = 0; i < 6; i++) sphere(0.15, '#d9d47a', -8 + Math.cos(i) * 0.15, 0.6 + i * 0.12, -9.2 + Math.sin(i) * 0.15, 0.015);
-  interactables.push({ id: 'plant', label: 'Xem cây kim tiền', pos: new THREE.Vector3(-8, 1, -9.2) });
-  sign('CHAIRPERSON', '#c9b6ff', -6.9, 2.3, -5.5, Math.PI / 2);
+  interactables.push({ id: 'plant', label: L('plant', 'Xem cây kim tiền'), pos: new THREE.Vector3(-8, 1, -9.2) });
+  sign(th.signs.boss, '#c9b6ff', -6.9, 2.3, -5.5, Math.PI / 2);
 
   // ---------- Finance (NE): peach ----------
   const peachFloor = new THREE.Mesh(new THREE.PlaneGeometry(8, 6), T(P.peach));
@@ -225,9 +220,9 @@ export function buildWorld(scene) {
   cyl(0.12, 0.12, 0.04, '#ffe08a', 13.6, 0.55, -8.83).rotation.x = Math.PI / 2;
   const talisman = textTexture(['PHÁT'], { w: 128, h: 256, bg: '#ffe08a', fg: '#e0455f', sizes: [44] });
   plane(0.18, 0.36, basic(talisman), 13.85, 0.75, -8.83, 0);
-  interactables.push({ id: 'safe', label: 'Nhìn két sắt', pos: new THREE.Vector3(13.6, 0.8, -8.8) });
-  sign('FINANCE', '#ffc2b3', 8.75, 2.25, -3.88, 0);
-  const banner = textTexture(['EXCELLENCE  ·  EVENTUALLY'], { w: 1024, h: 128, bg: '#ffe9a0', sizes: [54], weights: [900] });
+  interactables.push({ id: 'safe', label: L('safe', 'Nhìn két sắt'), pos: new THREE.Vector3(13.6, 0.8, -8.8) });
+  sign(th.signs.finance, '#ffc2b3', 8.75, 2.25, -3.88, 0);
+  const banner = textTexture([th.banner], { w: 1024, h: 128, bg: '#ffe9a0', sizes: [54], weights: [900] });
   plane(4.6, 0.58, basic(banner), 12.3, 2.35, -3.88, 0);
 
   // ---------- War Room (W): mint ----------
@@ -258,14 +253,14 @@ export function buildWorld(scene) {
     });
   });
   plane(2.4, 1.3, basic(retroTex), -11, 1.7, 4.88, Math.PI);
-  interactables.push({ id: 'interview', label: 'Ngồi vào ghế phỏng vấn', pos: new THREE.Vector3(-11, 0.8, 2.2) });
-  sign('PHÒNG HỌP', '#b8f0d8', -6.9, 2.3, 1.8, Math.PI / 2);
+  interactables.push({ id: 'interview', label: L('interview', 'Ngồi vào ghế phòng họp'), pos: new THREE.Vector3(-11, 0.8, 2.2) });
+  sign(th.signs.meeting, '#b8f0d8', -6.9, 2.3, 1.8, Math.PI / 2);
 
   // ---------- Reception ----------
   box(3.4, 0.82, 0.7, '#ffc8dd', -4, 0, 6.4, true);
   box(3.5, 0.06, 0.8, P.desk, -4, 0.82, 6.4, false);
   box(4.4, 2.6, 0.2, '#c9b6ff', -4, 0, 4.4, true);
-  const logo = textTexture(['T&M PARTNERS', 'Strategy & Management Consulting', '"We deliver excellence. Eventually."'], { w: 1024, h: 512, bg: '#fff8ef', sizes: [92, 40, 34], weights: [900, 700, 500] });
+  const logo = textTexture(th.logo, { w: 1024, h: 512, bg: '#fff8ef', sizes: [92, 40, 34], weights: [900, 700, 500] });
   plane(4.1, 2.05, basic(logo), -4, 1.6, 4.52, 0);
   cyl(0.06, 0.08, 0.06, '#ffe08a', -3.2, 0.88, 6.3, 12, 0.01);
 
@@ -282,7 +277,7 @@ export function buildWorld(scene) {
   const bulbs = [];
   for (let i = 0; i < 6; i++) bulbs.push(sphere(0.03, new THREE.MeshBasicMaterial({ color: '#ff6f8a' }), 3.55 + i * 0.18, 1.38, 9.74, 0));
   animated.push((t) => { bulbs.forEach((b, i) => b.material.color.set(((Math.floor(t * 3) + i) % 2) ? '#ff6f8a' : '#ffe08a')); });
-  interactables.push({ id: 'altar', label: 'Thắp hương Thần Tài', pos: new THREE.Vector3(4, 0.9, 9.3) });
+  interactables.push({ id: 'altar', label: L('altar', 'Thắp hương Thần Tài'), pos: new THREE.Vector3(4, 0.9, 9.3) });
 
   // ---------- HR desk by the entrance (Phương) ----------
   box(0.4, 0.7, 0.4, '#bfe3ff', 6.6, 0, 9.5, true);
@@ -309,39 +304,41 @@ export function buildWorld(scene) {
       plane(0.32, 0.08, basic(np), x + 0.45, 0.82, z + facing * 0.38, facing > 0 ? 0 : Math.PI);
     }
   }
-  desk(-4.2, -1.65, -1, 'Long · BA', [['Từ điển', 'Hân – Việt v0.3'], '#62b38a'], '#bfe3ff');
-  desk(-2.2, -1.65, -1, 'Trang · Junior', [['Việc đã nhận', 'trang 4/4'], '#ff8fb1'], P.chair2);
-  desk(-4.2, 0.85, 1, 'Intern · Bạn', [['PowerPoint', 'Deck_FINAL?'], '#e07a5f'], '#ffe9a0');
-  desk(-2.2, 0.85, 1, 'Bảo · Senior Intern', [['Bảo-pedia', '3 năm · 412 trang'], '#9b7bff'], '#c9b6ff');
-  // north row: Chairperson's assistants, Strategy team, Research director
-  desk(-5.6, -8.4, -1, 'Thư · EA', [['Ai làm gì', '(không chính thức)'], '#5b9bd5'], '#bfe3ff');
-  desk(-4.0, -8.4, -1, 'Nhi · EA', [['Lịch chị Tuyết', '47 cuộc họp'], '#e0a030'], '#ffe9a0');
-  desk(-2.4, -8.4, -1, 'Linh · Strategy', [['Cần tuyển', 'từ 2023…'], '#4a5bd8'], '#c9b6ff');
-  desk(-0.8, -8.4, -1, 'An · Strategy', [['Deck_FINAL_REAL', '10:42'], '#3a7bd5'], '#b8f0d8');
-  desk(0.8, -8.4, -1, 'Minh · part-time', [['Offline', 'Đang thi'], '#9aa0ad'], '#e3d9ff');
-  desk(2.4, -8.4, -1, 'Hạ · Research', [['Literature', 'review (217 tr.)'], '#5a9a5a'], P.chair);
-  desk(8.5, 8.2, 1, 'Phương · HR', [['Team building', 'thứ Bảy #7'], '#ff7a6b'], '#ffc8dd');
+  const D = (slot) => th.desks[slot] || ['', null, '#9aa0ad'];
+  const dk = (x, z, f, slot, chair) => { const [plate, lines, col] = D(slot); desk(x, z, f, plate, lines ? [lines, col] : null, chair); };
+  dk(-4.2, -1.65, -1, 'c1', '#bfe3ff');
+  dk(-2.2, -1.65, -1, 'c2', P.chair2);
+  dk(-4.2, 0.85, 1, 'me', '#ffe9a0');
+  dk(-2.2, 0.85, 1, 'c3', '#c9b6ff');
+  // north row (window)
+  dk(-5.6, -8.4, -1, 'n1', '#bfe3ff');
+  dk(-4.0, -8.4, -1, 'n2', '#ffe9a0');
+  dk(-2.4, -8.4, -1, 'n3', '#c9b6ff');
+  dk(-0.8, -8.4, -1, 'n4', '#b8f0d8');
+  dk(0.8, -8.4, -1, 'n5', '#e3d9ff');
+  dk(2.4, -8.4, -1, 'n6', P.chair);
+  dk(8.5, 8.2, 1, 'hr', '#ffc8dd');
   box(4.1, 0.35, 0.05, '#ffc8dd', -3.2, 0.74, -0.4, false, 0, 0.015);
-  interactables.push({ id: 'desk', label: 'Ngồi làm việc ở bàn mình', pos: new THREE.Vector3(-4.2, 0.8, 1.4) });
+  interactables.push({ id: 'desk', label: L('desk', 'Ngồi làm việc ở bàn mình'), pos: new THREE.Vector3(-4.2, 0.8, 1.4) });
 
   // Mai's desk + Bình's server rack
-  desk(5, -2.4, -1, 'Mai · Senior', [['Proposal', 'đã approve ✓'], '#9b7bff'], '#c9b6ff');
+  dk(5, -2.4, -1, 'senior', '#c9b6ff');
   box(0.7, 2.0, 0.7, '#4a4a5a', 6.4, 0, -3.9, true);
   const leds = [];
   for (let i = 0; i < 8; i++) leds.push(box(0.05, 0.03, 0.01, new THREE.MeshBasicMaterial({ color: '#8fff9f' }), 6.25 + (i % 4) * 0.1, 0.8 + Math.floor(i / 4) * 0.5, -3.54, false, 0, 0));
   animated.push((t) => leds.forEach((l, i) => { l.visible = Math.sin(t * (3 + i) + i) > -0.3; }));
   box(0.6, 0.8, 0.5, '#ffffff', 6.4, 0, 4.8, true);
   box(0.6, 0.25, 0.5, '#e3d9ff', 6.4, 0.8, 4.8, false);
-  interactables.push({ id: 'printer', label: 'Dùng máy in', pos: new THREE.Vector3(6.4, 0.9, 4.5) });
+  interactables.push({ id: 'printer', label: L('printer', 'Dùng máy in'), pos: new THREE.Vector3(6.4, 0.9, 4.5) });
 
   // Hân's corner (standing desk + buzzword whiteboard)
   box(1.2, 1.05, 0.6, '#ffffff', 2.4, 0, 3.95, true);
   box(0.5, 0.32, 0.04, '#ffffff', 2.4, 1.05, 4.05, false);
-  const wb = textTexture(['BIG PITCHER 🚀', 'Aligment strategry', 'với perfomance', 'Re-branding mindset', '(Long: big PICTURE ạ)'], { w: 768, h: 512, bg: '#ffffff', fg: '#4a5bd8', sizes: [64, 48, 40, 40, 34], weights: [900, 800, 700, 700, 500], align: 'left', pad: 40 });
+  const wb = textTexture(th.whiteboard, { w: 768, h: 512, bg: '#ffffff', fg: '#4a5bd8', sizes: [64, 48, 40, 40, 34], weights: [900, 800, 700, 700, 500], align: 'left', pad: 40 });
   box(2.0, 1.2, 0.05, '#ffffff', 4.3, 0.9, 4.6, true);
   plane(1.9, 1.1, basic(wb), 4.3, 1.5, 4.56, Math.PI);
   const bean = sphere(0.45, '#b8f0d8', 4.4, 0.3, 3.2); bean.scale.y = 0.7;
-  interactables.push({ id: 'okr', label: 'Đọc bảng trắng của chị Hân', pos: new THREE.Vector3(4.3, 1.4, 4.4) });
+  interactables.push({ id: 'okr', label: L('okr', 'Đọc bảng trắng của chị Hân'), pos: new THREE.Vector3(4.3, 1.4, 4.4) });
 
   // ---------- Scrum board (centre stage) ----------
   box(0.08, 1.9, 0.08, '#ffffff', -0.9, 0, -6.6, false, 0, 0.015);
@@ -349,12 +346,8 @@ export function buildWorld(scene) {
   collideRect(-1.0, 2.0, -6.75, -6.45);
   const scrumTex = canvasTex(1024, 560, (g, w, h) => {
     g.fillStyle = '#ffffff'; roundRect(g, 4, 4, w - 8, h - 8, 26); g.fill(); g.strokeStyle = INK; g.lineWidth = 8; g.stroke();
-    const cols = [['TO DO', '#ffe9a0'], ['DOING', '#bfe3ff'], ['DONE', '#b8f0d8']];
-    const notes = [
-      ['Big pitcher (??)', 'Literature review rút gọn', 'Tuyển người cho chị Linh', 'Thẻ từ intern mới'],
-      ['Deck FINAL_REAL', 'Kanban thật (bí mật)', 'Sửa máy in (lần 4)'],
-      ['Stand-up 45 phút', 'Team building #6'],
-    ];
+    const cols = [[th.scrum.cols[0], '#ffe9a0'], [th.scrum.cols[1], '#bfe3ff'], [th.scrum.cols[2], '#b8f0d8']];
+    const notes = th.scrum.notes.map((c) => c.slice(0, 4));
     const ncol = ['#ffc8dd', '#ffe9a0', '#c9b6ff', '#b8f0d8', '#ffd3b8'];
     cols.forEach(([t, c], i) => {
       const x = 24 + i * 330;
@@ -376,7 +369,7 @@ export function buildWorld(scene) {
   const scrum = plane(3.0, 1.64, basic(scrumTex), 0.5, 1.55, -6.55, 0);
   void scrum;
   const scrumBack = box(3.05, 1.7, 0.05, '#ffffff', 0.5, 0.7, -6.6, false, 0, 0.02); void scrumBack;
-  sign('DAILY STAND-UP · 9:00 · 15 PHÚT (*)', '#c9b6ff', 0.5, 2.62, -6.53, 0, 2.6);
+  sign(th.signs.standup, '#c9b6ff', 0.5, 2.62, -6.53, 0, 2.6);
 
   // ---------- Pantry (E): butter ----------
   const butterFloor = new THREE.Mesh(new THREE.PlaneGeometry(6, 7), T(P.butter));
@@ -386,13 +379,13 @@ export function buildWorld(scene) {
   box(0.8, 1.9, 0.8, '#bfe3ff', 14.5, 0, -1.6, true);
   cyl(0.18, 0.18, 0.25, '#ffffff', 14.6, 0.96, 0.4);
   box(0.35, 0.45, 0.35, '#ffc8dd', 14.6, 0.96, 3.6, false);
-  interactables.push({ id: 'coffee', label: 'Pha cà phê gói', pos: new THREE.Vector3(14.4, 1.1, 3.6) });
+  interactables.push({ id: 'coffee', label: L('coffee', 'Pantry: ăn uống, cà phê'), pos: new THREE.Vector3(14.4, 1.1, 3.6) });
   box(2.0, 0.72, 1.0, '#ffffff', 11.6, 0, 1.2, true);
   for (let i = 0; i < 3; i++) { cyl(0.17, 0.2, 0.42, '#bfe3ff', 10.9 + i * 0.7, 0, 0.35); cyl(0.17, 0.2, 0.42, '#b8f0d8', 10.9 + i * 0.7, 0, 2.05); }
   box(0.5, 0.1, 0.5, '#ff5a6e', 10.2, 0.4, 1.2, false); box(0.1, 0.6, 0.5, '#ff5a6e', 9.98, 0.45, 1.2, false);
-  interactables.push({ id: 'redchair', label: 'Nhìn chiếc ghế đỏ', pos: new THREE.Vector3(10.2, 0.6, 1.2) });
+  interactables.push({ id: 'redchair', label: L('redchair', 'Nhìn chiếc ghế đỏ'), pos: new THREE.Vector3(10.2, 0.6, 1.2) });
   cyl(0.2, 0.18, 0.18, '#ffffff', 11.6, 0.72, 1.2);
-  const pantrySign = textTexture(['PANTRY · Góp 25k/bữa'], { w: 768, h: 128, bg: '#ffe9a0', sizes: [54] });
+  const pantrySign = textTexture([th.signs.pantry], { w: 768, h: 128, bg: '#ffe9a0', sizes: [54] });
   plane(2.6, 0.43, basic(pantrySign), 14.88, 2.35, 1.6, -Math.PI / 2);
 
   // ---------- decorations ----------
@@ -409,17 +402,53 @@ export function buildWorld(scene) {
     for (let i = 1; i <= 12; i++) { const a = i / 12 * Math.PI * 2; g.fillText(i, 128 + Math.sin(a) * 88, 128 - Math.cos(a) * 88); }
   });
   plane(0.6, 0.6, basic(clockTex), 0, 2.45, 9.88, Math.PI);
-  const board = textTexture(['TẾT 2015 🧧', 'Team building Vũng Tàu (đã hủy?)', 'Sinh nhật chị Tuyết'], { w: 768, h: 420, bg: '#ffd3b8', sizes: [52, 34, 34] });
+  const board = textTexture(th.board, { w: 768, h: 420, bg: '#ffd3b8', sizes: [52, 34, 34] });
   plane(1.8, 1.0, basic(board), -8, 1.6, 9.88, Math.PI);
 
+  // ---------- company props (in free prop slots) ----------
+  const propTex = (label, bg) => textTexture([label], { w: 512, h: 160, bg, sizes: [52] });
+  for (const pr of th.props || []) {
+    const at = PROP_SLOTS[pr.slot]; if (!at) continue;
+    const [x, z] = at, col = pr.color || '#ffe9a0';
+    if (pr.type === 'crates') {
+      for (let i = 0; i < 3; i++) box(0.9, 0.55, 0.7, i % 2 ? '#e8c39a' : '#d9a273', x + (i === 2 ? 0.2 : (i - 0.5) * 0.95), i === 2 ? 0.55 : 0, z, i < 2);
+      plane(1.3, 0.4, basic(propTex(pr.label || 'HÀNG', col)), x, 0.32, z - 0.37, Math.PI);
+    } else if (pr.type === 'rack') {
+      box(0.7, 2.0, 0.7, '#4a4a5a', x, 0, z, true);
+      for (let i = 0; i < 8; i++) { const l = box(0.05, 0.03, 0.01, new THREE.MeshBasicMaterial({ color: '#8fff9f' }), x - 0.15 + (i % 4) * 0.1, 0.8 + Math.floor(i / 4) * 0.5, z - 0.36, false, 0, 0); animated.push((t) => { l.visible = Math.sin(t * (3 + i) + i) > -0.3; }); }
+      if (pr.label) plane(0.9, 0.28, basic(propTex(pr.label, col)), x, 2.15, z - 0.37, Math.PI);
+    } else if (pr.type === 'ringlight') {
+      cyl(0.02, 0.02, 1.5, '#333344', x, 0, z, 8, 0.008);
+      const ring2 = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.035, 10, 32), new THREE.MeshBasicMaterial({ color: '#fffbe0' }));
+      ring2.position.set(x, 1.6, z); root.add(ring2);
+      box(0.08, 0.15, 0.01, '#ff8fa3', x, 1.52, z - 0.02, false, 0, 0.008);
+      if (pr.label) plane(1.0, 0.31, basic(propTex(pr.label, col)), x, 2.1, z, Math.PI);
+    } else if (pr.type === 'balloons') {
+      ['#ffc8dd', '#bfe3ff', '#ffe08a', '#b8f0d8'].forEach((c, i) => { const b = sphere(0.22, c, x + (i - 1.5) * 0.28, 1.9 + (i % 2) * 0.25, z); animated.push((t) => { b.position.y = 1.9 + (i % 2) * 0.25 + Math.sin(t * 1.5 + i) * 0.05; }); cyl(0.004, 0.004, 1.7, '#888888', x + (i - 1.5) * 0.28, 0, z, 4, 0); });
+      if (pr.label) plane(1.2, 0.37, basic(propTex(pr.label, col)), x, 0.9, z, Math.PI);
+    } else if (pr.type === 'cabinet') {
+      for (let i = 0; i < 2; i++) box(0.6, 1.4, 0.6, '#ffffff', x + (i - 0.5) * 0.65, 0, z, true);
+      if (pr.label) plane(1.2, 0.37, basic(propTex(pr.label, col)), x, 1.65, z - 0.31, Math.PI);
+    } else if (pr.type === 'dryer') {
+      box(0.9, 1.3, 0.7, '#cfd6e6', x, 0, z, true);
+      for (let i = 0; i < 4; i++) box(0.75, 0.03, 0.02, '#ff9f7a', x, 0.3 + i * 0.25, z - 0.36, false, 0, 0);
+      if (pr.label) plane(1.1, 0.34, basic(propTex(pr.label, col)), x, 1.5, z - 0.36, Math.PI);
+    } else { // standee / rollup banner
+      box(0.7, 0.06, 0.25, '#333344', x, 0, z, false);
+      plane(0.7, 1.7, basic(textTexture(String(pr.label || '').split('|'), { w: 256, h: 620, bg: col, sizes: [40, 30, 30, 30] })), x, 0.95, z, Math.PI);
+      collideRect(x - 0.35, x + 0.35, z - 0.15, z + 0.15);
+    }
+  }
+
   // ---------- lights ----------
-  scene.add(new THREE.HemisphereLight('#ffffff', '#ffe9d6', 1.6));
-  scene.add(new THREE.AmbientLight('#ffffff', 0.45));
+  root.add(new THREE.HemisphereLight('#ffffff', '#ffe9d6', 1.6));
+  root.add(new THREE.AmbientLight('#ffffff', 0.45));
   const dir = new THREE.DirectionalLight('#fff6ea', 1.1);
-  dir.position.set(-6, 10, 8); scene.add(dir);
+  dir.position.set(-6, 10, 8); root.add(dir);
 
   return {
-    colliders, interactables,
+    colliders, interactables, root,
+    dispose() { scene.remove(root); root.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material && o.material.map) o.material.map.dispose(); }); },
     update(t) { animated.forEach((f) => f(t)); incense.forEach((s, i) => { s.scale.y = 0.9 + Math.sin(t * 2 + i) * 0.03; }); },
   };
 }
