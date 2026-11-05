@@ -78,6 +78,8 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
   playable yet (Game Owner). Developer letter lists the 4 playable clients.
 - Level picker is now a street map (buildings, SOS HQ, cranes on the coming-soon ones); home and room screens use two
   columns and fit a laptop screen without scrolling (Game Owner: "phải scroll xuống").
+- Fix: Solo → main menu → Multiplayer drew the Solo office on top of the multiplayer room (Solo keeps its world in the
+  shared scene). Multiplayer now starts from a fresh page (`?mp=1&open=mp`) when Solo was opened first.
 
 ## 2026-11-05 — QC round 1 and publish
 
