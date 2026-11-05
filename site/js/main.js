@@ -45,6 +45,9 @@ async function startSolo() {
 
 // Multiplayer "Overdeadline & Overburnout" (behind ?mp=1). Leaving it reloads the page: the room scene is torn down cleanly.
 async function startMulti() {
+  // Solo keeps its office in the shared 3D scene (and its own keys and overlays). Start Multiplayer from a fresh page
+  // instead of drawing two offices on top of each other; Solo progress is already saved.
+  if (solo) { location.href = location.pathname + '?mp=1&open=mp'; return; }
   $('#mainMenu').hidden = true;
   const { startMulti: start } = await import('./modes/multi.js');
   active = start({
@@ -99,8 +102,8 @@ async function boot() {
   try { await Promise.race([document.fonts.load('900 40px "Be Vietnam Pro"'), sleep(2500)]); } catch { /* fonts optional */ }
   if (FLAGS.legacyStory) {
     await startLegacy();
-  } else if (FLAGS.mp && new URLSearchParams(location.search).get('room')) {
-    await startMulti(); // opened from an invite link
+  } else if (FLAGS.mp && (new URLSearchParams(location.search).get('room') || new URLSearchParams(location.search).get('open') === 'mp')) {
+    await startMulti(); // opened from an invite link, or coming from Solo
   } else {
     showMainMenu();
   }
