@@ -527,6 +527,8 @@ export function startSolo({ scene, camera, input, onExit }) {
         if (R.week) { R.week.minis++; if (ok) R.week.minisOk++; }
         if (!ok) { applyFx({ uy: -1, clock: 10 }); toast('😬 Làm hơi ẩu, mất thêm 10 phút sửa lại.', 'bad', 3); }
       }
+      // went straight to the job: the request arrives as a Teams message instead of face to face
+      if (e.remote) { if (e.leg.line) pushChat([[e.leg.line[0], e.leg.line[1], true]], 0); continue; }
       if (e.leg.line) await dialogue.say(e.leg.line[0], e.leg.line[1]);
       if (e.type === 'done') { applyFx({ uy: 2, nl: -2, rel: { [e.task.from]: 1 } }); if (R.week) R.week.done++; toast(`✅ Xong việc: ${esc(e.task.title)}`, 'good', 2.5); }
     }
@@ -1001,7 +1003,13 @@ export function startSolo({ scene, camera, input, onExit }) {
     startDialogMode();
     const progressed = await handleTaskVisit(it.kind === 'npc' ? { npc: it.id } : { obj: it.id });
     if (isTargetOf(step, it)) { mode = 'play'; runStep(step); return; }
-    if (!progressed) {
+    // a later step of an open errand is here, but an earlier one is not done: say what comes first
+    const ahead = !progressed && active(R.tasks).find((t) => t.legs.slice(t.leg + 1).some((l) => (it.kind === 'npc' ? l.npc === it.id : l.obj === it.id)));
+    if (ahead) {
+      const l = currentLeg(ahead);
+      const where = l.npc ? `gặp ${charInfo(l.npc).name}` : `ghé ${((world && world.interactables.find((x) => x.id === l.obj)) || {}).label || l.obj}`;
+      await dialogue.say('think', `(Việc "${ahead.title}": trước hết phải ${where.charAt(0).toLowerCase() + where.slice(1)} đã.)`);
+    } else if (!progressed) {
       if (it.id === 'giao') await giaoTalk();
       else if (it.id === 'kpi') await dialogue.run([['nar', `${(CO && CO.catName) || 'Mèo KPI'} mở một mắt, nhìn bạn như nhìn một slide không có executive summary, rồi ngủ tiếp.`], { fx: { nl: 3 } }]);
       else if (it.id === 'coffee') await pantry();
