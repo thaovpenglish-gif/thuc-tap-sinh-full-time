@@ -8,4 +8,6 @@ export const FLAGS = {
   giao: params.get('giao') === '1',
   // per-company office styles/layouts: in progress, approved one company at a time — preview with ?styles=1
   officeStyles: params.get('styles') === '1',
+  // Multiplayer "Overdeadline & Overburnout" (SOS Advisory): in progress — open with ?mp=1 (invite links carry it)
+  mp: params.get('mp') === '1',
 };

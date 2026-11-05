@@ -1,7 +1,9 @@
-# Overdeadline & Overburnout — Multiplayer (bản nháp thiết kế)
+# Overdeadline & Overburnout — Multiplayer (SOS Advisory)
 
-> Trạng thái: **nháp để Game Owner duyệt.** Chỗ nào ghi **[cần chốt]** là chưa quyết.
+> Trạng thái: **bản thử chơi được, ẩn sau `?mp=1`** (màn T&M). Chỗ nào ghi **[cần chốt]** là chưa quyết.
 > Solo vẫn là `docs/GAME_DESIGN.md`. Multiplayer làm song song, không đụng logic Solo.
+> Đã chốt với Game Owner: tên công ty **SOS Advisory**, **chỉ hợp tác (co-op)**, cảm giác giống các game nấu ăn
+> co-op chơi ngay trong Messenger (kiểu *Ready, Set, Cook!*): bấm link là vào, ván ngắn, chơi tốt trên điện thoại.
 
 ## 1. Ý tưởng một câu
 
@@ -11,8 +13,10 @@ giải quyết khủng hoảng. Mỗi màn là một công ty khách hàng, chơ
 **deadline** và **burnout**.
 
 - Tên game / chế độ: **Overdeadline & Overburnout**.
-- Tên công ty của người chơi: **[cần chốt]**. Gợi ý: "Chữa Cháy Consulting", "Cứu Hỏa & Partners",
-  "SOS Advisory · Gọi là tới, tới là trễ".
+- Tên công ty của người chơi: **SOS Advisory** · *"Gọi là tới, tới là trễ"* (đã chốt).
+- Chỉ **co-op**: cả đội cùng thắng hoặc cùng bị khách complain. Không có chế độ đấu.
+- Cảm giác "game Messenger": gửi link vào group chat → bạn bè bấm là vào phòng (tên đã lưu thì vào thẳng),
+  ván 3 phút, một nút làm mọi thứ, chơi dọc trên điện thoại được.
 - Góc nhìn: camera nhìn chéo từ trên (`core/camera.js`), khác góc nhìn thứ nhất của Solo.
 
 ## 2. Vòng lặp chơi (một màn ~4 phút)
@@ -80,11 +84,11 @@ Thứ tự độ khó gợi ý: T&M (hướng dẫn) → HR → Ba & Má → Age
 - **Mạng**: Supabase Realtime, mỗi phòng một channel `mp:<mã phòng>`. Người tạo phòng là **host**, chạy mô phỏng
   (`game/sim.js` mở rộng thêm: trạm xử lý có tiến độ, ticket, đồng hồ, burnout) và gửi trạng thái ~10 lần/giây.
   Client chỉ gửi input/hành động. Không cần server riêng.
-- **Phòng**: tạo phòng → mã 5 ký tự → bạn bè nhập mã. Presence để thấy ai đang trong phòng. Host thoát giữa màn:
-  bản đầu chỉ kết thúc màn; sau này chuyển host.
-- **Chơi chung một máy (local co-op)**: 2 người một bàn phím (WASD / phím mũi tên). Rất tiện để test và cho người
-  không có bạn online. **[cần chốt có làm ở bản đầu không]**
-- **Điện thoại**: joystick sẵn có trong `core/input.js` + 2 nút (Cầm/Đặt, Làm việc).
+- **Phòng**: tạo phòng → mã 5 ký tự hoặc link mời → bạn bè bấm là vào. Presence để thấy ai đang trong phòng.
+  Host thoát giữa màn: bản đầu chỉ kết thúc màn; sau này chuyển host.
+- **Chơi chung một máy (local co-op)**: chưa làm (xem mục 10). Có chế độ *Tập một mình* thay thế.
+- **Điện thoại**: joystick sẵn có trong `core/input.js` + **một** nút LÀM (lấy, đặt, ghép, làm việc, nộp đều chung
+  một nút, game tự hiểu theo chỗ đang đứng và thứ đang cầm).
 - **File mới, tách hẳn khỏi Solo**:
   ```
   site/js/modes/multi.js        sảnh, phòng, vòng lặp màn
@@ -96,16 +100,59 @@ Thứ tự độ khó gợi ý: T&M (hướng dẫn) → HR → Ba & Má → Age
 - **Ẩn sau cờ `?mp=1`** trong `flags.js` cho tới khi duyệt. Không có cờ thì nút vẫn hiện "Sắp ra mắt".
 - Chỉ **thêm** vào file dùng chung (`main.js`, `index.html`, `style.css`), không sửa code Solo đang có.
 
-## 8. Lộ trình
+## 8. Bản thử hiện có (màn T&M)
 
-1. **Prototype** (`?mp=1`): 1 màn T&M, 2 công thức, burnout, chơi online 2–4 người qua mã phòng. Hình khối đơn giản.
-2. Thêm 3 màn (HR, Ba & Má, Agency) + chấm sao + mở màn.
-3. 3 màn còn lại + local co-op + điện thoại.
-4. Âm thanh, hiệu ứng, cân bằng độ khó, bỏ cờ `?mp=1`.
+Mở `https://…/?mp=1` → menu chính → thẻ **Overdeadline & Overburnout**.
 
-## 9. Câu hỏi cần Game Owner chốt
+- **Sảnh**: nhập tên → *Tạo phòng* (mã 5 ký tự + nút "📨 Mời bạn": trên điện thoại mở bảng chia sẻ để gửi qua
+  Messenger/Zalo, trên máy tính chép link) · *Vào phòng* bằng mã · *Tập một mình* (không cần mạng).
+  Link mời có dạng `?mp=1&room=ABCDE`; tên đã lưu thì bấm link là vào thẳng phòng.
+- **Phòng chờ**: tối đa 4 người, màu theo thứ tự vào phòng, host bấm *Bắt đầu*. Ai vào lúc nhóm đang chơi thì
+  chờ ván sau. Host rời phòng → mọi người được báo và về sảnh.
+- **Một ván**: đếm ngược 3 giây, 3 phút, 3 công thức: *Slide nhanh* (Brief → Laptop, 30k), *Báo cáo số liệu*
+  (Data → Laptop → Máy in, 60k), *Deck đề xuất* (Slide + Bản in ghép ở bàn → chị Tuyết ký, 140k; 30% bị
+  "vài ý nhỏ" một lần, phải về laptop sửa). Nộp sớm có tip tới +50%, trễ −20k.
+- **Bẫy của màn**: máy in để quá 8 giây thành `v3_FINAL_sửa_lần_cuối` (hỏng) · stand-up lúc 0:55 và 2:00
+  (cảnh báo 5 giây, ai trong vòng hồng quanh bảng Scrum bị kẹt họp 7 giây).
+- **Burnout**: làm laptop +7/giây, cầm đồ +0,8/giây, rảnh tay −1,6/giây, cà phê −35 (ly thứ 3 trong 45 giây:
+  +15 và run tay). ≥ 70 đi và làm chậm hơn; 100 = ngồi gục 6 giây, đồ đang cầm rơi xuống sàn (ai cũng nhặt được).
+- **Sao**: 200k / 450k / 700k (chơi một mình ×0,6). **[cần chỉnh sau khi chơi thử thật]**
+- **Điều khiển**: `WASD`/mũi tên + `Space`/`E`; điện thoại: cần điều khiển + nút tròn LÀM. Gợi ý hành động hiện
+  ở giữa dưới màn hình, trạm đang đứng gần có vòng vàng.
 
-1. Tên công ty "giải cứu" của người chơi.
-2. Chỉ hợp tác (co-op), hay có thêm chế độ đấu 2 đội (2v2, hai công ty tư vấn giành cùng một khách)?
-3. Có làm chơi chung một máy ngay từ bản đầu không?
-4. Thứ tự 7 màn và cơ chế riêng của từng màn ở bảng mục 5.
+### File
+
+```
+site/js/game/mp/engine.js   luật chơi thuần (host chạy): item, trạm, ticket, burnout, stand-up, sao
+site/js/game/mp/levels.js   dữ liệu màn (T&M); thêm công ty = thêm một object ở đây
+site/js/net/mp-net.js       phòng: Supabase Realtime (mặc định) · BroadcastChannel (?net=local, test 2 tab) · none
+site/js/maps/mp-room.js     dựng phòng 3D từ danh sách trạm
+site/js/modes/multi.js      sảnh, phòng chờ, vòng chơi, HUD, kết quả
+site/js/ui/mp-style.js      CSS (nằm trong JS để được gắn ?v= khi deploy)
+tests/mp-engine.test.mjs    unit test luật chơi (npm test)
+tests/e2e/mp-local.cjs      2 người trong 1 trình duyệt: tạo phòng, vào bằng link, làm và nộp đơn, kết quả,
+                            chơi lại, host rời (npm run test:mp, cần server cổng 8765)
+```
+
+### Giới hạn đã biết
+
+- Host là máy người tạo phòng. Tab host bị ẩn thì trình duyệt chỉ cho chạy ~1 lần/giây: game vẫn đi nhưng giật.
+  Host thoát là hết ván (chưa chuyển host).
+- Vị trí do mỗi máy tự gửi (tin nhau, vì là co-op). Hành động (lấy/đặt/nộp) do host quyết.
+- Supabase gói miễn phí giới hạn số tin nhắn/giây cả project: mỗi người gửi vị trí 8 lần/giây, host gửi trạng thái
+  5 lần/giây. Nhiều phòng cùng lúc có thể chạm giới hạn, cần theo dõi khi mở rộng.
+- Chưa test qua Supabase thật trong máy làm việc (mạng sandbox chặn); đã test bằng `?net=local`.
+  Lần đầu mở bản deploy nên thử 2 điện thoại thật.
+
+## 9. Lộ trình
+
+1. ✅ **Bản thử** (`?mp=1`): màn T&M, 3 công thức, burnout, phòng online 1–4 người qua mã/link.
+2. Chơi thử thật với 2–4 người → chỉnh tốc độ đơn, thời gian, mốc sao.
+3. Thêm 3 màn (HR, Ba & Má, Agency) + chọn màn + mở màn theo sao.
+4. 3 màn còn lại, âm thanh/hiệu ứng, chuyển host khi host thoát, bỏ cờ `?mp=1`.
+
+## 10. Câu hỏi còn mở
+
+1. Có làm chơi chung một máy (2 người một bàn phím) không? Bản thử chưa làm, vì hướng "game Messenger" là mỗi người một điện thoại.
+2. Thứ tự 7 màn và cơ chế riêng từng màn ở bảng mục 5.
+3. Mốc sao và độ khó sau buổi chơi thử đầu tiên.
