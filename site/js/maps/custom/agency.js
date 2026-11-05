@@ -8,7 +8,21 @@
 import { createKit, FLOORS } from '../kit3d.js';
 
 const PI = Math.PI;
-const H = 3.3;
+const H = 5.2; // loft: high ceiling, steel beams, long pendant lights
+
+// Three colour tones (preview with ?tone=pop|loft|gallery). All accents are read from the tone.
+export const AGENCY_TONES = {
+  pop: { name: 'Hồng pop', wall: '#fff0f5', md: '#ff8fab', ceil: '#fbeef3', beam: '#2b2d42', ink: '#2b2d42',
+    pink: '#ff5d8f', yellow: '#ffd23f', teal: '#2ec4b6', purple: '#7b5cff', orange: '#ff9f1c',
+    floorS: ['planks', '#e8c9a0', '#dfbd92'], floorW: ['terrazzo', '#ffe3ec'], pitch: '#3b3d5c', rug: '#ffd23f', brick: null },
+  loft: { name: 'Loft gạch đỏ · xanh rêu', wall: '#f1e8dc', md: '#2d6a4f', ceil: '#2e2e30', beam: '#1f1f1f', ink: '#1f1f1f',
+    pink: '#d9532b', yellow: '#f2a71b', teal: '#2d6a4f', purple: '#3d5a80', orange: '#b5673a',
+    floorS: ['concrete', '#b9b4ac'], floorW: ['planks', '#8b5e3c', '#7d5233'], pitch: '#2b3a2f', rug: '#f2a71b', brick: '#b5523b' },
+  gallery: { name: 'Gallery trắng · màu Bauhaus', wall: '#ffffff', md: '#1d4ed8', ceil: '#ffffff', beam: '#111111', ink: '#111111',
+    pink: '#e63946', yellow: '#ffbe0b', teal: '#1d4ed8', purple: '#06a77d', orange: '#fb5607',
+    floorS: ['concrete', '#ebeae6'], floorW: ['terrazzo', '#f4f3ef'], pitch: '#1d1d1f', rug: '#ffbe0b', brick: null },
+};
+const toneFromUrl = () => { try { return new URLSearchParams(location.search).get('tone'); } catch (e) { return null; } };
 
 const S = {
   boss: [-11.3, 7.35, PI],          // Anh Tùng in the MD office
@@ -58,20 +72,39 @@ export function buildAgency(scene, th) {
   const L = (id, d) => (th.labels && th.labels[id]) || d;
   const signs = th.signs || {};
   const D = th.desks || {};
-  const C = { wall: '#fff0f5', pink: '#ff5d8f', yellow: '#ffd23f', teal: '#2ec4b6', purple: '#7b5cff', ink: '#2b2d42', orange: '#ff9f1c' };
+  const C = AGENCY_TONES[toneFromUrl()] || AGENCY_TONES[th.tone] || AGENCY_TONES.pop;
+  const fl = (f) => (f[0] === 'planks' ? FLOORS.planks(f[1], f[2]) : f[0] === 'concrete' ? FLOORS.concrete(f[1]) : FLOORS.terrazzo(f[1], [C.pink, C.yellow, C.teal, C.purple]));
 
   // ---------- floors & ceiling ----------
-  floorZone(-14, 1, 14, 10, FLOORS.planks('#e8c9a0', '#dfbd92'), 1.4);           // south arm: light wood
-  floorZone(-14, -10, -2, 1, FLOORS.terrazzo('#ffe3ec', ['#ff5d8f', '#ffd23f', '#2ec4b6', '#7b5cff']), 2); // west arm
+  floorZone(-14, 1, 14, 10, fl(C.floorS), 1.4);           // south arm: light wood
+  floorZone(-14, -10, -2, 1, fl(C.floorW), 2); // west arm
   floorZone(9, 1, 14, 10, '#f4f4f4', 1, 0.006);                                 // photo studio
-  floorZone(-14, -10, -2, -5, FLOORS.carpet('#3b3d5c'), 1, 0.006);              // pitch room
-  floorZone(-14, 5, -8, 10, FLOORS.carpet('#ff8fab'), 1, 0.006);                // MD office
-  floorZone(1.8, 6.6, 6.8, 10, FLOORS.carpet('#ffd23f'), 1, 0.006);             // reception rug
+  floorZone(-14, -10, -2, -5, FLOORS.carpet(C.pitch), 1, 0.006);              // pitch room
+  floorZone(-14, 5, -8, 10, FLOORS.carpet(C.md), 1, 0.006);                // MD office
+  floorZone(1.8, 6.6, 6.8, 10, FLOORS.carpet(C.rug), 1, 0.006);             // reception rug
   // the terrace outside (inside the L): deck, planters, string lights, sky
   floorZone(-2, -10, 14, 1, FLOORS.planks('#b98b5e', '#a97b50'), 1.0, 0.002);
-  ceiling(-14, -10, -2, 1, H, '#fbeef3');
-  ceiling(-2, 1, 14, 10, H, '#fbeef3');
-  ceiling(-14, 1, -2, 10, H, '#fbeef3');
+  ceiling(-14, -10, -2, 1, H, C.ceil);
+  ceiling(-2, 1, 14, 10, H, C.ceil);
+  ceiling(-14, 1, -2, 10, H, C.ceil);
+  // exposed steel beams + ducts under the high ceiling
+  for (let x = -12; x <= 12; x += 4) box(0.25, 0.4, 9, C.beam, x, H - 0.4, 5.5, false, 0, 0.012);
+  for (let z = -8; z <= 0; z += 4) box(12, 0.4, 0.25, C.beam, -8, H - 0.4, z, false, 0, 0.012);
+  { const d = cyl(0.3, 0.3, 28, '#b9c0cc', 0, 0, 3.0, 16, 0.012); d.rotation.z = PI / 2; d.position.y = H - 0.9; }
+  { const d = cyl(0.3, 0.3, 11, '#b9c0cc', -11.5, 0, -4.5, 16, 0.012); d.rotation.x = PI / 2; d.position.y = H - 0.9; }
+  // clerestory windows high on the outer walls
+  const hiWin = new THREE.MeshBasicMaterial({ color: '#bfe3ff' });
+  for (let x = -12; x <= 12; x += 3.2) { plane(2.4, 1.1, hiWin, x, H - 1.6, 9.9, PI); box(2.5, 0.06, 0.08, C.ink, x, H - 2.18, 9.88, false, 0, 0.008); }
+  for (let z = -8; z <= 8; z += 3.2) { plane(2.4, 1.1, hiWin, -13.9, H - 1.6, z, PI / 2); box(0.08, 0.06, 2.5, C.ink, -13.88, H - 2.18, z, false, 0, 0.008); }
+  if (C.brick) { // exposed brick on the two outer walls (around the door)
+    const brick = (w, h, x, y, z, ry) => {
+      const t = canvasTex(512, 512, FLOORS.brick(C.brick)); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(w / 2, h / 1.2);
+      plane(w, h, new THREE.MeshToonMaterial({ map: t }), x, y, z, ry);
+    };
+    brick(28, H - 2.6, 0, 2.6 + (H - 2.6) / 2, 9.905, PI);
+    brick(12.5, 2.6, -7.75, 1.3, 9.905, PI); brick(12.5, 2.6, 7.75, 1.3, 9.905, PI);
+    brick(20, H, -13.905, H / 2, 0, PI / 2);
+  }
   const sky = canvasTex(1024, 512, (g, w, h) => { const grd = g.createLinearGradient(0, 0, 0, h); grd.addColorStop(0, '#8ecbff'); grd.addColorStop(1, '#ffe4f0'); g.fillStyle = grd; g.fillRect(0, 0, w, h); g.fillStyle = '#ffffff'; [[160, 120], [520, 80], [820, 150]].forEach(([x, y]) => { for (let k = 0; k < 4; k++) { g.beginPath(); g.arc(x + k * 36, y + (k % 2) * 8, 34, 0, 7); g.fill(); } }); });
   const skyM = new THREE.MeshBasicMaterial({ map: sky, side: THREE.DoubleSide });
   const skyTop = new THREE.Mesh(new THREE.PlaneGeometry(16, 11), skyM); skyTop.rotation.x = PI / 2; skyTop.position.set(6, 6, -4.5); K.root.add(skyTop);
@@ -106,7 +139,7 @@ export function buildAgency(scene, th) {
 
   // ================= RECEPTION LOUNGE by the door =================
   box(2.8, 0.42, 0.85, C.pink, 3.5, 0, 9.4, true); box(2.8, 0.55, 0.22, C.pink, 3.5, 0.42, 9.78, false);
-  for (const x of [2.3, 3.5, 4.7]) box(0.7, 0.12, 0.6, '#ff8fab', x, 0.42, 9.35, false, 0, 0.01);
+  for (const x of [2.3, 3.5, 4.7]) box(0.7, 0.12, 0.6, C.md, x, 0.42, 9.35, false, 0, 0.01);
   cyl(0.6, 0.6, 0.06, '#ffffff', 3.5, 0.42, 8.0, 28, 0.015); cyl(0.06, 0.06, 0.42, C.ink, 3.5, 0, 8.0, 8, 0.01);
   collideCircle(3.5, 8.0, 0.55);
   for (let i = 0; i < 3; i++) box(0.25, 0.02, 0.33, [C.yellow, C.teal, C.purple][i], 3.2 + i * 0.3, 0.48, 7.95, false, 0.3 * i, 0.006);
@@ -139,8 +172,9 @@ export function buildAgency(scene, th) {
   poster([th.banner || 'BRIEF · DECK · FEEDBACK'], { w: 1024, h: 128, bg: C.yellow, sizes: [48], weights: [900] }, -4.2, 2.75, 9.88, PI, 4.6, 0.58);
 
   // ================= MD OFFICE (south-west corner) =================
-  wall(-14, 5, -8, 5, '#ff8fab', { h: H });
-  wall(-8, 5, -8, 10, '#ff8fab', { h: H, gaps: [[5.6, 6.8]] });
+  wall(-14, 5, -8, 5, C.md, { h: 3.2 });
+  wall(-8, 5, -8, 10, C.md, { h: 3.2, gaps: [[5.6, 6.8]] });
+  box(6, 0.08, 5, C.md, -11, 3.2, 7.5, false, 0, 0.015); // MD office is a box with its own lid under the loft
   desk(-11.3, 6.6, 1, { plate: 'Tùng · MD', screen: [['KV v14', '"chưa pop"'], C.pink], chair: C.ink, top: '#ffffff', leg: C.ink, w: 1.8 });
   box(0.75, 0.45, 2.0, C.ink, -13.5, 0, 7.6, true); box(0.2, 0.5, 2.0, C.ink, -13.8, 0.45, 7.6, false);
   poster([th.bossWall || 'Make it POP'], { w: 1024, h: 256, bg: C.ink, fg: C.yellow, sizes: [130], weights: [900], border: C.yellow }, -11.3, 2.1, 9.88, PI, 3.0, 0.75);
@@ -184,7 +218,7 @@ export function buildAgency(scene, th) {
   interact('redchair', L('redchair', 'Ghế đỏ "brainstorm"'), 1.6, 0.6, 5.15);
   sign('KHU SÁNG TẠO · nói to lên', '#ffe9a0', -2.0, 2.75, 4.0, 0, 2.6);
   // pendant lamps over the tables
-  for (const x of [-5.5, -2.0, 1.6]) { cyl(0.008, 0.008, 1.0, '#222', x, H - 1.0, 4.0, 4, 0); cyl(0.05, 0.35, 0.3, [C.pink, C.yellow, C.teal][Math.round((x + 5.5) / 3.5)], x, H - 1.3, 4.0, 18, 0.012); sphere(0.09, glow('#fff3c4'), x, H - 1.32, 4.0, 0); }
+  for (const x of [-5.5, -2.0, 1.6]) { cyl(0.008, 0.008, H - 2.3, '#222', x, 2.3, 4.0, 4, 0); cyl(0.05, 0.45, 0.4, [C.pink, C.yellow, C.teal][Math.round((x + 5.5) / 3.5)], x, 2.0, 4.0, 18, 0.012); sphere(0.11, glow('#fff3c4'), x, 1.98, 4.0, 0); }
 
   // ================= BAR + FRIDGE along the terrace glass =================
   box(4.0, 1.0, 0.55, C.ink, 5.8, 0, 1.6, true);
@@ -198,7 +232,7 @@ export function buildAgency(scene, th) {
   sign(signs.pantry || 'PANTRY', '#ffe9a0', 5.8, 2.7, 1.12, 0, 2.6);
 
   // ================= PHOTO STUDIO (east end) =================
-  wall(9, 1, 9, 5.6, C.ink, { h: H });
+  wall(9, 1, 9, 5.6, C.ink, { h: 3.4 });
   for (const z0 of [5.75, 9.6]) for (let i = 0; i < 3; i++) plane(0.18, 2.7, new THREE.MeshToonMaterial({ color: '#3a3a4a', side: THREE.DoubleSide }), 9.0 + (i - 1) * 0.06, 1.35, z0 + (z0 < 7 ? i : -i) * 0.12, PI / 2 + (i % 2 ? 0.5 : -0.5));
   box(0.06, 0.06, 4.4, '#888888', 9.0, 2.72, 7.8, false, 0, 0.006);
   sign('STUDIO · ĐANG QUAY 🔴', '#ff5d8f', 8.88, 2.6, 3.3, -PI / 2, 2.0);
@@ -262,9 +296,10 @@ export function buildAgency(scene, th) {
   ringM.rotation.x = -PI / 2; ringM.scale.set(1.35, 0.85, 1); ringM.position.set(-7.5, 0.009, 0.6); K.root.add(ringM);
 
   // ================= PITCH ROOM (end of the L, north) =================
-  glassWall(-14, -5, -4.2, -5, { frame: C.ink });
-  glassWall(-2.9, -5, -2, -5, { frame: C.ink });
-  box(1.3, H - 2.6, 0.12, C.ink, -3.55, 2.6, -5, false, 0, 0.01);
+  glassWall(-14, -5, -4.2, -5, { frame: C.ink, h: 3.4 });
+  glassWall(-2.9, -5, -2, -5, { frame: C.ink, h: 3.4 });
+  box(1.3, 0.8, 0.12, C.ink, -3.55, 2.6, -5, false, 0, 0.01);
+  box(12, 0.08, 5, C.ink, -8, 3.4, -7.5, false, 0, 0.015); // pitch room lid under the loft
   box(7.0, 0.06, 1.2, '#ffffff', -8.5, 0.72, -7.5, false, 0, 0.02);
   for (const dx of [-3, 3]) box(0.1, 0.72, 1.0, C.ink, -8.5 + dx, 0, -7.5, false, 0, 0.01);
   collideRect(-12.0, -5.0, -8.1, -6.9);
@@ -275,7 +310,7 @@ export function buildAgency(scene, th) {
   interact('interview', L('interview', 'Ngồi vào ghế phòng pitch'), -3.8, 0.8, -7.5);
   sign(signs.meeting || 'PHÒNG PITCH', '#ffe9a0', -8.5, 2.95, -4.94, 0, 2.6);
   sign(signs.meeting || 'PHÒNG PITCH', '#ffe9a0', -8.5, 2.95, -5.06, PI, 2.6);
-  for (const x of [-10.5, -6.5]) { cyl(0.008, 0.008, 0.8, '#222', x, H - 0.8, -7.5, 4, 0); cyl(0.3, 0.3, 0.1, '#ffffff', x, H - 0.9, -7.5, 20, 0.012); }
+  for (const x of [-10.5, -6.5]) { cyl(0.008, 0.008, H - 2.5, '#222', x, 2.5, -7.5, 4, 0); cyl(0.3, 0.3, 0.1, '#ffffff', x, 2.4, -7.5, 20, 0.012); }
   plant(-13.4, -4.4, { s: 1.0, pot: C.pink, leaf: '#3e9b57' });
   plant(-2.6, 0.4, { s: 1.0, pot: C.yellow, leaf: '#3e9b57' });
 

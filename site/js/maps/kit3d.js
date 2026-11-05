@@ -247,6 +247,15 @@ export const FLOORS = {
   tiles: (base = '#f4efe6', grout = 'rgba(0,0,0,0.14)') => (g, w, h) => {
     g.fillStyle = base; g.fillRect(0, 0, w, h); g.strokeStyle = grout; g.lineWidth = 6; g.strokeRect(0, 0, w, h);
   },
+  brick: (base = '#b5523b', mortar = '#e9dccb') => (g, w, h) => {
+    g.fillStyle = mortar; g.fillRect(0, 0, w, h);
+    const rows = 8, bh = h / rows, bw = w / 4;
+    for (let r = 0; r < rows; r++) for (let c = -1; c < 5; c++) {
+      const x = c * bw + (r % 2 ? bw / 2 : 0) + 4, y = r * bh + 4;
+      const k = ((r * 7 + c * 13) % 5) / 5;
+      g.fillStyle = base; g.globalAlpha = 0.82 + k * 0.18; g.fillRect(x, y, bw - 8, bh - 8); g.globalAlpha = 1;
+    }
+  },
   carpet: (base = '#8b9bb4', fleck = 'rgba(255,255,255,0.08)') => (g, w, h) => {
     g.fillStyle = base; g.fillRect(0, 0, w, h);
     let s = 3; const r = () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
