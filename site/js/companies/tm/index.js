@@ -4,6 +4,7 @@ import { CAST, IDLE } from '../../story/tm/characters.js';
 import { PROLOGUE } from '../../story/tm/prologue.js';
 import { DAY1 } from '../../story/tm/day1.js';
 import { EPISODES, ROUTINE, SIDE_TASKS, REVIEW, PROMOTION, ENDINGS, TIES, OBJ_LINES, FOOD, LIFE_EVENTS } from './content.js';
+import { DESK } from './desk.js';
 
 const cast = {};
 for (const [id, c] of Object.entries(CAST)) cast[id] = { ...c, spot: c.body === false ? null : id };
@@ -29,4 +30,5 @@ export default {
   objLines: OBJ_LINES,
   food: FOOD,
   lifeEvents: LIFE_EVENTS,
+  desk: DESK,
 };

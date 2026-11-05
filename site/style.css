@@ -451,3 +451,12 @@ body.nb-open #toasts { display: none; }
 .letter-mp { background: var(--lilac-2); border: 2px solid var(--ink); border-radius: 16px; padding: 4px 14px 8px; margin: 14px 0 6px; }
 .letter-mp h3 { margin-top: 10px; }
 .letter-note { font-size: 13px; color: var(--muted); }
+/* mini-game 'sort': one card at a time + bins */
+.mini-sort { display: grid; gap: 6px; }
+.mini-sort-n { font-weight: 800; color: var(--muted); }
+.mini-sort-card { min-height: 74px; display: grid; align-content: center; gap: 4px; padding: 12px 14px; border: var(--line); border-radius: 16px; background: var(--cream); box-shadow: var(--pop); font-size: 16px; line-height: 1.4; animation: tin .15s ease; }
+.mini-sort-card small { font-weight: 600; color: var(--muted); font-size: 13px; }
+.mini-sort-card em { font-style: normal; font-weight: 900; font-size: 13px; }
+.mini-sort-card.right { background: var(--mint); } .mini-sort-card.wrong { background: var(--pink); }
+.mini-bins { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 4px; }
+.mini-bins .mini-opt { justify-content: center; align-items: center; min-height: 48px; }

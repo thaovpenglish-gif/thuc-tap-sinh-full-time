@@ -22,6 +22,7 @@ site/                       web tĩnh, deploy thẳng lên GitHub Pages (không 
   js/game/difficulty.js     mức lương = độ khó (0 / 1 / 3 / 5 triệu), thuế khấu trừ 10%
   js/game/save.js           hồ sơ sự nghiệp: nhiều lượt chơi lưu song song
   js/game/tasks.js          việc vặt có deadline theo đồng hồ trong game
+  js/game/desk.js           ngồi vào bàn làm việc: mini-game theo nghề, thưởng năng suất, drama nhóm chat, thăng chức nhờ chăm chỉ
   js/story/dialogue.js      engine hội thoại
   js/story/tm/              Solo T&M Partners: nhân vật, Buổi đầu tiên (phỏng vấn + deal lương), Ngày 1
   js/story/legacy/          cốt truyện cũ "Ba Mẹ & Partners" (mở bằng ?legacy=1)
@@ -51,6 +52,7 @@ Mở http://localhost:8000 (thêm `?legacy=1` để mở cốt truyện cũ, `?m
 npm test
 # test tự chơi (cần server ở cổng 8765): mức lương t0|t1|t3|t5, chiến lược first|last|rand, thêm "tasks" để làm việc vặt
 node tests/e2e/solo-tm-playthrough.cjs t5 last tasks
+node tests/e2e/solo-career.cjs tm t3 first 3 routine desk   # có ngồi bàn làm việc
 node tests/e2e/legacy-playthrough.cjs first
 npm run test:mp   # Multiplayer: 2 người trong 1 trình duyệt (cần server ở cổng 8765)
 ```

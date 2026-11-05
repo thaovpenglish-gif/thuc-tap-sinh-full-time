@@ -4,6 +4,7 @@ import { INTERVIEW } from './interview.js';
 import { EPISODES, ARC } from './episodes.js';
 import { ROUTINE } from './routine.js';
 import { SIDE_TASKS, REVIEW, PROMOTION, ENDINGS, FOOD, LIFE_EVENTS, TIES } from './extras.js';
+import { DESK } from './desk.js';
 
 export default {
   id: 'tech',
@@ -24,4 +25,5 @@ export default {
   food: FOOD,
   lifeEvents: LIFE_EVENTS,
   ties: TIES,
+  desk: DESK,
 };

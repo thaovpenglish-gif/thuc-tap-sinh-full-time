@@ -29,6 +29,7 @@ export function newRun({ name, company = 'tm', now = Date.now(), id = randomId()
     plan: null,           // { [day]: episodeId } — built after the interview
     week: null, reviews: [], payslips: [], accrued: { intern: 0, official: 0 },
     mood: 'meh', ended: null, ties: [], seen: [], debt: null,
+    deskSeen: [], chatSeen: [], // desk work: mini-games and group-chat dramas already shown (no repeats)
     thoughts: [], decisions: [], ledger: [], diary: [], // the notebook
     createdAt: now, updatedAt: now, done: false,
   };
@@ -101,6 +102,7 @@ export function validateProfile(obj) {
       money: num(r.money, START_MONEY), day: num(r.day, 0), step: num(r.step, 0), clock: num(r.clock, 840),
       reviews: Array.isArray(r.reviews) ? r.reviews : [], payslips: Array.isArray(r.payslips) ? r.payslips : [],
       seen: Array.isArray(r.seen) ? r.seen.slice(-200) : [], ties: Array.isArray(r.ties) ? r.ties : [],
+      deskSeen: Array.isArray(r.deskSeen) ? r.deskSeen.slice(-100) : [], chatSeen: Array.isArray(r.chatSeen) ? r.chatSeen.slice(-100) : [],
       thoughts: Array.isArray(r.thoughts) ? r.thoughts.slice(-300) : [], decisions: Array.isArray(r.decisions) ? r.decisions.slice(-120) : [],
       ledger: Array.isArray(r.ledger) ? r.ledger.slice(-150) : [], diary: Array.isArray(r.diary) ? r.diary.slice(-60) : [],
       accrued: isObj(r.accrued) ? r.accrued : { intern: 0, official: 0 },

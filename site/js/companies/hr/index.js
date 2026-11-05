@@ -5,6 +5,7 @@ import { INTERVIEW } from './interview.js';
 import { EPISODES, OFFICIAL_EPISODES } from './episodes.js';
 import { ROUTINE, SIDE_TASKS } from './routine.js';
 import { REVIEW, PROMOTION, ENDINGS, FOOD, LIFE_EVENTS, OBJ_LINES, TIES } from './extras.js';
+import { DESK } from './desk.js';
 
 export default {
   id: 'hr',
@@ -25,4 +26,5 @@ export default {
   food: FOOD,
   lifeEvents: LIFE_EVENTS,
   ties: TIES,
+  desk: DESK,
 };

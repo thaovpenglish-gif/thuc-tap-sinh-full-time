@@ -19,6 +19,7 @@ import { TIERS, TIER_ORDER, tier, fmtVND } from '../game/difficulty.js';
 import { emptyProfile, newRun, addRun, updateRun, removeRun, listRuns, runLabel, validateProfile } from '../game/save.js';
 import { planTasks, tick, visit, active, summary, currentLeg, shiftTasks, resolveAll, rng } from '../game/tasks.js';
 import * as C from '../game/career.js';
+import * as D from '../game/desk.js';
 import { COMPANY_LIST, companyMeta, companyName, loadCompany } from '../companies/index.js';
 import { net, clean } from '../net/legacy-net.js';
 import { createCloudPanel } from '../ui/cloudpanel.js';
@@ -159,7 +160,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     $('#hudMoney').textContent = `💰 ${fmtVND(Math.round(R.money))}`;
     $('#hudMoney').classList.toggle('neg', R.money < 0);
     const m = mood();
-    $('#hudMood').textContent = R.day === 0 ? '' : `${m.emoji} ${m.name}${hungry() ? ' · 🍜 Đói' : ''}`;
+    $('#hudMood').textContent = R.day === 0 ? '' : `${m.emoji} ${m.name}${hungry() ? ' · 🍜 Đói' : ''}${R.today && R.today.hp ? ' · 🎧' : ''}`;
     const step = currentStep();
     $('#objText').textContent = step ? fmt(step.obj) : 'Hết việc chính hôm nay';
     const b = $('#badge'); b.hidden = !R.unread; b.textContent = R.unread > 9 ? '9+' : R.unread;
@@ -363,7 +364,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     const prev = (R.reviews || []).slice(-1)[0];
     await dialogue.run([
       ['nar', `Thứ Sáu, 16:30. 1:1 với ${charInfo(mgr).name}. Lịch ghi mười lăm phút.`],
-      ['nar', `Tuần này: ${wk.done} việc vặt xong, ${wk.late} trễ hạn, mini-game qua ${wk.minisOk}/${wk.minis}.`],
+      ['nar', `Tuần này: ${wk.done} việc vặt xong, ${wk.late} trễ hạn, mini-game qua ${wk.minisOk}/${wk.minis}${wk.desk ? `, ngồi bàn làm tốt ${wk.deskOk || 0}/${wk.desk} phiên` : ''}.`],
       [mgr, l1], ...(l2 ? [[mgr, l2]] : []),
       ...(grade === 'D' && prev && prev.grade === 'D' ? [[mgr, 'Hai tuần liền rồi đấy. Từ tuần sau em vào diện theo dõi. Chị gửi email sau.']] : []),
       { fx: C.GRADE_FX[grade] },
@@ -377,7 +378,25 @@ export function startSolo({ scene, camera, input, onExit }) {
       R.flags.promo_offered = true;
       await dialogue.run(pr.offer || []);
       if (R.flags.accept_official) becomeOfficial();
+    } else if (pr && !R.flags.promo_offered && D.workPromoReady(R)) {
+      // the second road: steady work at the desk (game/desk.js), offered by the same reviewer
+      R.flags.promo_offered = true;
+      await dialogue.run((CO.desk && CO.desk.promoOffer) || workOffer(mgr));
+      if (R.flags.accept_official) { R.flags.promo_by_work = true; becomeOfficial(); }
     }
+  }
+  function workOffer(mgr) {
+    const salary = fmtVND((CO.promotion && CO.promotion.salary) || CO.officialSalary || 10_000_000);
+    return [
+      ['nar', `Review xong, ${charInfo(mgr).name} gập laptop lại nhưng chưa cho bạn về.`],
+      [mgr, 'Nói thẳng nhé. Tháng này ai cũng bận drama. Chỉ có một người ngồi vào bàn và làm ra việc.'],
+      [mgr, `Mấy chục đầu việc, đúng hạn, ít lỗi. Ở đây ít ai làm vậy. Công ty muốn giữ em lại, chính thức, ${salary} một tháng.`],
+      ['think', 'Hóa ra làm việc chăm chỉ cũng có người nhìn thấy. Lạ thật.'],
+      { c: 'desk_work_offer', o: [
+        { t: 'Nhận lời.', fx: { uy: 3, set: { accept_official: true } }, then: [[mgr, 'Tốt. Từ thứ Hai em vẫn ngồi cái bàn đó. Chỉ là việc sẽ nhiều gấp đôi.']] },
+        { t: '"Em cảm ơn, nhưng em muốn thử sức ở chỗ khác."', fx: { set: { accept_official: false } }, then: [[mgr, 'Tiếc thật. Nhưng người làm được việc thì đi đâu cũng sống được.']] },
+      ] },
+    ];
   }
   function becomeOfficial() {
     const pr = CO.promotion;
@@ -533,6 +552,92 @@ export function startSolo({ scene, camera, input, onExit }) {
     moneyCtx = null;
   }
 
+  // ---------- desk work (game/desk.js): a mini-game of real work, bonus pay, drama that still finds you ----------
+  const deskContent = () => ({
+    games: (CO.desk && CO.desk.games && CO.desk.games.length) ? CO.desk.games : D.GENERIC_DESK.games,
+    chatter: (CO.desk && CO.desk.chatter && CO.desk.chatter.length) ? CO.desk.chatter : D.GENERIC_DESK.chatter,
+  });
+  async function desk() {
+    const n = D.sessionsToday(R), hp = !!R.today.hp;
+    const flavor = ((CO.objLines && CO.objLines.desk) || OBJ_LINES.desk).filter((x) => Array.isArray(x)).slice(0, 1);
+    await dialogue.run([
+      ...(n ? [] : flavor),
+      ['nar', n >= D.DESK_PER_DAY ? `Hôm nay bạn đã làm ${n} phiên. Mắt bạn bắt đầu nhìn một ô Excel thành hai.` : `Phiên làm việc hôm nay: ${n}/${D.DESK_PER_DAY}. Làm tốt thì có thưởng năng suất, cộng vào phiếu lương.`],
+      { c: '_desk', o: [
+        n >= D.DESK_PER_DAY
+          ? { t: '💻 Cố làm thêm một phiên', fx: { nl: -3, set: { _desk: 'tired' } } }
+          : { t: `💻 Làm việc tập trung (~${D.DESK_MINUTES} phút, −${D.DESK_ENERGY} năng lượng)`, fx: { set: { _desk: 'work' } } },
+        { t: hp ? '🎧 Tháo tai nghe' : '🎧 Đeo tai nghe chống drama', fx: { set: { _desk: 'hp' } } },
+        { t: 'Thôi, đứng dậy', fx: { set: { _desk: '' } } },
+      ] },
+    ]);
+    const pick = R.flags._desk; delete R.flags._desk;
+    if (pick === 'tired') await dialogue.run([['nar', 'Bạn mở file. Bạn nhìn file. File nhìn lại bạn. Không ai làm được gì thêm cả.'], ['think', 'Đủ rồi. Mai làm tiếp.']]);
+    if (pick === 'hp') {
+      R.today.hp = !hp;
+      if (R.today.hp) toast('🎧 Đeo tai nghe: drama ít làm phiền hơn lúc làm việc. Nhưng ai gọi mà bạn không nghe thì… sẽ nhớ.', 'msg', 4);
+      else toast('🎧 Tháo tai nghe. Âm thanh văn phòng ùa về: tiếng gõ phím, tiếng thở dài và một tin đồn.', 'msg', 3);
+      updateHUD();
+    }
+    if (pick === 'work') await deskSession();
+  }
+  // '@1', '@2'… in generic chatter = colleagues who are in the office today (stable for one chatter)
+  function castFor(chat, seed) {
+    const r = rng(seed);
+    const pool = Object.keys(CO.cast).filter((id) => CO.cast[id].body !== false && isPresent(id) && spotFor(id) !== 'away' && id !== reviewer());
+    const map = {};
+    return chat.map(([who, text, dm]) => {
+      if (!String(who).startsWith('@')) return [who, text, dm];
+      if (!map[who]) { const left = pool.filter((x) => !Object.values(map).includes(x)); map[who] = left.length ? left[Math.floor(r() * left.length)] : (pool[0] || 'nar'); }
+      return [map[who], text, dm];
+    });
+  }
+  async function deskSession() {
+    const { games, chatter } = deskContent();
+    const n = D.sessionsToday(R), hp = !!R.today.hp;
+    const seed = hash(R.id) + R.day * 31 + n * 7 + (R.deskSeen || []).length;
+    const game = D.pickGame(games, R, seed);
+    if (!game) return;
+    const mini = D.sampleMini(game, seed + 1);
+    const bar = Math.max(mini.pass ?? 0.5, R.tier ? tier(R.tier).qa : 0);
+    const barNote = `Cần ≥ ${Math.round(bar * 100)}% để tính là làm tốt${R.tier && tier(R.tier).qa > (mini.pass ?? 0.5) ? ` (mức ${TIERS[R.tier].label} duyệt khắt khe)` : ''}.`;
+    const cfg = { ...mini, pass: bar, barNote, time: Math.round((mini.time || 30) * mood().mini * (hungry() ? 0.75 : 1)) };
+    // drama can't be dodged: a group-chat burst may land in the middle of your work (less often with headphones)
+    const here = chatter.filter((c) => (c.chat || []).every(([w]) => !CO.cast[w] || isPresent(w))); // nobody who has left
+    const ch = D.chatterHits(hp, seed + 2) ? D.pickChatter(here, R, seed + 3) : null;
+    const chat = ch ? castFor(ch.chat || [], seed + 4) : [];
+    if (ch && !hp && chat.length) pushChat(chat, 2200);
+    $('#dialog').hidden = true;
+    const { score } = await runMinigame(cfg);
+    const ok = score >= bar - 1e-9;
+    R.today.desk = n + 1;
+    R.deskSeen = [...(R.deskSeen || []), game.id].slice(-100);
+    R.flags.minis = (R.flags.minis || 0) + 1;
+    if (ok) { R.flags.minis_ok = (R.flags.minis_ok || 0) + 1; R.flags.desk_ok_total = (R.flags.desk_ok_total || 0) + 1; }
+    if (R.week) { R.week.minis++; R.week.desk = (R.week.desk || 0) + 1; if (ok) { R.week.minisOk++; R.week.deskOk = (R.week.deskOk || 0) + 1; } }
+    const bonus = D.deskBonus(R.status, score, ok);
+    if (bonus) {
+      const acc = { intern: 0, official: 0, ...(R.accrued || {}) };
+      R.accrued = { ...acc, bonus: (acc.bonus || 0) + bonus, deskOk: (acc.deskOk || 0) + 1 };
+    }
+    applyFx({ clock: D.DESK_MINUTES, nl: -D.DESK_ENERGY, uy: ok ? 1 : -1, ...(ok && hp ? { dr: -1 } : {}) });
+    if (bonus) toast(`💼 Thưởng năng suất +${fmtVND(bonus)} (trả cùng phiếu lương)`, 'good', 3);
+    const after = ok ? (game.good || []) : (game.bad || []);
+    if (after.length) await dialogue.run(after);
+    if (ch) {
+      R.chatSeen = [...(R.chatSeen || []), ch.id].slice(-100);
+      const first = chat.find(([w]) => CO.cast[w]);
+      const missed = hp ? [
+        ['nar', `Bạn tháo tai nghe ra. Group chat có ${chat.length + 6} tin nhắn mới, và tên bạn bị tag hai lần.`],
+        ...(first ? [[first[0], 'Ơ, nãy giờ mọi người gọi mà không ai trả lời luôn á?']] : []),
+        { fx: { uy: -1, ...(first ? { rel: { [first[0]]: -1 } } : {}) } },
+      ] : [];
+      if (hp && chat.length) pushChat(chat, 0);
+      await dialogue.run([...missed, ...(ch.scene || [])]);
+    }
+    if (R.st.nl <= C.FAINT) await faint();
+  }
+
   // ---------- day intro / end ----------
   const statGrid = () => `<div class="stat-grid"><div><b>${Math.round(R.st.uy)}</b><span>Uy tín</span></div><div><b>${Math.round(R.st.dr)}</b><span>Drama</span></div><div><b>${Math.round(R.st.nl)}</b><span>Năng lượng</span></div></div>`;
   const relChips = () => Object.entries(R.rel).filter(([id, v]) => v !== 0 && CO && CO.cast[id]).sort((a, b) => b[1] - a[1]).slice(0, 8)
@@ -585,7 +690,7 @@ export function startSolo({ scene, camera, input, onExit }) {
       ${R.day > 0 ? `<div class="mood-card"><b>${m.emoji} Mood hôm nay: ${esc(m.name)}</b><span>${esc(m.text)}</span></div>` : ''}
       <p class="ov-text">${esc(fmt(d.intro || ''))}</p>
       <div class="btns"><button class="btn primary" id="goDay">${R.step > 0 ? 'Làm tiếp →' : 'Vào văn phòng →'}</button>${quickable ? '<button class="btn" id="quickDay" title="Đọc nhanh các cảnh, việc vặt quyết định bằng một lựa chọn">⏩ Tua nhanh ngày thường</button>' : ''}${navBtn}</div>
-      ${isTouch ? '' : '<div class="help"><div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> đi · chuột nhìn · <kbd>E</kbd> nói chuyện · <kbd>Q</kbd> Teams · <kbd>Esc</kbd> tạm dừng</div><div>🍜 Đói thì ghé pantry · 📋 việc vặt hiện ở góc phải</div></div>'}
+      ${isTouch ? '' : '<div class="help"><div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> đi · chuột nhìn · <kbd>E</kbd> nói chuyện · <kbd>Q</kbd> Teams · <kbd>Esc</kbd> tạm dừng</div><div>🍜 Đói thì ghé pantry · 📋 việc vặt hiện ở góc phải · 💻 rảnh thì ngồi vào bàn làm việc</div></div>'}
     `);
     wireNav();
     $('#goDay').onclick = () => { hideOverlay(); startDay(false); };
@@ -608,6 +713,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     mode = 'play';
     $('#crosshair').hidden = isTouch; $('#mobile').hidden = !isTouch;
     fp.lock(); onStepStart();
+    if (R.day >= 2 && !R.flags.desk_hint) { R.flags.desk_hint = true; setTimeout(() => toast('💻 Rảnh tay thì ngồi vào bàn của bạn để làm việc: có thưởng năng suất, review đẹp hơn. Nhưng drama vẫn sẽ tìm tới.', 'msg', 5), 4000); }
   }
   async function quickNext() {
     const st = currentStep();
@@ -731,6 +837,8 @@ export function startSolo({ scene, camera, input, onExit }) {
   function routineDiary() {
     const m = mood();
     const lines = [`Một ngày thường. Mood: ${m.name.toLowerCase()}.`];
+    const dk = D.sessionsToday(R);
+    if (dk >= 2) lines.push(`Mình ngồi bàn cày được ${dk} phiên.${R.today.hp ? ' Đeo tai nghe cả ngày, drama đi vòng qua mình (gần hết).' : ''}`);
     if (R.st.nl < 30) lines.push('Mình đói gần hết ngày. Mai phải mang đồ ăn.');
     if (R.st.dr > 50) lines.push('Drama đang lên cao. Mình bắt đầu thấy mình là một phần của nó.');
     if (R.money < 300_000) lines.push(`Trong ví còn ${fmtVND(Math.round(R.money))}. Mì gói, mình đến đây.`);
@@ -874,6 +982,7 @@ export function startSolo({ scene, camera, input, onExit }) {
       if (it.id === 'giao') await giaoTalk();
       else if (it.id === 'kpi') await dialogue.run([['nar', `${(CO && CO.catName) || 'Mèo KPI'} mở một mắt, nhìn bạn như nhìn một slide không có executive summary, rồi ngủ tiếp.`], { fx: { nl: 3 } }]);
       else if (it.id === 'coffee') await pantry();
+      else if (it.id === 'desk' && R.day > 0 && R.today) await desk();
       else if (it.kind === 'npc') {
         const lines = (CO.idle && CO.idle[it.id]) || ['…'];
         await dialogue.say(it.id, lines[Math.floor(Math.random() * lines.length)]);

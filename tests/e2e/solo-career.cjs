@@ -1,12 +1,15 @@
 // Headless career playthrough for any Solo company. Usage (server on :8765 serving site/):
-//   node tests/e2e/solo-career.cjs <company> <tier t0|t1|t3|t5> <first|last|rand> [maxDay=45] [quick=all|routine|none] [tasks]
+//   node tests/e2e/solo-career.cjs <company> <tier t0|t1|t3|t5> <first|last|rand> [maxDay=45] [quick=all|routine|none] [tasks] [desk]
+// `desk` = sit at the desk and work (mini-game) up to 3 times every 3D day, before the day's story beats.
 // Plays: company picker → interview + salary → days (episodes in 3D, routine days quick or 3D) → Friday reviews,
 // payslips, weekends, life events → ending. Checks: no JS errors, never stuck, every visible button is clickable
 // (not covered by another element), run saved with the right company/tier, ending reached when maxDay=45.
 const { chromium, devices } = require('playwright');
 const [company = 'tm', tierId = 't1', strategy = 'first', maxDayArg = '45', quickArg = 'routine', tasksArg] = process.argv.slice(2);
 const maxDay = Number(maxDayArg);
-const doTasks = tasksArg === 'tasks';
+const extra = process.argv.slice(7);
+const doTasks = tasksArg === 'tasks' || extra.includes('tasks');
+const doDesk = tasksArg === 'desk' || extra.includes('desk');
 const TIERS = ['t0', 't1', 't3', 't5'];
 const BASE = process.env.BASE_URL || 'http://localhost:8765/';
 const OUT = process.env.SHOTS || '/tmp/claude-0';
@@ -50,6 +53,7 @@ const OUT = process.env.SHOTS || '/tmp/claude-0';
   };
 
   const miniFails = [];
+  let deskRuns = 0, deskTries = 0, lastDeskDay = -1;
   let rnd = 7, choices = 0, minis = 0, stuck = 0, days = new Set(), reviews = 0, payslips = 0, lifes = 0, weekends = 0, ended = false, audited = new Set();
   const pickIdx = (n) => { if (strategy === 'last') return n - 1; if (strategy === 'rand') { rnd = (rnd * 16807) % 2147483647; return rnd % n; } return 0; };
   const approach = (kind, id, side) => p.evaluate(([kind, id, side]) => {
@@ -80,6 +84,8 @@ const OUT = process.env.SHOTS || '/tmp/claude-0';
         btn: ['#toCompanies', '#payOk', '#rentOk', '#brokeOk', '#lifeOk', '#wkOk', '#nextCard', '#quickDay', '#goDay'].find((x) => q('#ovCard ' + x)) || (q('#ovCard .life-choices [data-i]') ? 'life' : null),
         who: s ? s.who : null, review: !!(s && s.review),
         task: openTask ? openTask.legs[openTask.leg] : null,
+        desk: R && R.today ? (R.today.desk || 0) : 0,
+        deskChoice: [...document.querySelectorAll('#choices button')].findIndex((x) => /Làm việc tập trung/.test(x.textContent)),
       };
     });
     if (st.day) days.add(st.day);
@@ -98,6 +104,7 @@ const OUT = process.env.SHOTS || '/tmp/claude-0';
         const opts = [...m.querySelectorAll('.mini-opt')];
         if (perfect && dbg) {
           if (dbg.type === 'quiz') { const b = opts[dbg.answer[0]]; if (b && !b.disabled) b.click(); return 'quiz'; }
+          if (dbg.type === 'sort') { const b = m.querySelector(`.mini-bin[data-b="${dbg.answer[0]}"]`); if (b && !b.disabled) b.click(); return 'quiz'; }
           for (const k of dbg.answer) { const b = m.querySelector(`.mini-opt[data-k="${k}"]`); if (b && !b.classList.contains('on')) b.click(); }
           const go = m.querySelector('.mini-go'); if (go) go.click();
           return dbg.type;
@@ -133,12 +140,18 @@ const OUT = process.env.SHOTS || '/tmp/claude-0';
     }
     if (st.mode === 'dialog') {
       if (st.review) reviews += 0;
+      if (st.ch && doDesk && st.deskChoice >= 0) { deskRuns++; await p.evaluate((k) => document.querySelectorAll('#choices button')[k].click(), st.deskChoice); continue; }
       if (st.ch) { const k = pickIdx(st.ch); await p.evaluate((k) => document.querySelectorAll('#choices button')[k].click(), k); choices++; }
       else { await p.keyboard.press('Space'); await p.keyboard.press('Space'); }
       continue;
     }
     if (st.mode === 'ringing') { await auditButtons('incoming call'); await p.evaluate(() => document.querySelector('#incAccept').click()); continue; }
     if (st.mode === 'pause') { await p.evaluate(() => document.querySelector('#resumeBtn').click()); continue; }
+    if (st.mode === 'play' && doDesk && st.day > 0 && st.desk < 3 && st.step === 0 && deskTries < 3 + st.day * 4) {
+      if (lastDeskDay !== st.day) { lastDeskDay = st.day; }
+      deskTries++;
+      await press('obj', 'desk'); continue;
+    }
     if (st.mode === 'play' && doTasks && st.task) { await press(st.task.npc ? 'npc' : 'obj', st.task.npc || st.task.obj); continue; }
     if (st.mode === 'play' && st.who && st.who.startsWith('call:')) { await p.waitForTimeout(400); continue; }
     if (st.mode === 'play' && st.who) {
@@ -153,9 +166,9 @@ const OUT = process.env.SHOTS || '/tmp/claude-0';
   const res = await p.evaluate(() => {
     const prof = JSON.parse(localStorage.getItem('tm_profile_v1'));
     const r = Object.values(prof.runs)[0];
-    return { company: r.company, tier: r.tier, status: r.status, day: r.day, ended: r.ended, st: r.st, money: r.money, reviews: (r.reviews || []).map((x) => x.grade).join(''), payslips: (r.payslips || []).map((x) => x.net), flags: Object.keys(r.flags).filter((k) => r.flags[k] === true).slice(0, 30) };
+    return { company: r.company, tier: r.tier, status: r.status, deskOk: r.flags.desk_ok_total || 0, promoByWork: !!r.flags.promo_by_work, day: r.day, ended: r.ended, st: r.st, money: r.money, reviews: (r.reviews || []).map((x) => x.grade).join(''), payslips: (r.payslips || []).map((x) => x.net), flags: Object.keys(r.flags).filter((k) => r.flags[k] === true).slice(0, 30) };
   });
-  console.log(`${company} ${tierId} ${strategy} quick=${quickArg} → days=${days.size} choices=${choices} minis=${minis} lifeEvents=${lifes} weekends=${weekends} payOk=${payslips} ended=${ended}`);
+  console.log(`${company} ${tierId} ${strategy} quick=${quickArg} → days=${days.size} choices=${choices} minis=${minis} desk=${deskRuns} lifeEvents=${lifes} weekends=${weekends} payOk=${payslips} ended=${ended}`);
   console.log(JSON.stringify(res));
   if (miniFails.length) console.log('MINI-GAME FAILS WITH PERFECT ANSWERS:\n  ' + miniFails.join('\n  '));
   if (occluded.size) console.log('OCCLUDED BUTTONS:\n  ' + [...occluded].join('\n  '));

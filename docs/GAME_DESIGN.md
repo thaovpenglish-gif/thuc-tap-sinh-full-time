@@ -62,6 +62,14 @@ Main menu ──Solo──► Hồ sơ sự nghiệp (career runs + cloud save) 
   official employees → 10,5% insurance, PIT 0 under the 15,5 tr personal deduction (2026). Disclaimer shown.
 - **After-work life events** (55% of evenings, never the same twice in a row): CSGT fines (amounts from
   NĐ 168/2024), spoiled food, rent increase, mom calls, cancelled rides, floods, side gigs… some with choices.
+- **Desk work** (`game/desk.js`, content `companies/<id>/desk.js`, contract §12): press E on your own desk between
+  beats → one mini-game of the company's real work (pick/quiz/order/sort, drawn from banks, no repeats). 30 game
+  minutes, −6 energy (side tasks keep ticking), 3 rewarded sessions a day. Good session: +1 Uy tín, performance bonus
+  (intern 20–30k, official 80–120k) paid on the payslip, +2 review points (cap +12/week). Drama can't be dodged: a
+  group-chat burst lands mid-game (45%) and you react with one choice; 🎧 headphones cut that to 15% and cool Drama,
+  but a missed ping costs −1 Uy tín and a relation point. **Hard-work promotion**: ≥ 18 good sessions, ≥ 2 A reviews,
+  day ≥ 22, Uy tín ≥ 65 → the reviewer offers an official contract (`desk.promoOffer`, flag `promo_by_work`), even
+  without the company's story path.
 - **Weekly review** (Friday 16:30, the company's `manager`): grade A/B/C/D from tasks done/late, mini-games, Uy tín
   change, relation with the manager, Drama. Two D in a row → warning (PIP).
 - **Promotion**: each company has exactly one demanding, story-driven `promotion.when(run)` checked after reviews.
@@ -102,7 +110,7 @@ site/js/game/difficulty.js   salary tiers, 10% withholding rule (pure)
 site/js/companies/           registry + one folder per company (content only)
 site/js/maps/office.js       themed office builder (signs, nameplates, palette, props); maps/slots.js = spots (pure)
 site/js/story/dialogue.js    scene language runner (lines, choices, if, fx, chat, extra nodes)
-site/js/ui/                  minigame (pick/quiz/order), cloudpanel, phone (Teams + confessions), toast, overlay
+site/js/ui/                  minigame (pick/quiz/order/sort), cloudpanel, phone (Teams + confessions), toast, overlay
 site/js/net/                 cloud.js (save RPCs), legacy-net.js (votes, confessions, presence)
 tests/                       unit tests (npm test), validate-companies.mjs, e2e/solo-career.cjs, e2e/legacy-playthrough.cjs
 ```
