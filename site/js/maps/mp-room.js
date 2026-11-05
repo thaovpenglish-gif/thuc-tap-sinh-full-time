@@ -150,6 +150,22 @@ function stationMesh(s, L) {
       icon = '🗑️'; bg = '#e4e4ea';
       break;
     }
+    case 'interview': {
+      // the hot seat: a small table between two chairs
+      add(box(1.0, TOP - 0.08, 0.7, '#ffffff'), 0, (TOP - 0.08) / 2, 0);
+      add(box(1.06, 0.06, 0.76, '#e3d9ff', 0.015), 0, TOP - 0.03, 0);
+      add(cyl(0.22, 0.22, 0.45, '#ff5a6e', 0.015), 0.85, 0.22, 0); add(box(0.46, 0.4, 0.08, '#ff5a6e', 0.012), 1.05, 0.62, 0).rotation.y = Math.PI / 2;
+      add(cyl(0.22, 0.22, 0.45, '#3a3f55', 0.015), -0.85, 0.22, 0);
+      icon = '🎤'; bg = '#e3d9ff';
+      break;
+    }
+    case 'cb': {
+      counter('#ffffff', '#b8f0d8');
+      add(box(0.5, 0.34, 0.05, '#3a3f55', 0.012), 0, TOP + 0.2, -0.2);
+      add(box(0.3, 0.02, 0.2, '#ffffff', 0.006), 0.3, TOP + 0.01, 0.1);
+      icon = '📈'; bg = '#b8f0d8';
+      break;
+    }
     case 'prep': {
       // cutting board, knife and a bowl of marinade
       counter('#ffffff', '#ffe3c2');
@@ -191,6 +207,7 @@ function stationMesh(s, L) {
       break;
     }
   }
+  if (s.who) { const p = makePerson(s.who.look); p.position.set(0, 0, -0.85); g.add(p); }
   const lb = label(s.label, icon, bg);
   lb.position.set(0, s.kind === 'boss' ? 2.35 : s.kind === 'dryer' ? 2.1 : 1.75, s.z > 0 ? -0.1 : 0);
   if (s.kind === 'boss') lb.scale.multiplyScalar(1.15);
@@ -205,8 +222,9 @@ function stationMesh(s, L) {
   ring.rotation.x = -Math.PI / 2; ring.position.set(0, 0.02, s.z < 0 ? 0.7 : s.z > 0 ? -0.7 : 0.7); ring.visible = false;
   g.add(ring);
   // power-cut warning (dryers) / "flip me" sign (breaker), shown by the mode
-  const off = label(s.kind === 'breaker' ? 'Bật lại đây!' : 'Mất điện', '⚡', '#ff8f8f');
-  off.position.set(0, (s.kind === 'dryer' ? 2.1 : 1.75) + 0.45, 0.1); off.visible = false;
+  const pc = L.powerCut || {};
+  const off = label(s.kind === 'breaker' ? (pc.fixSign || 'Bật lại đây!') : (pc.offSign || 'Mất điện'), pc.icon || '⚡', '#ff8f8f');
+  off.position.set(0, (s.kind === 'dryer' ? 2.1 : s.kind === 'boss' ? 2.35 : 1.75) + 0.45, 0.1); off.visible = false;
   g.add(off);
   g.userData = { ...g.userData, slot, bar, ring, label: lb, off };
   return g;
@@ -293,7 +311,7 @@ function decorMesh(d, L) {
     }
     case 'crates': {
       [[-0.35, 0, 0], [0.35, 0, 0.05], [0, 0.42, 0]].forEach(([x, y, z], i) => add(box(0.62, 0.42, 0.5, i === 2 ? '#f0d4ae' : '#e8c69a'), x, 0.21 + y, z));
-      const tag = label('KHÔ GÀ LÁ CHANH', '📦', '#fff1b8'); tag.position.set(0, 1.25, 0); tag.scale.multiplyScalar(0.75); g.add(tag);
+      const tag = label(d.text || 'KHÔ GÀ LÁ CHANH', d.icon || '📦', '#fff1b8'); tag.position.set(0, 1.25, 0); tag.scale.multiplyScalar(0.75); g.add(tag);
       col = [0.7, 0.3];
       break;
     }
@@ -415,10 +433,12 @@ export function buildRoom(scene, L) {
   // outer walls: tall at the back, low at the sides, a kerb in front (the camera side) with the lobby entrance
   const wallH = 1.7, sideH = 0.9;
   const back = box(W + 0.6, wallH, 0.3, L.wall); back.position.set(0, wallH / 2, -D / 2 - 0.15); root.add(back);
-  const left = box(0.3, sideH, D, L.wall); left.position.set(-W / 2 - 0.15, sideH / 2, 0); root.add(left);
-  // right wall with the lobby door (z 3.6–5.2)
-  const rTop = box(0.3, sideH, 3.6 + D / 2, L.wall); rTop.position.set(W / 2 + 0.15, sideH / 2, (-D / 2 + 3.6) / 2); root.add(rTop);
-  const rBot = box(0.3, sideH, D / 2 - 5.2, L.wall); rBot.position.set(W / 2 + 0.15, sideH / 2, (5.2 + D / 2) / 2); root.add(rBot);
+  const solid = box(0.3, sideH, D, L.wall); solid.position.set(((L.entrance || 'right') === 'left' ? 1 : -1) * (W / 2 + 0.15), sideH / 2, 0); root.add(solid);
+  // the side with the clients' entrance (z 3.6–5.2) is split in two; the other side is solid
+  const entrance = L.entrance || 'right';
+  const doorX = (entrance === 'left' ? -1 : 1) * (W / 2 + 0.15);
+  const sTop = box(0.3, sideH, 3.6 + D / 2, L.wall); sTop.position.set(doorX, sideH / 2, (-D / 2 + 3.6) / 2); root.add(sTop);
+  const sBot = box(0.3, sideH, D / 2 - 5.2, L.wall); sBot.position.set(doorX, sideH / 2, (5.2 + D / 2) / 2); root.add(sBot);
   const front = box(W + 0.6, 0.25, 0.3, L.wall); front.position.set(0, 0.125, D / 2 + 0.15); root.add(front);
   // company sign on the back wall
   const sign = new THREE.Mesh(new THREE.PlaneGeometry(4.4, 0.72), new THREE.MeshBasicMaterial({ map: textTexture([`${L.emoji} ${L.client.toUpperCase()} × SOS ADVISORY`], { w: 1024, h: 170, sizes: [70], bg: '#fff8ef' }), transparent: true }));
@@ -486,7 +506,7 @@ export function buildRoom(scene, L) {
     board.position.set(b.x, 0, b.z);
     [-0.75, 0.75].forEach((x) => { const leg = box(0.08, 1.15, 0.08, '#6a6f80', 0.012); leg.position.set(x, 0.58, 0); board.add(leg); });
     const panel = box(1.7, 1.05, 0.1, '#ffffff', 0.025); panel.position.set(0, 1.55, 0); board.add(panel);
-    const face = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 0.95), new THREE.MeshBasicMaterial({ map: textTexture(['SCRUM', 'TODO · DOING · DONE', 'Stand-up 15 phút (*)'], { w: 512, h: 300, sizes: [78, 32, 28], bg: '#ffffff' }) }));
+    const face = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 0.95), new THREE.MeshBasicMaterial({ map: textTexture(L.standup.boardText || ['SCRUM', 'TODO · DOING · DONE', 'Stand-up 15 phút (*)'], { w: 512, h: 300, sizes: [78, 32, 28], bg: '#ffffff' }) }));
     face.position.set(0, 1.55, 0.06); board.add(face);
     root.add(board);
     colliders.push({ minX: b.x - 0.85, maxX: b.x + 0.85, minZ: b.z - 0.1, maxZ: b.z + 0.1 });
