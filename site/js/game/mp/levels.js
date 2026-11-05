@@ -97,6 +97,65 @@ const AG = {
   ken: { name: 'Anh Ken (quản lý KOL)', short: 'Anh Ken 🕶️', look: { shirt: '#1d1d1f', pants: '#1d1d1f', hair: 'side', hairColor: '#1d1d1f', glasses: true, phone: true } },
 };
 
+// Đi Đâu Cũng Được people (looks copied from companies/event/cast.js; clients are new bodies)
+const EV = {
+  kieu: { name: 'Chị Kiều', look: { shirt: '#ffcf6b', pants: '#5a3a5a', hair: 'wavy', hairColor: '#5a2a1a', phone: true } },
+  duy: { name: 'Anh Duy', look: { shirt: '#3a3f4a', pants: '#1f2328', hair: 'cap', hairColor: '#1d1d1f', pods: true } },
+  tien: { name: 'Anh Tiến', look: { shirt: '#b8e0d2', pants: '#2f3542', hair: 'beanie', hairColor: '#ff9f7a', pods: true } },
+  khoa: { name: 'Khoa', look: { shirt: '#ffe08a', pants: '#6b7a99', hair: 'curly', hairColor: '#3b2418', notes: true } },
+  lan: { name: 'Chị Lan', look: { shirt: '#ffc6e0', pants: '#8a6a5a', hair: 'wavy', hairColor: '#4a3226', tote: true } },
+  quan: { name: 'Anh Quân', look: { shirt: '#2f3542', pants: '#1f2328', hair: 'quiff', hairColor: '#1d1d1f', pods: true } },
+  vy: { name: 'Vy', look: { shirt: '#a8e6cf', pants: '#7d86b3', hair: 'long', hairColor: '#3b2418', clip: true, phone: true } },
+  hai: { name: 'Anh Hải', look: { shirt: '#ffd166', pants: '#2f4a3a', hair: 'cap', hairColor: '#e63946', tote: true } },
+  quang: { name: 'Anh Quang (Chủ tịch Bê Tông Vững Chãi)', short: 'Anh Quang', look: { shirt: '#3a3f55', pants: '#1f2328', hair: 'side', hairColor: '#9a9a9a', tie: '#c0392b' } },
+  huong: { name: 'Chị Hường (HR Bê Tông Vững Chãi)', short: 'Chị Hường', look: { shirt: '#ff9fb2', pants: '#3f3f55', hair: 'bun', hairColor: '#1d1d1f', glasses: true, phone: true } },
+  thang: { name: 'Anh Thắng (trưởng đoàn Khỏe Re)', short: 'Anh Thắng', look: { shirt: '#9fd3ff', pants: '#3a4a6b', hair: 'short', hairColor: '#1d1d1f', cap: true } },
+  loc: { name: 'Anh Lộc Xe (nhà xe 45 chỗ)', short: 'Anh Lộc Xe', look: { shirt: '#f2a65a', pants: '#4a4a3a', hair: 'cap', hairColor: '#3a3f55', phone: true } },
+  diem: { name: 'Chị Diễm (Biển Xanh Resort)', short: 'Chị Diễm', look: { shirt: '#b8f0d8', pants: '#5a4a6b', hair: 'long', hairColor: '#2a1a12' } },
+  mckhai: { name: 'MC Khải ("giọng ấm")', short: 'MC Khải', look: { shirt: '#ffffff', pants: '#1d1d1f', hair: 'quiff', hairColor: '#1d1d1f', tie: '#ffd25a' } },
+  hoa: { name: 'Chị Hoa (Hoa Tươi Mãi)', short: 'Chị Hoa', look: { shirt: '#ffc8dd', pants: '#6b5a4a', hair: 'curly', hairColor: '#5a3a2a', tote: true } },
+  codau: { name: 'Cô dâu Thùy (tiệc cưới ngoài trời)', short: 'Cô dâu Thùy', look: { shirt: '#ffffff', pants: '#ffffff', hair: 'bun', hairColor: '#2a1a12', clip: true } },
+};
+
+// Cân Đối & Cộng Sự people (looks copied from companies/audit/cast.js; client staff are new bodies)
+const AU = {
+  phong: { name: 'Anh Phong (Partner)', short: 'Anh Phong', look: { shirt: '#2f4a6b', pants: '#1f2a3a', hair: 'side', hairColor: '#9a9a9a', glasses: true, tie: '#b8f0d8' } },
+  thao: { name: 'Chị Thảo', look: { shirt: '#ff8fa3', pants: '#4a3f5a', hair: 'bun', hairColor: '#1d1d1f', glasses: true, mug: true } },
+  khoa: { name: 'Anh Khoa', look: { shirt: '#c9d1dc', pants: '#3a3f4a', hair: 'curly', hairColor: '#2a2a2a', pods: true, mug: true } },
+  diep: { name: 'Chị Diệp', look: { shirt: '#c9b6ff', pants: '#3f3f55', hair: 'pony', hairColor: '#2b1b14', clip: true, notes: true } },
+  vy: { name: 'Vy', look: { shirt: '#ffd166', pants: '#5b6b9a', hair: 'long', hairColor: '#3b2418', phone: true, tote: true } },
+  tuan: { name: 'Tuấn', look: { shirt: '#a8dcc0', pants: '#4a5a52', hair: 'cap', hairColor: '#1d1d1f', mug: true } },
+  quang: { name: 'Anh Quang (CFO Phúc Lộc Foods)', short: 'Anh Quang', look: { shirt: '#ffffff', pants: '#2f3542', hair: 'side', hairColor: '#1d1d1f', tie: '#c0392b', glasses: true } },
+  ketoan: { name: 'Chị Hà (kế toán trưởng khách)', short: 'Chị Hà', look: { shirt: '#ffe9a0', pants: '#5a4a3a', hair: 'bun', hairColor: '#2a2a2a', glasses: true } },
+  thukho: { name: 'Chú Ba (thủ kho khách)', short: 'Chú Ba', look: { shirt: '#9fd3ff', pants: '#3a3a4a', hair: 'bald', hairColor: '#777777', notes: true } },
+  thue: { name: 'Anh Dũng (cán bộ thuế)', short: 'Anh Dũng', look: { shirt: '#c7e8b5', pants: '#3f3f55', hair: 'short', hairColor: '#1d1d1f', glasses: true } },
+  bank: { name: 'Chị Linh (ngân hàng)', short: 'Chị Linh', look: { shirt: '#ffc8dd', pants: '#3f3f55', hair: 'long', hairColor: '#1d1d1f', phone: true } },
+  ceo: { name: 'Bà Phúc (CEO Phúc Lộc Foods)', short: 'Bà Phúc', look: { shirt: '#ff9f7a', pants: '#3a3a4a', hair: 'wavy', hairColor: '#5a3a26', glasses: true } },
+  nhadautu: { name: 'Anh Kevin (nhà đầu tư)', short: 'Anh Kevin', look: { shirt: '#3a3f55', pants: '#1d1d1f', hair: 'quiff', hairColor: '#4a3226', pods: true } },
+  sang: { name: 'Anh Sang (dịch vụ kế toán)', short: 'Anh Sang', look: { shirt: '#ffb38a', pants: '#5a4a3a', hair: 'short', hairColor: '#1d1d1f', phone: true } },
+};
+
+// Nợ Kỹ Thuật Labs people (looks copied from companies/tech/cast.js; users and partners are new bodies)
+const TE = {
+  kevin: { name: 'Anh Quân "Kevin"', short: 'Kevin', look: { shirt: '#ffd166', pants: '#2f3a56', hair: 'quiff', hairColor: '#2a1d14', phone: true } },
+  thac: { name: 'Anh Thạc', look: { shirt: '#9aa7c7', pants: '#33384a', hair: 'curly', hairColor: '#1d1d1f', glasses: true, mug: true } },
+  diep: { name: 'Chị Diệp', look: { shirt: '#c9b6ff', pants: '#4a3f66', hair: 'bun', hairColor: '#2a2a2a', glasses: true, notes: true } },
+  khai: { name: 'Anh Khải', look: { shirt: '#a8dcc0', pants: '#3f4a45', hair: 'short', hairColor: '#1d1d1f', pods: true } },
+  nguyet: { name: 'Chị Nguyệt', look: { shirt: '#ff9fb2', pants: '#5a4a6b', hair: 'pony', hairColor: '#3b2418', glasses: true, phone: true } },
+  vy: { name: 'Vy', look: { shirt: '#ffb3e6', pants: '#f2e6cf', hair: 'wavy', hairColor: '#7a3b1e', clip: true, tote: true } },
+  tung: { name: 'Tùng', look: { shirt: '#8fd3ff', pants: '#2f3a56', hair: 'cap', hairColor: '#1d1d1f', pods: true, phone: true } },
+  loc: { name: 'Anh Lộc (DevOps)', short: 'Anh Lộc', look: { shirt: '#3a3a4a', pants: '#2a2a33', hair: 'beanie', hairColor: '#1d1d1f', pods: true } },
+  chau: { name: 'Châu', look: { shirt: '#ffe08a', pants: '#6b7a99', hair: 'long', hairColor: '#2b1b14', clip: true, tote: true } },
+  victor: { name: 'Anh Victor (quỹ Hạt Giống Ventures)', short: 'Anh Victor', look: { shirt: '#ffffff', pants: '#1d1d1f', hair: 'side', hairColor: '#4a3226', glasses: true, tie: '#3a86ff' } },
+  tanaka: { name: 'Tanaka-san (khách Nhật)', short: 'Tanaka-san', look: { shirt: '#ffffff', pants: '#2f3a56', hair: 'short', hairColor: '#1d1d1f', glasses: true, tie: '#4a5bd8' } },
+  user1: { name: 'Chị Mai (user đánh giá 1 sao)', short: 'User 1 sao', look: { shirt: '#ffc6e0', pants: '#5a4a6b', hair: 'long', hairColor: '#3b2418', phone: true } },
+  po: { name: 'Chị Hằng (PO bên khách)', short: 'Chị Hằng PO', look: { shirt: '#b8f0d8', pants: '#3f3f55', hair: 'bun', hairColor: '#1d1d1f', notes: true } },
+  shark: { name: 'Shark Hùng (gọi vốn)', short: 'Shark Hùng', look: { shirt: '#2f3542', pants: '#1d1d1f', hair: 'bald', hairColor: '#777777', tie: '#ffd25a' } },
+  bacnam: { name: 'Bác Năm ("app này bấm đâu")', short: 'Bác Năm', look: { shirt: '#c7e8b5', pants: '#5a4a3a', hair: 'side', hairColor: '#c9c9c9', glasses: true } },
+  api: { name: 'Anh Bảo (đối tác API)', short: 'Anh Bảo', look: { shirt: '#9fb4ff', pants: '#2f3a56', hair: 'cap', hairColor: '#1d1d1f', pods: true } },
+  bank: { name: 'Chị Linh (ngân hàng đối tác)', short: 'Chị Linh', look: { shirt: '#ffd3b8', pants: '#3f3f55', hair: 'wavy', hairColor: '#2a1a12', phone: true } },
+};
+
 export const LEVELS = {
   tm: {
     id: 'tm',
@@ -766,14 +825,450 @@ export const LEVELS = {
     ],
     stars: [200, 450, 700],
   },
+  event: {
+    id: 'event',
+    client: 'Đi Đâu Cũng Được',
+    emoji: '🎪',
+    title: 'Mưa giữa sự kiện',
+    blurb: 'Gala ngoài trời cho Bê Tông Vững Chãi. Mưa kéo tới theo đợt: đồ để ngoài sân là ướt sũng, cất vào lều Plan B. Khách còn đổi ý phút chót.',
+    bossName: 'Chị Kiều',
+    bossLine: 'Có Plan B chưa em?',
+    notesChance: 0.3,
+    quotes: [
+      'Chị Kiều: "Plan B đâu? Plan C đâu? Thôi về in lại hết."',
+      'Anh Duy (qua bộ đàm): "Âm thanh rè, ánh sáng tắt, khách về sớm. Over."',
+      'Chị Kiều: "Cũng ổn. Mưa mà vẫn chạy được là giỏi rồi."',
+      'Anh Quang: "Năm sau Bê Tông Vững Chãi lại đặt SOS. Vững như bê tông!"',
+    ],
+    duration: 180,
+    room: { w: 18, d: 12 },
+    wall: '#ffe08a',
+    //  z=-6 ┌── KHO ĐẠO CỤ ──────────────┬──── VĂN PHÒNG ─────────────────────┬── PHÒNG CHỊ KIỀU ──┐
+    //       │ Thùng quà  Kho loa  Gói quà │ Hồ sơ tour  Brief BD  Laptop Laptop │    Bàn chị Kiều    │
+    //       │                             │            Máy in khổ lớn          │                     │
+    //  z=-2 ├────[cửa]───────────────────┴──────[cửa]────────────────────────┴───[cửa]────────────┤ (mái hiên)
+    //       │ ⛺ LỀU PLAN B (khô):         SÂN SỰ KIỆN NGOÀI TRỜI (mưa theo đợt)                   │
+    //       │    Bàn ghép  Bàn ghép        Bàn test âm thanh         ┌── hàng rào ── QUẦY CHECK-IN ┤
+    //       │ ⛺ lều 2: nước, rác    [ SÂN KHẤU GALA ]               │ khu khách (← cổng)           │
+    //  z=6  └────────────────────────────────────────────────────────┴──────────────────────────────┘
+    rooms: [
+      { name: 'KHO ĐẠO CỤ', icon: '📦', x0: -9, x1: -3, z0: -6, z1: -2, floor: '#f1ece4', sign: [-6.2, -2], color: '#ffe3c2' },
+      { name: 'VĂN PHÒNG', icon: '💻', x0: -3, x1: 3.6, z0: -6, z1: -2, floor: '#f6f1ff', sign: [0.2, -2], color: '#e3d9ff' },
+      { name: 'PHÒNG CHỊ KIỀU', icon: '🎤', x0: 3.6, x1: 9, z0: -6, z1: -2, floor: '#fff3c4', sign: [6.4, -2], color: '#ffcf6b' },
+      { name: '', x0: -9, x1: 4, z0: -2, z1: 6, floor: '#cdebb5' },
+      { name: '', x0: 4, x1: 9, z0: -2, z1: 2.5, floor: '#cdebb5' },
+      { name: 'KHU KHÁCH', icon: '🎟️', x0: 4, x1: 9, z0: 2.5, z1: 6, floor: '#e6f4d8', sign: [4.6, 2.5], color: '#b8f0d8' },
+    ],
+    walls: [
+      { x0: -9, z0: -2, x1: -7, z1: -2 }, { x0: -5.4, z0: -2, x1: -3, z1: -2 },
+      { x0: -3, z0: -2, x1: -0.6, z1: -2 }, { x0: 1.0, z0: -2, x1: 3.6, z1: -2 },
+      { x0: 3.6, z0: -2, x1: 5.6, z1: -2 }, { x0: 7.2, z0: -2, x1: 9, z1: -2 },
+      { x0: -3, z0: -6, x1: -3, z1: -2 }, { x0: 3.6, z0: -6, x1: 3.6, z1: -2 },
+      // the guests' area is fenced; the check-in counter sits in the fence
+      { x0: 4, z0: 2.5, x1: 5.25, z1: 2.5 }, { x0: 7.15, z0: 2.5, x1: 9, z1: 2.5 }, { x0: 4, z0: 2.5, x1: 4, z1: 6 },
+    ],
+    floorDoorMats: [[-6.2, -2], [0.2, -2], [6.4, -2], [9, 4.4, 'v']],
+    decor: [
+      // indoor
+      { kind: 'crates', x: -4.4, z: -3.0, text: 'ĐẠO CỤ TEAM BUILDING', icon: '🎈' }, { kind: 'window', x: -6, z: -6 }, { kind: 'window', x: 0.2, z: -6 },
+      { kind: 'person', x: -2.4, z: -2.8, npc: EV.vy, face: 0.6 }, { kind: 'shelf', x: 8.4, z: -4.2 }, { kind: 'plant', x: 4.2, z: -5.4 },
+      // outdoor: tents, the gala stage, Anh Duy with three walkie-talkies, Khoa the game host
+      { kind: 'tent', x: -6.3, z: 0.6, w: 4.6, d: 3.4, text: 'LỀU PLAN B · khô' },
+      { kind: 'tent', x: -7.5, z: 4.6, w: 3, d: 2.6, text: 'LỀU NƯỚC' },
+      { kind: 'stage', x: -0.6, z: 4.6, w: 4.4, d: 2.0 },
+      { kind: 'person', x: 2.6, z: 4.4, npc: EV.duy, face: -0.6 }, { kind: 'person', x: -2.2, z: 3.2, npc: EV.khoa, face: 0.3 },
+      { kind: 'plant', x: 3.4, z: 0.2 }, { kind: 'plant', x: -3.4, z: 0.2 },
+    ],
+
+    spawns: [{ x: -2.0, z: -1.2 }, { x: 1.6, z: -1.2 }, { x: -2.0, z: 1.4 }, { x: 2.0, z: 1.6 }],
+    stations: [
+      { id: 'qua', kind: 'source', gives: 'qua', label: 'Thùng quà', x: -8.2, z: -5.2 },
+      { id: 'loa', kind: 'source', gives: 'loa', label: 'Kho loa đài', x: -6.8, z: -5.2 },
+      { id: 'wrap', kind: 'wrap', label: 'Bàn gói quà · chị Lan', x: -4.8, z: -5.2, who: EV.lan },
+      { id: 'tour', kind: 'source', gives: 'tour_brief', label: 'Hồ sơ tour', x: -2.2, z: -5.2 },
+      { id: 'bd', kind: 'source', gives: 'bd_brief', label: 'Brief backdrop', x: -0.8, z: -5.2 },
+      { id: 'lap1', kind: 'laptop', label: 'Laptop', x: 0.6, z: -5.2 },
+      { id: 'lap2', kind: 'laptop', label: 'Laptop · anh Tiến', x: 2.0, z: -5.2, who: EV.tien },
+      { id: 'bigprint', kind: 'bigprint', label: 'Máy in khổ lớn', x: 1.2, z: -3.3 },
+      { id: 'boss', kind: 'boss', label: 'Bàn chị Kiều', x: 6.4, z: -4.4 },
+      { id: 'sound', kind: 'sound', label: 'Test âm thanh (ngoài trời)', x: 0.2, z: 0.4, who: EV.quan },
+      { id: 'c1', kind: 'counter', label: 'Bàn ghép (trong lều)', x: -7.3, z: 0.6 },
+      { id: 'c2', kind: 'counter', label: 'Bàn ghép (trong lều)', x: -5.5, z: 0.6 },
+      { id: 'c3', kind: 'counter', label: 'Bàn (ngoài trời)', x: 2.8, z: -0.6 },
+      { id: 'coffee', kind: 'coffee', label: 'Nước suối', drink: 'Uống chai nước suối 💧', x: -7.6, z: 5.2 },
+      { id: 'trash', kind: 'trash', label: 'Thùng rác', x: -8.5, z: 3.8 },
+      { id: 'deliver', kind: 'deliver', label: 'Quầy check-in', x: 6.2, z: 2.5, faces: 'up' },
+    ],
+    boss: EV.kieu,
+
+    clients: [EV.quang, EV.huong, EV.thang, EV.loc, EV.diem, EV.mckhai, EV.hoa, EV.codau],
+    clientSpots: [{ x: 4.8, z: 3.6 }, { x: 5.9, z: 3.55 }, { x: 7.0, z: 3.55 }, { x: 8.1, z: 3.6 }],
+    clientDoor: [{ x: 10, z: 4.4 }, { x: 8.4, z: 4.4 }],
+    clientLines: {
+      wait: ['Mấy giờ khai mạc em?', 'Có Plan B chưa?', 'Sếp anh tới rồi', 'Mưa vậy sao em?', 'Đổi giờ được không?'],
+      happy: ['Quá đẹp luôn!', 'Mưa mà vẫn chạy!', 'Năm sau đặt tiếp', 'Đúng chất gala'],
+      angry: ['Hủy hợp đồng!', 'Khách về hết rồi', 'Thôi khỏi', 'Ướt hết rồi em ơi'],
+    },
+
+    // signature events of this level
+    rain: {
+      at: [42, 102, 150], warn: 4, length: 16, wetAfter: 5, slow: 0.72,
+      zone: { x0: -9, x1: 9, z0: -2, z1: 6 },
+      cover: [{ x0: -8.6, x1: -4.0, z0: -1.1, z1: 2.3 }, { x0: -9, x1: -6, z0: 3.3, z1: 6 }, { x0: 4, x1: 9, z0: 2.5, z1: 6 }],
+      dry: ['wet', 'ruined'],
+      warnText: 'Trời tối sầm… mưa sắp tới!', text: 'Mưa! Cất đồ vào lều Plan B', endText: 'Tạnh mưa',
+    },
+    revise: {
+      chance: 0.35,
+      lines: ['Đổi giờ khai mạc nha', 'Thêm 20 khách được không?', 'Sang hơn chút em', 'Sếp anh muốn màu khác'],
+    },
+
+    process: {
+      work: {
+        wrap: { qua: { to: 'qua_goi', time: 2.5 } },
+        laptop: { tour_brief: { to: 'lich_trinh', time: 3 }, bd_brief: { to: 'file_bd', time: 3 }, lich_fb: { to: 'lich_trinh', time: 2 }, bd_fb: { to: 'file_bd', time: 2 }, stage_planb: { to: 'stage_kit', time: 2 } },
+        sound: { loa: { to: 'loa_ok', time: 3.5 } },
+      },
+      auto: {
+        bigprint: { file_bd: { to: 'backdrop', time: 5, overdue: 9, ruin: 'ruined', ruinText: '🖨️ In lem! Vứt đi in lại' } },
+        boss: { stage_kit: { to: 'stage_ok', time: 3, notes: 'stage_planb', fixAt: 'Laptop' } },
+      },
+      combos: [[['backdrop', 'loa_ok'], 'stage_kit']],
+    },
+    recipes: {
+      qua: { title: 'Quà tặng gói sẵn', item: 'qua_goi', time: 50, reward: 30, steps: ['🎁 Thùng quà', '🎀 Gói', '🛎️ Quầy'],
+        how: ['Lấy quà ở Thùng quà (kho)', 'Đặt lên Bàn gói quà, đứng gói ~2,5 giây', 'Nộp ở Quầy check-in (đi qua sân, coi chừng mưa)'] },
+      lich: { title: 'Lịch trình tour', item: 'lich_trinh', time: 60, reward: 40, revise: 'lich_fb', fixAt: 'Laptop',
+        steps: ['🗺️ Hồ sơ tour', '💻 Laptop', '🛎️ Quầy'],
+        how: ['Lấy Hồ sơ tour', 'Làm ở Laptop ~3 giây', 'Nộp ở Quầy check-in. Khách đổi giờ thì về Laptop sửa'] },
+      loa: { title: 'Loa đã test', item: 'loa_ok', time: 75, reward: 55, steps: ['🔈 Kho loa', '🔊 Test (ngoài sân)', '🛎️ Quầy'],
+        how: ['Lấy loa ở Kho loa đài', 'Mang ra Bàn test âm thanh giữa sân, đứng test ~3,5 giây ("alo alo 1 2 3")', 'Nộp ở Quầy check-in'] },
+      backdrop: { title: 'Backdrop in', item: 'backdrop', time: 85, reward: 65, revise: 'bd_fb', fixAt: 'Laptop rồi in lại',
+        steps: ['📐 Brief', '💻 Laptop', '🖨️ In khổ lớn'],
+        how: ['Lấy Brief backdrop, làm ở Laptop ~3 giây', 'Đặt vào Máy in khổ lớn, chờ ~5 giây, lấy ra ngay', 'Nộp ở Quầy check-in. Bị "sang hơn chút" thì về Laptop sửa rồi in lại'] },
+      stage: { title: 'Bộ sân khấu', item: 'stage_ok', time: 140, reward: 150, join: ' · ',
+        steps: ['🖼️ Backdrop', '🔊 Loa', '⛺ ghép', '🎤 chị Kiều duyệt'],
+        how: ['Làm Backdrop in và Loa đã test', 'Ghép ở Bàn ghép trong Lều Plan B (khô ráo)', 'Mang vào Bàn chị Kiều. Bị hỏi "có Plan B chưa?" thì về Laptop viết rồi đưa lại', 'Nộp ở Quầy check-in'] },
+    },
+    tips: [
+      '🌧️ Mưa tới theo đợt: đồ để ngoài sân hoặc rơi dưới đất ~5 giây là ướt sũng, cầm trên tay thì ướt chậm hơn',
+      '⛺ Lều Plan B và lều nước khô ráo: ghép đồ trong lều',
+      '🐢 Đi ngoài mưa chậm hơn: chờ tạnh hoặc chạy nhanh qua',
+      '✏️ Khách đổi ý: món bị trả lại vào tay, mang về Laptop sửa',
+      '💧 Burnout gần đầy: uống chai nước suối trong lều nước',
+    ],
+    orderPool: [
+      { recipe: 'qua', w: 2 },
+      { recipe: 'lich', w: 2.5 },
+      { recipe: 'loa', w: 2.5, after: 10 },
+      { recipe: 'backdrop', w: 2, after: 18 },
+      { recipe: 'stage', w: 2, after: 40 },
+    ],
+    pace: [
+      { gap: 34, time: 1.4, max: 2, first: [2, 16] },
+      { gap: 24, time: 1.15, max: 3, first: [2, 10] },
+      { gap: 18, time: 1, max: 4, first: [2, 8] },
+      { gap: 14, time: 0.9, max: 4, first: [2, 6] },
+    ],
+    stars: [200, 450, 700],
+  },
+  audit: {
+    id: 'audit',
+    client: 'Cân Đối & Cộng Sự',
+    emoji: '🧮',
+    title: 'Kiểm kê kho lúc 2 giờ sáng',
+    blurb: 'Busy season. Đèn cảm ứng cứ tắt, phải chạy ra công tắc bật lại. Partner hiếm khi có mặt để ký. Nợ phải bằng Có.',
+    bossName: 'Anh Phong',
+    bossLine: 'Số này hơi "sáng tạo" đó em.',
+    notesChance: 0.3,
+    quotes: [
+      'Chị Thảo: "Review note: 47 cái. Mai 8 giờ nộp lại nhé."',
+      'Anh Khoa: "Chưa thấy nắng từ tháng Một. Giờ thấy luôn bình minh."',
+      'Anh Phong: "Ổn. Tick đủ chưa em? Tick đủ thì anh ký."',
+      'Anh Quang (CFO): "Không có ngoại trừ! Năm sau mời SOS tiếp." Chị Thảo: "Đi ngủ thôi cả nhà."',
+    ],
+    duration: 180,
+    room: { w: 18, d: 12 },
+    wall: '#b8f0d8',
+    //  z=-6 ┌──── KHU AUDIT (2 giờ sáng) ──────────────────────────────┬──── PHÒNG PARTNER ────┐
+    //       │ Tủ chứng từ  Sổ Nợ  Sổ Có  Laptop Laptop Laptop  Máy photo │      Bàn anh Phong    │
+    //       │      Bàn tick   Bàn tick        (Anh Khoa, Vy)            │                       │
+    //  z=-1 ├────[cửa]───────────────────[cửa]──────────────────────────┴────[cửa]──────────────┤
+    //       │ Rác     Ghép  Ghép  Ghép      hành lang                           Công tắc đèn 💡 │
+    //  z=2  ├──[cửa]──────────┬────[cửa]──────────┬──────────[QUẦY]──────────────────────────────┤
+    //       │ KHO KHÁCH (tối) │ PANTRY 2h sáng     │ PHÒNG KHÁCH HÀNG                ← cửa vào   │
+    //       │ kệ hàng, phiếu  │                    │                                             │
+    //  z=6  └─────────────────┴────────────────────┴────────────────────────────────────────────┘
+    rooms: [
+      { name: 'KHU AUDIT', icon: '🧮', x0: -9, x1: 4, z0: -6, z1: -1, floor: '#eef6f2', sign: [-6.6, -1], color: '#b8f0d8' },
+      { name: 'PHÒNG PARTNER', icon: '🏛️', x0: 4, x1: 9, z0: -6, z1: -1, floor: '#eef0f6', sign: [6.4, -1], color: '#bfe3ff' },
+      { name: '', x0: -9, x1: 9, z0: -1, z1: 2, floor: '#f6f6f2' },
+      { name: 'KHO KHÁCH', icon: '📦', x0: -9, x1: -2.6, z0: 2, z1: 6, floor: '#e9e3d8', sign: [-6.6, 2], color: '#ffe3c2' },
+      { name: 'PANTRY 2H SÁNG', icon: '☕', x0: -2.6, x1: 2.6, z0: 2, z1: 6, floor: '#fff3c4', sign: [-0.5, 2], color: '#ffe9a0' },
+      { name: 'PHÒNG KHÁCH HÀNG', icon: '🤝', x0: 2.6, x1: 9, z0: 2, z1: 6, floor: '#f6efe3', sign: [3.8, 2], color: '#ffd3b8' },
+    ],
+    walls: [
+      { x0: -9, z0: -1, x1: -7.4, z1: -1 }, { x0: -5.8, z0: -1, x1: -1.6, z1: -1 }, { x0: 0, z0: -1, x1: 4, z1: -1 },
+      { x0: 4, z0: -1, x1: 5.6, z1: -1, kind: 'glass' }, { x0: 7.2, z0: -1, x1: 9, z1: -1, kind: 'glass' },
+      { x0: 4, z0: -6, x1: 4, z1: -1, kind: 'glass' },
+      { x0: -9, z0: 2, x1: -7.4, z1: 2 }, { x0: -5.8, z0: 2, x1: -2.6, z1: 2 },
+      { x0: -2.6, z0: 2, x1: -1.4, z1: 2 }, { x0: 0.4, z0: 2, x1: 2.6, z1: 2 },
+      { x0: 2.6, z0: 2, x1: 5.25, z1: 2 }, { x0: 7.15, z0: 2, x1: 9, z1: 2 },
+      { x0: -2.6, z0: 2, x1: -2.6, z1: 6 }, { x0: 2.6, z0: 2, x1: 2.6, z1: 6 },
+    ],
+    floorDoorMats: [[-6.6, -1], [-0.8, -1], [6.4, -1], [-6.6, 2], [-0.5, 2], [9, 4.4, 'v']],
+    decor: [
+      // auditors at their desks, review notes everywhere
+      { kind: 'desk', x: 2.0, z: -2.5, npc: AU.khoa }, { kind: 'person', x: 3.4, z: -3.8, npc: AU.vy, face: -0.8 },
+      { kind: 'crates', x: -8.3, z: -2.5, text: 'HỘP HỒ SƠ · 2019–2026', icon: '🗃️' }, { kind: 'window', x: -5, z: -6 },
+      // partner's glass office
+      { kind: 'shelf', x: 8.4, z: -4.2 }, { kind: 'plant', x: 4.6, z: -5.4 },
+      // corridor: Chị Thảo with the review notes
+      { kind: 'person', x: 4.6, z: 0.4, npc: AU.thao, face: -0.4 },
+      // the client's warehouse: rows of shelves
+      { kind: 'shelfgoods', x: -6.3, z: 4.9 }, { kind: 'shelfgoods', x: -5.2, z: 3.3 }, { kind: 'person', x: -3.3, z: 5.5, npc: AU.tuan, face: 2.6 },
+      // pantry: instant coffee at 2 a.m.
+      { kind: 'fridge', x: 2.0, z: 5.3 }, { kind: 'cafetable', x: 1.0, z: 3.7, cat: true },
+      // client room
+      { kind: 'sofa', x: 5.6, z: 5.4 },
+    ],
+
+    spawns: [{ x: -4.2, z: 0.0 }, { x: 1.6, z: 0.0 }, { x: -4.2, z: 1.3 }, { x: 1.6, z: 1.3 }],
+    stations: [
+      { id: 'ctu', kind: 'source', gives: 'chung_tu', label: 'Tủ chứng từ', x: -8.2, z: -5.2 },
+      { id: 'sono', kind: 'source', gives: 'so_no_raw', label: 'Sổ cái Nợ', x: -6.8, z: -5.2 },
+      { id: 'soco', kind: 'source', gives: 'so_co_raw', label: 'Sổ cái Có', x: -5.4, z: -5.2 },
+      { id: 'lap1', kind: 'laptop', label: 'Laptop', x: -3.6, z: -5.2 },
+      { id: 'lap2', kind: 'laptop', label: 'Laptop', x: -2.2, z: -5.2 },
+      { id: 'lap3', kind: 'laptop', label: 'Laptop', x: -0.8, z: -5.2 },
+      { id: 'photo', kind: 'photocopy', label: 'Máy photo', x: 1.2, z: -5.2 },
+      { id: 'tick1', kind: 'tick', label: 'Bàn tick · chị Diệp', x: -6.4, z: -2.6, who: AU.diep },
+      { id: 'tick2', kind: 'tick', label: 'Bàn tick', x: -4.8, z: -2.6 },
+      { id: 'boss', kind: 'boss', label: 'Bàn Partner', x: 6.4, z: -4.2 },
+      { id: 'c1', kind: 'counter', label: 'Bàn ghép', x: -3.4, z: 0.5 },
+      { id: 'c2', kind: 'counter', label: 'Bàn ghép', x: -2.0, z: 0.5 },
+      { id: 'c3', kind: 'counter', label: 'Bàn ghép', x: -0.6, z: 0.5 },
+      { id: 'trash', kind: 'trash', label: 'Thùng rác', x: -8.4, z: 0.5 },
+      { id: 'light', kind: 'lightswitch', label: 'Công tắc đèn', x: 8.4, z: 0.6 },
+      { id: 'phieu', kind: 'source', gives: 'phieu_kk', label: 'Phiếu kiểm kê', x: -8.3, z: 5.2 },
+      { id: 'count', kind: 'count', label: 'Bàn đếm hàng', x: -4.2, z: 5.0 },
+      { id: 'coffee', kind: 'coffee', label: 'Cà phê 2h sáng', drink: 'Pha gói cà phê 3in1 ☕', x: -1.0, z: 5.3 },
+      { id: 'deliver', kind: 'deliver', label: 'Quầy khách hàng', x: 6.2, z: 2, faces: 'up' },
+    ],
+    boss: AU.phong,
+
+    clients: [AU.quang, AU.ketoan, AU.thukho, AU.thue, AU.bank, AU.ceo, AU.nhadautu, AU.sang],
+    clientSpots: [{ x: 3.8, z: 3.1 }, { x: 5.1, z: 3.05 }, { x: 6.5, z: 3.05 }, { x: 7.8, z: 3.1 }],
+    clientDoor: [{ x: 10, z: 4.4 }, { x: 8.4, z: 4.4 }],
+    clientLines: {
+      wait: ['Bao giờ có số em?', 'Mai họp HĐQT rồi', 'Ngân hàng hỏi kìa', 'Tick xong chưa em?', 'Nợ có bằng Có chưa?'],
+      happy: ['Không ngoại trừ!', 'Số đẹp quá', 'Cảm ơn team', 'Nợ = Có!'],
+      angry: ['Trễ hạn nộp rồi', 'Thuế phạt đó em', 'Thôi đổi kiểm toán', 'Số lệch kìa'],
+    },
+
+    // signature events of this level
+    dark: { at: [38, 98, 148], warn: 3, length: 18, radius: 3.4, warnText: 'Đèn cảm ứng sắp tắt…', text: 'Tắt đèn! Ra công tắc (cuối hành lang)' },
+    powerCut: {
+      at: [64, 128], warn: 3, stations: ['boss'], icon: '✈️', autoEnd: 14,
+      warnText: 'Anh Phong sắp đi gặp khách…', text: 'Partner đi vắng, chờ anh ấy về ký',
+      offSign: 'Partner đi vắng', offHint: 'đi vắng, chờ chút… ✈️', backLine: 'Partner về rồi',
+    },
+
+    process: {
+      work: {
+        tick: { chung_tu: { to: 'chung_tu_tick', time: 2.5 } },
+        laptop: { so_no_raw: { to: 'so_no', time: 3 }, so_co_raw: { to: 'so_co', time: 3 }, bctc_note: { to: 'bctc_draft', time: 2 } },
+        count: { phieu_kk: { to: 'kiem_ke', time: 4 } },
+      },
+      auto: {
+        photocopy: { chung_tu: { to: 'photo', time: 3 } },
+        boss: { bctc_draft: { to: 'bctc_ok', time: 3, notes: 'bctc_note', fixAt: 'Laptop' } },
+      },
+      combos: [[['so_no', 'so_co'], 'can_doi'], [['can_doi', 'kiem_ke'], 'bctc_draft']],
+    },
+    recipes: {
+      photo: { title: 'Chứng từ photo', item: 'photo', time: 45, reward: 20, steps: ['🧾 Chứng từ', '📠 Photo', '🛎️ Quầy'],
+        how: ['Lấy Chứng từ ở Tủ chứng từ', 'Đặt vào Máy photo, chờ ~3 giây', 'Nộp ở Quầy khách hàng'] },
+      tick: { title: 'Chứng từ đã tick', item: 'chung_tu_tick', time: 55, reward: 35, steps: ['🧾 Chứng từ', '✔️ Bàn tick', '🛎️ Quầy'],
+        how: ['Lấy Chứng từ', 'Đặt lên Bàn tick, đứng tick ~2,5 giây', 'Nộp ở Quầy khách hàng'] },
+      candoi: { title: 'Bảng cân đối', item: 'can_doi', time: 90, reward: 75, join: ' · ',
+        steps: ['📕 Nợ → 💻', '📗 Có → 💻', '⚖️ ghép'],
+        how: ['Lấy Sổ cái Nợ, làm ở Laptop ~3 giây thành Bảng Nợ', 'Lấy Sổ cái Có, làm ở Laptop thành Bảng Có', 'Đặt một bảng lên Bàn ghép, cầm bảng kia tới ghép: Nợ = Có', 'Nộp ở Quầy khách hàng'] },
+      kiemke: { title: 'Biên bản kiểm kê kho', item: 'kiem_ke', time: 80, reward: 70, steps: ['📋 Phiếu (kho)', '🔢 Đếm hàng', '🛎️ Quầy'],
+        how: ['Vào Kho khách (góc dưới bên trái), lấy Phiếu kiểm kê', 'Đặt lên Bàn đếm hàng, đứng đếm ~4 giây', 'Nộp ở Quầy khách hàng'] },
+      bctc: { title: 'Báo cáo kiểm toán', item: 'bctc_ok', time: 150, reward: 160, join: ' · ',
+        steps: ['⚖️ Cân đối', '📦 Kiểm kê', '🗂️ ghép', '🏛️ Partner ký'],
+        how: ['Làm Bảng cân đối và Biên bản kiểm kê kho', 'Ghép ở Bàn ghép thành Báo cáo nháp', 'Mang vào Bàn Partner ký (Partner đi vắng thì chờ). Bị chê "số sáng tạo" thì về Laptop sửa', 'Nộp ở Quầy khách hàng'] },
+    },
+    tips: [
+      '🌑 Đèn cảm ứng tắt: chỉ thấy quanh mình, chạy ra Công tắc đèn cuối hành lang bật lại',
+      '✈️ Partner đi vắng một lúc: làm việc khác rồi quay lại ký',
+      '⚖️ Bảng cân đối = Bảng Nợ + Bảng Có ghép lại',
+      '☕ Burnout gần đầy: pha cà phê 3in1 trong pantry',
+    ],
+    orderPool: [
+      { recipe: 'photo', w: 2 },
+      { recipe: 'tick', w: 2.5 },
+      { recipe: 'kiemke', w: 2, after: 12 },
+      { recipe: 'candoi', w: 2.5, after: 18 },
+      { recipe: 'bctc', w: 2, after: 45 },
+    ],
+    pace: [
+      { gap: 34, time: 1.4, max: 2, first: [2, 16] },
+      { gap: 24, time: 1.15, max: 3, first: [2, 10] },
+      { gap: 18, time: 1, max: 4, first: [2, 8] },
+      { gap: 14, time: 0.9, max: 4, first: [2, 6] },
+    ],
+    stars: [200, 450, 700],
+  },
+  tech: {
+    id: 'tech',
+    client: 'Nợ Kỹ Thuật Labs',
+    emoji: '💻',
+    title: 'Deploy chiều thứ Sáu',
+    blurb: 'Startup "flat, fast, fun". Ticket → code → review → deploy. Deploy code chưa review là cháy server; lửa lan nếu không ai cầm 🧯 rollback.',
+    offHint: 'chưa chạy được: server đang cháy! Dập lửa trước 🧯',
+    bossName: 'Chị Nguyệt',
+    bossLine: 'Có bug nè: lệch 2px…',
+    notesChance: 0.3,
+    quotes: [
+      'Anh Thạc: "Prod sập ba lần. Thứ Hai họp postmortem 4 tiếng."',
+      'Anh Khải: "It depends. Mà chắc là… không ổn."',
+      'Chị Nguyệt: "Không có bug nghiêm trọng. Chỉ lệch 2px thôi."',
+      'Kevin: "Ship nhanh, không cháy! Vòng gọi vốn này chắc kèo." Anh Lộc: "Cho em ngủ cuối tuần nha."',
+    ],
+    duration: 180,
+    room: { w: 18, d: 12 },
+    wall: '#bfe3ff',
+    //  z=-6 ┌──── OPEN SPACE ("flat, fast, fun") ──────────────┬──── SERVER ROOM (kính) ────┐
+    //       │ Jira  Deck gọi vốn  Laptop Laptop Laptop  Review   │ Rack  Rack  Rack           │
+    //       │                                                   │ Deploy           🧯Rollback │
+    //       │  ghế lười   [bàn bóng bàn]   [bảng Daily]         ├──────[cửa]────────────────┤ z=-1.5
+    //       │ Rác                       Bàn   Bàn              │  hành lang                 │
+    //  z=1.5├──── kính ────┬────[cửa]──────────┬─────────[QUẦY HỖ TRỢ]──────────────────────┤
+    //       │ PHÒNG KEVIN  │ PANTRY tăng lực   │ KHU KHÁCH (nhà đầu tư, user, đối tác)  ← cửa │
+    //  z=6  └──────────────┴───────────────────┴────────────────────────────────────────────┘
+    rooms: [
+      { name: 'OPEN SPACE', icon: '💻', x0: -9, x1: 3.5, z0: -6, z1: 1.5, floor: '#eef5ff', sign: [-8.4, -0.6], color: '#bfe3ff' },
+      { name: 'SERVER ROOM', icon: '🗄️', x0: 3.5, x1: 9, z0: -6, z1: -1.5, floor: '#e4e8f0', sign: [7.0, -1.5], color: '#c4c8d4' },
+      { name: '', x0: 3.5, x1: 9, z0: -1.5, z1: 1.5, floor: '#f6f6f2' },
+      { name: 'PHÒNG KEVIN · THINK BIG', icon: '🚀', x0: -9, x1: -3.5, z0: 1.5, z1: 6, floor: '#fff3c4', sign: [-6.2, 1.5], color: '#ffd166' },
+      { name: 'PANTRY', icon: '⚡', x0: -3.5, x1: 2.5, z0: 1.5, z1: 6, floor: '#e3f7ee', sign: [-1.0, 1.5], color: '#b8f0d8' },
+      { name: 'KHU KHÁCH', icon: '🤝', x0: 2.5, x1: 9, z0: 1.5, z1: 6, floor: '#f6efe3', sign: [3.6, 1.5], color: '#ffd3b8' },
+    ],
+    walls: [
+      // server room: glass, door from the hall (x 6.2…7.8)
+      { x0: 3.5, z0: -6, x1: 3.5, z1: -1.5, kind: 'glass' }, { x0: 3.5, z0: -1.5, x1: 6.2, z1: -1.5, kind: 'glass' }, { x0: 7.8, z0: -1.5, x1: 9, z1: -1.5, kind: 'glass' },
+      // Kevin's glass room (no door: he comes out only for photos); pantry door x −1.8…−0.2; support counter
+      { x0: -9, z0: 1.5, x1: -3.5, z1: 1.5, kind: 'glass' }, { x0: -3.5, z0: 1.5, x1: -1.8, z1: 1.5 }, { x0: -0.2, z0: 1.5, x1: 2.5, z1: 1.5 },
+      { x0: 2.5, z0: 1.5, x1: 5.25, z1: 1.5 }, { x0: 7.15, z0: 1.5, x1: 9, z1: 1.5 },
+      { x0: -3.5, z0: 1.5, x1: -3.5, z1: 6, kind: 'glass' }, { x0: 2.5, z0: 1.5, x1: 2.5, z1: 6 },
+    ],
+    floorDoorMats: [[7.0, -1.5], [-1.0, 1.5], [9, 4.4, 'v']],
+    decor: [
+      // open space: bean bags, ping-pong, devs
+      { kind: 'beanbag', x: -7.8, z: -2.4, color: '#ff9fb2' }, { kind: 'beanbag', x: -6.9, z: -1.6, color: '#9fd3ff' }, { kind: 'beanbag', x: -7.9, z: -0.8, color: '#ffe08a' },
+      { kind: 'pingpong', x: -3.6, z: -2.2 }, { kind: 'person', x: -2.0, z: -2.2, npc: TE.tung, face: -Math.PI / 2 },
+      { kind: 'person', x: 1.0, z: -3.0, npc: TE.vy, face: 0.4 }, { kind: 'window', x: -5, z: -6 }, { kind: 'plant', x: 3.0, z: 0.9 },
+      // server room
+      { kind: 'person', x: 8.4, z: -5.4, npc: TE.thac, face: -0.6 },
+      // Kevin's room
+      { kind: 'tv', x: -8.7, z: 3.8, text: ['THINK BIG', 'runway: 3 tháng'] }, { kind: 'person', x: -6.2, z: 4.0, npc: TE.kevin, face: 0.3 }, { kind: 'sofa', x: -5.8, z: 5.5 },
+      // pantry
+      { kind: 'fridge', x: 1.9, z: 5.3 }, { kind: 'cafetable', x: 0.4, z: 3.8, cat: true }, { kind: 'person', x: -2.8, z: 5.3, npc: TE.chau, face: 0.8 },
+      // clients
+      { kind: 'plant', x: 3.0, z: 5.5 },
+    ],
+
+    spawns: [{ x: -1.0, z: 0.2 }, { x: 2.0, z: 0.2 }, { x: -1.0, z: 1.0 }, { x: 4.6, z: 0.2 }],
+    stations: [
+      { id: 'jira', kind: 'source', gives: 'ticket', label: 'Jira', x: -8.2, z: -5.2 },
+      { id: 'deck', kind: 'source', gives: 'deck_von', label: 'Deck gọi vốn (Kevin)', x: -6.8, z: -5.2 },
+      { id: 'lap1', kind: 'laptop', label: 'Laptop · anh Khải', x: -5.0, z: -5.2, who: TE.khai },
+      { id: 'lap2', kind: 'laptop', label: 'Laptop', x: -3.6, z: -5.2 },
+      { id: 'lap3', kind: 'laptop', label: 'Laptop', x: -2.2, z: -5.2 },
+      { id: 'review', kind: 'review', label: 'Review · chị Nguyệt', x: 1.6, z: -5.2, who: TE.nguyet },
+      { id: 'rack1', kind: 'rack', label: 'Server 1', x: 4.6, z: -5.2 },
+      { id: 'rack2', kind: 'rack', label: 'Server 2', x: 6.0, z: -5.2 },
+      { id: 'rack3', kind: 'rack', label: 'Server 3', x: 7.4, z: -5.2 },
+      { id: 'deploy', kind: 'deploy', label: 'Deploy · anh Lộc', x: 5.2, z: -2.9, who: TE.loc },
+      { id: 'rollback', kind: 'source', gives: 'rollback', label: 'Bình rollback 🧯', x: 8.4, z: -2.9 },
+      { id: 'c1', kind: 'counter', label: 'Bàn', x: 0.0, z: 0.3 },
+      { id: 'c2', kind: 'counter', label: 'Bàn', x: 1.4, z: 0.3 },
+      { id: 'trash', kind: 'trash', label: 'Thùng rác', x: -8.4, z: 0.8 },
+      { id: 'coffee', kind: 'coffee', label: 'Tăng lực free', drink: 'Uống lon tăng lực ⚡', x: -1.0, z: 5.3 },
+      { id: 'deliver', kind: 'deliver', label: 'Quầy hỗ trợ', x: 6.2, z: 1.5, faces: 'up' },
+    ],
+    boss: TE.kevin,
+
+    clients: [TE.victor, TE.tanaka, TE.user1, TE.po, TE.shark, TE.bacnam, TE.api, TE.bank],
+    clientSpots: [{ x: 3.8, z: 2.6 }, { x: 5.1, z: 2.55 }, { x: 6.5, z: 2.55 }, { x: 7.8, z: 2.6 }],
+    clientDoor: [{ x: 10, z: 4.4 }, { x: 8.4, z: 4.4 }],
+    clientLines: {
+      wait: ['App crash rồi em', 'Khi nào có bản mới?', 'Có AI chưa em?', 'Deadline là thứ Sáu', 'Bấm đâu vậy con?'],
+      happy: ['Mượt quá!', '5 sao nha', 'Rót vốn thôi', 'Sugoi!'],
+      angry: ['Gỡ app!', 'Trễ sprint rồi', 'Thôi khỏi rót vốn', '1 sao!'],
+    },
+
+    // signature events of this level
+    fire: {
+      racks: ['rack1', 'rack2', 'rack3'], at: [46, 108, 152], warn: 3, spread: 9, penalty: 10, blocks: ['deploy'],
+      warnText: 'Server nóng quá…', text: 'Server cháy! Lấy 🧯 Rollback dập',
+    },
+    standup: {
+      board: { x: 0.6, z: -1.6 }, radius: 1.6, at: [56, 126], warn: 5, length: 7,
+      coach: TE.diep,
+      boardText: ['DAILY 9:30', '15 PHÚT (*)', '(*) không bao gồm thảo luận'],
+      warnText: 'Chị Diệp: "Daily nhanh nha!" Tránh xa bảng Daily',
+      line: '',
+    },
+
+    process: {
+      work: {
+        laptop: { ticket: { to: 'spec', time: 2.5 }, spec: { to: 'code', time: 3.5 }, code_bug: { to: 'code', time: 2 }, deck_von: { to: 'pitch', time: 2.5 } },
+      },
+      auto: {
+        review: { code: { to: 'code_ok', time: 4, notes: 'code_bug', fixAt: 'Laptop' } },
+        deploy: { code_ok: { to: 'release', time: 4 }, code: { to: 'incident', time: 2, ignite: true } },
+      },
+      combos: [],
+    },
+    recipes: {
+      pitch: { title: 'Slide gọi vốn "có AI"', item: 'pitch', time: 50, reward: 30, steps: ['📊 Deck', '💻 Laptop', '🛎️ Quầy'],
+        how: ['Lấy Deck gọi vốn của Kevin', 'Làm ở Laptop ~2,5 giây (thêm chữ AI vào mọi slide)', 'Nộp ở Quầy hỗ trợ'] },
+      spec: { title: 'Ticket đã làm rõ', item: 'spec', time: 55, reward: 30, steps: ['🎫 Jira', '💻 Laptop', '🛎️ Quầy'],
+        how: ['Lấy Ticket ở Jira', 'Làm rõ ở Laptop ~2,5 giây', 'Nộp ở Quầy hỗ trợ'] },
+      code: { title: 'Bản build thử', item: 'code', time: 75, reward: 45, steps: ['🎫 Jira', '💻 ×2 (spec → code)', '🛎️ Quầy'],
+        how: ['Ticket → Laptop làm rõ, lấy ra', 'Đặt lại lên Laptop, đứng code ~3,5 giây', 'Nộp Code chưa review ở Quầy hỗ trợ (đừng mang đi deploy!)'] },
+      review: { title: 'Code đã review', item: 'code_ok', time: 95, reward: 70, steps: ['💻 Code', '🔍 Review (tự chạy)', '🛎️ Quầy'],
+        how: ['Làm Code (Ticket → Laptop → Laptop)', 'Đặt lên Bàn review của chị Nguyệt, chờ ~4 giây', 'Bị "lệch 2px" thì về Laptop sửa rồi review lại', 'Nộp Code đã review'] },
+      release: { title: 'Deploy chiều thứ Sáu', item: 'release', time: 130, reward: 120, steps: ['✅ Code đã review', '🚀 Deploy', '🛎️ Quầy'],
+        how: ['Làm Code đã review', 'Vào Server room, đặt lên Deploy, chờ ~4 giây', 'Server đang cháy thì không deploy được: dập lửa trước', 'Deploy code CHƯA review là cháy server!', 'Nộp Bản phát hành ở Quầy hỗ trợ'] },
+    },
+    tips: [
+      '🔥 Server cháy: lấy Bình rollback 🧯 (góc server room) rồi bấm vào tủ đang cháy',
+      '🧯 Mỗi bình dập được một tủ. Để lâu lửa lan sang tủ khác và bị trừ tiền',
+      '🚫 Đang cháy thì không deploy được. Deploy code chưa review là tự châm lửa',
+      '📋 Chị Diệp gọi Daily: tránh xa bảng Daily giữa open space',
+      '⚡ Burnout gần đầy: uống lon tăng lực free trong pantry',
+    ],
+    orderPool: [
+      { recipe: 'pitch', w: 1.5 },
+      { recipe: 'spec', w: 2.5 },
+      { recipe: 'code', w: 2, after: 10 },
+      { recipe: 'review', w: 2.5, after: 18 },
+      { recipe: 'release', w: 2, after: 35 },
+    ],
+    pace: [
+      { gap: 34, time: 1.4, max: 2, first: [2, 16] },
+      { gap: 24, time: 1.15, max: 3, first: [2, 10] },
+      { gap: 18, time: 1, max: 4, first: [2, 8] },
+      { gap: 14, time: 0.9, max: 4, first: [2, 6] },
+    ],
+    stars: [200, 450, 700],
+  },
 };
 
 // Client companies announced in the picker but not playable yet ("to be developed").
 export const COMING_SOON = [
-  { id: 'event', emoji: '🎪', client: 'Đi Đâu Cũng Được', title: 'Mưa giữa sự kiện',
-    teaser: 'Dựng sân khấu ngoài trời cho gala. Mưa kéo tới theo đợt: đồ để ngoài bị ướt, phải chuyển sang Plan B trong nhà. Khách đổi ý lúc 23h.' },
-  { id: 'audit', emoji: '🧮', client: 'Cân Đối & Cộng Sự', title: 'Kiểm kê kho lúc 2 giờ sáng',
-    teaser: 'Busy season. Văn phòng tắt đèn dần, chỉ thấy quanh người cầm đèn pin. Kệ chứng từ đổ, phải nhặt lại và tick cho đủ: Nợ = Có.' },
-  { id: 'tech', emoji: '💻', client: 'Nợ Kỹ Thuật Labs', title: 'Deploy chiều thứ Sáu',
-    teaser: 'Ticket Jira → code → review → deploy. Deploy sai là một tủ server bốc lửa, phải cầm "rollback" chạy tới dập trước khi cháy lan.' },
 ];

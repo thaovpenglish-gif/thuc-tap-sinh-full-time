@@ -9,12 +9,12 @@ import { moveActor } from '../core/physics.js';
 import { makePerson, nameTag } from '../art/people.js';
 import { textTexture } from '../art/kit.js';
 import { buildRoom, makeItem, makeBar, makeClient, itemIcon } from '../maps/mp-room.js';
-import { LEVELS, COMING_SOON, ITEMS, PLAYER_COLORS, clientName, createGame, addPlayer, removePlayer, act, answerQuiz, step, setPlayerPos, hintFor, targetOf, speedOf, isFrozen, isTired, starsFor, starGoals } from '../game/mp/engine.js';
+import { LEVELS, COMING_SOON, ITEMS, raining, darkNow, PLAYER_COLORS, clientName, createGame, addPlayer, removePlayer, act, answerQuiz, step, setPlayerPos, hintFor, targetOf, speedOf, isFrozen, isTired, starsFor, starGoals } from '../game/mp/engine.js';
 import { joinRoom, myId, newRoomCode, normCode, cleanName } from '../net/mp-net.js';
 import { toast } from '../ui/toast.js';
 import { MP_CSS } from '../ui/mp-style.js';
 
-const LEVEL_ORDER = ['tm', 'bama', 'hr', 'agency']; // client companies available in the picker
+const LEVEL_ORDER = ['tm', 'bama', 'hr', 'agency', 'event', 'audit', 'tech']; // client companies available in the picker
 const MAX_PLAYERS = 4;
 const SPEED = 3.7;
 const SNAP_EVERY = 0.2;   // host snapshot interval (s)
@@ -621,7 +621,11 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     bar.position.y = 2.38;
     mesh.add(bar);
     scene.add(mesh);
-    const a = { mesh, tag, bar, status: null, statusText: '', item: null, itemType: null };
+    // a torch that lights up around each person when the office goes dark
+    const torch = new THREE.PointLight('#fff1c9', 0, 5.5, 1.6);
+    torch.position.set(0, 1.6, 0.3);
+    mesh.add(torch);
+    const a = { mesh, tag, bar, status: null, statusText: '', item: null, itemType: null, torch };
     avatars[id] = a;
     return a;
   }
@@ -713,14 +717,15 @@ export function startMulti({ scene, rig, input, onExit, params }) {
   function ghostBlink(mesh, it) {
     const D = L.decay, icon = mesh.userData.icon;
     if (!icon) return;
-    const warn = D && it && D.types.includes(it.type) && (it.idle || 0) > D.after * 0.55;
+    const warn = (D && it && D.types.includes(it.type) && (it.idle || 0) > D.after * 0.55) || (it && (it.wet || 0) > 0 && raining(game));
     icon.material.opacity = warn ? (Math.sin(animT * 12) > 0 ? 1 : 0.25) : 1;
   }
 
   let animT = 0;
   function render(dt) {
     animT += dt;
-    world.animate(animT);
+    const dark = darkNow(game);
+    world.animate(animT, dt, raining(game), dark);
     if (!game) return;
     updateClients(dt);
     // stations
@@ -743,10 +748,20 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       else if (s.progress > 0) v = s.progress; // someone working on it
       m.userData.bar.set(v, col);
       m.userData.ring.visible = !!myTarget && myTarget.id === s.id;
-      // plain tables ("Bàn ghép", "Bàn") only show their label when you are close: less text on screen
-      if (s.kind === 'counter' && m.userData.label) m.userData.label.visible = Math.hypot(me.x - s.x, me.z - s.z) < 3;
+      // plain tables ("Bàn ghép", "Bàn") only show their label when you are close: less text on screen;
+      // in the dark (audit level) every label and item farther than your torch is hidden
+      const near = Math.hypot(me.x - s.x, me.z - s.z);
+      const seen = !dark || near < ((L.dark && L.dark.radius) || 3.4);
+      if (m.userData.label) m.userData.label.visible = seen && (s.kind !== 'counter' || near < 3);
+      if (placed[s.id]) placed[s.id].visible = seen;
       // power cut: dryers show "mất điện", the breaker blinks
       if (m.userData.off) m.userData.off.visible = s.kind === 'breaker' ? anyOff && Math.sin(animT * 8) > -0.2 : !!s.off;
+      if (m.userData.flames) {
+        const burning = !!(game.fire && game.fire.burning && s.id in game.fire.burning);
+        m.userData.flames.visible = burning;
+        if (burning) m.userData.flames.children.forEach((f, i) => { f.scale.y = 0.8 + Math.abs(Math.sin(animT * 9 + i * 1.7)) * 0.5; });
+        m.userData.leds.forEach((l, i) => { l.material.color.set(burning ? (Math.sin(animT * 12 + i) > 0 ? '#ff3b3b' : '#1d1d1f') : (Math.sin(animT * 3 + i * 1.3) > -0.6 ? '#9be7c4' : '#2f3542')); });
+      }
       if (m.userData.heat) m.userData.heat.material.color.set(s.off ? '#8d93a6' : s.busy ? (Math.sin(animT * 9) > 0 ? '#ff8a3d' : '#ffb46b') : '#ffd9b0');
     }
     // floor items
@@ -796,6 +811,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
         parts.armL.rotation.x = p.held ? -1.1 : -sw * 0.6 + working;
         parts.armR.rotation.x = p.held ? -1.1 : sw * 0.6 - working;
       }
+      if (a.torch) a.torch.intensity += ((dark ? 3.2 : 0) - a.torch.intensity) * Math.min(1, dt * 4);
       // burnout bar
       const b = p.burnout / 100;
       a.bar.set(Math.max(0.02, b), b >= 0.7 ? (Math.sin(animT * 10) > 0 ? '#ff6f8a' : '#ffd25a') : b >= 0.4 ? '#ffd25a' : '#9be7c4');
@@ -824,7 +840,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     const p = game && game.players[myId];
     me.moving = 0;
     if (!p || countdown > 0 || game.phase !== 'play') return;
-    const sp = speedOf(p);
+    const sp = speedOf({ ...p, x: me.x, z: me.z }, game);
     if (!sp) return;
     const ax = input.axis();
     const L2 = Math.hypot(ax.x, ax.y);

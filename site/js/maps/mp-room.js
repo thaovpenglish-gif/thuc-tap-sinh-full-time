@@ -203,6 +203,88 @@ function stationMesh(s, L) {
       icon = '⚡'; bg = '#ffe08a';
       break;
     }
+    case 'rack': {
+      // a server cabinet with blinking LEDs; the mode lights its flames when it burns
+      add(box(STATION.w - 0.2, 1.8, STATION.d - 0.1, '#2f3542'), 0, 0.9, 0);
+      const leds = [];
+      for (let r = 0; r < 6; r++) for (let c = 0; c < 3; c++) {
+        const l = new THREE.Mesh(new THREE.PlaneGeometry(0.07, 0.04), new THREE.MeshBasicMaterial({ color: (r + c) % 3 ? '#9be7c4' : '#ffd25a' }));
+        l.position.set(-0.25 + c * 0.25, 0.4 + r * 0.22, (STATION.d - 0.1) / 2 + 0.01); g.add(l); leds.push(l);
+      }
+      const flames = new THREE.Group();
+      [[0, 0.5, '#ff6b3d'], [-0.22, 0.35, '#ffb43d'], [0.22, 0.38, '#ff8a3d'], [0, 0.3, '#ffe08a']].forEach(([x, h, c], i) => {
+        const f = new THREE.Mesh(new THREE.ConeGeometry(0.16 + (i === 0 ? 0.06 : 0), h + 0.3, 10), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.9 }));
+        f.position.set(x, 1.95 + h / 2, i === 3 ? 0.1 : 0); flames.add(f);
+      });
+      flames.visible = false; g.add(flames);
+      g.userData.flames = flames; g.userData.leds = leds;
+      icon = '🗄️'; bg = '#c4c8d4';
+      break;
+    }
+    case 'deploy': {
+      counter('#ffffff', '#3a3f55');
+      add(box(0.6, 0.38, 0.05, '#1d1d1f', 0.012), 0, TOP + 0.32, -0.15);
+      const scr = new THREE.Mesh(new THREE.PlaneGeometry(0.54, 0.3), new THREE.MeshBasicMaterial({ map: textTexture(['$ git push', 'prod --force 🙏'], { w: 256, h: 140, sizes: [30, 26], bg: '#1d1d1f', fg: '#9be7c4', border: null }) }));
+      scr.position.set(0, TOP + 0.32, -0.12); g.add(scr);
+      add(cyl(0.09, 0.1, 0.06, '#ff3b3b', 0.01), 0.38, TOP + 0.03, 0.15);
+      icon = '🚀'; bg = '#ffd25a';
+      break;
+    }
+    case 'review': {
+      counter('#ffffff', '#ff9fb2');
+      add(box(0.5, 0.34, 0.05, '#3a3f55', 0.012), -0.1, TOP + 0.2, -0.2);
+      add(cyl(0.08, 0.08, 0.02, '#bfe3ff', 0.008), 0.32, TOP + 0.05, 0.05).rotation.x = Math.PI / 2;
+      icon = '🔍'; bg = '#ff9fb2';
+      break;
+    }
+    case 'photocopy': {
+      counter('#ffffff', '#e4e4ea');
+      add(box(0.8, 0.36, 0.56, '#f4f4f6', 0.02), 0, TOP + 0.18, -0.05);
+      add(box(0.6, 0.04, 0.4, '#3a3f55', 0.01), 0, TOP + 0.38, -0.05);
+      icon = '📠'; bg = '#f0f0f4';
+      break;
+    }
+    case 'tick': {
+      counter('#ffffff', '#b8f0d8');
+      add(box(0.42, 0.04, 0.3, '#fff8ef', 0.01), -0.12, TOP + 0.02, 0.05);
+      add(cyl(0.06, 0.06, 0.12, '#c0392b', 0.01), 0.32, TOP + 0.06, -0.12);
+      icon = '✔️'; bg = '#b8f0d8';
+      break;
+    }
+    case 'count': {
+      counter('#ffffff', '#ffe08a');
+      add(box(0.3, 0.02, 0.4, '#fff8ef', 0.008), 0, TOP + 0.01, 0.05);
+      [-0.3, 0.3].forEach((x) => add(box(0.32, 0.28, 0.3, '#e8c69a', 0.012), x, TOP + 0.14, -0.2));
+      icon = '🔢'; bg = '#ffe08a';
+      break;
+    }
+    case 'lightswitch': {
+      add(box(0.25, 1.1, 0.5, '#ffffff'), 0.3, 0.9, 0);
+      add(box(0.06, 0.18, 0.12, '#ffd25a', 0.008), 0.16, 1.0, 0);
+      icon = '💡'; bg = '#fff1b8';
+      break;
+    }
+    case 'wrap': {
+      counter('#ffffff', '#ffc8dd');
+      add(box(0.3, 0.22, 0.3, '#ff8fb1', 0.012), -0.3, TOP + 0.11, -0.1);
+      add(cyl(0.1, 0.1, 0.12, '#ffd25a', 0.01), 0.3, TOP + 0.06, -0.15).rotation.z = Math.PI / 2;
+      icon = '🎀'; bg = '#ffc8dd';
+      break;
+    }
+    case 'sound': {
+      counter('#ffffff', '#3a3f55');
+      add(box(0.62, 0.08, 0.36, '#2f3542', 0.012), 0, TOP + 0.04, 0.05);
+      for (let i = 0; i < 5; i++) add(box(0.04, 0.05, 0.12, '#ffd25a', 0.004), -0.22 + i * 0.11, TOP + 0.1, 0.05);
+      [-0.75, 0.75].forEach((x) => { add(box(0.34, 0.9, 0.3, '#2f3542', 0.015), x, 0.45, -0.1); add(cyl(0.1, 0.1, 0.03, '#6a6f80', 0.006), x, 0.55, 0.06).rotation.x = Math.PI / 2; });
+      icon = '🔊'; bg = '#e3d9ff';
+      break;
+    }
+    case 'bigprint': {
+      add(box(STATION.w + 0.2, TOP + 0.1, STATION.d, '#e4e4ea'), 0, (TOP + 0.1) / 2, 0);
+      add(box(STATION.w + 0.1, 0.04, 0.5, '#ffe08a', 0.01), 0, TOP + 0.12, 0.25);
+      icon = '🖨️'; bg = '#f0f0f4';
+      break;
+    }
     case 'mac': {
       counter('#ffffff', '#ffc8dd');
       add(box(0.62, 0.42, 0.04, '#f4f4f6', 0.012), 0, TOP + 0.36, -0.15);
@@ -260,7 +342,7 @@ function stationMesh(s, L) {
   g.add(ring);
   // power-cut warning (dryers) / "flip me" sign (breaker), shown by the mode
   const pc = L.powerCut || {};
-  const off = label(s.kind === 'breaker' ? (pc.fixSign || 'Bật lại đây!') : (pc.offSign || 'Mất điện'), pc.icon || '⚡', '#ff8f8f');
+  const off = label(s.kind === 'breaker' ? (pc.fixSign || 'Bật lại đây!') : (pc.offSign || (L.fire ? 'Server cháy' : 'Mất điện')), pc.icon || (L.fire ? '🔥' : '⚡'), '#ff8f8f');
   off.position.set(0, (s.kind === 'dryer' ? 2.1 : s.kind === 'boss' ? 2.35 : 1.75) + 0.45, 0.1); off.visible = false;
   g.add(off);
   g.userData = { ...g.userData, slot, bar, ring, label: lb, off };
@@ -399,6 +481,41 @@ function decorMesh(d, L) {
       add(box(2.4, 1.2, 0.5, '#ffe9a0'), 0, 0.6, 0);
       for (let r = 0; r < 2; r++) for (let i = 0; i < 6; i++) add(box(0.28, 0.24, 0.12, ['#e8b04a', '#c96a52', '#f2b134', '#ff8f8f'][(i + r) % 4], 0.008), -1.0 + i * 0.4, 0.45 + r * 0.45, 0.27);
       col = [1.2, 0.25];
+      break;
+    }
+    case 'pingpong': {
+      add(box(2.4, 0.06, 1.3, '#2e8b57'), 0, 0.72, 0);
+      add(box(0.04, 0.16, 1.3, '#ffffff', 0.006), 0, 0.83, 0);
+      [[-1.05, -0.55], [1.05, -0.55], [-1.05, 0.55], [1.05, 0.55]].forEach(([x, z]) => add(box(0.06, 0.7, 0.06, '#3a3f55', 0.006), x, 0.35, z));
+      const ball = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 6), T('#ffffff')); ball.position.set(0.4, 0.95, 0.2); g.add(ball);
+      col = [1.2, 0.65];
+      break;
+    }
+    case 'beanbag': {
+      const b = new THREE.Mesh(new THREE.SphereGeometry(0.42, 16, 12), T(d.color || '#ff9fb2')); outline(b, 0.02); b.scale.y = 0.6; b.position.y = 0.25; g.add(b);
+      col = [0.35, 0.35];
+      break;
+    }
+    case 'tent': {
+      // the "Plan B" tent: four poles and a striped canopy (what is under it stays dry)
+      const w = d.w || 4, dd = d.d || 3;
+      [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => add(cyl(0.05, 0.05, 2.1, '#ffffff', 0.008), sx * (w / 2 - 0.1), 1.05, sz * (dd / 2 - 0.1)));
+      const roof = new THREE.Mesh(new THREE.ConeGeometry(Math.hypot(w, dd) / 2, 0.7, 4, 1, true), T('#ffffff', { side: THREE.DoubleSide, transparent: true, opacity: 0.55 }));
+      roof.rotation.y = Math.PI / 4; roof.scale.set(w / Math.hypot(w, dd) * 1.42, 1, dd / Math.hypot(w, dd) * 1.42); roof.position.y = 2.45; g.add(roof);
+      const stripe = new THREE.Mesh(new THREE.ConeGeometry(Math.hypot(w, dd) / 2 + 0.01, 0.7, 4, 1, true), new THREE.MeshBasicMaterial({ color: '#ff8fb1', wireframe: true }));
+      stripe.rotation.y = Math.PI / 4; stripe.scale.copy(roof.scale); stripe.position.y = 2.45; g.add(stripe);
+      const tag = label(d.text || 'LỀU PLAN B', '⛺', '#ffffff'); tag.position.set(0, 3.0, 0); tag.scale.multiplyScalar(0.85); g.add(tag);
+      break;
+    }
+    case 'stage': {
+      const w = d.w || 4, dd = d.d || 2;
+      add(box(w, 0.4, dd, '#3a3f55'), 0, 0.2, 0);
+      add(box(w, 0.06, dd, '#ff8fb1', 0.012), 0, 0.43, 0);
+      add(box(w - 0.4, 1.6, 0.1, '#ffd25a'), 0, 1.2, -dd / 2 + 0.1);
+      const sign = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.6, 0.9), new THREE.MeshBasicMaterial({ map: textTexture(d.text || ['GALA BÊ TÔNG VỮNG CHÃI', 'Vững như bê tông · 2026'], { w: 1024, h: 300, sizes: [72, 40], bg: '#fff1b8' }) }));
+      sign.position.set(0, 1.25, -dd / 2 + 0.16); g.add(sign);
+      [-w / 2 + 0.3, w / 2 - 0.3].forEach((x) => add(box(0.3, 1.2, 0.3, '#2f3542', 0.015), x, 1.0, dd / 2 - 0.3));
+      col = [w / 2, dd / 2];
       break;
     }
     case 'courtyard': {
@@ -581,8 +698,29 @@ export function buildRoom(scene, L) {
     standup = { zone, coach };
   }
 
-  root.add(new THREE.HemisphereLight('#ffffff', '#ffe9d6', 1.6));
-  root.add(new THREE.AmbientLight('#ffffff', 0.45));
+  // rain (event level): falling streaks over the open area and a grey shade on the ground while it rains
+  let rain = null;
+  if (L.rain) {
+    const Z = L.rain.zone, N = 420;
+    const pos = new Float32Array(N * 6);
+    const seed = [];
+    for (let i = 0; i < N; i++) {
+      const x = Z.x0 + Math.random() * (Z.x1 - Z.x0), z = Z.z0 + Math.random() * (Z.z1 - Z.z0), y = Math.random() * 4.5;
+      seed.push({ x, y, z });
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const lines = new THREE.LineSegments(geo, new THREE.LineBasicMaterial({ color: '#6b8cc9', transparent: true, opacity: 0.6 }));
+    lines.visible = false; lines.frustumCulled = false;
+    const shade = new THREE.Mesh(new THREE.PlaneGeometry(Z.x1 - Z.x0, Z.z1 - Z.z0), new THREE.MeshBasicMaterial({ color: '#4a5a7a', transparent: true, opacity: 0, depthWrite: false }));
+    shade.rotation.x = -Math.PI / 2; shade.position.set((Z.x0 + Z.x1) / 2, 0.03, (Z.z0 + Z.z1) / 2);
+    root.add(lines, shade);
+    rain = { lines, shade, seed, pos, geo, Z };
+  }
+
+  const hemi = new THREE.HemisphereLight('#ffffff', '#ffe9d6', 1.6);
+  const amb = new THREE.AmbientLight('#ffffff', 0.45);
+  root.add(hemi, amb);
   const dir = new THREE.DirectionalLight('#fff6ea', 1.1);
   dir.position.set(4, 10, 6);
   root.add(dir);
@@ -592,7 +730,23 @@ export function buildRoom(scene, L) {
   return {
     root, stations, colliders, bounds, standup,
     // little life in the office: people typing, the cat breathing
-    animate(t) {
+    animate(t, dt = 0, isRaining = false, isDark = false) {
+      // motion-sensor lights off (audit level): the office goes dark, people carry torches (see the mode)
+      const k = Math.min(1, dt * 3);
+      hemi.intensity += ((isDark ? 0.12 : 1.6) - hemi.intensity) * k;
+      amb.intensity += ((isDark ? 0.04 : 0.45) - amb.intensity) * k;
+      dir.intensity += ((isDark ? 0.05 : 1.1) - dir.intensity) * k;
+      if (rain) {
+        rain.lines.visible = isRaining;
+        rain.shade.material.opacity += ((isRaining ? 0.28 : 0) - rain.shade.material.opacity) * Math.min(1, dt * 3);
+        if (isRaining) {
+          rain.seed.forEach((d, i) => {
+            d.y -= dt * 9; if (d.y < 0) d.y += 4.5;
+            const o = i * 6; rain.pos[o] = d.x; rain.pos[o + 1] = d.y; rain.pos[o + 2] = d.z; rain.pos[o + 3] = d.x - 0.04; rain.pos[o + 4] = d.y + 0.35; rain.pos[o + 5] = d.z + 0.04;
+          });
+          rain.geo.attributes.position.needsUpdate = true;
+        }
+      }
       typers.forEach((p, i) => { const a = p.userData.parts; if (a) { a.armL.rotation.x = -1 + Math.sin(t * 18 + i) * 0.15; a.armR.rotation.x = -1 - Math.sin(t * 18 + i) * 0.15; } });
       if (cat) cat.scale.y = 1 + Math.sin(t * 2) * 0.04;
       idlers.forEach((p, i) => { const a = p.userData.parts; if (a) { a.armR.rotation.x = -0.4 + Math.sin(t * 3 + i * 2) * 0.35; a.head && (a.head.rotation.y = Math.sin(t * 0.8 + i) * 0.3); } });
