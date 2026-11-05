@@ -12,10 +12,15 @@ const F = (k) => (r) => !!r.flags[k];
 export const DESK = {
   games: [
     // ---- hands-on (ui/action.js) ----
-    { id: 'agency_cut', type: 'action', game: 'conveyor', mode: 'beat', title: 'Cắt clip đúng nhịp', icon: '🎬', time: 35, pass: 0.6, count: 14,
+    { id: 'agency_budget', type: 'action', game: 'scale', title: 'Chia ngân sách ads cho đúng', icon: '💸', time: 60, pass: 0.6, money: true, unitName: 'Chiến dịch', icon2: '💸', btn: '✅ DUYỆT',
+      items: [{ label: 'Ads Facebook', emoji: '📘', w: 5000000 }, { label: 'Ads TikTok', emoji: '🎵', w: 3000000 }, { label: 'KOL nhỏ', emoji: '🌟', w: 2000000 }, { label: 'Boost bài', emoji: '🚀', w: 500000 }],
+      targets: [[20000000, 20000000], [12500000, 12500000], [8000000, 8000000], [31500000, 31500000]], okText: 'Khớp ngân sách!', overText: 'Vượt ngân sách, khách không trả!', underText: 'Còn tiền chưa tiêu!',
+      prompt: 'Khách duyệt ngân sách đúng tới từng đồng. Bấm các gói để chia cho đủ ngân sách, lố thì bấm khay bỏ ra, khớp thì DUYỆT.',
+      hint: 'Gói lớn trước, gói nhỏ để khớp số lẻ.' },
+    { id: 'agency_cut', type: 'action', game: 'conveyor', mode: 'beat', title: 'Cắt clip đúng nhịp', icon: '🎬', time: 50, pass: 0.6, count: 22,
       target: { emoji: '🎵' },
       prompt: 'Khách muốn clip "bắt trend, cắt theo nhạc". Bấm (hoặc Space) đúng lúc mỗi đoạn chạm vạch hồng.' },
-    { id: 'agency_mod', type: 'action', game: 'whack', title: 'Ẩn bình luận xấu', icon: '🧹', time: 35, pass: 0.6, count: 16,
+    { id: 'agency_mod', type: 'action', game: 'whack', title: 'Ẩn bình luận xấu', icon: '🧹', time: 45, pass: 0.6, count: 26,
       slotText: 'Bình luận · Răng Xinh', bg: '#3b2440', slot: '#553460',
       target: { emoji: '🙈', labels: ['Link lạ nhận quà', 'Chửi thề', 'Bóc phốt bịa', 'Spam bán sim'], hit: 'Ẩn!', miss: 'Lọt bình luận xấu' },
       avoid: { emoji: '💬', labels: ['Hỏi giá', 'Khen thật lòng', 'Góp ý lịch sự', 'Tag bạn vào xem'], hit: 'Ẩn nhầm khách thật!' },

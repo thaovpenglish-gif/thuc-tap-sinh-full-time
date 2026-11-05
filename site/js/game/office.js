@@ -4,13 +4,13 @@
 import { rng } from './tasks.js';
 
 export const PRINTER_GAMES = [
-  { id: 'off_jam', type: 'action', game: 'printjam', title: 'Máy in kẹt giấy', icon: '🖨️', time: 35, pass: 0.6, jams: 3,
+  { id: 'off_jam', type: 'action', game: 'printjam', title: 'Máy in kẹt giấy', icon: '🖨️', time: 45, pass: 0.6, jams: 4,
     prompt: 'Máy in lại kẹt. Kéo từng mẩu giấy ra theo mũi tên. Kéo TỪ TỪ: giật mạnh là rách, mẩu nhỏ còn kẹt lại.',
     hint: 'Nhìn thanh lực phía trên mẩu giấy: xanh là vừa tay, đỏ là sắp rách.' },
-  { id: 'off_collate', type: 'action', game: 'collate', title: 'Xếp trang và bấm ghim', icon: '📑', time: 40, pass: 0.6, sets: 2, pages: 5,
+  { id: 'off_collate', type: 'action', game: 'collate', title: 'Xếp trang và bấm ghim', icon: '📑', time: 55, pass: 0.6, sets: 3, pages: 5,
     prompt: 'Máy in nhả trang lộn xộn. Bấm các trang theo thứ tự 1 → 5 (trang úp ↺ thì lật trước), rồi bấm ghim khi vòng đỏ khớp vòng xanh.',
     hint: 'Bấm sai thứ tự hay ghim lệch đều bị trừ điểm.' },
-  { id: 'off_net', type: 'action', game: 'wires', title: 'Máy in mất mạng', icon: '🔌', time: 35, pass: 0.6, count: 4, label: 'MÁY IN', from: 'SWITCH',
+  { id: 'off_net', type: 'action', game: 'wires', title: 'Máy in mất mạng', icon: '🔌', time: 45, pass: 0.6, count: 4, rounds: 2, label: 'MÁY IN', from: 'SWITCH',
     prompt: 'Máy in báo "offline". Ai đó rút dây để sạc điện thoại. Cắm lại từng dây vào cổng cùng màu, cùng hình.',
     hint: 'Kéo từ đầu dây bên trái sang cổng bên phải. Cắm sai là chập.' },
 ];
@@ -23,13 +23,13 @@ const DRINKS = [
 /** Pour game for a pantry leg; the drink follows the leg's text (trà / trà sữa / cà phê). */
 export function pourGame(text = '') {
   const d = DRINKS.find((x) => x.test.test(text));
-  return { id: 'off_pour', type: 'action', game: 'hold', skin: 'cup', title: `Pha ${d.label.toLowerCase()}`, icon: '☕', time: 35, pass: 0.6,
-    rounds: 3, zone: 0.14, color: d.color, label: d.label, orders: d.orders,
+  return { id: 'off_pour', type: 'action', game: 'hold', skin: 'cup', title: `Pha ${d.label.toLowerCase()}`, icon: '☕', time: 45, pass: 0.6,
+    rounds: 4, zone: 0.14, color: d.color, label: d.label, orders: d.orders,
     prompt: 'Giữ để rót, thả ra khi mặt nước nằm giữa hai vạch xanh. Rót quá là tràn ra bàn, lau mất thêm 10 phút.',
     hint: 'Giữ chuột / chạm giữ màn hình (hoặc giữ Space), thả ra đúng lúc.' };
 }
 
-export const INCENSE_GAME = { id: 'off_incense', type: 'action', game: 'incense', title: 'Thắp nhang Thần Tài', icon: '🪔', time: 40, pass: 0.6,
+export const INCENSE_GAME = { id: 'off_incense', type: 'action', game: 'incense', title: 'Thắp nhang Thần Tài', icon: '🪔', time: 45, pass: 0.6,
   prompt: 'Giữ bật lửa dưới từng cây nhang tới khi đầu nhang đỏ (thả ở vùng xanh, giữ lâu quá là bùng lửa). Rồi bấm đúng lúc cây nhang thẳng đứng để cắm cho thẳng.',
   hint: 'Giữ chuột / chạm giữ màn hình (hoặc giữ Space) để châm. Bấm một cái để cắm.' };
 
@@ -49,9 +49,9 @@ export function officeGameFor(leg, seed = 1, deskGames = []) {
 
 /** Two equipment games that join every company's desk rotation (so not every desk session is reading or chatting). */
 export const DESK_OFFICE_GAMES = [
-  { id: 'off_shred', type: 'action', game: 'shredder', title: 'Dọn bàn: hủy hay lưu?', icon: '🗂️', time: 40, pass: 0.6, count: 8,
+  { id: 'off_shred', type: 'action', game: 'shredder', title: 'Dọn bàn: hủy hay lưu?', icon: '🗂️', time: 50, pass: 0.6, count: 12,
     prompt: 'Bàn bạn ngập giấy. Kéo tờ có thông tin nhạy cảm hoặc hết hạn XUỐNG máy hủy, tờ cần giữ SANG tủ lưu.',
     hint: 'Kéo tờ giấy xuống dưới để hủy, sang phải để lưu.' },
-  { ...PRINTER_GAMES[2], id: 'off_net_desk', title: 'Cắm lại dây mạng cả phòng', label: 'SWITCH', from: 'MÁY BÀN', count: 5,
+  { ...PRINTER_GAMES[2], id: 'off_net_desk', title: 'Cắm lại dây mạng cả phòng', label: 'SWITCH', from: 'MÁY BÀN', count: 5, rounds: 2, time: 50,
     prompt: 'Cả phòng mất mạng đúng lúc sếp đang họp online. Cắm lại 5 dây vào đúng cổng trước khi sếp quay lại.' },
 ];

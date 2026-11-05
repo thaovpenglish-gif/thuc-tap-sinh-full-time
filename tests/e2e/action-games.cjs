@@ -52,6 +52,21 @@ const PLAY = async ({ co, id, mode, shot }) => {
       if (it && (mode === 'perfect' || Math.random() < 0.5)) { ev('pointerdown', 200, 150); await sleep(40); }
       else if (mode !== 'perfect' && Math.random() < 0.03) ev('pointerdown', 200, 150);
       await sleep(6);
+    } else if (g === 'scale') {
+      if (s.finished || s.wait > 0) { await sleep(80); continue; }
+      const [lo, hi] = s.target;
+      if (mode !== 'perfect') { ev('pointerdown', s.btn.x, s.btn.y); await sleep(120); continue; }
+      if (s.sum >= lo - 1e-6 && s.sum <= hi + 1e-6) { ev('pointerdown', s.btn.x, s.btn.y); await sleep(150); continue; }
+      if (s.sum > hi) { ev('pointerdown', s.pan.x, s.pan.y); await sleep(60); continue; }
+      const fit = [...s.rows].sort((a2, b2) => b2.w - a2.w).find((r) => s.sum + r.w + r.jitter <= hi + 1e-6) || [...s.rows].sort((a2, b2) => a2.w - b2.w)[0];
+      ev('pointerdown', fit.x, fit.y); await sleep(50);
+    } else if (g === 'stir') {
+      if (s.finished) { await sleep(60); continue; }
+      const om = mode === 'perfect' ? (s.band[0] + s.band[1]) / 2 : s.band[1] * 2.2;
+      let a = 0; ev('pointerdown', s.cx + 60, s.cy);
+      const t1 = performance.now();
+      while (!over && performance.now() - t1 < 6000 && !game.info().finished) { a += om * 0.016; ev('pointermove', s.cx + Math.cos(a) * 60, s.cy + Math.sin(a) * 60); await sleep(16); }
+      ev('pointerup', s.cx, s.cy);
     } else if (g === 'incense') {
       if (s.phase === 'light') {
         if (!s.holding) { ev('pointerdown', 260, 150); await sleep(10); continue; }

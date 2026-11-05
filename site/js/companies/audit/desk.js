@@ -12,12 +12,17 @@ const F = (k) => (r) => !!r.flags[k];
 export const DESK = {
   games: [
     // ---- hands-on (ui/action.js) ----
-    { id: 'audit_stamp', type: 'action', game: 'conveyor', mode: 'stamp', title: 'Đóng dấu chứng từ', icon: '🧾', time: 40, pass: 0.6, count: 12,
+    { id: 'audit_cash', type: 'action', game: 'scale', title: 'Đếm quỹ tiền mặt cho khớp sổ', icon: '💵', time: 60, pass: 0.6, money: true, unitName: 'Lần đếm', icon2: '💵', btn: '✅ KHỚP SỔ',
+      items: [{ label: '500.000', emoji: '💙', w: 500000 }, { label: '200.000', emoji: '🧡', w: 200000 }, { label: '100.000', emoji: '💚', w: 100000 }, { label: '50.000', emoji: '💗', w: 50000 }, { label: '20.000', emoji: '💜', w: 20000 }, { label: '10.000', emoji: '🤎', w: 10000 }],
+      targets: [[1850000, 1850000], [3420000, 3420000], [760000, 760000], [5090000, 5090000]], hideW: true, okText: 'Khớp từng đồng!', overText: 'Dư tiền, ai bỏ vào?', underText: 'Thiếu quỹ!',
+      prompt: 'Kiểm kê quỹ tiền mặt cuối năm. Bấm từng tờ để đếm cho đúng số dư trên sổ quỹ, đếm lố thì bấm khay để rút ra, khớp thì bấm KHỚP SỔ.',
+      hint: 'Đếm tờ lớn trước, tờ nhỏ sau. Phải khớp từng đồng.' },
+    { id: 'audit_stamp', type: 'action', game: 'conveyor', mode: 'stamp', title: 'Đóng dấu chứng từ', icon: '🧾', time: 55, pass: 0.6, count: 18,
       stampText: 'ĐÃ KIỂM', hit: 'Cộp!', wrongHit: 'Duyệt nhầm chứng từ lỗi!', miss: 'Bỏ sót chứng từ!',
       target: { emoji: '🧾', labels: ['Hóa đơn có mã số thuế', 'Phiếu chi đủ chữ ký', 'Hợp đồng có dấu đỏ', 'Biên bản có ngày tháng'] },
       avoid: { emoji: '⚠️', labels: ['Hóa đơn viết tay', 'Ảnh chụp màn hình', 'Phiếu chi không ngày', 'Hợp đồng chưa ký'] },
       prompt: 'Chứng từ của khách chạy trên băng chuyền. Chỉ đóng dấu tờ HỢP LỆ khi nó vào khung đỏ.' },
-    { id: 'audit_flags', type: 'action', game: 'whack', title: 'Bắt lỗi trên bảng tính', icon: '🚩', time: 35, pass: 0.6, count: 16,
+    { id: 'audit_flags', type: 'action', game: 'whack', title: 'Bắt lỗi trên bảng tính', icon: '🚩', time: 45, pass: 0.6, count: 26,
       slotText: 'Sheet "So_lieu_dep"', bg: '#22473a', slot: '#2f5d4c',
       target: { emoji: '🚩', labels: ['Ô #REF!', 'Ngày 31/02', 'Số âm lạ', 'Tổng không khớp', 'Số tròn 1 tỷ'], hit: 'Bắt được!', miss: 'Lọt lỗi' },
       avoid: { emoji: '✅', labels: ['Đã khớp sao kê', '1.250.000', 'Có chứng từ', 'Đúng kỳ'], hit: 'Số đúng mà!' },

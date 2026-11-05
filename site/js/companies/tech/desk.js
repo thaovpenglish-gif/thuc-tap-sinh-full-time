@@ -11,12 +11,17 @@ const F = (k) => (r) => !!r.flags[k];
 export const DESK = {
   games: [
     // ---- hands-on (ui/action.js) ----
-    { id: 'tech_whack', type: 'action', game: 'whack', title: 'Đập bug trước giờ demo', icon: '🐛', time: 35, pass: 0.6, count: 16,
+    { id: 'tech_server', type: 'action', game: 'scale', title: 'Xếp service vào server', icon: '🖥️', time: 60, pass: 0.6, unit: 'GB', unitName: 'Server', icon2: '🖥️', btn: '✅ DEPLOY',
+      items: [{ label: 'API ví', emoji: '💳', w: 8 }, { label: 'App web', emoji: '🌐', w: 4 }, { label: 'Worker gửi mail', emoji: '✉️', w: 2 }, { label: 'Cache', emoji: '⚡', w: 6 }, { label: 'Log agent', emoji: '📜', w: 1 }],
+      targets: [[29, 31], [14, 15], [29, 31], [59, 62]], okText: 'Vừa RAM, không tràn!', overText: 'Hết RAM, server sập!', underText: 'Còn phí RAM, nhét thêm!',
+      prompt: 'Mỗi server 32GB RAM, giữ chừa 1–2GB cho hệ điều hành. Bấm service để xếp vào, quá thì bấm server lấy ra, vừa thì DEPLOY. Server cuối là con 64GB.',
+      hint: 'Nhìn số GB đang dùng ở trên, cần nằm trong khoảng cho phép.' },
+    { id: 'tech_whack', type: 'action', game: 'whack', title: 'Đập bug trước giờ demo', icon: '🐛', time: 45, pass: 0.6, count: 26,
       slotText: 'main.js',
       target: { emoji: '🐛', labels: ['NullPointer', 'Crash khi login', 'Lag 3 giây', 'Nút không bấm được', 'Sai múi giờ'], hit: 'Fixed!', miss: 'Bug lọt lên prod' },
       avoid: { emoji: '✨', labels: ['Tính năng mới', 'Dark mode', 'Animation mèo', 'Nút gọi vốn'], hit: 'Ấy, đó là feature!' },
       prompt: 'Còn 30 phút là demo cho nhà đầu tư. Đập 🐛 thật nhanh. Đừng đập ✨: đó là tính năng, đập là mất.' },
-    { id: 'tech_pr', type: 'action', game: 'conveyor', mode: 'stamp', title: 'Duyệt PR cuối ngày', icon: '✅', time: 40, pass: 0.6, count: 12,
+    { id: 'tech_pr', type: 'action', game: 'conveyor', mode: 'stamp', title: 'Duyệt PR cuối ngày', icon: '✅', time: 55, pass: 0.6, count: 18,
       stampText: 'APPROVED', hit: 'Approve!', wrongHit: 'Merge nhầm, prod đỏ!', miss: 'PR tốt bị bỏ quên',
       target: { emoji: '🟢', labels: ['PR có test', 'Fix typo', 'Thêm log lỗi', 'PR nhỏ, có mô tả'] },
       avoid: { emoji: '🔴', labels: ['PR 4.000 dòng', 'Xóa test cho xanh', '"fix" không mô tả', 'Commit mật khẩu'] },

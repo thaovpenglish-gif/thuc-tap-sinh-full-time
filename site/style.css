@@ -495,10 +495,28 @@ body.nb-open #toasts { display: none; }
 .mini-bins { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 4px; }
 .mini-bins .mini-opt { justify-content: center; align-items: center; min-height: 48px; }
 /* mini-game 'action' (ui/action.js): hands-on canvas games */
-.mini-card.act { width: min(600px, 100%); }
+.mini-card.act { width: min(1000px, 100%); }
 .act-wrap { display: grid; gap: 6px; }
 .act-cv { display: block; width: 100%; height: auto; aspect-ratio: 520 / 300; border: var(--line); border-radius: 16px; box-shadow: var(--pop); touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; background: var(--cream); }
 .act-hint { font-size: 12.5px; font-weight: 800; color: var(--muted); text-align: center; }
+/* the canvas grows with the screen: as wide as the card, but never taller than the viewport allows */
+.act-cv { width: min(100%, calc((100dvh - 240px) * 52 / 30)); margin: 0 auto; }
+.act-rotate { display: none; text-align: center; font-weight: 800; font-size: 12px; background: var(--butter); border: 2px solid var(--ink); border-radius: 10px; padding: 4px 8px; }
+@media (max-width: 640px) and (orientation: portrait) {
+  #mini { padding: 6px; }
+  .mini-card.act { padding: 10px; border-radius: 18px; }
+  .mini-card.act .mini-prompt { font-size: 13px; margin: 6px 0 8px; }
+  .act-cv { width: 100%; }
+  .act-rotate { display: block; }
+}
+@media (max-height: 540px) and (orientation: landscape) {
+  #mini { padding: 4px; }
+  .mini-card.act { padding: 6px 10px; max-height: 100dvh; border-radius: 16px; }
+  .mini-card.act .mini-prompt { font-size: 12px; margin: 2px 0 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .mini-card.act .mini-bar, .mini-card.act .act-hint { display: none; }
+  .mini-card.act .mini-foot { margin-top: 4px; }
+  .act-cv { width: min(100%, calc((100dvh - 96px) * 52 / 30)); }
+}
 /* work sims (ui/sims.js): documents and chat threads */
 .mini-card.sim { width: min(620px, 100%); }
 .doc { border: var(--line); border-radius: 14px; background: #fff; box-shadow: var(--pop); max-height: min(52vh, 460px); overflow-y: auto; }

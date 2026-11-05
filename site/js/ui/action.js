@@ -10,6 +10,8 @@
 //   collate  · xếp trang & bấm ghim: tap pages 1→N (flip face-down ones first), staple when the rings meet.
 //   wires    · cắm lại dây mạng: drag each plug to the port with the same colour and shape.
 //   shredder · máy hủy giấy: drag each sheet down into the shredder or right into the filing cabinet.
+//   scale    · cân / đếm tiền: tap items onto the scale until the reading is inside the range, then CHỐT.
+//   stir     · trộn: drag in circles inside the bowl at a speed inside the green band (too fast = splash).
 //   incense  · thắp nhang Thần Tài: hold the lighter until each tip glows (not too long), plant each stick upright.
 //   hold has a third skin 'cup' (rót cà phê / trà tới vạch; cfg.orders = notes per cup).
 // Everything is original sticker-style art: rounded shapes, thick ink outlines, pastel fills, emoji.
@@ -36,11 +38,18 @@ function text(g, s, x, y, { size = 14, weight = 800, color = INK, align = 'cente
 
 /** Shared canvas shell: sizing, pointer mapping, loop, floating texts and particles. */
 function stage(host, hint) {
-  host.innerHTML = `<div class="act-wrap"><canvas class="act-cv"></canvas>${hint ? `<div class="act-hint">${hint}</div>` : ''}</div>`;
+  host.innerHTML = `<div class="act-wrap"><div class="act-rotate">📱↻ Xoay ngang điện thoại để chơi rộng hơn</div><canvas class="act-cv"></canvas>${hint ? `<div class="act-hint">${hint}</div>` : ''}</div>`;
   const cv = host.querySelector('canvas');
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
-  cv.width = W * dpr; cv.height = H * dpr;
-  const g = cv.getContext('2d'); g.scale(dpr, dpr);
+  const g = cv.getContext('2d');
+  // draw at the real on-screen size (the card grows with the screen): logical 520×300, backing store × display scale
+  const fit = () => {
+    const k = Math.min(4, Math.max(1, (cv.clientWidth || W) / W) * Math.min(2, window.devicePixelRatio || 1));
+    if (Math.abs(cv.width - W * k) > 1) { cv.width = Math.round(W * k); cv.height = Math.round(H * k); }
+    g.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
+  };
+  fit();
+  const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(fit) : null;
+  if (ro) ro.observe(cv);
   const pops = [], parts = [];
   const S = {
     cv, g, pops, parts, t: 0, alive: true, shake: 0,
@@ -56,7 +65,7 @@ function stage(host, hint) {
     loop(draw) {
       let last = performance.now();
       const frame = (now) => {
-        if (!S.alive) return;
+        if (!S.alive) { if (ro) ro.disconnect(); return; }
         const dt = Math.min(0.05, (now - last) / 1000); last = now; S.t += dt;
         g.save();
         if (S.shake > 0) { S.shake -= dt; g.translate(rnd(-4, 4), rnd(-3, 3)); }
@@ -101,6 +110,7 @@ function shred(S, cfg, done) {
     let diff = Math.abs(Math.atan2(dy, dx) - angle) % Math.PI; diff = Math.min(diff, Math.PI - diff);
     if (diff < 0.45 && L >= PW * 0.42) {
       good++; combo++; left--;
+      if (piece >= 1 && left === Math.ceil(per / 2) && cfg.turn !== false) { angle = Math.max(-0.75, Math.min(0.75, angle + (angle > 0 ? -0.6 : 0.6))); setTimeout(() => S.pop(CX, CY - 80, '↻ Thớ đổi hướng!', '#8a5a2a', 16), 200); }
       const y = PH0 / 2 - ph() + PH0 / per / 2; // the top band of the piece (local), then to world
       const c = Math.cos(angle), s = Math.sin(angle);
       flying.push({ x: CX - y * s, y: CY + y * c, a: angle, t: 0, w: PW * rnd(0.7, 0.95) });
@@ -205,13 +215,13 @@ function hold(S, cfg, done) {
     cup: { ok: 'Vừa vạch!', under: 'Lưng ly rồi!', over: 'Tràn ra bàn!', hold: 'GIỮ để rót', unit: '☕ Ly' },
   }[skin] || {};
   let r = 0, p = 0, holding = false, state = 'idle', wait = 0, goods = 0, perfect = 0, rate = 0.5, zone = [0.6, 0.76], result = '';
-  const next = () => { p = 0; state = 'idle'; holding = false; rate = rnd(0.38, 0.72) * (1 + r * 0.06); const c = rnd(0.5, 0.82); zone = [c - width / 2, c + width / 2]; };
+  const next = () => { p = 0; state = 'idle'; holding = false; rate = rnd(0.38, 0.72) * (1 + r * 0.06); const w2 = width * Math.max(0.55, 1 - r * 0.07); const c = rnd(0.5, 0.82); zone = [c - w2 / 2, c + w2 / 2]; };
   next();
   const judge = () => {
     if (state !== 'filling') return;
     holding = false;
     if (p >= zone[0] && p <= zone[1]) {
-      goods++; const mid = (zone[0] + zone[1]) / 2, isP = Math.abs(p - mid) < width * 0.18; if (isP) perfect++;
+      goods++; const mid = (zone[0] + zone[1]) / 2, isP = Math.abs(p - mid) < (zone[1] - zone[0]) * 0.18; if (isP) perfect++;
       state = 'ok'; sfx.good(); result = isP ? 'Hoàn hảo!' : WORDS.ok;
       S.pop(W / 2 - 40, 46, result, '#2f8a4c', 22);
     } else { state = 'under'; sfx.bad(); result = WORDS.under; S.pop(W / 2 - 40, 70, result, '#c0392b', 20); }
@@ -450,7 +460,7 @@ function align(S, cfg, done) {
     return { l, tx, ty, w, h, x: tx + rnd(-60, 60), y: ty + rnd(-30, 30), c: colors[i], ok: false };
   });
   blocks.forEach((b) => { b.x = Math.max(4, Math.min(W - b.w - 4, b.x + (Math.random() < 0.5 ? -1 : 1) * 30)); b.y = Math.max(34, Math.min(H - b.h - 6, b.y)); });
-  let drag = null, off = null, snapped = 0, twisted = !cfg.twist, total = blocks.length, bubble = 0, ended = false;
+  let drag = null, off = null, snapped = 0, twistsLeft = cfg.twist ? (cfg.twists || 2) : 0, total = blocks.length, bubble = 0, ended = false;
   const down = (e) => {
     const q = S.at(e);
     const b = [...blocks].reverse().find((o) => !o.ok && q.x >= o.x && q.x <= o.x + o.w && q.y >= o.y && q.y <= o.y + o.h);
@@ -464,8 +474,8 @@ function align(S, cfg, done) {
     if (Math.hypot(b.x - b.tx, b.y - b.ty) < (cfg.snap || 22)) {
       b.x = b.tx; b.y = b.ty; b.ok = true; snapped++; sfx.choose(); S.pop(b.tx + b.w / 2, b.ty + b.h / 2, 'Tách!', '#2f8a4c', 16);
       if (blocks.every((o) => o.ok)) {
-        if (!twisted) {
-          twisted = true; bubble = 2.2; sfx.ding();
+        if (twistsLeft > 0) {
+          twistsLeft--; bubble = 2.2; sfx.ding();
           const moved = [...blocks].sort(() => Math.random() - 0.5).slice(0, 2);
           moved.forEach((o) => { o.ok = false; o.x = Math.max(4, Math.min(W - o.w - 4, o.tx + rnd(-90, 90))); o.y = Math.max(34, Math.min(H - o.h - 6, o.ty + rnd(-50, 50))); });
           total += moved.length;
@@ -655,10 +665,16 @@ function collate(S, cfg, done) {
 // Cắm lại dây mạng: drag from each left plug to the port of the same colour + shape on the right.
 function wires(S, cfg, done) {
   const { g, cv } = S;
-  const KINDS = [['#e74c3c', '●'], ['#3498db', '▲'], ['#f1c40f', '■'], ['#2ecc71', '◆'], ['#9b59b6', '★']].slice(0, cfg.count || 4);
-  const left = KINDS.map((k, i) => ({ k: i, x: 90, y: 70 + i * (190 / (KINDS.length - 1 || 1)), done: false }));
-  const order = shuffleArr(KINDS.map((_, i) => i));
-  const right = order.map((k, i) => ({ k, x: 430, y: 70 + i * (190 / (KINDS.length - 1 || 1)) }));
+  const ALL = [['#e74c3c', '●'], ['#3498db', '▲'], ['#f1c40f', '■'], ['#2ecc71', '◆'], ['#9b59b6', '★'], ['#e67e22', '✚']];
+  const rounds = cfg.rounds || 2;
+  let KINDS, left, right, round = 0;
+  const deal = () => {
+    KINDS = ALL.slice(0, Math.min(ALL.length, (cfg.count || 4) + round));
+    const gap = 190 / (KINDS.length - 1 || 1);
+    left = shuffleArr(KINDS.map((_, i) => i)).map((k, i) => ({ k, x: 90, y: 70 + i * gap, done: false }));
+    right = shuffleArr(KINDS.map((_, i) => i)).map((k, i) => ({ k, x: 430, y: 70 + i * gap }));
+  };
+  deal();
   let drag = null, pos = null, mistakes = 0, links = 0, finished = false;
   const down = (e) => { const q = S.at(e); const l = left.find((o) => !o.done && Math.hypot(q.x - o.x, q.y - o.y) < 26); if (!l) return; try { cv.setPointerCapture(e.pointerId); } catch { /* synthetic */ } drag = l; pos = q; };
   const move = (e) => { if (drag) pos = S.at(e); };
@@ -666,7 +682,7 @@ function wires(S, cfg, done) {
     if (!drag) return; const q = e ? S.at(e) : pos; const l = drag; drag = null;
     const rp = right.find((o) => Math.hypot(q.x - o.x, q.y - o.y) < 30);
     if (!rp) return;
-    if (rp.k === l.k && !left.some((o) => o.done && o.k === rp.k)) { l.done = true; l.to = rp; links++; sfx.choose(); S.burst(rp.x, rp.y, MINT, 8, 100); S.pop(rp.x - 40, rp.y - 18, 'Tách! Đèn xanh', '#2f8a4c', 14); if (left.every((o) => o.done) && !finished) { finished = true; sfx.good(); setTimeout(done, 600); } }
+    if (rp.k === l.k && !left.some((o) => o.done && o.k === rp.k)) { l.done = true; l.to = rp; links++; sfx.choose(); S.burst(rp.x, rp.y, MINT, 8, 100); S.pop(rp.x - 40, rp.y - 18, 'Tách! Đèn xanh', '#2f8a4c', 14); if (left.every((o) => o.done)) { links = 0; round++; if (round >= rounds) { if (!finished) { finished = true; sfx.good(); setTimeout(done, 600); } } else { sfx.ding(); S.pop(W / 2, 150, 'Phòng bên cạnh cũng mất mạng!', '#2f6fae', 17); setTimeout(deal, 700); } } }
     else { mistakes++; sfx.bad(); S.shake = 0.2; S.burst(rp.x, rp.y, '#f5b041', 10, 140); S.pop(rp.x - 40, rp.y - 18, 'Chập! Sai cổng', '#c0392b', 14); }
   };
   cv.addEventListener('pointerdown', down); cv.addEventListener('pointermove', move); cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', () => { drag = null; });
@@ -679,11 +695,11 @@ function wires(S, cfg, done) {
     if (drag && pos) cable(drag, pos, KINDS[drag.k][0]);
     for (const r2 of right) { const lit = left.some((o) => o.done && o.k === r2.k); sticker(g, r2.x - 22, r2.y - 16, 44, 32, lit ? '#1e8449' : '#1f2133', 6, 2.5); text(g, KINDS[r2.k][1], r2.x, r2.y + 1, { size: 16, color: KINDS[r2.k][0] }); g.beginPath(); g.arc(r2.x + 32, r2.y, 4, 0, 7); g.fillStyle = lit ? '#58d68d' : '#555'; g.fill(); }
     for (const l of left) { g.beginPath(); g.arc(l.x + 2, l.y + 2, 17, 0, 7); g.fillStyle = INK; g.fill(); g.beginPath(); g.arc(l.x, l.y, 17, 0, 7); g.fillStyle = KINDS[l.k][0]; g.fill(); g.lineWidth = 2.5; g.strokeStyle = INK; g.stroke(); text(g, KINDS[l.k][1], l.x, l.y + 1, { size: 14, color: '#fff' }); }
-    text(g, `🔌 ${cfg.title || 'Cắm lại dây mạng'} · ${links}/${left.length}`, W / 2, 18, { size: 13, color: '#fff' });
+    text(g, `🔌 ${cfg.title || 'Cắm lại dây mạng'} · ${links}/${left.length}${rounds > 1 ? ` · tủ ${Math.min(rounds, round + 1)}/${rounds}` : ''}`, W / 2, 18, { size: 13, color: '#fff' });
     text(g, mistakes ? `Chập: ${mistakes}` : 'Kéo từ dây trái sang cổng cùng màu, cùng hình', W / 2, H - 12, { size: 12, color: 'rgba(255,255,255,.75)' });
   });
   return {
-    score: () => clamp01(links / left.length - mistakes * 0.2),
+    score: () => clamp01((round >= rounds ? 1 : (round + links / left.length) / rounds) - mistakes * 0.15),
     stop: () => cv.removeEventListener('pointerdown', down),
     info: () => ({ left: left.map((o) => ({ x: o.x, y: o.y, k: o.k, done: o.done })), right: right.map((o) => ({ x: o.x, y: o.y, k: o.k })) }),
   };
@@ -847,7 +863,124 @@ function incense(S, cfg, done) {
   };
 }
 
-const GAMES = { shred, hold, whack, conveyor, align, printjam, collate, wires, shredder, incense };
+// ---------------------------------------------------------------------------------------------- scale
+// Cân / đếm: tap items to put them on the scale until the reading sits inside the target range, then press CHỐT.
+// Tap an item on the pan to take it off. cfg.items [{ label, emoji, w, jitter? }], cfg.targets [[min, max], ...], cfg.unit.
+function scale(S, cfg, done) {
+  const { g, cv } = S;
+  const items = cfg.items || [{ label: 'Miếng to', emoji: '🍗', w: 45, jitter: 2 }, { label: 'Miếng vừa', emoji: '🍗', w: 30, jitter: 2 }, { label: 'Miếng nhỏ', emoji: '🍗', w: 12, jitter: 1 }, { label: 'Vụn', emoji: '🍂', w: 5, jitter: 1 }];
+  const targets = cfg.targets || [[196, 204], [196, 204], [146, 154], [296, 304]];
+  const unit = cfg.unit || 'g';
+  const fmt = cfg.money ? (v) => `${Math.round(v).toLocaleString('vi-VN')}đ` : (v) => `${Math.round(v * 10) / 10}${unit}`;
+  let round = 0, pan = [], goods = 0, mistakes = 0, wait = 0, finished = false, flash = null;
+  const sum = () => pan.reduce((a, x) => a + x.w, 0);
+  const tgt = () => targets[Math.min(round, targets.length - 1)];
+  const rows = items.map((it, i) => ({ ...it, x: 22, y: 50 + i * (220 / Math.max(1, items.length)), h: Math.min(50, 210 / items.length - 6) }));
+  const BTN = { x: 380, y: 236, w: 120, h: 44 };
+  const tap = (e) => {
+    if (wait > 0 || finished) return;
+    const q = S.at(e);
+    const r2 = rows.find((o) => q.x >= o.x && q.x <= o.x + 150 && q.y >= o.y && q.y <= o.y + o.h);
+    if (r2) { const w = r2.w + (r2.jitter ? Math.round(rnd(-r2.jitter, r2.jitter) * 10) / 10 : 0); pan.push({ w, emoji: r2.emoji, drop: 0, x: rnd(-34, 34) }); sfx.blip(1 + pan.length * 0.03); return; }
+    if (q.x >= BTN.x && q.x <= BTN.x + BTN.w && q.y >= BTN.y && q.y <= BTN.y + BTN.h) {
+      const [lo, hi] = tgt(), v = sum();
+      if (v >= lo - 1e-6 && v <= hi + 1e-6) { goods++; sfx.good(); flash = { ok: true, t: 0.9 }; S.pop(420, 120, cfg.okText || 'Chuẩn!', '#2f8a4c', 20); }
+      else { mistakes++; sfx.bad(); S.shake = 0.25; flash = { ok: false, t: 0.9 }; S.pop(420, 120, v > hi ? (cfg.overText || 'Lố rồi!') : (cfg.underText || 'Thiếu rồi!'), '#c0392b', 18); }
+      wait = 0.9; return;
+    }
+    // take the top item off the pan
+    if (q.x > 300 && q.x < 520 && q.y > 70 && q.y < 200 && pan.length) { pan.pop(); sfx.blip(0.7); }
+  };
+  cv.addEventListener('pointerdown', tap);
+  S.loop((dt) => {
+    if (wait > 0) { wait -= dt; if (wait <= 0) { round++; pan = []; if (round >= targets.length) { finished = true; setTimeout(done, 250); } } }
+    g.fillStyle = CREAM; g.fillRect(0, 0, W, H);
+    // the bin (tap to add)
+    for (const r2 of rows) { sticker(g, r2.x, r2.y, 150, r2.h, '#fff', 10, 2.5); text(g, r2.emoji, r2.x + 22, r2.y + r2.h / 2, { size: Math.min(24, r2.h * 0.6) }); text(g, r2.label, r2.x + 42, r2.y + r2.h / 2 - (cfg.hideW ? 0 : 7), { size: 12, weight: 900, align: 'left', max: 104 }); if (!cfg.hideW) text(g, `${r2.jitter ? '≈' : ''}${fmt(r2.w)}`, r2.x + 42, r2.y + r2.h / 2 + 9, { size: 11, weight: 700, color: '#6b6b78', align: 'left' }); }
+    text(g, '👆 bấm để thêm', 97, 32, { size: 11, weight: 800, color: '#6b6b78' });
+    // the scale
+    const v = sum(), [lo, hi] = tgt();
+    sticker(g, 300, 196, 210, 30, '#b0b6c8', 10); sticker(g, 330, 170, 150, 30, '#d9dcef', 8);
+    g.beginPath(); g.ellipse(405, 160, 100, 14, 0, 0, 7); g.fillStyle = '#eef0f7'; g.fill(); g.lineWidth = 3; g.strokeStyle = INK; g.stroke();
+    pan.forEach((x, i) => { x.drop = Math.min(1, x.drop + dt * 5); text(g, x.emoji, 405 + x.x, 150 - Math.floor(i / 6) * 14 - (1 - x.drop) * 80, { size: 22 }); });
+    const lcdCol = flash ? (flash.ok ? '#b8f0d8' : '#ffc2b3') : v > hi ? '#ffc2b3' : v >= lo ? '#b8f0d8' : '#e8f6ff';
+    if (flash) { flash.t -= dt; if (flash.t <= 0) flash = null; }
+    sticker(g, 330, 44, 150, 50, '#1f2133', 10); g.fillStyle = lcdCol; rr(g, 338, 50, 134, 38, 6); g.fill();
+    text(g, fmt(v), 405, 70, { size: 22, weight: 900, max: 128 });
+    text(g, `Cần: ${lo === hi ? fmt(lo) : `${fmt(lo)} – ${fmt(hi)}`}`, 405, 108, { size: 12.5, weight: 900 });
+    sticker(g, BTN.x, BTN.y, BTN.w, BTN.h, BUTTER, 12); text(g, cfg.btn || '✅ CHỐT', BTN.x + BTN.w / 2, BTN.y + BTN.h / 2, { size: 15, weight: 900 });
+    text(g, 'bấm cân để nhấc ra', 405, 132, { size: 10.5, weight: 700, color: '#6b6b78' });
+    hud(g, `${cfg.icon2 || '⚖️'} ${cfg.unitName || 'Túi'} ${Math.min(targets.length, round + 1)}/${targets.length}`, `Đạt: ${goods}${mistakes ? ` · sai ${mistakes}` : ''}`);
+  });
+  return {
+    score: () => clamp01(goods / targets.length),
+    stop: () => cv.removeEventListener('pointerdown', tap),
+    info: () => ({ round, n: targets.length, sum: sum(), target: tgt(), wait, rows: rows.map((o) => ({ x: o.x + 75, y: o.y + o.h / 2, w: o.w, jitter: o.jitter || 0 })), btn: { x: BTN.x + BTN.w / 2, y: BTN.y + BTN.h / 2 }, pan: { x: 405, y: 150 }, finished }),
+  };
+}
+
+// ---------------------------------------------------------------------------------------------- stir
+// Trộn: drag round and round inside the bowl. Keep the speed in the green band: too slow does nothing, too fast
+// splashes. Each bowl blends from separate ingredients into one colour.
+function stir(S, cfg, done) {
+  const { g, cv } = S;
+  const CX = 200, CY = 165, R = 100;
+  const bowls = cfg.bowls || 2;
+  const ING = cfg.ingredients || ['#c98a45', '#d94f3a', '#5a9a3a', '#f1c40f', '#ffffff'];
+  let bowl = 0, prog = 0, splashes = 0, last = null, samples = [], speed = 0, drag = false, finished = false, wait = 0;
+  const band = () => { const lo = (cfg.lo || 4) + bowl * 0.8, hi = (cfg.hi || 9) - bowl * 0.6; return [lo, Math.max(lo + 2, hi)]; };
+  const blobs = Array.from({ length: 26 }, (_, i) => ({ a: rnd(0, 6.28), r: rnd(10, R - 18), c: ING[i % ING.length], s: rnd(6, 11) }));
+  const down = (e) => { const q = S.at(e); if (Math.hypot(q.x - CX, q.y - CY) > R + 20 || wait > 0) return; try { cv.setPointerCapture(e.pointerId); } catch { /* synthetic */ } drag = true; last = { a: Math.atan2(q.y - CY, q.x - CX), t: performance.now() }; samples = []; };
+  const move = (e) => {
+    if (!drag) return;
+    const q = S.at(e), now = performance.now(), a = Math.atan2(q.y - CY, q.x - CX);
+    let d = a - last.a; d = Math.atan2(Math.sin(d), Math.cos(d));
+    samples.push({ t: now, d: Math.abs(d) }); while (samples.length && now - samples[0].t > 150) samples.shift();
+    speed = samples.reduce((x, y) => x + y.d, 0) / 0.15; // rad/s
+    last = { a, t: now };
+  };
+  const up = () => { drag = false; };
+  cv.addEventListener('pointerdown', down); cv.addEventListener('pointermove', move); cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  let splashCd = 0;
+  S.loop((dt) => {
+    if (!drag) speed *= Math.pow(0.02, dt);
+    const [lo, hi] = band();
+    splashCd -= dt;
+    if (wait > 0) { wait -= dt; if (wait <= 0) { bowl++; prog = 0; blobs.forEach((b) => { b.a = rnd(0, 6.28); b.r = rnd(10, R - 18); }); if (bowl >= bowls) { finished = true; setTimeout(done, 250); } } }
+    else if (speed > hi) { if (splashCd <= 0) { splashes++; splashCd = 0.6; sfx.bad(); S.burst(CX + rnd(-60, 60), CY - R + 10, ING[0], 12, 170); S.pop(CX, CY - R - 10, cfg.splash || 'Văng ra ngoài!', '#c0392b', 15); } }
+    else if (speed >= lo) { prog = Math.min(1, prog + dt * (cfg.rate || 0.16)); if (prog >= 1) { sfx.good(); S.pop(CX, CY - 20, cfg.okText || 'Đều màu rồi!', '#2f8a4c', 19); wait = 0.9; } }
+    blobs.forEach((b) => { b.a += speed * dt * (0.4 + b.r / R * 0.6) * 0.6; });
+    g.fillStyle = CREAM; g.fillRect(0, 0, W, H);
+    g.beginPath(); g.ellipse(CX + 4, CY + 6, R + 16, R + 8, 0, 0, 7); g.fillStyle = INK; g.fill();
+    g.beginPath(); g.ellipse(CX, CY, R + 16, R + 8, 0, 0, 7); g.fillStyle = cfg.bowl || '#e9eef7'; g.fill(); g.lineWidth = 3; g.strokeStyle = INK; g.stroke();
+    g.save(); g.beginPath(); g.ellipse(CX, CY, R, R - 6, 0, 0, 7); g.clip();
+    g.fillStyle = cfg.base || '#f3d9a6'; g.fillRect(CX - R, CY - R, 2 * R, 2 * R);
+    const mixC = cfg.mix || '#c98a45';
+    blobs.forEach((b) => { g.globalAlpha = 1 - prog * 0.85; g.beginPath(); g.arc(CX + Math.cos(b.a) * b.r, CY + Math.sin(b.a) * b.r * 0.94, b.s * (1 + prog), 0, 7); g.fillStyle = b.c; g.fill(); });
+    g.globalAlpha = prog * 0.9; g.fillStyle = mixC; g.fillRect(CX - R, CY - R, 2 * R, 2 * R); g.globalAlpha = 1;
+    g.restore();
+    // the spoon follows the swirl
+    const sa = last ? last.a : -0.6;
+    g.save(); g.translate(CX + Math.cos(sa) * 55, CY + Math.sin(sa) * 52); g.rotate(sa + 1.2); sticker(g, -6, -70, 12, 80, '#c9a27a', 6, 2.5); g.restore();
+    // speed meter + progress
+    const mx = 360, my = 50, mh = 200, top = 14;
+    sticker(g, mx, my, 34, mh, '#fff', 10);
+    const yOf = (v) => my + mh - Math.min(1, v / top) * mh;
+    g.fillStyle = MINT; g.fillRect(mx + 3, yOf(hi), 28, yOf(lo) - yOf(hi));
+    g.fillStyle = speed > hi ? PEACH : BUTTER; const fh = Math.min(1, speed / top) * (mh - 6); rr(g, mx + 6, my + mh - 3 - fh, 22, fh, 6); g.fill();
+    text(g, 'TỐC ĐỘ', mx + 17, my + mh + 14, { size: 10.5, weight: 900 });
+    sticker(g, 420, my, 84, 24, '#fff', 8, 2); g.fillStyle = MINT; rr(g, 423, my + 3, 78 * prog, 18, 6); g.fill(); text(g, `${Math.round(prog * 100)}%`, 462, my + 12, { size: 11, weight: 900 });
+    text(g, cfg.what || 'độ đều', 462, my + 36, { size: 11, weight: 800, color: '#6b6b78' });
+    hud(g, `${cfg.icon2 || '🥣'} ${cfg.unitName || 'Thố'} ${Math.min(bowls, bowl + 1)}/${bowls}`, splashes ? `Văng: ${splashes}` : 'Kéo vòng tròn trong thố');
+  });
+  return {
+    score: () => clamp01((finished ? 1 : (bowl + prog) / bowls) - splashes * 0.1),
+    stop: () => cv.removeEventListener('pointerdown', down),
+    info: () => ({ bowl, prog, speed, band: band(), cx: CX, cy: CY, wait, finished }),
+  };
+}
+
+const GAMES = { shred, hold, whack, conveyor, align, printjam, collate, wires, shredder, incense, scale, stir };
 export const ACTION_GAMES = Object.keys(GAMES);
 
 export function startAction(host, cfg, { onDone }) {
