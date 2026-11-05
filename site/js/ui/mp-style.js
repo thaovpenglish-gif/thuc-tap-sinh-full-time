@@ -20,7 +20,7 @@ export const MP_CSS = `
 .mp-members { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
 .mp-member { border: 2px solid var(--ink); border-radius: 14px; padding: 9px 10px; font-weight: 800; display: flex; align-items: center; gap: 8px; min-height: 46px; }
 .mp-member i { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--ink); flex: none; }
-.mp-member.empty { border-style: dashed; color: var(--muted); font-weight: 700; }
+.mp-member.empty { border-style: dashed; color: var(--muted); font-weight: 700; margin: 0; text-align: left; font-size: inherit; } /* Solo's global .empty adds a top margin */
 .mp-member small { margin-left: auto; font-size: 11px; color: var(--muted); }
 .mp-client { display: flex; gap: 12px; align-items: center; background: var(--lilac-2); border: 2px solid var(--ink); border-radius: 16px; padding: 10px 12px; margin-top: 12px; }
 .mp-client b { display: block; }
@@ -41,6 +41,40 @@ export const MP_CSS = `
 .mp-level.soon em { grid-column: 2; font-style: normal; font-size: 10.5px; font-weight: 900; color: #b5651d; }
 .mp-soon-note { margin-top: 8px; background: #fff8ef; border: 2px dashed var(--ink); border-radius: 14px; padding: 8px 10px; font-size: 13px; font-weight: 600; line-height: 1.5; }
 .mp-soon-note .tag { background: var(--butter); border: 2px solid var(--ink); border-radius: 99px; padding: 0 8px; font-size: 11px; font-weight: 900; }
+/* home / room in two columns so nothing needs scrolling on a laptop */
+.mp-card.mp-two { width: min(1060px, 100%); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 22px; align-items: start; }
+.mp-two .mp-col > .mp-field:first-child { margin-top: 0; }
+/* the street map of client companies */
+.mp-map { position: relative; height: 270px; margin-top: 4px; border: 2.5px solid var(--ink); border-radius: 18px; overflow: hidden; background: #d9f2cf; box-shadow: var(--pop); }
+.mp-road { position: absolute; background: #f1e7d8; }
+.mp-road.h { left: 0; right: 0; top: 41%; height: 17%; border-top: 2px dashed #d4c3ab; border-bottom: 2px dashed #d4c3ab; }
+.mp-road.v { top: 0; bottom: 0; width: 3%; }
+.mp-tree { position: absolute; font-size: 20px; pointer-events: none; }
+.mp-hq { position: absolute; transform: translateY(-2px); background: var(--peach); border: 2px solid var(--ink); border-radius: 12px; padding: 4px 10px; font-weight: 900; font-size: 12.5px; box-shadow: 2px 2px 0 var(--ink); white-space: nowrap; }
+.mp-bld { position: absolute; width: 21%; min-height: 31%; display: grid; justify-items: center; align-content: center; gap: 2px; padding: 6px 4px; background: #fff; border: 2.5px solid var(--ink); border-radius: 12px 12px 6px 6px; box-shadow: 3px 3px 0 var(--ink); font-family: inherit; cursor: pointer; transition: transform .08s; }
+.mp-bld:hover:not(:disabled) { transform: translateY(-2px); }
+.mp-bld .ico { font-size: 26px; line-height: 1; }
+.mp-bld b { font-size: 11.5px; line-height: 1.15; text-align: center; }
+.mp-bld.on { background: var(--butter); }
+.mp-bld .pin { position: absolute; top: -6px; right: -4px; font-size: 20px; animation: pulse 1.2s infinite; }
+.mp-bld.soon { background: repeating-linear-gradient(135deg, #f6f3ee 0 8px, #ebe5db 8px 16px); border-style: dashed; box-shadow: none; color: #6a6f80; }
+.mp-bld.soon .ico { filter: grayscale(.7); opacity: .7; }
+.mp-bld .crane { position: absolute; top: -10px; left: -6px; font-size: 18px; }
+.mp-bld:disabled { cursor: default; }
+.mp-bld:disabled:not(.on):not(.soon) { opacity: .65; }
+.mp-map-info { margin-top: 10px; background: #fff8ef; border: 2px solid var(--ink); border-radius: 14px; padding: 8px 10px; font-size: 13px; line-height: 1.45; min-height: 64px; }
+.mp-map-info b { display: block; font-size: 14px; }
+.mp-map-info span { color: #4a4e5a; }
+.mp-map-info.soon { border-style: dashed; }
+.mp-map-info .tag { background: var(--butter); border: 2px solid var(--ink); border-radius: 99px; padding: 0 7px; font-size: 10.5px; font-weight: 900; color: var(--ink); }
+@media (max-width: 860px) {
+  .mp-card.mp-two { grid-template-columns: 1fr; gap: 12px; }
+  .mp-map { height: 210px; }
+  .mp-bld .ico { font-size: 20px; } .mp-bld b { font-size: 10px; }
+  .mp-hq { font-size: 10.5px; padding: 3px 7px; }
+  /* phones: shorter home so the map comes sooner */
+  .mp-two .mp-col > p, .mp-two .mp-help { display: none; }
+}
 .mp-help { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.6; }
 .mp-link { background: none; border: none; text-decoration: underline; font-weight: 800; font-size: 14px; padding: 6px; }
 

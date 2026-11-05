@@ -265,6 +265,14 @@ Chọn ở sảnh (thẻ "Khách hàng") hoặc host đổi trong phòng chờ; 
   - 📋 **WIP của chị Diệp** (0:50, 2:00): ai đứng gần bảng WIP cạnh quầy client bị kéo vào họp 7 giây.
 - Test: `tests/mp-agency.test.mjs`.
 
+## 8e'. Chọn màn trên bản đồ
+
+Game Owner: "phải scroll xuống" → phần chọn khách hàng là **bản đồ khu phố** (đường, cây, trụ sở 🚨 SOS Advisory ở
+giữa): 4 tòa nhà chơi được ở hàng trên, 3 tòa "đang xây" (🏗️, sọc, viền nét đứt) ở hàng dưới; tòa đang chọn có 📍,
+ô thông tin bên dưới giới thiệu màn. Sảnh và phòng chờ chia 2 cột (trái: tên/nút/mã phòng · phải: bản đồ) nên vừa
+một màn hình laptop; điện thoại xếp dọc và ẩn đoạn mô tả. Trong phòng chờ chỉ host bấm chọn được, người khác thấy
+host đang chọn gì. Vị trí tòa nhà: `MAP_POS` trong `modes/multi.js`.
+
 ## 8e. Đang phát triển (thẻ demo)
 
 Game Owner chốt: Đi Đâu Cũng Được, Cân Đối & Cộng Sự, Nợ Kỹ Thuật Labs hiện trong phần chọn khách hàng dưới dạng thẻ

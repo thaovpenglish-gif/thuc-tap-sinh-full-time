@@ -51,6 +51,8 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
   (powerCut on the KOL desk), chị Diệp's WIP (standup).
 - Event, Audit, Tech shown in the picker as "🚧 Đang phát triển" demo cards with a teaser (`COMING_SOON`), not
   playable yet (Game Owner). Developer letter lists the 4 playable clients.
+- Level picker is now a street map (buildings, SOS HQ, cranes on the coming-soon ones); home and room screens use two
+  columns and fit a laptop screen without scrolling (Game Owner: "phải scroll xuống").
 
 ## 2026-11-05 — QC round 1 and publish
 
