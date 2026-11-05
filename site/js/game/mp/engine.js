@@ -38,6 +38,17 @@ export const ITEMS = {
   hop_ok: { label: 'Hộp quà Má duyệt', icon: '🎁', color: '#ffd25a' },
   an_thu: { label: 'Gói ăn thử', icon: '🍢', color: '#fff1b8' },
   burnt: { label: 'Khô cháy khét', icon: '🔥', color: '#5a4a42' },
+  // Người Đúng Chỗ HR
+  cv: { label: 'CV', icon: '📄', color: '#ffffff' },
+  cv_ok: { label: 'CV đã lọc (shortlist)', icon: '✅', color: '#b8f0d8' },
+  survey: { label: 'Phiếu khảo sát lương', icon: '📋', color: '#fff1b8' },
+  survey_xls: { label: 'Bảng lương thô', icon: '📊', color: '#bfe3ff' },
+  salary_report: { label: 'Báo cáo lương P50', icon: '📈', color: '#9be7c4' },
+  interviewed: { label: 'Ứng viên đã phỏng vấn', icon: '🤝', color: '#ffd3b8' },
+  offer_draft: { label: 'Offer nháp', icon: '✉️', color: '#e3d9ff' },
+  offer_notes: { label: 'Offer "thêm chữ culture fit"', icon: '✏️', color: '#ffc2b3' },
+  offer_signed: { label: 'Offer đã ký', icon: '💌', color: '#ff8fb1' },
+  ghost: { label: 'Ứng viên đã ghost', icon: '👻', color: '#e4e4ea' },
 };
 
 // What each station kind does with an item. A level may override these with its own `process` table.
@@ -194,7 +205,7 @@ export function hintFor(state, p) {
     case 'source': return held ? null : `Lấy ${ITEMS[def.gives].label}`;
     case 'trash': return held ? `Vứt ${ITEMS[held.type].label}` : null;
     case 'coffee': return def.drink || 'Uống cà phê ☕';
-    case 'breaker': return Object.values(state.stations).some((x) => x.off) ? 'Bật lại cầu dao ⚡' : null;
+    case 'breaker': return Object.values(state.stations).some((x) => x.off) ? ((LEVELS[state.level].powerCut || {}).fixHint || 'Bật lại cầu dao ⚡') : null;
     case 'deliver': return held ? `Nộp ${ITEMS[held.type].label} cho khách` : null;
     default:
       if (held) {
@@ -202,7 +213,7 @@ export function hintFor(state, p) {
         if (accepts(state, s.kind, held.type)) return `Đặt ${ITEMS[held.type].label} vào ${def.label}`;
         return null;
       }
-      if (s.off && on) return `${def.label} mất điện! Ra cầu dao bật lại ⚡`;
+      if (s.off && on) return `${def.label} ${(LEVELS[state.level].powerCut || {}).offHint || 'mất điện! Ra cầu dao bật lại ⚡'}`;
       const wr = on && workRule(state, s.kind, on.type);
       if (wr) return p.working === s.id ? 'Đang làm…' : `Làm ${ITEMS[on.type].label} → ${ITEMS[wr.to].label}`;
       if (on) return `Lấy ${ITEMS[on.type].label}`;
@@ -240,7 +251,7 @@ export function act(state, id) {
     if (!off.length) return [say(id, 'Điện vẫn đang có mà.')];
     off.forEach((x) => { x.off = false; });
     const L = LEVELS[state.level];
-    return [{ type: 'sfx', name: 'good' }, { type: 'toast', text: `⚡ ${p.name} bật lại cầu dao. ${(L.powerCut && L.powerCut.backLine) || 'Có điện rồi!'}`, cls: 'good' }];
+    return [{ type: 'sfx', name: 'good' }, { type: 'toast', text: `⚡ ${p.name} ${(L.powerCut && L.powerCut.fixVerb) || 'bật lại cầu dao'}. ${(L.powerCut && L.powerCut.backLine) || 'Có điện rồi!'}`, cls: 'good' }];
   }
   if (s.kind === 'source') {
     if (held) return [say(id, 'Tay đang cầm đồ rồi.')];
@@ -272,6 +283,7 @@ export function act(state, id) {
     return [{ type: 'sfx', name: 'blip' }];
   }
   if (!on) return [];
+  if (isWork(state, s.kind) && workRule(state, s.kind, on.type) && s.off) return [say(id, `${def.label} ${(LEVELS[state.level].powerCut || {}).offHint || 'mất điện!'}`, 'bad')];
   if (isWork(state, s.kind) && workRule(state, s.kind, on.type)) {
     // take over a laptop someone else stopped working on, or start fresh
     for (const q of Object.values(state.players)) if (q.working === s.id && q.id !== p.id) return [say(id, `${q.name} đang làm máy này.`)];
@@ -375,6 +387,7 @@ export function step(state, dt) {
   const ev = [];
   state.time = Math.max(0, state.time - dt);
   state.elapsed += dt;
+  state.dtLast = dt;
 
   // orders: spawn and expire
   if (state.firstOrders.length && state.elapsed >= state.firstOrders[0]) {
@@ -432,7 +445,7 @@ export function step(state, dt) {
     } else if (p.working) {
       const s = state.stations[p.working];
       const it = s && s.item && state.items[s.item];
-      const rule = it && workRule(state, s.kind, it.type);
+      const rule = it && !s.off && workRule(state, s.kind, it.type);
       if (!rule) { p.working = null; p.workAt = null; }
       else {
         const rate = (isTired(p) ? 0.7 : 1) * (p.jitter > 0 ? 1.25 : 1);
@@ -512,6 +525,23 @@ function levelEvents(state) {
       let n = 0;
       for (let i = 0; i < (F.count || 2) && state.orders.length < spots; i++) { ev.push(...spawnOrder(state, F)); n++; }
       ev.push({ type: 'toast', text: n ? `🔥 ${F.text} (+${n} đơn, tiền ×${F.bonus || 1.5})` : `🔥 ${F.text} Nhưng sảnh hết chỗ, khách đứng ngoài!`, cls: 'drama' });
+    }
+  }
+  // decay: some items "ghost" when they lie around (on a counter or the floor) for too long
+  const D = L.decay;
+  if (D) {
+    const busy = new Set();
+    for (const p of Object.values(state.players)) if (p.held) busy.add(p.held);
+    for (const s of Object.values(state.stations)) if (s.item && s.kind !== 'counter') busy.add(s.item);
+    for (const it of Object.values(state.items)) {
+      if (!D.types.includes(it.type)) continue;
+      if (busy.has(it.id)) { it.idle = 0; continue; }
+      it.idle = (it.idle || 0) + state.dtLast;
+      if (it.idle >= D.after) {
+        const was = ITEMS[it.type].label;
+        it.type = D.to; it.idle = 0;
+        ev.push({ type: 'toast', text: `👻 ${was} để lâu quá… ${D.text}`, cls: 'bad' }, { type: 'sfx', name: 'bad' });
+      }
     }
   }
   const P = L.powerCut;

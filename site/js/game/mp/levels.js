@@ -54,6 +54,27 @@ const BM = {
 };
 const BURNT = '🔥 Khô cháy khét! Cô Tư ngửi thấy từ bếp. Vứt đi làm lại!';
 
+// Người Đúng Chỗ HR people (looks copied from companies/hr/cast.js; client reps and candidates are new)
+const HR = {
+  duy: { name: 'Anh Duy', look: { shirt: '#c9b6ff', pants: '#3f3f55', hair: 'side', hairColor: '#1d1d1f', phone: true } },
+  ngan: { name: 'Chị Ngân', look: { shirt: '#9fb4ff', pants: '#3f4a6b', hair: 'bun', hairColor: '#1d1d1f', glasses: true, mug: true } },
+  tuan: { name: 'Anh Tuấn', look: { shirt: '#ffd3b8', pants: '#4b5566', hair: 'quiff', hairColor: '#2a1a12', phone: true, tie: '#c0392b' } },
+  vy: { name: 'Vy', look: { shirt: '#ffc6e0', pants: '#7d86b3', hair: 'pony', hairColor: '#3b2418', pods: true } },
+  my: { name: 'Chị My', look: { shirt: '#b8f0d8', pants: '#4a5a52', hair: 'short', hairColor: '#1d1d1f', glasses: true, notes: true } },
+  khoa: { name: 'Anh Khoa', look: { shirt: '#ffe08a', pants: '#6b7a99', hair: 'curly', hairColor: '#4a3226', notes: true } },
+  thao: { name: 'Chị Thảo', look: { shirt: '#ffe9a0', pants: '#8a6a5a', hair: 'wavy', hairColor: '#2a2a2a', glasses: true } },
+  phat: { name: 'Phát', look: { shirt: '#aeb7c9', pants: '#3a3a4a', hair: 'beanie', hairColor: '#1d1d1f', pods: true } },
+  quan: { name: 'Quân', look: { shirt: '#a8dcc0', pants: '#5b6b9a', hair: 'cap', hairColor: '#1d1d1f', tote: true } },
+  kimanh: { name: 'Chị Kim Anh (HR Đất Vàng Land)', short: 'Chị Kim Anh', look: { shirt: '#f4a3b5', pants: '#3f3f55', hair: 'long', hairColor: '#1d1d1f', phone: true } },
+  tai: { name: 'Ông Tài (Bao Bì Phú Quý)', short: 'Ông Tài', look: { shirt: '#b9cfe6', pants: '#3a3a4a', hair: 'bald', hairColor: '#777777', tie: '#2d3e8a' } },
+  son: { name: 'Anh Sơn (ứng viên GĐKD)', short: 'Anh Sơn', look: { shirt: '#9fb4ff', pants: '#2d3e5a', hair: 'short', hairColor: '#1d1d1f', tie: '#c0392b' } },
+  yen: { name: 'Chị Yến (ứng viên Marketing)', short: 'Chị Yến', look: { shirt: '#ffb3e6', pants: '#7d5a8a', hair: 'wavy', hairColor: '#7a3b1e', phone: true } },
+  nam: { name: 'Anh Nam (ứng viên Kế toán trưởng)', short: 'Anh Nam', look: { shirt: '#c7e8b5', pants: '#4b5566', hair: 'side', hairColor: '#1d1d1f', glasses: true } },
+  trinh: { name: 'Chị Trinh (ứng viên CFO)', short: 'Chị Trinh', look: { shirt: '#e3d9ff', pants: '#3f3f55', hair: 'bun', hairColor: '#2a2a2a', glasses: true } },
+  hanh: { name: 'Chị Hạnh (Săn Đầu Pro, đối thủ)', short: 'Chị Hạnh 🦈', look: { shirt: '#ff9f7a', pants: '#3a3a4a', hair: 'pony', hairColor: '#1d1d1f', phone: true } },
+  banhmi: { name: 'Cô Bánh Mì (gọi nhầm số)', short: 'Cô Bánh Mì', look: { shirt: '#ffe08a', pants: '#8a6a5a', hair: 'curly', hairColor: '#555555', tote: true } },
+};
+
 export const LEVELS = {
   tm: {
     id: 'tm',
@@ -367,6 +388,168 @@ export const LEVELS = {
       { recipe: 'ga', w: 3 },
       { recipe: 'bo', w: 2, after: 20 },
       { recipe: 'hop', w: 2, after: 40 },
+    ],
+    pace: [
+      { gap: 34, time: 1.4, max: 2, first: [2, 16] },
+      { gap: 24, time: 1.15, max: 3, first: [2, 10] },
+      { gap: 18, time: 1, max: 4, first: [2, 8] },
+      { gap: 14, time: 0.9, max: 4, first: [2, 6] },
+    ],
+    stars: [200, 450, 700],
+  },
+  hr: {
+    id: 'hr',
+    client: 'Người Đúng Chỗ HR',
+    emoji: '🧲',
+    title: 'Tuyển gấp mùa cao điểm',
+    blurb: 'Công ty tư vấn nhân sự có nhân sự nội bộ… tệ nhất. Bách hứa khách shortlist trong 48 tiếng, ứng viên ghost nếu để lâu, ATS là file Google Sheets 14.000 dòng.',
+    bossName: 'Anh Duy',
+    bossLine: 'Em thêm chữ "culture fit" vào offer giúp anh.',
+    notesChance: 0.3,
+    quotes: [
+      'Anh Duy: "Mình không phải công ty, mình là gia đình. Gia đình thì… lần sau làm lại."',
+      'Chị Ngân: "Ứng viên nói để em suy nghĩ là bảy mươi phần trăm từ chối rồi."',
+      'Anh Duy: "Ổn. Anh vừa đăng LinkedIn khen SOS Advisory. 2.000 like."',
+      'Anh Tuấn: "Placement kỷ lục! Pantry tối nay lẩu mừng, anh Duy bao." Anh Duy: "…trong tuần."',
+    ],
+    duration: 180,
+    room: { w: 18, d: 12 },
+    wall: '#e3d9ff',
+    entrance: 'left',
+    // A small HR firm around a glass interview room (clients come in from the LEFT this time):
+    //  z=-6 ┌─────────── KHU RECRUITER (bàn mở) ───────────────┬── PHÒNG ANH DUY (kính) ──┐
+    //       │ Máy in CV  Tủ khảo sát  ATS  ATS  ATS              │        Bàn anh Duy       │
+    //       │            ┌─[cửa]─ TALENT ROOM (kính) ─┐           ├────────[cửa]─────────────┤ z=-2
+    //       │            │  Ghế PV 1        Ghế PV 2  │  [KPI ·   │ C&B chị My   IT của Phát │
+    //       │            └─[cửa]──────────────────────┘ anh Khoa] │                          │
+    //  z=1.5├──────[QUẦY TIẾP KHÁCH]──────┬──── (mở) ─────────────┴──────[cửa]─────────────┤
+    //  cửa→ │ SẢNH ỨNG VIÊN (khách chờ)    │ KHU GHÉP HỒ SƠ: Ghép Ghép Ghép   Rác │ PANTRY   │
+    //  z=6  └──────────────────────────────┴───────────────────────────────────────┴──────────┘
+    rooms: [
+      { name: 'KHU RECRUITER', icon: '🔎', x0: -9, x1: 4, z0: -6, z1: 1.5, floor: '#f6f1ff', sign: [-8.4, -0.7], color: '#e3d9ff' },
+      { name: 'TALENT ROOM', icon: '🎤', x0: -3, x1: 1.4, z0: -3.2, z1: 0.2, floor: '#ffe6ef', sign: [-0.8, 0.2], color: '#ffc8dd' },
+      { name: 'PHÒNG ANH DUY', icon: '👔', x0: 4, x1: 9, z0: -6, z1: -2, floor: '#fff3c4', sign: [5.8, -2], color: '#ffe08a' },
+      { name: 'C&B · IT', icon: '📈', x0: 4, x1: 9, z0: -2, z1: 1.5, floor: '#e3f7ee', sign: [8.0, -2], color: '#b8f0d8' },
+      { name: 'SẢNH ỨNG VIÊN', icon: '🪑', x0: -9, x1: -3.2, z0: 1.5, z1: 6, floor: '#fff0e6', sign: [-4.4, 1.5], color: '#ffd3b8' },
+      { name: 'KHU GHÉP HỒ SƠ', icon: '🗂️', x0: -3.2, x1: 4, z0: 1.5, z1: 6, floor: '#fff8ef', sign: [0.4, 5.95], color: '#fff1b8' },
+      { name: 'PANTRY', icon: '☕', x0: 4, x1: 9, z0: 1.5, z1: 6, floor: '#fff3c4', sign: [5.6, 1.5], color: '#ffe9a0' },
+    ],
+    walls: [
+      // Talent Room: glass on all sides, a door at the top and one at the bottom (x −1.4…−0.2)
+      { x0: -3, z0: -3.2, x1: -1.4, z1: -3.2, kind: 'glass' }, { x0: -0.2, z0: -3.2, x1: 1.4, z1: -3.2, kind: 'glass' },
+      { x0: -3, z0: 0.2, x1: -1.4, z1: 0.2, kind: 'glass' }, { x0: -0.2, z0: 0.2, x1: 1.4, z1: 0.2, kind: 'glass' },
+      { x0: -3, z0: -3.2, x1: -3, z1: 0.2, kind: 'glass' }, { x0: 1.4, z0: -3.2, x1: 1.4, z1: 0.2, kind: 'glass' },
+      // founder's glass office, door to the C&B corner (x 5…6.6)
+      { x0: 4, z0: -6, x1: 4, z1: -2, kind: 'glass' }, { x0: 4, z0: -2, x1: 5, z1: -2, kind: 'glass' }, { x0: 6.6, z0: -2, x1: 9, z1: -2, kind: 'glass' },
+      // lobby: the reception counter sits in its top wall; solid wall to the filing area
+      { x0: -9, z0: 1.5, x1: -6.95, z1: 1.5 }, { x0: -5.05, z0: 1.5, x1: -3.2, z1: 1.5 },
+      { x0: -3.2, z0: 1.5, x1: -3.2, z1: 6 },
+      // filing area is open to the recruiters (x −3.2…1.5); pantry has a door from the C&B corner and one from filing
+      { x0: 1.5, z0: 1.5, x1: 4, z1: 1.5 }, { x0: 4, z0: 1.5, x1: 4.6, z1: 1.5 }, { x0: 6.2, z0: 1.5, x1: 9, z1: 1.5 },
+      { x0: 4, z0: 1.5, x1: 4, z1: 3.8 }, { x0: 4, z0: 5.2, x1: 4, z1: 6 },
+    ],
+    floorDoorMats: [[-0.8, -3.2], [-0.8, 0.2], [5.8, -2], [5.4, 1.5], [4, 4.5, 'v'], [-9, 4.4, 'v']],
+    decor: [
+      // recruiters at their desks (facing the camera) and the plants of "Culture"
+      { kind: 'desk', x: -7.6, z: -2.6, npc: HR.vy }, { kind: 'desk', x: -5.4, z: -2.6, npc: HR.quan },
+      { kind: 'plant', x: 3.4, z: -5.4 }, { kind: 'window', x: -6, z: -6 }, { kind: 'window', x: -1, z: -6 },
+      // founder's office
+      { kind: 'shelf', x: 8.4, z: -4.0 }, { kind: 'plant', x: 4.5, z: -5.4 }, { kind: 'window', x: 6.5, z: -6 },
+      // C&B · IT corner: Phát's IT desk
+      { kind: 'desk', x: 6.9, z: 1.0, npc: HR.phat },
+      // lobby
+      { kind: 'sofa', x: -6.1, z: 5.4 }, { kind: 'plant', x: -3.8, z: 5.5 }, { kind: 'reception', x: -8.0, z: 0.4, npc: HR.thao, sign: 'Chị Thảo · lễ tân kiêm mọi thứ', icon: '🧾' },
+      // filing area
+      { kind: 'crates', x: -2.4, z: 5.4, text: 'HỒ SƠ ỨNG VIÊN', icon: '🗂️' },
+      // pantry: Tuấn closes deals on the phone, Mèo Ghost
+      { kind: 'fridge', x: 8.4, z: 5.3 }, { kind: 'cafetable', x: 7.6, z: 3.1, cat: true }, { kind: 'person', x: 5.0, z: 5.3, npc: HR.tuan, face: 0.6 },
+    ],
+
+    spawns: [{ x: -4.6, z: -0.6 }, { x: 2.4, z: -0.6 }, { x: -4.6, z: 0.6 }, { x: 2.4, z: 0.6 }],
+    stations: [
+      { id: 'cvprint', kind: 'source', gives: 'cv', label: 'Máy in CV', x: -8.0, z: -5.3 },
+      { id: 'survey', kind: 'source', gives: 'survey', label: 'Tủ khảo sát lương', x: -6.6, z: -5.3 },
+      { id: 'ats1', kind: 'laptop', label: 'ATS', x: -4.6, z: -5.3 },
+      { id: 'ats2', kind: 'laptop', label: 'ATS', x: -3.2, z: -5.3 },
+      { id: 'ats3', kind: 'laptop', label: 'ATS', x: -1.8, z: -5.3 },
+      { id: 'iv1', kind: 'interview', label: 'Ghế phỏng vấn', x: -1.9, z: -1.5 },
+      { id: 'iv2', kind: 'interview', label: 'Ghế phỏng vấn', x: 0.3, z: -1.5 },
+      { id: 'boss', kind: 'boss', label: 'Bàn anh Duy', x: 6.5, z: -4.4 },
+      { id: 'cb', kind: 'cb', label: 'Bàn C&B · chị My', x: 5.4, z: -0.4, who: HR.my },
+      { id: 'breaker', kind: 'breaker', label: 'IT · Phát (restart ATS)', x: 8.4, z: -1.0 },
+      { id: 'c1', kind: 'counter', label: 'Bàn ghép', x: -1.8, z: 3.0 },
+      { id: 'c2', kind: 'counter', label: 'Bàn ghép', x: -0.4, z: 3.0 },
+      { id: 'c3', kind: 'counter', label: 'Bàn ghép', x: 1.0, z: 3.0 },
+      { id: 'trash', kind: 'trash', label: 'Thùng rác', x: 3.2, z: 5.3 },
+      { id: 'coffee', kind: 'coffee', label: 'Cà phê chốt deal', x: 6.6, z: 5.4 },
+      { id: 'deliver', kind: 'deliver', label: 'Quầy tiếp khách', x: -6.0, z: 1.5, faces: 'up' },
+    ],
+    boss: HR.duy,
+
+    clients: [HR.kimanh, HR.tai, HR.son, HR.yen, HR.nam, HR.trinh, HR.hanh, HR.banhmi],
+    clientSpots: [{ x: -8.2, z: 2.6 }, { x: -6.9, z: 2.5 }, { x: -5.4, z: 2.5 }, { x: -4.1, z: 2.6 }],
+    clientDoor: [{ x: -10, z: 4.4 }, { x: -8.4, z: 4.4 }],
+    clientLines: {
+      wait: ['Có shortlist chưa em?', 'Bách hứa 48 tiếng mà', 'Anh còn offer chỗ khác đó', 'Để em suy nghĩ thêm…', 'Bên Săn Đầu Pro nhanh hơn'],
+      happy: ['Đúng người đúng chỗ!', 'Tuần sau em đi làm luôn', 'Chị giới thiệu thêm khách cho', 'Quá chuyên nghiệp'],
+      angry: ['Thôi chị tự tuyển', 'Em nhận offer khác rồi', 'Seen. (ghost)', 'Phí cao mà chậm'],
+    },
+
+    // signature events of this level
+    decay: { types: ['cv_ok', 'interviewed', 'offer_draft'], after: 14, to: 'ghost', text: 'Ứng viên đã ghost. Vứt đi tìm người khác!' },
+    powerCut: {
+      at: [72, 138], warn: 3, stations: ['ats1', 'ats2', 'ats3'], icon: '💥',
+      warnText: 'Phát: "Ai vừa sort một cột trong file ATS 14.000 dòng vậy…"',
+      text: 'ATS sập! Google Sheets đứng hình, không lọc được CV. Ra bàn IT của Phát (góc C&B) bấm restart.',
+      offSign: 'ATS sập', fixSign: 'Restart ở đây!', offHint: 'đang đứng hình! Ra bàn IT của Phát restart 💥',
+      fixHint: 'Restart ATS 💥', fixVerb: 'restart ATS', backLine: 'Phát: "Em restart máy thử chưa? …Rồi, chạy rồi."',
+    },
+    standup: {
+      board: { x: 2.7, z: -2.4 }, radius: 1.7, at: [48, 118], warn: 5, length: 7,
+      coach: HR.khoa,
+      boardText: ['KPI: 40 CV/NGÀY', 'Đã ghost: 12 😶', 'Placement: 1'],
+      warnText: 'Anh Khoa: "Trước khi làm tiếp, mình chơi một icebreaker nhỏ nhé!" Tránh xa bảng KPI!',
+      line: 'Anh Khoa: "Ba từ mô tả bản thân. Không được dùng từ mệt."',
+    },
+
+    process: {
+      work: {
+        laptop: { cv: { to: 'cv_ok', time: 2.5 }, survey: { to: 'survey_xls', time: 3 }, offer_notes: { to: 'offer_draft', time: 2 } },
+        interview: { cv_ok: { to: 'interviewed', time: 4 } },
+      },
+      auto: {
+        cb: { survey_xls: { to: 'salary_report', time: 4 } },
+        boss: { offer_draft: { to: 'offer_signed', time: 3, notes: 'offer_notes', fixAt: 'ATS' } },
+      },
+      combos: [[['interviewed', 'salary_report'], 'offer_draft']],
+    },
+    recipes: {
+      cv: { title: 'CV gửi gấp', item: 'cv', time: 40, reward: 15, steps: ['🖨️ Máy in CV', '🛎️ Quầy'],
+        how: ['Lấy CV ở Máy in CV (góc trên bên trái)', 'Mang thẳng ra Quầy tiếp khách'] },
+      shortlist: { title: 'Shortlist', item: 'cv_ok', time: 60, reward: 35, steps: ['📄 CV', '💻 ATS lọc', '🛎️ Quầy'],
+        how: ['Lấy CV ở Máy in CV', 'Đặt lên ATS, bấm thêm lần nữa rồi đứng lọc ~2,5 giây', 'Nộp ngay ở Quầy tiếp khách (để trên bàn lâu là ứng viên ghost)'] },
+      interview: { title: 'Ứng viên đã phỏng vấn', item: 'interviewed', time: 90, reward: 70, steps: ['📄 CV', '💻 ATS lọc', '🎤 Talent Room'],
+        how: ['Làm CV đã lọc: CV → ATS', 'Vào Talent Room (phòng kính giữa văn phòng), đặt lên Ghế phỏng vấn', 'Bấm thêm lần nữa rồi đứng phỏng vấn ~4 giây', 'Nộp ở Quầy tiếp khách'] },
+      salary: { title: 'Báo cáo lương', item: 'salary_report', time: 80, reward: 60, steps: ['📋 Tủ khảo sát', '💻 ATS', '📈 Bàn C&B'],
+        how: ['Lấy Phiếu khảo sát ở Tủ khảo sát lương', 'Đặt lên ATS, đứng làm ~3 giây thành Bảng lương thô', 'Mang sang Bàn C&B của chị My (góc phải), chị My tự tính ~4 giây', 'Nộp Báo cáo lương ở Quầy tiếp khách'] },
+      offer: { title: 'Offer đã ký', item: 'offer_signed', time: 140, reward: 150, join: ' · ',
+        steps: ['🤝 Ứng viên đã PV', '📈 Báo cáo lương', '🗂️ ghép', '✍️ anh Duy ký'],
+        how: ['Làm Ứng viên đã phỏng vấn (CV → ATS → Talent Room)', 'Làm Báo cáo lương (Khảo sát → ATS → Bàn C&B)', 'Đặt một món lên Bàn ghép, cầm món kia tới bấm để ghép thành Offer nháp (đừng để lâu, ứng viên ghost)', 'Mang vào Bàn anh Duy ký. Bị bắt "thêm chữ culture fit" thì mang về ATS sửa rồi ký lại', 'Nộp Offer đã ký ở Quầy tiếp khách'] },
+    },
+    tips: [
+      '✋ Một nút làm mọi thứ: đứng sát trạm rồi bấm (lấy, đặt, ghép, làm việc, nộp)',
+      '👻 CV đã lọc, ứng viên đã phỏng vấn và offer nháp để trên bàn quá 14 giây là ứng viên ghost: làm xong thì mang đi luôn',
+      '💥 ATS sập (có người sort cột): ra bàn IT của Phát ở góc C&B bấm restart',
+      '🎲 Anh Khoa gọi icebreaker: tránh xa bảng KPI cạnh Talent Room',
+      '📈 Bàn C&B của chị My tự chạy: đặt Bảng lương thô vào rồi đi làm việc khác',
+      '☕ Burnout gần đầy: vào Pantry uống cà phê (anh Tuấn đang chốt deal trong đó)',
+    ],
+    orderPool: [
+      { recipe: 'cv', w: 1.5 },
+      { recipe: 'shortlist', w: 2.5 },
+      { recipe: 'interview', w: 2.5, after: 10 },
+      { recipe: 'salary', w: 2, after: 15 },
+      { recipe: 'offer', w: 2, after: 40 },
     ],
     pace: [
       { gap: 34, time: 1.4, max: 2, first: [2, 16] },

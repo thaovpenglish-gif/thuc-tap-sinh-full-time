@@ -207,11 +207,37 @@ Chọn ở sảnh (thẻ "Khách hàng") hoặc host đổi trong phòng chờ; 
 - Kỹ thuật: thêm vào engine `flash`, `powerCut`, trạm `breaker`, `rule.ruin/ruinText`, `rule.fixAt`; mặt bằng
   T&M dùng `TM_WALLS`/`TM_MATS`, Ba & Má có `walls`/`rooms` riêng. Test: `tests/mp-bama.test.mjs`.
 
+## 8c. Màn 3: Người Đúng Chỗ HR · "Tuyển gấp mùa cao điểm"
+
+- **Bản đồ riêng** (khách vào từ **bên trái**): Khu recruiter mở (máy in CV, tủ khảo sát lương, 3 máy **ATS**, Vy và
+  Quân ngồi bàn) · **Talent Room** kính ở giữa văn phòng (2 ghế phỏng vấn, ghế nóng màu đỏ, cửa trên và dưới) ·
+  bảng KPI của anh Khoa cạnh Talent Room · Phòng anh Duy (kính) · góc C&B · IT (bàn C&B có chị My ngồi, bàn IT của
+  Phát) · Sảnh ứng viên (sofa, quầy tiếp khách nằm trên tường sảnh, chị Thảo lễ tân kiêm mọi thứ) · Khu ghép hồ sơ ·
+  Pantry (anh Tuấn chốt deal qua điện thoại, Mèo Ghost).
+- **Khách**: Chị Kim Anh (HR Đất Vàng Land), Ông Tài (Bao Bì Phú Quý), ứng viên Anh Sơn, Chị Yến, Anh Nam, Chị Trinh,
+  Chị Hạnh (đối thủ Săn Đầu Pro), Cô Bánh Mì (gọi nhầm số).
+
+  | Việc | Cách làm | Tiền |
+  | --- | --- | --- |
+  | 📄 CV gửi gấp | Máy in CV → quầy | 15k |
+  | ✅ Shortlist | CV → ATS lọc | 35k |
+  | 🤝 Ứng viên đã phỏng vấn (từ 0:10) | CV → ATS → Talent Room (đứng phỏng vấn 4 giây) | 70k |
+  | 📈 Báo cáo lương (từ 0:15) | Phiếu khảo sát → ATS → Bàn C&B chị My (tự chạy) | 60k |
+  | 💌 Offer đã ký (từ 0:40) | Ứng viên đã PV + Báo cáo lương ghép → anh Duy ký (30% "thêm chữ culture fit": sửa ở ATS) | 150k |
+
+- **Cơ chế riêng**:
+  - 👻 **Ứng viên ghost**: CV đã lọc, ứng viên đã phỏng vấn, offer nháp nằm trên bàn hoặc sàn quá 14 giây thì thành
+    "Ứng viên đã ghost" (nhấp nháy từ giây thứ 8). Đang cầm hoặc đang ở ghế phỏng vấn thì không sao.
+  - 💥 **ATS sập** (1:12, 2:18): có người sort cột trong file 14.000 dòng, 3 máy ATS đứng hình, ra bàn IT của Phát restart.
+  - 🎲 **Icebreaker** (0:48, 1:58): anh Khoa kéo ai đứng gần bảng KPI vào chơi 7 giây.
+- Kỹ thuật: `entrance: 'left'`, `decay`, `powerCut` có chữ riêng (`offSign`, `fixSign`, `offHint`…), trạm `interview`,
+  `cb` (có `who`: người ngồi sau trạm), `standup.boardText`. Test: `tests/mp-hr.test.mjs`.
+
 ## 9. Lộ trình
 
 1. ✅ **Bản thử** (`?mp=1`): màn T&M, 3 công thức, burnout, phòng online 1–4 người qua mã/link.
 2. Chơi thử thật với 2–4 người → chỉnh tốc độ đơn, thời gian, mốc sao.
-3. ✅ Màn Ba & Má + chọn màn. Tiếp: HR, Agency, mở màn theo sao.
+3. ✅ Màn Ba & Má, ✅ màn HR, chọn màn. Tiếp: Agency, Event, Audit, Tech, mở màn theo sao.
 4. 3 màn còn lại, âm thanh/hiệu ứng, chuyển host khi host thoát, bỏ cờ `?mp=1`.
 
 ## 10. Câu hỏi còn mở

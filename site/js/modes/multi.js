@@ -14,7 +14,7 @@ import { joinRoom, myId, newRoomCode, normCode, cleanName } from '../net/mp-net.
 import { toast } from '../ui/toast.js';
 import { MP_CSS } from '../ui/mp-style.js';
 
-const LEVEL_ORDER = ['tm', 'bama']; // client companies available in the picker
+const LEVEL_ORDER = ['tm', 'bama', 'hr']; // client companies available in the picker
 const MAX_PLAYERS = 4;
 const SPEED = 3.7;
 const SNAP_EVERY = 0.2;   // host snapshot interval (s)
@@ -643,6 +643,14 @@ export function startMulti({ scene, rig, input, onExit, params }) {
     }
   }
 
+  // an item about to "ghost" (HR: candidates left lying around) blinks
+  function ghostBlink(mesh, it) {
+    const D = L.decay, icon = mesh.userData.icon;
+    if (!icon) return;
+    const warn = D && it && D.types.includes(it.type) && (it.idle || 0) > D.after * 0.55;
+    icon.material.opacity = warn ? (Math.sin(animT * 12) > 0 ? 1 : 0.25) : 1;
+  }
+
   let animT = 0;
   function render(dt) {
     animT += dt;
@@ -657,6 +665,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       const m = world.stations[s.id];
       const it = s.item && game.items[s.item];
       syncItem(m.userData.slot, placed[s.id], it && it.type, (v) => { if (v) placed[s.id] = v; else delete placed[s.id]; });
+      if (placed[s.id]) ghostBlink(placed[s.id], it);
       let v = 0, col = '#9be7c4';
       if (s.busy) { v = s.progress; col = s.kind === 'boss' ? '#ff8fb1' : '#bfe3ff'; }
       else if (s.overdue > 0) { v = s.overdue / 8; col = Math.sin(animT * 14) > 0 ? '#ff6f8a' : '#ffd25a'; }
@@ -674,6 +683,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       if (!fm) { fm = floorItems[it.id] = makeItem(it.type); scene.add(fm); }
       fm.setType(it.type);
       fm.position.set(it.floor.x, 0.02, it.floor.z);
+      ghostBlink(fm, it);
     }
     for (const id of Object.keys(floorItems)) {
       const it = game.items[id];

@@ -41,6 +41,9 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
 - Overlap fixes (Game Owner: "chữ có bị che không?"): progress/patience bars stay straight when their person turns
   (fill anchored in screen space); toasts move to the bottom while playing (max 3); short client names on heads;
   smaller station labels and player tags; my own tag fades and my bar hides while I stand at a station.
+- Level 3 **Người Đúng Chỗ HR** "Tuyển gấp mùa cao điểm": its own plan around a glass Talent Room, entrance on the
+  left; CV → ATS → interview → C&B → offer signed by anh Duy; candidates ghost when left lying around (`decay`),
+  ATS crash fixed at Phát's IT desk (powerCut with its own words), anh Khoa's icebreaker (standup).
 
 ## 2026-11-05 — QC round 1 and publish
 
