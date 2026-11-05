@@ -63,6 +63,9 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
 - Game Owner: "layout y cái cũ". Ba & Má now has its own shophouse-workshop plan: big workshop with a dryer island,
   glass office for Má with the breaker behind her, glass livestream corner, kitchen, packing area open to the workshop,
   staff lane to the shop counter, street-front shop.
+- Overlap fixes (Game Owner: "chữ có bị che không?"): progress/patience bars stay straight when their person turns
+  (fill anchored in screen space); toasts move to the bottom while playing (max 3); short client names on heads;
+  smaller station labels and player tags; my own tag fades and my bar hides while I stand at a station.
 
 ## 2026-11-05 — QC round 1 and publish
 

@@ -87,6 +87,10 @@ export const MP_CSS = `
 .mp-res div { border: 2px solid var(--ink); border-radius: 12px; padding: 8px 4px; font-size: 12px; font-weight: 700; }
 .mp-res b { display: block; font-size: 20px; font-weight: 900; }
 body.mp-touch .mp-hint { bottom: auto; top: 118px; }
+/* while playing, toasts sit at the bottom (above the hint) instead of over the back row of stations */
+body.mp-play #toasts { top: auto; bottom: 66px; flex-direction: column-reverse; max-height: 34vh; overflow: hidden; }
+body.mp-play .toast:nth-last-child(n+4) { display: none; }
+body.mp-play.mp-touch #toasts { bottom: 200px; width: min(70vw, 420px); }
 @media (max-width: 760px) {
   .mp-top { flex-wrap: wrap; right: 10px; }
   .mp-clock { min-width: 96px; padding: 6px 9px; }

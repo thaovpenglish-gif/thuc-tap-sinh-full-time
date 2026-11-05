@@ -39,7 +39,7 @@ const BM = {
   hang: { name: 'Má', look: { shirt: '#ffb3c7', pants: '#8a6a8f', hair: 'bun', hairColor: '#2a2a2a', glasses: true } },
   hung: { name: 'Ba', look: { shirt: '#9fb4ff', pants: '#5d6a9a', hair: 'side', hairColor: '#c9c9c9', glasses: true, tie: '#ff8fa3' } },
   tuan: { name: 'Kevin Tuấn', look: { shirt: '#9ee8c8', pants: '#f2e6cf', hair: 'quiff', hairColor: '#4a3226', pods: true } },
-  maicskh: { name: 'Chị Mai CSKH', look: { shirt: '#ffc59e', pants: '#8a5a4a', hair: 'wavy', hairColor: '#7a3b1e', phone: true } },
+  maicskh: { name: 'Chị Mai CSKH', short: 'Chị Mai', look: { shirt: '#ffc59e', pants: '#8a5a4a', hair: 'wavy', hairColor: '#7a3b1e', phone: true } },
   khoa: { name: 'Anh Khoa', look: { shirt: '#b49cff', pants: '#3f3f55', hair: 'curly', hairColor: '#1d1d1f' } },
   tu: { name: 'Cô Tư', look: { shirt: '#bfe6b5', pants: '#5f7a5a', hair: 'bun', hairColor: '#8a8a8a' } },
   bay: { name: 'Chú Bảy', look: { shirt: '#a8dcc0', pants: '#4a5a52', hair: 'cap', hairColor: '#7fb3ff' } },
@@ -47,10 +47,10 @@ const BM = {
   mi: { name: 'Út Mi', look: { shirt: '#ff9fb2', pants: '#f2e6cf', hair: 'long', hairColor: '#5a2b1e', clip: true, phone: true } },
   cautam: { name: 'Cậu Tám', look: { shirt: '#e0b080', pants: '#5a4a3a', hair: 'bald', hairColor: '#555555', phone: true } },
   dung: { name: 'Anh Dũng', look: { shirt: '#b9cfe6', pants: '#4b5566', hair: 'short', hairColor: '#1d1d1f', mug: true } },
-  tam: { name: 'Chị Tâm (nhà phân phối)', look: { shirt: '#e7c6a5', pants: '#5a4a3a', hair: 'bun', hairColor: '#2a2a2a', glasses: true, phone: true } },
-  sau: { name: 'Cô Sáu Tạp Hóa', look: { shirt: '#f1d7a8', pants: '#6b5a4a', hair: 'curly', hairColor: '#555555', tote: true } },
-  shipper: { name: 'Anh shipper', look: { shirt: '#3fbf6f', pants: '#3a3f55', hair: 'cap', hairColor: '#3fbf6f', phone: true } },
-  shopoi: { name: 'Khách "shop ơi"', look: { shirt: '#c9b6ff', pants: '#5b6b9a', hair: 'pony', hairColor: '#3b2418', phone: true } },
+  tam: { name: 'Chị Tâm (nhà phân phối)', short: 'Chị Tâm', look: { shirt: '#e7c6a5', pants: '#5a4a3a', hair: 'bun', hairColor: '#2a2a2a', glasses: true, phone: true } },
+  sau: { name: 'Cô Sáu Tạp Hóa', short: 'Cô Sáu', look: { shirt: '#f1d7a8', pants: '#6b5a4a', hair: 'curly', hairColor: '#555555', tote: true } },
+  shipper: { name: 'Anh shipper', short: 'Shipper', look: { shirt: '#3fbf6f', pants: '#3a3f55', hair: 'cap', hairColor: '#3fbf6f', phone: true } },
+  shopoi: { name: 'Khách "shop ơi"', short: 'Shop ơi', look: { shirt: '#c9b6ff', pants: '#5b6b9a', hair: 'pony', hairColor: '#3b2418', phone: true } },
 };
 const BURNT = '🔥 Khô cháy khét! Cô Tư ngửi thấy từ bếp. Vứt đi làm lại!';
 
