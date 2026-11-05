@@ -149,8 +149,8 @@ tests/e2e/mp-local.cjs      2 người trong 1 trình duyệt: tạo phòng, và
 - Vị trí do mỗi máy tự gửi (tin nhau, vì là co-op). Hành động (lấy/đặt/nộp) do host quyết.
 - Supabase gói miễn phí giới hạn số tin nhắn/giây cả project: mỗi người gửi vị trí 8 lần/giây, host gửi trạng thái
   5 lần/giây. Nhiều phòng cùng lúc có thể chạm giới hạn, cần theo dõi khi mở rộng.
-- Chưa test qua Supabase thật trong máy làm việc (mạng sandbox chặn); đã test bằng `?net=local`.
-  Lần đầu mở bản deploy nên thử 2 điện thoại thật.
+- Đã test trên bản deploy qua Supabase thật (2 trình duyệt riêng: tạo phòng, vào bằng link, bắt đầu, hành động
+  của khách tới host). Chưa test trên điện thoại thật qua 4G/wifi.
 
 ## 9. Lộ trình
 
