@@ -2,5 +2,6 @@
 // Each builder returns { colliders, interactables, root, spots, bounds, playerStart, meetingSeat, catPath, update, dispose }.
 import { buildBama } from './bama.js';
 import { buildTech } from './tech.js';
+import { buildAgency } from './agency.js';
 
-export const MAPS = { bama: buildBama, tech: buildTech };
+export const MAPS = { bama: buildBama, tech: buildTech, agency: buildAgency };
