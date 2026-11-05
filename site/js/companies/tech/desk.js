@@ -6,6 +6,18 @@ const F = (k) => (r) => !!r.flags[k];
 
 export const DESK = {
   games: [
+    // ---- hands-on (ui/action.js) ----
+    { id: 'tech_whack', type: 'action', game: 'whack', title: 'Đập bug trước giờ demo', icon: '🐛', time: 35, pass: 0.6, count: 16,
+      slotText: 'main.js',
+      target: { emoji: '🐛', labels: ['NullPointer', 'Crash khi login', 'Lag 3 giây', 'Nút không bấm được', 'Sai múi giờ'], hit: 'Fixed!', miss: 'Bug lọt lên prod' },
+      avoid: { emoji: '✨', labels: ['Tính năng mới', 'Dark mode', 'Animation mèo', 'Nút gọi vốn'], hit: 'Ấy, đó là feature!' },
+      prompt: 'Còn 30 phút là demo cho nhà đầu tư. Đập 🐛 thật nhanh. Đừng đập ✨: đó là tính năng, đập là mất.' },
+    { id: 'tech_pr', type: 'action', game: 'conveyor', mode: 'stamp', title: 'Duyệt PR cuối ngày', icon: '✅', time: 40, pass: 0.6, count: 12,
+      stampText: 'APPROVED', hit: 'Approve!', wrongHit: 'Merge nhầm, prod đỏ!', miss: 'PR tốt bị bỏ quên',
+      target: { emoji: '🟢', labels: ['PR có test', 'Fix typo', 'Thêm log lỗi', 'PR nhỏ, có mô tả'] },
+      avoid: { emoji: '🔴', labels: ['PR 4.000 dòng', 'Xóa test cho xanh', '"fix" không mô tả', 'Commit mật khẩu'] },
+      prompt: 'Hàng PR chạy qua. Chỉ đóng dấu APPROVED cho PR ổn khi nó vào khung đỏ.',
+      rule: 'Bấm (hoặc Space) khi PR ỔN vào khung đỏ' },
     { id: 'tech_bug_triage', type: 'sort', title: 'Triage bug sáng thứ Hai', icon: '🐞', show: 7, time: 40, pass: 0.6,
       prompt: 'Jira có 37 bug mới từ cuối tuần. Xếp mức độ trước daily của chị Diệp.',
       bins: ['🔥 P0 · Sửa ngay', '🟠 P1 · Sprint này', '🧊 P3 · Backlog'],

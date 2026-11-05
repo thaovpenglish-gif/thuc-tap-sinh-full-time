@@ -29,10 +29,20 @@ export const canWork = (run) => sessionsToday(run) < DESK_PER_DAY;
  * Pick the next game: never one already played in this run until the pool runs out, then the least recent.
  * Games may carry `when(run)` and `official: true`. Returns a game object or null.
  */
+export const ACTION_SHARE = 0.65;        // hands-on games (type 'action') come up this often when the company has any
 export function pickGame(games, run, seed) {
-  const ok = (games || []).filter((g) => { try { return (!g.when || g.when(run)) && (!g.official || run.status === 'official'); } catch { return false; } });
-  if (!ok.length) return null;
+  const all = (games || []).filter((g) => { try { return (!g.when || g.when(run)) && (!g.official || run.status === 'official'); } catch { return false; } });
+  if (!all.length) return null;
   const seen = run.deskSeen || [];
+  // the hands-on games are the fun ones: they repeat freely (like a cooking game); the rest rotate without repeats
+  const acts = all.filter((g) => g.type === 'action'), rest = all.filter((g) => g.type !== 'action');
+  const r0 = rng(seed + 7)();
+  if (acts.length && (r0 < ACTION_SHARE || !rest.length)) {
+    const last = seen[seen.length - 1];
+    const pool = acts.length > 1 ? acts.filter((g) => g.id !== last) : acts;
+    return [...pool].sort((a, b) => seen.lastIndexOf(a.id) - seen.lastIndexOf(b.id))[0];
+  }
+  const ok = rest;
   const fresh = ok.filter((g) => !seen.includes(g.id));
   const r = rng(seed);
   if (fresh.length) return fresh[Math.floor(r() * fresh.length)];
@@ -65,8 +75,9 @@ const shuffleWith = (arr, r) => { const b = [...arr]; for (let i = b.length - 1;
  */
 export function sampleMini(game, seed) {
   const r = rng(seed);
-  const { id, when, official, show, ask, ...m } = game;
-  void id; void when; void official;
+  const { id, when, official, show, ask, good, bad, ...m } = game; // good/bad = reaction scenes, played by solo.js
+  void id; void when; void official; void good; void bad;
+  if (m.type === 'action') return m;
   if (m.type === 'pick' && show && m.items.length > show) {
     const need = m.pick || 1;
     const right = shuffleWith(m.items.filter((x) => x.correct), r);

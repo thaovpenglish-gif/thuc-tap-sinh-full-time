@@ -8,6 +8,17 @@ const F = (k) => (r) => !!r.flags[k];
 
 export const DESK = {
   games: [
+    // ---- hands-on (ui/action.js) ----
+    { id: 'event_balloon', type: 'action', game: 'hold', skin: 'balloon', title: 'Bơm bóng cổng chào', icon: '🎈', time: 40, pass: 0.6,
+      rounds: 5, color: '#ffe08a', label: 'KHỎE RE',
+      prompt: 'Khách muốn cổng chào 500 quả bóng "to vừa, đừng to quá". Giữ để bơm, thả ra khi bóng chạm vòng xanh.',
+      hint: 'Giữ chuột / chạm giữ màn hình (hoặc giữ Space). Bơm quá là BỤP.' },
+    { id: 'event_checkin', type: 'action', game: 'conveyor', mode: 'stamp', title: 'Soát vé check-in', icon: '🎟️', time: 40, pass: 0.6, count: 12,
+      stampText: 'MỜI VÀO', hit: 'Mời vào!', wrongHit: 'Cho nhầm người vào!', miss: 'Khách hợp lệ bị bỏ sót!',
+      target: { emoji: '🎟️', labels: ['Vé có tên trong danh sách', 'Vé QR còn hạn', 'Thẻ VIP đúng ngày', 'Khách mời có thư mời'] },
+      avoid: { emoji: '⚠️', labels: ['Vé sự kiện năm ngoái', 'Ảnh chụp vé người khác', 'Không có tên trong danh sách', 'Vé in từ ảnh mờ'] },
+      prompt: 'Khách xếp hàng dài. Chỉ đóng dấu MỜI VÀO cho vé hợp lệ khi vé chạy vào khung đỏ.',
+      rule: 'Bấm (hoặc Space) khi vé HỢP LỆ vào khung đỏ' },
     { id: 'event_kit', type: 'pick', title: 'Soạn thùng đồ đi show', icon: '🧰', pick: 3, show: 7, time: 40, pass: 0.66,
       prompt: 'Chị Lan: "Kho mở 10 phút, xe chạy lúc 14:00." Chọn 3 thứ BẮT BUỘC phải có trong thùng đồ hiện trường.',
       items: [

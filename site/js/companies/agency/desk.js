@@ -8,6 +8,15 @@ const F = (k) => (r) => !!r.flags[k];
 
 export const DESK = {
   games: [
+    // ---- hands-on (ui/action.js) ----
+    { id: 'agency_cut', type: 'action', game: 'conveyor', mode: 'beat', title: 'Cắt clip đúng nhịp', icon: '🎬', time: 35, pass: 0.6, count: 14,
+      target: { emoji: '🎵' },
+      prompt: 'Khách muốn clip "bắt trend, cắt theo nhạc". Bấm (hoặc Space) đúng lúc mỗi đoạn chạm vạch hồng.' },
+    { id: 'agency_mod', type: 'action', game: 'whack', title: 'Ẩn bình luận xấu', icon: '🧹', time: 35, pass: 0.6, count: 16,
+      slotText: 'Bình luận · Răng Xinh', bg: '#3b2440', slot: '#553460',
+      target: { emoji: '🙈', labels: ['Link lạ nhận quà', 'Chửi thề', 'Bóc phốt bịa', 'Spam bán sim'], hit: 'Ẩn!', miss: 'Lọt bình luận xấu' },
+      avoid: { emoji: '💬', labels: ['Hỏi giá', 'Khen thật lòng', 'Góp ý lịch sự', 'Tag bạn vào xem'], hit: 'Ẩn nhầm khách thật!' },
+      prompt: 'Livestream đang chạy, bình luận ào ào. Bấm 🙈 để ẩn bình luận xấu. Đừng ẩn 💬 khách thật.' },
     { id: 'agency_caption_brief', type: 'pick', title: 'Caption đúng brief Răng Xinh', icon: '🦷', pick: 2, show: 7, time: 40, pass: 0.5,
       prompt: 'Brief: sinh viên, thông điệp "thơm miệng 12 giờ", giọng vui, không so sánh đối thủ, không hứa như thuốc. Chọn 2 caption gửi anh Tuấn.',
       items: [

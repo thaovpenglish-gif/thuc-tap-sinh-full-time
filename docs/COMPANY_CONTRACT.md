@@ -218,6 +218,15 @@ export const DESK = {
     { id: '…', type: 'quiz', ask: 3, questions: [...] },     // bank of 4–6 questions, 3 asked per play
     { id: '…', type: 'sort', show: 7, bins: [...], items: [...] },  // bank of 8–12 cards, 7 shown
     { id: '…', type: 'order', items: [...] },                 // 4–6 steps, shown whole (no `show`)
+    // ≥ 2 HANDS-ON games (type 'action', ui/action.js) — the fun ones, picked ~65% of the time, they may repeat:
+    { id: '…', type: 'action', game: 'shred', title, icon, prompt, hint, time: 45, pass: 0.6, pieces: 2, strips: 5, item: 'Ức gà luộc' },
+    { id: '…', type: 'action', game: 'hold', skin: 'seal' | 'balloon', rounds: 5, label, color },   // hold → release in the green zone
+    { id: '…', type: 'action', game: 'whack', count: 16, slotText, bg, slot,                     // tap targets, never the avoid ones
+      target: { emoji, labels: [...], hit, miss, color }, avoid: { emoji, labels: [...], hit } },
+    { id: '…', type: 'action', game: 'conveyor', mode: 'stamp', count: 12, stampText, hit, wrongHit, miss, rule,
+      target: { emoji, labels }, avoid: { labels } },   // stamp only the valid sheets (same icon: the label must be read)
+    { id: '…', type: 'action', game: 'conveyor', mode: 'beat', count: 14, target: { emoji } },  // rhythm: tap on the line
+    { id: '…', type: 'action', game: 'align', blocks: [3–5 labels], twist: true, twistLine },   // drag into outlines
     // optional: when(run), official: true (only after promotion), good: [...scene], bad: [...scene]
   ],
   chatter: [ // ≥ 6 group-chat dramas, funny, in character, 3–5 messages each
@@ -230,6 +239,8 @@ export const DESK = {
 };
 ```
 
+- Hands-on games should feel like the industry's physical work (khô gà: xé gà, hàn túi; sự kiện: bơm bóng, soát vé…).
+  New mechanics go in `ui/action.js` (+ a bot in `tests/e2e/action-games.cjs`). Labels ≤ 32 characters.
 - Games must be fair: one clearly right answer a working person would agree on; jokes go in the wrong options and
   `sub` hints. `pick` banks may hold more correct items than `pick` (any `pick` of them = 100%).
 - `show` ≤ 9, `pick` ≤ `show`, `ask` ≤ questions. Lines ≤ 200 characters. No `{ten}` inside mini-games.

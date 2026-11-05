@@ -6,6 +6,16 @@ const F = (k) => (r) => !!r.flags[k];
 
 export const DESK = {
   games: [
+    // ---- hands-on (ui/action.js) ----
+    { id: 'bama_shred', type: 'action', game: 'shred', title: 'Xé khô gà', icon: '🍗', time: 45, pass: 0.6,
+      pieces: 2, strips: 5, item: 'Ức gà luộc',
+      prompt: 'Cô Tư vừa luộc xong mẻ ức gà. Vuốt DỌC theo thớ để xé sợi. Vuốt ngang thớ là ra vụn, Má mà thấy là Má buồn.',
+      hint: 'Kéo chuột hoặc vuốt tay theo hướng các đường thớ trên miếng thịt.',
+      good: [['tu', 'Sợi đều, không vụn. Con xé giống cô hồi trẻ.']], bad: [['tu', 'Vụn thế này chỉ làm chà bông thôi con ơi.']] },
+    { id: 'bama_seal', type: 'action', game: 'hold', skin: 'seal', title: 'Hàn miệng túi khô gà', icon: '🔥', time: 40, pass: 0.6,
+      rounds: 5, label: 'KHÔ GÀ LÁ CHANH',
+      prompt: 'Giữ để máy hàn nóng lên, thả ra khi kim vào vùng xanh. Non tay thì hở túi, quá tay thì cháy túi.',
+      hint: 'Giữ chuột / chạm giữ màn hình (hoặc giữ Space), thả ra đúng lúc.' },
     { id: 'bama_live_orders', type: 'sort', title: 'Đối soát đơn sau buổi live', icon: '📲', show: 7, time: 40, pass: 0.6,
       prompt: 'Út Mi live 3 tiếng, 1.200 comment. Comment nào lên đơn, comment nào phải inbox hỏi lại?',
       bins: ['✅ Lên đơn', '💬 Inbox hỏi thêm', '🚫 Bỏ qua'],

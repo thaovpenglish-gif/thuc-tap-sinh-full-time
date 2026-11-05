@@ -30,6 +30,20 @@ test('games do not repeat until the pool runs out, then the least recent comes b
   assert.equal(D.pickGame(games, { ...r, deskSeen: seen }, 99).id, seen[0]);
 });
 
+test('hands-on (action) games come up most of the time and never twice in a row', () => {
+  const games = [{ id: 'q1', type: 'quiz' }, { id: 'q2', type: 'pick' }, { id: 'q3', type: 'sort' }, { id: 'a1', type: 'action' }, { id: 'a2', type: 'action' }];
+  let act = 0, last = null, repeats = 0;
+  const seen = [];
+  for (let s = 0; s < 400; s++) {
+    const g = D.pickGame(games, run({ deskSeen: [...seen] }), s * 13 + 1);
+    if (g.type === 'action') { act++; if (g.id === last) repeats++; }
+    last = g.id; seen.push(g.id);
+  }
+  assert.ok(Math.abs(act / 400 - D.ACTION_SHARE) < 0.08, `action share ${act / 400}`);
+  assert.equal(repeats, 0);
+  assert.equal(D.sampleMini({ id: 'x', type: 'action', game: 'shred', good: [['nar', 'x']] }, 1).good, undefined, 'reaction scenes stay with the bank');
+});
+
 test('official-only and gated games are skipped for interns', () => {
   const games = [{ id: 'off', official: true }, { id: 'gate', when: (x) => x.flags.ok }, { id: 'free' }];
   for (let s = 0; s < 20; s++) assert.equal(D.pickGame(games, run(), s).id, 'free');
@@ -102,4 +116,11 @@ test('T&M desk content validates', async () => {
   assert.deepEqual(errors, []);
   assert.deepEqual(warns.filter((w) => /desk/.test(w)), []);
   assert.ok(stats.deskGames >= 8 && stats.deskChatter >= 6);
+});
+
+test('every company has its own hands-on desk games', async () => {
+  for (const id of ['tm', 'bama', 'tech', 'agency', 'audit', 'event', 'hr']) {
+    const { DESK } = await import(`../site/js/companies/${id}/desk.js`);
+    assert.ok(DESK.games.filter((g) => g.type === 'action').length >= 2, id);
+  }
 });

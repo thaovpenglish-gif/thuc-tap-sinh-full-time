@@ -53,6 +53,7 @@ npm test
 # test tự chơi (cần server ở cổng 8765): mức lương t0|t1|t3|t5, chiến lược first|last|rand, thêm "tasks" để làm việc vặt
 node tests/e2e/solo-tm-playthrough.cjs t5 last tasks
 node tests/e2e/solo-career.cjs tm t3 first 3 routine desk   # có ngồi bàn làm việc
+node tests/e2e/action-games.cjs                             # bot chơi thử mọi mini-game tay chân (xé gà, hàn túi…)
 node tests/e2e/legacy-playthrough.cjs first
 npm run test:mp   # Multiplayer: 2 người trong 1 trình duyệt (cần server ở cổng 8765)
 ```

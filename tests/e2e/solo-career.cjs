@@ -104,6 +104,7 @@ const OUT = process.env.SHOTS || '/tmp/claude-0';
         const opts = [...m.querySelectorAll('.mini-opt')];
         if (perfect && dbg) {
           if (dbg.type === 'quiz') { const b = opts[dbg.answer[0]]; if (b && !b.disabled) b.click(); return 'quiz'; }
+          if (dbg.type === 'action') { dbg.win(); return 'action'; } // hands-on games: bots in tests/e2e/action-games.cjs
           if (dbg.type === 'sort') { const b = m.querySelector(`.mini-bin[data-b="${dbg.answer[0]}"]`); if (b && !b.disabled) b.click(); return 'quiz'; }
           for (const k of dbg.answer) { const b = m.querySelector(`.mini-opt[data-k="${k}"]`); if (b && !b.classList.contains('on')) b.click(); }
           const go = m.querySelector('.mini-go'); if (go) go.click();

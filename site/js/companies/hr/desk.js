@@ -9,6 +9,18 @@ const F = (k) => (r) => !!r.flags[k];
 
 export const DESK = {
   games: [
+    // ---- hands-on (ui/action.js) ----
+    { id: 'hr_ghost', type: 'action', game: 'whack', title: 'Gọi ứng viên trước khi ghost', icon: '👻', time: 35, pass: 0.6, count: 16,
+      slotText: 'Pipeline tuần này', bg: '#3a2f55', slot: '#4d4170',
+      target: { emoji: '👻', labels: ['Ứng viên Sales', 'Kỹ sư bảo trì', 'Kế toán trưởng', 'Thiết kế UI'], hit: 'Alo! Giữ được', miss: 'Ghost mất rồi', color: '#e3d9ff' },
+      avoid: { emoji: '🤖', labels: ['CV do bot gửi', 'Spam headhunt', 'Hồ sơ trùng 5 lần'], hit: 'Gọi nhầm bot!' },
+      prompt: 'Ứng viên đang mờ dần, sắp ghost. Bấm 👻 để gọi giữ chân. Đừng gọi 🤖 hồ sơ ảo.' },
+    { id: 'hr_screen', type: 'action', game: 'conveyor', mode: 'stamp', title: 'Duyệt CV qua vòng', icon: '📄', time: 40, pass: 0.6, count: 12,
+      stampText: 'QUA VÒNG', hit: 'Qua vòng!', wrongHit: 'Duyệt nhầm CV!', miss: 'Lỡ ứng viên tốt!',
+      target: { emoji: '📄', labels: ['Đúng kinh nghiệm JD', 'Có portfolio', 'Đủ chứng chỉ', 'Từng làm đúng mảng'] },
+      avoid: { emoji: '🗑️', labels: ['Sai ngành hoàn toàn', 'CV để trống', 'Nộp nhầm vị trí', 'Thiếu kỹ năng bắt buộc'] },
+      prompt: 'CV chạy trên băng chuyền. Chỉ đóng dấu QUA VÒNG cho CV hợp JD khi nó vào khung đỏ. (Tuổi, giới tính, quê quán không phải tiêu chí.)',
+      rule: 'Bấm (hoặc Space) khi CV HỢP JD vào khung đỏ' },
     { id: 'hr_cv_filter', type: 'pick', title: 'Cài bộ lọc CV cho ATS', icon: '🧹', pick: 3, show: 7, time: 40, pass: 0.66,
       prompt: 'JD: Kế toán tổng hợp cho Bao Bì Phú Quý. Ông Tài dặn "lọc kỹ vào". Chọn 3 tiêu chí ĐƯỢC dùng để lọc CV.',
       items: [

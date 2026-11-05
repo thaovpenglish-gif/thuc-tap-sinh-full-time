@@ -1,11 +1,13 @@
 // Small, repeatable mini-games shown as a sticker card (keyboard 1–9 / Enter, or tap).
 // Types: 'pick' (choose N right items), 'quiz' (one question at a time), 'order' (tap items in the right order),
-// 'sort' (one card at a time, tap its bin: { bins: ['A', 'B'], items: [{ text, sub?, bin: index }] }).
+// 'sort' (one card at a time, tap its bin: { bins: ['A', 'B'], items: [{ text, sub?, bin: index }] }),
+// 'action' (hands-on canvas game from ui/action.js: { game: 'shred'|'hold'|'whack'|'conveyor'|'align', ...params }).
 // runMinigame(config) -> Promise<{ score: 0..1 }>. config.pass = the bar shown to the player AND used by the caller.
 // pick: score = right picks / min(pick, #correct) — a wrong pick costs the slot it took, nothing more.
 // After finishing, the answers are revealed (right = green, wrong pick = red, missed = dashed) so players learn.
 import { esc } from '../core/util.js';
 import { sfx } from '../core/audio.js';
+import { startAction } from './action.js';
 
 function shuffle(a) { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; }
 
@@ -118,6 +120,12 @@ export function runMinigame(cfg) {
       evaluate = () => right / cfg.questions.length;
       render();
       return; // quiz manages its own key listener
+    } else if (cfg.type === 'action') {
+      el.querySelector('.mini-card').classList.add('act');
+      const game = startAction(body, cfg, { onDone: () => finish() });
+      evaluate = () => game.score();
+      reveal = () => game.stop();
+      if (window.__miniDebug !== undefined) window.__miniDebug = { type: 'action', win: () => game.win() };
     } else if (cfg.type === 'sort') {
       // one card at a time, tap the right bin (keys 1–n); score = right / all cards (unanswered = wrong)
       const items = shuffle(cfg.items);

@@ -7,7 +7,8 @@ import { newRun } from '../site/js/game/save.js';
 
 const SPECIAL = new Set(['me', 'think', 'nar', 'kpi']);
 const FX_KEYS = new Set(['uy', 'dr', 'nl', 'rel', 'set', 'money', 'clock']);
-const MINI_TYPES = new Set(['pick', 'quiz', 'order', 'sort']);
+const MINI_TYPES = new Set(['pick', 'quiz', 'order', 'sort', 'action']);
+const ACTION_GAMES = new Set(['shred', 'hold', 'whack', 'conveyor', 'align']); // site/js/ui/action.js
 const MAX_LINE = 240;
 const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
 
@@ -47,9 +48,20 @@ export async function validateCompany(id) {
     for (const k of ['uy', 'dr', 'nl', 'money', 'clock']) if (fx[k] !== undefined && !Number.isFinite(fx[k])) E(`${at}: fx.${k} must be a number`);
   }
   function checkMini(m, at) {
-    if (!MINI_TYPES.has(m.type)) return E(`${at}: mini.type must be pick|quiz|order|sort`);
+    if (!MINI_TYPES.has(m.type)) return E(`${at}: mini.type must be pick|quiz|order|sort|action`);
     if (!m.title) E(`${at}: mini.title missing`);
     if (m.pass !== undefined && !(m.pass > 0 && m.pass <= 1)) E(`${at}: pass must be in (0, 1]`);
+    if (m.type === 'action') {
+      if (!ACTION_GAMES.has(m.game)) return E(`${at}: action.game must be one of ${[...ACTION_GAMES].join('|')}`);
+      if (!m.prompt) W(`${at}: action game without a prompt (players need to know what to do)`);
+      const lab = (x) => x && Array.isArray(x.labels) && x.labels.length >= 2 && x.labels.every((l) => typeof l === 'string' && l.length <= 32);
+      if (m.game === 'whack' && (!lab(m.target) || !lab(m.avoid))) E(`${at}: whack needs target/avoid { emoji, labels[≥2, ≤32 chars] }`);
+      if (m.game === 'conveyor' && (m.mode || 'stamp') === 'stamp' && (!lab(m.target) || !lab(m.avoid))) E(`${at}: conveyor stamp needs target/avoid { emoji, labels[≥2, ≤32 chars] }`);
+      if (m.game === 'hold' && !['seal', 'balloon'].includes(m.skin || 'seal')) E(`${at}: hold.skin must be seal|balloon`);
+      if (m.game === 'align' && m.blocks && (m.blocks.length < 3 || m.blocks.length > 5)) E(`${at}: align needs 3–5 blocks`);
+      if ((m.time || 30) < 30) W(`${at}: action games need ≥ 30 s (hunger and mood shorten it)`);
+      return;
+    }
     // banks (desk games) show only `show` items / `ask` questions per play
     const n = m.type === 'quiz' ? Math.min(m.ask || Infinity, (m.questions || []).length) : Math.min(m.show || Infinity, (m.items || []).length);
     const perItem = m.type === 'quiz' ? 6 : m.type === 'order' ? 2.5 : m.type === 'sort' ? 3.2 : 3;

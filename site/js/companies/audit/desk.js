@@ -9,6 +9,17 @@ const F = (k) => (r) => !!r.flags[k];
 
 export const DESK = {
   games: [
+    // ---- hands-on (ui/action.js) ----
+    { id: 'audit_stamp', type: 'action', game: 'conveyor', mode: 'stamp', title: 'Đóng dấu chứng từ', icon: '🧾', time: 40, pass: 0.6, count: 12,
+      stampText: 'ĐÃ KIỂM', hit: 'Cộp!', wrongHit: 'Duyệt nhầm chứng từ lỗi!', miss: 'Bỏ sót chứng từ!',
+      target: { emoji: '🧾', labels: ['Hóa đơn có mã số thuế', 'Phiếu chi đủ chữ ký', 'Hợp đồng có dấu đỏ', 'Biên bản có ngày tháng'] },
+      avoid: { emoji: '⚠️', labels: ['Hóa đơn viết tay', 'Ảnh chụp màn hình', 'Phiếu chi không ngày', 'Hợp đồng chưa ký'] },
+      prompt: 'Chứng từ của khách chạy trên băng chuyền. Chỉ đóng dấu tờ HỢP LỆ khi nó vào khung đỏ.' },
+    { id: 'audit_flags', type: 'action', game: 'whack', title: 'Bắt lỗi trên bảng tính', icon: '🚩', time: 35, pass: 0.6, count: 16,
+      slotText: 'Sheet "So_lieu_dep"', bg: '#22473a', slot: '#2f5d4c',
+      target: { emoji: '🚩', labels: ['Ô #REF!', 'Ngày 31/02', 'Số âm lạ', 'Tổng không khớp', 'Số tròn 1 tỷ'], hit: 'Bắt được!', miss: 'Lọt lỗi' },
+      avoid: { emoji: '✅', labels: ['Đã khớp sao kê', '1.250.000', 'Có chứng từ', 'Đúng kỳ'], hit: 'Số đúng mà!' },
+      prompt: 'Ô lỗi nhảy lên khắp file. Bấm 🚩 thật nhanh. Đừng bấm ✅ ô đúng, kẻo bị chị Thảo hỏi vì sao.' },
     { id: 'audit_bank_rec', type: 'sort', title: 'Đối chiếu sao kê tháng 12', icon: '🏦', show: 7, time: 45, pass: 0.6,
       prompt: 'Sổ tiền gửi của Phúc Lộc lệch sao kê. Mỗi khoản: sửa sổ thế nào?',
       bins: ['➕ Ghi tăng sổ', '➖ Ghi giảm sổ', '⏳ Lệch thời điểm, không sửa sổ'],

@@ -7,6 +7,18 @@ const F = (k) => (r) => !!r.flags[k];
 
 export const DESK = {
   games: [
+    // ---- hands-on (ui/action.js) ----
+    { id: 'tm_align', type: 'action', game: 'align', title: 'Căn lề slide', icon: '📐', time: 45, pass: 0.6, twist: true,
+      blocks: ['Tiêu đề: Thị trường trà sữa', 'Biểu đồ doanh thu', '3 insight', 'Nguồn: Hiệp hội 2026', 'Logo khách'],
+      twistLine: '"Chị có vài ý nhỏ…" (chị Tuyết)', twistSub: '(hai khối vừa bị dời chỗ)',
+      prompt: 'Chị Linh: "Slide lệch 2 pixel là khách mất niềm tin." Kéo từng khối vào đúng khung nét đứt.',
+      hint: 'Kéo thả bằng chuột hoặc ngón tay. Gần đúng chỗ là khối tự hít vào.',
+      good: [['linh', 'Thẳng. Chị không tìm được lỗi nào. Hơi khó chịu.']] },
+    { id: 'tm_ping', type: 'action', game: 'whack', title: 'Lọc thông báo trước 9h', icon: '🔔', time: 35, pass: 0.6, count: 16,
+      slotText: 'Teams · T&M', bg: '#2c2a4a', slot: '#3d3a63',
+      target: { emoji: '📌', labels: ['Chị Tuyết: tóm tắt?', 'Khách: số trang?', 'Chị Linh: sửa slide 7', 'Họp 10h đổi phòng'], hit: 'Xử lý!', miss: 'Lỡ việc gấp' },
+      avoid: { emoji: '🎈', labels: ['Team building tự nguyện', 'Ai ăn hộp cơm hồng?', 'Sticker mèo', 'Khảo sát văn hóa #4'], hit: 'Sa vào drama!' },
+      prompt: 'Teams nổ tung lúc 8:55. Bấm 📌 việc gấp để xử lý. Đừng bấm 🎈 drama, bấm vào là mất 20 phút.' },
     { id: 'tm_deck_qc', type: 'pick', title: 'Soát deck trước khi gửi khách', icon: '🔎', pick: 3, show: 7, time: 40, pass: 0.66,
       prompt: 'Deck 42 trang gửi khách lúc 17:00. Chọn 3 lỗi BẮT BUỘC phải sửa.',
       items: [

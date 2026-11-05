@@ -460,3 +460,8 @@ body.nb-open #toasts { display: none; }
 .mini-sort-card.right { background: var(--mint); } .mini-sort-card.wrong { background: var(--pink); }
 .mini-bins { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 4px; }
 .mini-bins .mini-opt { justify-content: center; align-items: center; min-height: 48px; }
+/* mini-game 'action' (ui/action.js): hands-on canvas games */
+.mini-card.act { width: min(600px, 100%); }
+.act-wrap { display: grid; gap: 6px; }
+.act-cv { display: block; width: 100%; height: auto; aspect-ratio: 520 / 300; border: var(--line); border-radius: 16px; box-shadow: var(--pop); touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; background: var(--cream); }
+.act-hint { font-size: 12.5px; font-weight: 800; color: var(--muted); text-align: center; }
