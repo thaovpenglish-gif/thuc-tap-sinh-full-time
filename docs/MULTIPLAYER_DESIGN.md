@@ -265,6 +265,18 @@ Chọn ở sảnh (thẻ "Khách hàng") hoặc host đổi trong phòng chờ; 
   - 📋 **WIP của chị Diệp** (0:50, 2:00): ai đứng gần bảng WIP cạnh quầy client bị kéo vào họp 7 giây.
 - Test: `tests/mp-agency.test.mjs`.
 
+## 8f. Màn 5–7 (hoàn thiện cả 7 công ty)
+
+| Màn | Bản đồ | Chuỗi việc chính | Cơ chế riêng |
+| --- | --- | --- | --- |
+| 🎪 **Đi Đâu Cũng Được** · Mưa giữa sự kiện | kho đạo cụ, văn phòng, phòng chị Kiều trong nhà; **sân sự kiện ngoài trời** (sân khấu gala, 2 lều Plan B, khu khách có rào) | quà gói · lịch trình tour · loa test ngoài sân · backdrop in khổ lớn · bộ sân khấu (backdrop + loa ghép trong lều → chị Kiều "có Plan B chưa?") | 🌧️ **Mưa theo đợt** (0:42, 1:42, 2:30, 16 giây): đồ để ngoài/rơi dưới đất 5 giây là ướt sũng, cầm trên tay ướt chậm gấp đôi, đi ngoài mưa ×0,72; lều thì khô (`rain`, `inRain`) · ✏️ khách đổi ý (revise) |
+| 🧮 **Cân Đối & Cộng Sự** · Kiểm kê kho lúc 2 giờ sáng | khu audit, phòng Partner kính, hành lang, **kho khách**, pantry 2h sáng, phòng khách hàng | photo · tick · bảng cân đối (Nợ + Có ghép) · biên bản kiểm kê (đếm hàng trong kho) · báo cáo kiểm toán (Partner ký) | 🌑 **Đèn cảm ứng tắt** (0:38, 1:38, 2:28, 18 giây): cả văn phòng tối, mỗi người có đèn pin, nhãn/đồ ở xa bị ẩn; **công tắc đèn** bật lại sớm (`dark`, trạm `lightswitch`) · ✈️ **Partner đi vắng** 14 giây (powerCut `autoEnd`, tự hết) |
+| 💻 **Nợ Kỹ Thuật Labs** · Deploy chiều thứ Sáu | open space (ghế lười, bàn bóng bàn), **server room kính** (3 tủ server, deploy, bình rollback), phòng Kevin "THINK BIG", pantry tăng lực, khu khách | slide gọi vốn "có AI" · làm rõ ticket · code (đặt lại lên laptop) · review chị Nguyệt · deploy | 🔥 **Server cháy** (0:46, 1:48, 2:32): lửa lan mỗi 9 giây (−10k), đang cháy thì không deploy; cầm 🧯 rollback bấm vào tủ để dập; **deploy code chưa review là tự châm lửa** (`fire`, trạm `rack`, `rule.ignite`) · 📋 Daily 15 phút (*) |
+
+Cũng trong đợt này (Game Owner: "hiện chữ hơi nhiều"): thông báo ngắn một dòng, tối đa 2 cái, tắt sau 2,4 giây; nhãn
+"Bàn ghép"/"Bàn" chỉ hiện khi đứng gần; bỏ chữ "đang làm" trên đầu nhân vật. Món vừa làm xong ở một trạm làm việc
+có công đoạn tiếp theo (spec → code) thì bấm là lấy ra, muốn làm tiếp thì đặt lại (`it.fresh`).
+
 ## 8e'. Chọn màn trên bản đồ
 
 Game Owner: "phải scroll xuống" → phần chọn khách hàng là **bản đồ khu phố** (đường, cây, trụ sở 🚨 SOS Advisory ở
@@ -284,7 +296,7 @@ trong `levels.js`. Khi làm xong một màn: thêm vào `LEVELS`, thêm id vào 
 
 1. ✅ **Bản thử** (`?mp=1`): màn T&M, 3 công thức, burnout, phòng online 1–4 người qua mã/link.
 2. Chơi thử thật với 2–4 người → chỉnh tốc độ đơn, thời gian, mốc sao.
-3. ✅ Màn Ba & Má, ✅ HR, ✅ Agency, chọn màn. Event, Audit, Tech: thẻ demo "Đang phát triển". Sau: mở màn theo sao.
+3. ✅ Đủ 7 màn (T&M, Ba & Má, HR, Agency, Event, Audit, Tech) + chọn màn trên bản đồ. Sau: mở màn theo sao.
 4. 3 màn còn lại, âm thanh/hiệu ứng, chuyển host khi host thoát, bỏ cờ `?mp=1`.
 
 ## 10. Câu hỏi còn mở

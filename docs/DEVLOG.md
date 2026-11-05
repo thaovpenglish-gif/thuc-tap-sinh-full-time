@@ -80,6 +80,11 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
   columns and fit a laptop screen without scrolling (Game Owner: "phải scroll xuống").
 - Fix: Solo → main menu → Multiplayer drew the Solo office on top of the multiplayer room (Solo keeps its world in the
   shared scene). Multiplayer now starts from a fresh page (`?mp=1&open=mp`) when Solo was opened first.
+- Less text on screen (short one-line toasts, max 2; counter labels only when near; no "đang làm" bubble).
+- Levels 5–7 done, nothing left "coming soon": **Đi Đâu Cũng Được** (rain waves soak what is left outdoors, Plan B
+  tents stay dry, slower walking in the rain), **Cân Đối & Cộng Sự** (motion-sensor lights go out: torches, far labels
+  hidden, light switch; partner away for a while), **Nợ Kỹ Thuật Labs** (server racks catch fire and spread, rollback
+  extinguisher, deploying unreviewed code ignites one; Daily). Freshly finished work is picked up on the next press.
 
 ## 2026-11-05 — QC round 1 and publish
 
