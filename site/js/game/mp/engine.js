@@ -49,6 +49,7 @@ export const ITEMS = {
   offer_notes: { label: 'Offer "thêm chữ culture fit"', icon: '✏️', color: '#ffc2b3' },
   offer_signed: { label: 'Offer đã ký', icon: '💌', color: '#ff8fb1' },
   ghost: { label: 'Ứng viên đã ghost', icon: '👻', color: '#e4e4ea' },
+  bad_hire: { label: 'Ứng viên "sai người sai chỗ"', icon: '🙅', color: '#ffc2b3' },
 };
 
 // What each station kind does with an item. A level may override these with its own `process` table.
@@ -120,6 +121,7 @@ export function createGame(levelId, { seed = 1, players = [] } = {}) {
   };
   for (const s of L.stations) state.stations[s.id] = { id: s.id, kind: s.kind, x: s.x, z: s.z, item: null, progress: 0, overdue: 0, busy: false, off: false };
   state.flashIdx = 0; state.flashWarn = false; state.cutIdx = 0; state.cutWarn = false;
+  state.quizzes = {}; // player id -> an interview in progress (HR)
   players.forEach((p, i) => addPlayer(state, p, i));
   return state;
 }
@@ -215,6 +217,7 @@ export function hintFor(state, p) {
       }
       if (s.off && on) return `${def.label} ${(LEVELS[state.level].powerCut || {}).offHint || 'mất điện! Ra cầu dao bật lại ⚡'}`;
       const wr = on && workRule(state, s.kind, on.type);
+      if (wr && wr.quiz) return p.working === s.id ? 'Đang phỏng vấn… chọn Cho qua vòng hoặc Loại' : `Phỏng vấn ứng viên 🎤`;
       if (wr) return p.working === s.id ? 'Đang làm…' : `Làm ${ITEMS[on.type].label} → ${ITEMS[wr.to].label}`;
       if (on) return `Lấy ${ITEMS[on.type].label}`;
       return null;
@@ -237,6 +240,7 @@ export function act(state, id) {
   const p = state.players[id];
   if (!p || state.phase !== 'play') return [];
   if (frozen(p)) return [];
+  if (state.quizzes && state.quizzes[id]) return []; // answering an interview: buttons only
   const { station: s, def, floor } = targetOf(state, p);
   const held = p.held ? state.items[p.held] : null;
   if (!s) {
@@ -288,12 +292,56 @@ export function act(state, id) {
     // take over a laptop someone else stopped working on, or start fresh
     for (const q of Object.values(state.players)) if (q.working === s.id && q.id !== p.id) return [say(id, `${q.name} đang làm máy này.`)];
     p.working = s.id; p.workAt = { x: p.x, z: p.z };
+    const wr = workRule(state, s.kind, on.type);
+    if (wr.quiz) return startQuiz(state, p, s, wr);
     return [{ type: 'sfx', name: 'choose' }];
   }
   // pick it up (stops processing; a half-done auto job keeps its progress only while it stays in the machine)
   s.item = null; s.progress = 0; s.overdue = 0; s.busy = false;
   p.held = on.id;
   return [{ type: 'sfx', name: 'blip' }];
+}
+
+// ---------- interviews (HR): a quick "pass or reject" on the candidate's answer ----------
+function startQuiz(state, p, s, rule) {
+  const bank = LEVELS[state.level].quiz || [];
+  if (!bank.length) return [];
+  state.quizSeen = state.quizSeen || [];
+  let pool = bank.map((_, i) => i).filter((i) => !state.quizSeen.includes(i));
+  if (!pool.length) { state.quizSeen = []; pool = bank.map((_, i) => i); }
+  const q = pool[Math.floor(rand(state) * pool.length)];
+  state.quizSeen.push(q);
+  const total = rule.quizTime || 8;
+  state.quizzes[p.id] = { station: s.id, q, t: total, total, to: rule.to };
+  s.progress = 0;
+  return [{ type: 'sfx', name: 'choose' }, { type: 'quiz', to: p.id, q }];
+}
+
+/** The interviewer's verdict: pass = true (cho qua vòng) / false (loại). */
+export function answerQuiz(state, id, pass) {
+  const p = state.players[id];
+  const qz = state.quizzes && state.quizzes[id];
+  if (!p || !qz || state.phase !== 'play') return [];
+  const s = state.stations[qz.station];
+  const it = s && s.item && state.items[s.item];
+  const Q = LEVELS[state.level].quiz[qz.q];
+  delete state.quizzes[id];
+  p.working = null; p.workAt = null;
+  if (!it) return [{ type: 'quiz-end', to: id }];
+  s.progress = 0;
+  const right = !!pass === !!Q.good;
+  if (right && Q.good) {
+    it.type = qz.to;
+    return [{ type: 'quiz-end', to: id }, { type: 'sfx', name: 'good' }, say(id, `✅ Chuẩn! ${Q.why}`, 'good')];
+  }
+  if (right) {
+    // rightly rejected: the CV goes back to being a plain CV (find another candidate)
+    it.type = 'cv';
+    return [{ type: 'quiz-end', to: id }, { type: 'sfx', name: 'good' }, say(id, `👍 Loại là đúng. ${Q.why} Lấy CV khác lọc lại nhé.`, 'good')];
+  }
+  it.type = pass ? 'bad_hire' : 'cv';
+  return [{ type: 'quiz-end', to: id }, { type: 'sfx', name: 'bad' },
+    say(id, pass ? `🙅 Nhận nhầm rồi! ${Q.why} Vứt đi làm lại.` : `😬 Loại oan ứng viên tốt! ${Q.why}`, 'bad')];
 }
 
 function drinkCoffee(state, p) {
@@ -432,6 +480,15 @@ export function step(state, dt) {
 
   ev.push(...levelEvents(state));
 
+  for (const [pid, qz] of Object.entries(state.quizzes || {})) {
+    const p = state.players[pid];
+    if (!p || p.working !== qz.station) {
+      delete state.quizzes[pid];
+      const s = state.stations[qz.station]; if (s) s.progress = 0;
+      ev.push({ type: 'quiz-end', to: pid });
+    }
+  }
+
   // players: work, burnout, collapse, meetings
   for (const p of Object.values(state.players)) {
     if (p.jitter > 0) p.jitter = Math.max(0, p.jitter - dt);
@@ -446,7 +503,21 @@ export function step(state, dt) {
       const s = state.stations[p.working];
       const it = s && s.item && state.items[s.item];
       const rule = it && !s.off && workRule(state, s.kind, it.type);
+      const qz = state.quizzes[p.id];
       if (!rule) { p.working = null; p.workAt = null; }
+      else if (rule.quiz) {
+        // an interview: the answer comes from the player (answerQuiz); here only the clock runs
+        if (!qz || qz.station !== s.id) { p.working = null; p.workAt = null; }
+        else {
+          qz.t = Math.max(0, qz.t - dt);
+          s.progress = 1 - qz.t / qz.total;
+          p.burnout += TUNING.burn.work * 0.6 * dt;
+          if (qz.t <= 0) {
+            it.type = 'ghost'; s.progress = 0; p.working = null; p.workAt = null; delete state.quizzes[p.id];
+            ev.push({ type: 'quiz-end', to: p.id }, say(p.id, '👻 Ứng viên ngồi chờ bạn nghĩ lâu quá… ghost luôn rồi.', 'bad'), { type: 'sfx', name: 'bad' });
+          }
+        }
+      }
       else {
         const rate = (isTired(p) ? 0.7 : 1) * (p.jitter > 0 ? 1.25 : 1);
         s.progress += (dt * rate) / rule.time;

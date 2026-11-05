@@ -44,6 +44,8 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
 - Level 3 **Người Đúng Chỗ HR** "Tuyển gấp mùa cao điểm": its own plan around a glass Talent Room, entrance on the
   left; CV → ATS → interview → C&B → offer signed by anh Duy; candidates ghost when left lying around (`decay`),
   ATS crash fixed at Phát's IT desk (powerCut with its own words), anh Khoa's icebreaker (standup).
+- HR: real interviews (Game Owner: "thêm phỏng vấn ứng viên"): a candidate takes the hot seat, an interview card shows
+  the question and the candidate's answer, 8 s to pass (1) or reject (2); wrong calls cost, silence ghosts.
 
 ## 2026-11-05 — QC round 1 and publish
 

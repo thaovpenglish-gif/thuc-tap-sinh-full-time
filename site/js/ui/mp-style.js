@@ -78,6 +78,16 @@ export const MP_CSS = `
 .mp-rec-h { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; }
 .mp-rec-h span { font-weight: 800; color: var(--muted); font-size: 12.5px; }
 .mp-rec ol, .mp-rec ul { margin: 4px 0 0; padding-left: 20px; font-size: 13px; line-height: 1.45; }
+#mpRoot .mp-quiz { pointer-events: auto; position: fixed; right: 10px; top: 128px; width: min(380px, calc(100vw - 20px)); background: #fff; border: 3px solid var(--ink); border-radius: 20px; box-shadow: var(--pop-lg); padding: 12px 14px; z-index: 21; animation: tin .2s ease; }
+.mp-quiz-k { font-size: 11px; font-weight: 900; letter-spacing: .12em; color: var(--muted); }
+.mp-quiz-q { font-size: 17px; font-weight: 900; margin: 4px 0 8px; line-height: 1.3; }
+.mp-quiz-a { background: var(--lilac-2); border: 2px solid var(--ink); border-radius: 14px; padding: 8px 10px; font-size: 14.5px; line-height: 1.45; font-weight: 600; }
+.mp-quiz-a span { font-weight: 900; }
+.mp-quiz-bar { height: 10px; border: 2px solid var(--ink); border-radius: 99px; overflow: hidden; background: #f2ede4; margin: 10px 0; }
+.mp-quiz-bar i { display: block; height: 100%; background: var(--mint); }
+.mp-quiz-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mp-quiz-btns .btn { padding: 11px 8px; font-size: 15px; }
+.mp-quiz-btns .btn:last-child { background: var(--peach); }
 #mpAct { position: absolute; right: 22px; bottom: 34px; width: 92px; height: 92px; border-radius: 50%; border: 3px solid var(--ink); background: var(--butter); box-shadow: var(--pop); font-size: 15px; font-weight: 900; pointer-events: auto; touch-action: none; line-height: 1.1; }
 #mpAct:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
 .mp-stars { font-size: 46px; letter-spacing: 6px; margin: 6px 0; }
@@ -108,5 +118,6 @@ body.mp-play.mp-touch #toasts { bottom: 200px; width: min(70vw, 420px); }
   .mp-code { font-size: 36px; }
   body.mp-touch .mp-hint { top: auto; bottom: 150px; }
   #mpRoot .mp-book { top: 64px; max-height: calc(100vh - 80px); }
+  #mpRoot .mp-quiz { top: auto; bottom: 140px; right: 10px; left: 10px; width: auto; }
 }
 `;

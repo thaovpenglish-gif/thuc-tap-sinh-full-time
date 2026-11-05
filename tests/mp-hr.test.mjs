@@ -1,7 +1,7 @@
 // Overdeadline & Overburnout · Người Đúng Chỗ HR level rules. Run with: npm test
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createGame, act, step, setPlayerPos, LEVELS, hintFor } from '../site/js/game/mp/engine.js';
+import { createGame, act, step, setPlayerPos, LEVELS, hintFor, answerQuiz } from '../site/js/game/mp/engine.js';
 
 const L = LEVELS.hr;
 const st = (id) => L.stations.find((s) => s.id === id);
@@ -17,7 +17,10 @@ test('interviewed candidate: CV → ATS → Talent Room → counter', () => {
   g.orders = [{ id: 1, recipe: 'interview', t: 90, total: 90, client: 2, spot: 0 }];
   goTo(g, 'P0', 'cvprint'); act(g, 'P0');
   work(g, 'ats1', 2.7); assert.equal(holding(g), 'cv_ok');
-  work(g, 'iv1', 4.2); assert.equal(holding(g), 'interviewed');
+  goTo(g, 'P0', 'iv1'); act(g, 'P0'); act(g, 'P0');
+  g.quizzes.P0.q = L.quiz.findIndex((q) => q.good); // a good candidate this time
+  answerQuiz(g, 'P0', true); act(g, 'P0');
+  assert.equal(holding(g), 'interviewed');
   goTo(g, 'P0', 'deliver'); act(g, 'P0');
   assert.equal(g.done, 1);
 });
@@ -85,4 +88,42 @@ test('every HR recipe can be made from the stations on the map', () => {
     for (const [[a, b], out] of P.combos) if (makeable.has(a) && makeable.has(b)) makeable.add(out);
   }
   for (const r of Object.values(L.recipes)) assert.ok(makeable.has(r.item), r.title);
+});
+
+test('interview: the candidate answer decides — pass a good one, reject a bad one, wrong calls cost', async () => {
+  const { answerQuiz } = await import('../site/js/game/mp/engine.js');
+  const startInterview = (g) => {
+    g.items.k = { id: 'k', type: 'cv_ok' }; g.stations.iv1.item = 'k';
+    goTo(g, 'P0', 'iv1'); act(g, 'P0');
+    return g.quizzes.P0;
+  };
+  // right call on whatever question comes up
+  let g = game();
+  let qz = startInterview(g);
+  assert.ok(qz, 'an interview card opened');
+  assert.equal(act(g, 'P0').length, 0, 'the action button does nothing while answering');
+  let Q = L.quiz[qz.q];
+  answerQuiz(g, 'P0', Q.good);
+  assert.equal(g.items.k.type, Q.good ? 'interviewed' : 'cv');
+  assert.equal(g.quizzes.P0, undefined);
+  // wrong call
+  g = game(); qz = startInterview(g); Q = L.quiz[qz.q];
+  answerQuiz(g, 'P0', !Q.good);
+  assert.equal(g.items.k.type, Q.good ? 'cv' : 'bad_hire');
+  // no answer in time: the candidate ghosts
+  g = game(); startInterview(g);
+  run(g, 8.3);
+  assert.equal(g.items.k.type, 'ghost');
+  assert.equal(g.quizzes.P0, undefined);
+  // walking away closes the card and leaves the CV on the chair
+  g = game(); startInterview(g);
+  setPlayerPos(g, 'P0', 0, 3); run(g, 0.2);
+  assert.equal(g.quizzes.P0, undefined);
+  assert.equal(g.items.k.type, 'cv_ok');
+});
+
+test('every interview question has an answer, a verdict and an explanation; both verdicts occur', () => {
+  assert.ok(L.quiz.length >= 10);
+  for (const q of L.quiz) assert.ok(q.q && q.a && typeof q.good === 'boolean' && q.why, JSON.stringify(q));
+  assert.ok(L.quiz.some((q) => q.good) && L.quiz.some((q) => !q.good));
 });

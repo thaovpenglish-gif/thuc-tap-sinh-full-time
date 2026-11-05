@@ -53,6 +53,7 @@ async function startMulti() {
     onExit: () => { location.href = location.pathname + '?mp=1'; },
   });
   window.__mp = active.debug; // e2e hooks (tests/e2e/mp-local.cjs)
+  window.__mpLevelQuiz = (i) => { const q = active.debug.levelData.quiz; return q && q[i] && q[i].good; };
 }
 
 async function startLegacy() {
