@@ -170,7 +170,9 @@ export function startSolo({ scene, camera, input, onExit }) {
     const m = mood();
     $('#hudMood').textContent = R.day === 0 ? '' : `${m.emoji} ${m.name}${hungry() ? ' · 🍜 Đói' : ''}${R.today && R.today.hp ? ' · 🎧' : ''}`;
     const step = currentStep();
-    $('#objText').textContent = step ? fmt(step.obj) : 'Hết việc chính hôm nay';
+    const pt = pinned();
+    $('#objText').textContent = pt ? `📍 ${pt.title}: ${legText(currentLeg(pt))}` : step ? fmt(step.obj) : 'Hết việc chính hôm nay';
+    $('#hudObj').classList.toggle('pinned', !!pt);
     const b = $('#badge'); b.hidden = !R.unread; b.textContent = R.unread > 9 ? '9+' : R.unread;
     renderTasks();
   }
@@ -183,9 +185,83 @@ export function startSolo({ scene, camera, input, onExit }) {
       const leg = currentLeg(t);
       const who = leg.npc ? charInfo(leg.npc).name : ((world && world.interactables.find((x) => x.id === leg.obj)) || {}).label || leg.obj;
       const left = Math.max(0, Math.round(t.deadline - R.clock));
-      return `<div class="tl-item${left < 15 ? ' urgent' : ''}"><div class="tl-t">${esc(t.title)}</div><div class="tl-s">→ ${esc(who)} · còn ${left} phút</div></div>`;
-    }).join('');
+      return `<div class="tl-item${left < 15 ? ' urgent' : ''}${pin === t.id ? ' pinned' : ''}" data-id="${esc(t.id)}"><div class="tl-t">${pin === t.id ? '📍 ' : ''}${esc(t.title)}</div><div class="tl-s">→ ${esc(who)} · còn ${left} phút</div></div>`;
+    }).join('') + '<div class="tl-help">Bấm vào việc để xem hướng dẫn</div>';
+    box.querySelectorAll('.tl-item').forEach((el) => { el.onclick = () => showGuide(el.dataset.id); });
   }
+  // ---------- guide (bấm vào task / phím H): what to do, where, how, and "chỉ đường" for an errand ----------
+  let pin = null; // errand id the HUD arrow and the 3D marker point at (chosen in the guide)
+  const pinned = () => { const t = pin && R && R.tasks.find((x) => x.id === pin); if (!t || t.status !== 'open') { pin = null; return null; } return t; };
+  const objLabel = (id) => ((world && world.interactables.find((x) => x.id === id)) || {}).label || id;
+  const PLACE = { printer: 'máy in', coffee: 'pantry', altar: 'bàn thờ Thần Tài', desk: 'bàn của bạn', safe: 'két sắt', plant: 'chậu cây', okr: 'bảng trắng', redchair: 'ghế đỏ', interview: 'phòng họp' };
+  const legText = (l) => (l.npc ? `gặp ${charInfo(l.npc).name}` : `ra ${PLACE[l.obj] || 'chỗ'} (bấm «${objLabel(l.obj)}»)`);
+  const legPos = (l) => { if (l.obj) { const it = world && world.interactables.find((x) => x.id === l.obj); return it ? it.pos : null; } const n = l.npc && npcs[l.npc]; return n && n.mesh.visible ? n.mesh.position : null; };
+  function whereText(tp) {
+    if (!tp) return 'chưa thấy trong văn phòng';
+    const a = fp.arrowTo(tp);
+    const r = (((-(a.deg + 90)) % 360) + 540) % 360 - 180, ar = Math.abs(r), side = r > 0 ? 'trái' : 'phải';
+    const dir = a.dist < 2.5 ? 'ngay cạnh bạn' : ar < 25 ? 'ngay phía trước' : ar < 70 ? `phía trước bên ${side}` : ar < 115 ? `bên tay ${side}` : 'sau lưng bạn (quay người lại)';
+    return a.dist < 2.5 ? dir : `${dir}, cách khoảng ${Math.round(a.dist)}m`;
+  }
+  const HOW = isTouch ? 'đi lại gần bằng cần điều khiển, khi hiện chữ ở giữa màn hình thì bấm nút 💬 góc phải' : 'đi lại gần (W A S D), khi hiện chữ ở giữa màn hình thì bấm E';
+  const legExtra = (l) => (l.obj === 'printer' ? ' · có mini-game máy in' : l.obj === 'coffee' ? ' · có mini-game pha nước' : '');
+  let guidePrev = null;
+  function showGuide(focusId) {
+    if (!R || !['play', 'pause'].includes(mode)) return;
+    guidePrev = mode; mode = 'guide'; fp.unlock();
+    $('#pause').hidden = true; $('#prompt').hidden = true; $('#taskList').hidden = true; $('#mobile').hidden = true; $('#crosshair').hidden = true;
+    const step = currentStep();
+    let main;
+    if (!step) main = '<p>Hết việc chính hôm nay. Làm nốt việc vặt (nếu có), ngồi bàn làm việc, hoặc đi ăn.</p>';
+    else if (step.who.startsWith('call:')) main = `<p><b>${esc(fmt(step.obj))}</b></p><ol><li>Chờ điện thoại Teams đổ chuông (vài giây).</li><li>Bấm <b>Nghe</b>${isTouch ? '' : ' (hoặc E)'}. Từ chối thì bị trừ Uy tín và người ta gọi lại.</li></ol>`;
+    else {
+      const l = step.who.startsWith('obj:') ? { obj: step.who.slice(4) } : { npc: step.who };
+      main = `<p><b>${esc(fmt(step.obj))}</b>${step.time ? ` <span class="gd-time">🕒 ${esc(step.time)}</span>` : ''}</p>
+        <ol><li>Tìm ${esc(legText(l))}: <b>${esc(whereText(legPos(l)))}</b>. Mũi tên vàng ➤ trên thanh TASK chỉ đúng hướng, ${l.npc ? 'người đó có dấu ⭐ vàng trên đầu' : 'đồ vật có dấu ⭐ vàng nhấp nháy'}.</li>
+        <li>${esc(HOW.charAt(0).toUpperCase() + HOW.slice(1))}.</li><li>Đọc thoại (bấm${isTouch ? ' vào màn hình' : ' Space'} để tiếp) và chọn câu trả lời.</li></ol>`;
+    }
+    const tasks = active(R.tasks);
+    const tItem = (t) => {
+      const left = Math.max(0, Math.round(t.deadline - R.clock));
+      const steps = t.legs.map((l, i) => `<li class="${i < t.leg ? 'done' : i === t.leg ? 'now' : ''}">${i < t.leg ? '✅' : i === t.leg ? '👉' : '⬜'} ${esc(legText(l).charAt(0).toUpperCase() + legText(l).slice(1))}${esc(legExtra(l))}${i === t.leg ? ` <small>(${esc(whereText(legPos(l)))})</small>` : ''}</li>`).join('');
+      const shortcut = t.leg === 0 && t.legs[0].npc === t.from && t.legs.length > 1 ? `<p class="gd-tip">💡 Đã nhận lời nhờ qua tin nhắn rồi: có thể đi thẳng tới bước 2 (${esc(legText(t.legs[1]))}).</p>` : '';
+      return `<div class="gd-task${t.id === focusId ? ' focus' : ''}${t.id === pin ? ' pinned' : ''}" data-id="${esc(t.id)}">
+        <div class="gd-tt"><b>${esc(t.title)}</b><span class="${left < 15 ? 'late' : ''}">⏰ còn ${left} phút</span></div>
+        <small class="gd-from">Người nhờ: ${esc(charInfo(t.from).name)}</small>
+        <ol class="gd-steps">${steps}</ol>${shortcut}
+        <p class="gd-fx">Xong đúng hạn: +2 Uy tín, thân hơn với ${esc(charInfo(t.from).name)}. Trễ hạn: −3 Uy tín.</p>
+        <button class="btn${t.id === pin ? '' : ' primary'} gd-pin" data-id="${esc(t.id)}">${t.id === pin ? '✕ Thôi chỉ đường' : '📍 Chỉ đường tới bước này'}</button></div>`;
+    };
+    const el = document.getElementById('guide') || Object.assign(document.createElement('div'), { id: 'guide' });
+    document.body.appendChild(el);
+    el.innerHTML = `<div class="gd-card">
+      <div class="gd-head"><b>🧭 Hướng dẫn</b><button class="btn ghost" id="gdClose" aria-label="Đóng">✕</button></div>
+      <div class="gd-scroll">
+        <section><h3>⭐ Việc chính</h3>${main}</section>
+        <section><h3>📋 Việc vặt ${tasks.length ? `(${tasks.length})` : ''}</h3>${tasks.length ? tasks.map(tItem).join('') : '<p class="muted">Chưa ai nhờ gì. Lúc có người nhờ sẽ hiện ở góc màn hình.</p>'}</section>
+        <section class="gd-tips"><h3>💡 Mẹo</h3><ul>
+          <li>Dấu ⭐ <b>vàng</b> trên đầu = việc chính, dấu <b>xanh</b> = việc vặt.</li>
+          <li>Đói (thanh Năng lượng thấp) thì ghé pantry ăn. Hết năng lượng là ngất.</li>
+          <li>Rảnh tay thì ngồi vào bàn của bạn để làm việc: có thưởng, review đẹp hơn.</li>
+          <li>Mở lại bảng này: ${isTouch ? 'bấm vào thanh TASK hoặc vào một việc vặt' : 'phím <kbd>H</kbd>, hoặc bấm vào thanh TASK khi chuột đang tự do'}.</li></ul></section>
+      </div>
+      <div class="gd-foot"><button class="btn primary" id="gdOk">Đã hiểu, làm tiếp →</button></div></div>`;
+    el.hidden = false;
+    document.body.classList.add('gd-open');
+    const f = focusId && el.querySelector(`.gd-task[data-id="${CSS.escape(focusId)}"]`); if (f) f.scrollIntoView({ block: 'center' });
+    el.querySelectorAll('.gd-pin').forEach((b) => { b.onclick = () => { pin = pin === b.dataset.id ? null : b.dataset.id; sfx.choose(); closeGuide(); if (pin) toast('📍 Đang chỉ đường: mũi tên trên thanh TASK và dấu ⭐ xanh chỉ tới bước tiếp theo.', 'msg', 3.5); }; });
+    $('#gdClose').onclick = closeGuide; $('#gdOk').onclick = closeGuide;
+    el.onclick = (e) => { if (e.target === el) closeGuide(); };
+  }
+  function closeGuide() {
+    const el = document.getElementById('guide'); if (el) el.hidden = true;
+    document.body.classList.remove('gd-open');
+    if (mode !== 'guide') return;
+    if (guidePrev === 'pause') { mode = 'pause'; $('#pause').hidden = false; return; }
+    mode = 'play'; $('#crosshair').hidden = isTouch; $('#mobile').hidden = !isTouch; fp.lock(); updateHUD();
+  }
+  $('#hudObj').addEventListener('click', () => showGuide());
+
   function applyFx(fx) {
     if (!fx || !R) return;
     const lbl = { uy: 'Uy tín', dr: 'Drama', nl: 'Năng lượng' };
@@ -714,7 +790,7 @@ export function startSolo({ scene, camera, input, onExit }) {
       ${R.day > 0 ? `<div class="mood-card"><b>${m.emoji} Mood hôm nay: ${esc(m.name)}</b><span>${esc(m.text)}</span></div>` : ''}
       <p class="ov-text">${esc(fmt(d.intro || ''))}</p>
       <div class="btns"><button class="btn primary" id="goDay">${R.step > 0 ? 'Làm tiếp →' : 'Vào văn phòng →'}</button>${quickable ? '<button class="btn" id="quickDay" title="Đọc nhanh các cảnh, việc vặt quyết định bằng một lựa chọn">⏩ Tua nhanh ngày thường</button>' : ''}${navBtn}</div>
-      ${isTouch ? '' : '<div class="help"><div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> đi · chuột nhìn · <kbd>E</kbd> nói chuyện · <kbd>Q</kbd> Teams · <kbd>Esc</kbd> tạm dừng</div><div>🍜 Đói thì ghé pantry · 📋 việc vặt hiện ở góc phải · 💻 rảnh thì ngồi vào bàn làm việc</div></div>'}
+      ${isTouch ? '' : '<div class="help"><div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> đi · chuột nhìn · <kbd>E</kbd> nói chuyện · <kbd>Q</kbd> Teams · <kbd>Esc</kbd> tạm dừng</div><div>🍜 Đói thì ghé pantry · 📋 việc vặt hiện ở góc phải · 💻 rảnh thì ngồi vào bàn làm việc · <kbd>H</kbd> hướng dẫn</div></div>'}
     `);
     wireNav();
     $('#goDay').onclick = () => { hideOverlay(); startDay(false); };
@@ -1030,6 +1106,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     $('#pause').hidden = true; $('#companyMenu').hidden = true; $('#clickHint').hidden = true; stopRing(); closeCallFrame(); dialogue.hide();
     if (phone.isOpen) phone.close();
     if (notebook.isOpen) notebook.close();
+    const gd = document.getElementById('guide'); if (gd) gd.hidden = true; document.body.classList.remove('gd-open');
   }
   function showMenu() {
     mode = 'menu'; fp.unlock(); clearTimeout(ringTimer);
@@ -1125,6 +1202,7 @@ export function startSolo({ scene, camera, input, onExit }) {
   $('#resumeBtn').onclick = resume;
   $('#pause').addEventListener('click', (e) => { if (e.target.id === 'pause') resume(); });
   $('#pausePhone').onclick = () => phone.open();
+  $('#pauseGuide').onclick = () => showGuide();
   $('#menuBtn').onclick = () => { if (mode === 'pause') resume(); else if (mode === 'play') pause(); };
   const leaveRun = () => { save(); $('#pause').hidden = true; clearTimeout(ringTimer); stopRing(); };
   $('#restartBtn').textContent = '📋 Hồ sơ sự nghiệp (đổi lượt / nhảy công ty)';
@@ -1155,6 +1233,8 @@ export function startSolo({ scene, camera, input, onExit }) {
       if (e.code === 'Space' || e.code === 'KeyE' || e.code === 'Enter' || e.code === 'KeyF') { e.preventDefault(); dialogue.advance(); }
       return;
     }
+    if (mode === 'guide') { if (e.code === 'KeyH' || e.code === 'Escape' || e.code === 'Enter') { e.preventDefault(); closeGuide(); } return; }
+    if (e.code === 'KeyH' && R && (mode === 'play' || mode === 'pause')) { e.preventDefault(); showGuide(); return; }
     if (mode === 'play') {
       if (e.code === 'KeyE' || e.code === 'KeyF') interact();
       if (e.code === 'KeyQ' || e.code === 'Tab') { e.preventDefault(); phone.open(); }
@@ -1220,7 +1300,13 @@ export function startSolo({ scene, camera, input, onExit }) {
         n.marker.position.y = 2.05 + Math.sin(elapsed * 3) * 0.06; n.marker.rotation.y += dt * 2;
       }
     }
-    if (step && step.who.startsWith('obj:') && mode === 'play' && world) {
+    const pt = R && CO ? pinned() : null;
+    const pinObj = pt && currentLeg(pt).obj;
+    if (pinObj && mode === 'play' && world) {
+      const it = world.interactables.find((x) => x.id === pinObj);
+      objMarker.visible = !!it;
+      if (it) { objMarker.position.set(it.pos.x, it.pos.y + 0.75 + Math.sin(elapsed * 3) * 0.06, it.pos.z); objMarker.rotation.y += dt * 2; }
+    } else if (step && step.who.startsWith('obj:') && mode === 'play' && world) {
       const it = world.interactables.find((x) => 'obj:' + x.id === step.who);
       objMarker.visible = !!it;
       if (it) { objMarker.position.set(it.pos.x, it.pos.y + 0.75 + Math.sin(elapsed * 3) * 0.06, it.pos.z); objMarker.rotation.y += dt * 2; }
@@ -1248,7 +1334,11 @@ export function startSolo({ scene, camera, input, onExit }) {
       } else pr.hidden = true;
       if (isTouch) $('#actBtn').hidden = !currentInteract;
     } else if (!$('#prompt').hidden) $('#prompt').hidden = true;
-    if (step && R && (mode === 'play' || mode === 'pause')) {
+    if (pt && (mode === 'play' || mode === 'pause')) {
+      $('#objArrow').textContent = '➤';
+      const tp = legPos(currentLeg(pt));
+      if (tp) { const a = fp.arrowTo(tp); $('#objArrow').style.transform = `rotate(${a.deg}deg)`; $('#objDist').textContent = `· việc vặt · ${Math.round(a.dist)}m`; }
+    } else if (step && R && (mode === 'play' || mode === 'pause')) {
       if (step.who.startsWith('call:')) { $('#objArrow').style.transform = 'rotate(0deg)'; $('#objArrow').textContent = '📞'; $('#objDist').textContent = '· Teams'; }
       else {
         $('#objArrow').textContent = '➤';
