@@ -447,3 +447,7 @@ body.in-call #hud .hud-obj, body.in-call #hud .hud-tr { visibility: hidden; }
 .resign-row { text-align: center; margin-top: 4px; }
 @media (max-width: 560px) { .nb-book { height: 94vh; } .nb-head, .nb-tabs, .nb-page, .nb-foot { padding-left: 46px; } }
 body.nb-open #toasts { display: none; }
+
+.letter-mp { background: var(--lilac-2); border: 2px solid var(--ink); border-radius: 16px; padding: 4px 14px 8px; margin: 14px 0 6px; }
+.letter-mp h3 { margin-top: 10px; }
+.letter-note { font-size: 13px; color: var(--muted); }
