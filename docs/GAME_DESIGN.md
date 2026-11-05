@@ -100,6 +100,11 @@ site/js/game/tasks.js        side tasks: plan/tick/visit/shift/resolve (pure)
 site/js/game/difficulty.js   salary tiers, 10% withholding rule (pure)
 site/js/companies/           registry + one folder per company (content only)
 site/js/maps/office.js       themed office builder (signs, nameplates, palette, props); maps/slots.js = spots (pure)
+site/js/maps/kit3d.js        shared 3D kit (box/cyl/wall with door gaps/glass walls/signs/desks/lanterns/fans + floor painters)
+site/js/maps/custom/*.js     one bespoke building per company (bama, tech, agency, audit, event, hr); each returns its own
+                             spots (all slot names), bounds, playerStart, meetingSeat, catPath; registry custom/index.js
+site/js/content/snakes.js    "Cẩm nang rắn công sở" (10 types) + practice scenarios (16), pure data
+site/js/ui/notebook.js       sổ tay (thoughts, lessons, wallet, diary, handbook tab); ui/practice.js = practice room
 site/js/story/dialogue.js    scene language runner (lines, choices, if, fx, chat, extra nodes)
 site/js/ui/                  minigame (pick/quiz/order), cloudpanel, phone (Teams + confessions), toast, overlay
 site/js/net/                 cloud.js (save RPCs), legacy-net.js (votes, confessions, presence)
@@ -127,5 +132,8 @@ a mini-game makes it publish its answer key (used by the e2e to check that a per
 - Private repo plan: move source + docs to a private repo, add an esbuild bundle/minify step, deploy via Cloudflare
   Pages/Netlify (free with private repos) or GitHub Pro; then make this public repo private. Shipped JS stays readable
   by players in any case.
-- Company-specific 3D props are light (themes + a few prop types); bespoke maps per company could come later.
+- Every company except T&M has its own building (`maps/custom/`), chosen by `meta.map` in the company registry and
+  live when `meta.styleLive` is true (preview any company's map with `?styles=1`; the agency has `?tone=pop|loft|gallery`).
+  A map must define every slot name the content uses; `node tests/e2e/map-reach.cjs` checks that every interactable,
+  cast spot and meeting seat is reachable on foot from the player start.
 - Multiplayer (Office Chaos) is deferred.

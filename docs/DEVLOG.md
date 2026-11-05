@@ -3,6 +3,31 @@
 Diary of what was built, decided and fixed, newest first. Design reference: `docs/GAME_DESIGN.md`.
 Content format: `docs/COMPANY_CONTRACT.md`.
 
+## 2026-11-06 — Six bespoke offices, snake handbook, practice room
+
+**Offices** (one at a time, Owner approved each from screenshots; T&M keeps the original map):
+- Ba & Má: shophouse (shop front with retail counter = reception, Má's desk + safe facing the roller door, Thần Tài
+  altar, scooter; family long table; Ba's tea room; living room with the wooden sofa set = meeting room; kitchen;
+  workshop with racks, dryers, packing, livestream corner; store).
+- Nợ Kỹ Thuật Labs: open floor, check-in kiosk, glass meeting box mid-floor, squad pods, kanban + stand-up circle,
+  glass server room, coffee bar, ping-pong, lounge.
+- Trend Trễ Agency: L-shaped loft around a rooftop terrace, 5.2 m ceiling; tone "Loft" (brick, dark ceiling) chosen
+  over "pop" and "gallery"; sofa reception + award cabinet, round tables, bar, photo studio, MD office, pitch room.
+- Cân Đối & Cộng Sự: elevator lobby + stone reception, spine corridor, cubicle blocks, archive, closed meeting room,
+  glass review room, partner room, HR/IT, pantry.
+- Đi Đâu Cũng Được: small office + shared long desk in front, 6 m props warehouse behind (briefing board, standing
+  meeting table by the event calendar, camp beds, pantry).
+- Người Đúng Chỗ HR: renovated apartment (wooden reception, waiting sofa, founder desk mid-room, Talent Room booth,
+  interview booth with the hot seat, KPI board, small kitchen).
+- Engine: maps may set `playerStart`, `meetingSeat` (with yaw), `bounds`, `catPath`, `spots`.
+
+**Handbook + practice room**: notebook tab "🐍 Cẩm nang" (10 snake types: signs, why, do, say, avoid, rule; golden
+rules; when it is serious incl. Bộ luật Lao động 2019; sources) and "Phòng luyện tập" (rounds of 6 of 16 scenarios,
+3 choices each with the reason, rule and sentences to say). Opens from the Solo menu or the notebook. Content written
+by a research agent; legal wording should be re-checked if the labour code is amended.
+
+**Tests**: reachability audit per map; 3D e2e on every map; full 45-day run of all 7 companies on live maps + legacy.
+
 ## 2026-11-05 — QC round 1 and publish
 
 **Story QC** (one picky-player agent per company read every scene; ~250 fixes in total): times that contradicted each
