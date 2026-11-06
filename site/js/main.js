@@ -1,5 +1,5 @@
 // Entry point: renderer + loop + mode routing.
-// Modes: main menu → Solo (T&M Partners, first person); legacy story (?legacy=1).
+// Modes: main menu → Solo (T&M Partners, first person), Multiplayer, Phá Án (detective); legacy story (?legacy=1).
 import * as THREE from 'three';
 import { $, sleep } from './core/util.js';
 import { CameraRig } from './core/camera.js';
@@ -66,6 +66,15 @@ async function startLegacy() {
   active = start({ scene, camera, input });
 }
 
+// Phá Án Công Sở: detective mode, plain DOM over the (idle) 3D canvas. ?open=case opens it straight from a link.
+let detective = null;
+async function startDetective() {
+  $('#mainMenu').hidden = true;
+  if (detective) { detective.show(); return; }
+  const { startDetective: start } = await import('./modes/detective.js');
+  detective = start({ root: $('#detective'), onExit: () => showMainMenu() });
+}
+
 // Letter from the developer: what the game is, how saving works, disclaimer. Shown once before Solo.
 const LETTER_KEY = 'tts_letter_v1';
 function showLetter(thenPlay) {
@@ -87,6 +96,7 @@ function showMainMenu() {
   $('#mainMenu').hidden = false;
   $('#soloBtn').onclick = () => (letterSeen() ? startSolo() : showLetter(true));
   $('#letterBtn').onclick = () => showLetter(false);
+  $('#caseBtn').onclick = () => startDetective();
   document.querySelectorAll('[data-soon]').forEach((b) => {
     b.onclick = () => { $('#menuNote').hidden = false; };
   });
@@ -104,6 +114,8 @@ async function boot() {
     await startLegacy();
   } else if (FLAGS.mp && (new URLSearchParams(location.search).get('room') || new URLSearchParams(location.search).get('open') === 'mp')) {
     await startMulti(); // opened from an invite link, or coming from Solo
+  } else if (new URLSearchParams(location.search).get('open') === 'case') {
+    await startDetective();
   } else {
     showMainMenu();
   }

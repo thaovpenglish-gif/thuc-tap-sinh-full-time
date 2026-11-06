@@ -29,6 +29,8 @@ site/                       web tĩnh, deploy thẳng lên GitHub Pages (không 
   js/ui/                    toast, overlay, điện thoại, mini-game
   js/modes/solo.js          Solo T&M (góc nhìn thứ nhất)
   js/modes/legacy.js        chế độ cốt truyện cũ
+  js/modes/detective.js     Phá Án Công Sở: chế độ suy luận (đọc hồ sơ, bắt mâu thuẫn trong lời khai, chốt kết luận)
+  js/game/detective.js      luật chơi Phá Án (thuần, có unit test); vụ án ở js/content/cases.js
   js/modes/multi.js         Multiplayer "Overdeadline & Overburnout" (SOS Advisory, co-op, bản thử trên menu chính)
   js/game/mp/               luật chơi Multiplayer (engine.js) và dữ liệu màn (levels.js)
   js/maps/mp-room.js        dựng phòng 3D cho màn Multiplayer
@@ -43,7 +45,7 @@ tests/                      unit test (npm test) + test tự chơi (tests/e2e)
 cd site && python3 -m http.server 8000
 ```
 
-Mở http://localhost:8000 (thêm `?legacy=1` để mở cốt truyện cũ, `?mp=1&net=local` để thử Multiplayer
+Mở http://localhost:8000 (thêm `?open=case` để vào thẳng Phá Án Công Sở, thêm `?legacy=1` để mở cốt truyện cũ, `?mp=1&net=local` để thử Multiplayer
 2 người để thử 2 người bằng 2 tab trên cùng máy, không cần mạng).
 
 ## Kiểm thử
@@ -56,6 +58,7 @@ node tests/e2e/solo-career.cjs tm t3 first 3 routine desk   # có ngồi bàn l�
 node tests/e2e/action-games.cjs                             # bot chơi thử mọi mini-game tay chân (xé gà, hàn túi…)
 node tests/e2e/work-sims.cjs                                # bot chơi thử mọi game đọc tài liệu / nhắn tin, mọi tình huống
 node tests/e2e/legacy-playthrough.cjs first
+node tests/e2e/detective.cjs                                # bot phá cả 3 vụ Phá Án Công Sở (MOBILE=1 cho cỡ điện thoại)
 npm run test:mp   # Multiplayer: 2 người trong 1 trình duyệt (cần server ở cổng 8765)
 ```
 

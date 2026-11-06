@@ -3,6 +3,23 @@
 Diary of what was built, decided and fixed, newest first. Design reference: `docs/GAME_DESIGN.md`.
 Content format: `docs/COMPANY_CONTRACT.md`.
 
+## 2026-11-06 — Phá Án Công Sở (detective mode)
+
+**Asked:** a detective / brain-teaser mode ("game phá án, hack não").
+
+**Built**
+- Main menu card "Phá Án Công Sở" (also `?open=case`). Plain DOM over the idle 3D canvas, works on phones.
+- Loop: 📁 Hồ sơ (logs, chats, receipts, small print that matters) · 🗣️ Lời khai (some lie) · ⚡ Phản bác: pick a
+  statement, present the evidence that breaks it, which opens new files or testimony · 📝 Sổ tay (notes, saved) ·
+  🧩 Kết luận: answer every question; a wrong conclusion only tells how many are right, 3 wrong closes the case.
+- Stars: wrong contradiction, hint and wrong conclusion (×2) cost points. Progress in localStorage (`tts_cases_v1`).
+- 3 cases set in the Solo companies: Vụ 1 oat milk (T&M, badge log + borrowed card), Vụ 2 scheduled email
+  (Trend Trễ, alibis at the send time are a red herring), Vụ 3 DROP TABLE (Nợ Kỹ Thuật Labs, UTC log vs local
+  VPN log, a check row to verify the offset, AI agent with a shared password from Notion).
+- Answer options are shown in a stable shuffled order so the right one has no favourite position.
+- `game/detective.js` (pure rules + `validateCase`: refs, reachability of every locked item), `tests/detective.test.mjs`,
+  `tests/e2e/detective.cjs` (bot plays all cases through the UI, desktop and phone).
+
 ## 2026-11-06 — Six bespoke offices, snake handbook, practice room
 
 **Offices** (one at a time, Owner approved each from screenshots; T&M keeps the original map):
