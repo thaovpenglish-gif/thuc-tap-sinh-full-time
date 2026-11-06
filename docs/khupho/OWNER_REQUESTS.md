@@ -17,5 +17,11 @@ Nguồn sự thật cho agent thiết kế. Mọi mục ở đây phải có m�
    ("GIÀN PHƠI · đừng ăn vụng"), mua gói khô gà ở cổng trường bằng tiền tiêu vặt; Ba & Má có thể ra "gói học sinh";
    nếu người chơi làm ở Ba & Má thì phải canh giàn phơi hoặc… bán cho tụi nhỏ.
 
+9. **Trẻ em chỉ: ăn, ngủ, đi học, tập thể dục, chơi game.** Lịch sinh hoạt của tụi nhỏ xoay quanh mấy việc này.
+10. **Quán net** trong khu phố (người chơi làm nhân viên được: nạp giờ, bán mì ly/nước, dọn máy, xử lý máy treo).
+11. **Drama trốn học đi net:** học sinh cúp tiết ra quán net; giáo viên, phụ huynh, chủ quán net, công an phường
+    (giờ giấc, trẻ em trong quán net) đều dính vào. Người chơi ở vị trí nào (giáo viên, nhân viên quán net, phụ huynh
+    hàng xóm…) thì có lựa chọn khác nhau. Kiểm tra quy định hiện hành về giờ mở cửa/trẻ em tại điểm truy cập Internet.
+
 Quyết định tạm (Owner chưa phản đối): chế độ mới "Khu phố T&M" tách khỏi Solo; quán làm đầu tiên là trà sữa;
 người chơi được nghỉ để chuyển chỗ làm.
