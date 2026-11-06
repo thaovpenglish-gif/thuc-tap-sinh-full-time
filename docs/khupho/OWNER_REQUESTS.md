@@ -23,5 +23,10 @@ Nguồn sự thật cho agent thiết kế. Mọi mục ở đây phải có m�
     (giờ giấc, trẻ em trong quán net) đều dính vào. Người chơi ở vị trí nào (giáo viên, nhân viên quán net, phụ huynh
     hàng xóm…) thì có lựa chọn khác nhau. Kiểm tra quy định hiện hành về giờ mở cửa/trẻ em tại điểm truy cập Internet.
 
+12. **Chợ** (chợ khu phố: sạp rau, thịt, cá, trái cây, tạp hoá; nơi các quán đi chợ sớm, nơi trả giá, bà con buôn
+    chuyện). Người chơi làm phụ sạp được.
+13. **Quán nhậu** (bia, mồi, "dô dô", sau giờ làm của dân văn phòng 7 công ty; drama say xỉn, quên đường về,
+    nợ tiền nhậu, karaoke nhà bên). Người chơi làm phục vụ được. Chú ý quy định nồng độ cồn khi lái xe.
+
 Quyết định tạm (Owner chưa phản đối): chế độ mới "Khu phố T&M" tách khỏi Solo; quán làm đầu tiên là trà sữa;
 người chơi được nghỉ để chuyển chỗ làm.
