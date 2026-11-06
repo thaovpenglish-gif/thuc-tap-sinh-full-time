@@ -35,5 +35,12 @@ Nguồn sự thật cho agent thiết kế. Mọi mục ở đây phải có m�
 16. **Xe ôm và xe đạp ôm**: đi lại trong khu phố (tốn tiền, nhanh hơn đi bộ); người chơi làm tài xế xe ôm
     (công nghệ hoặc truyền thống) hoặc xe đạp ôm được: đón khách, chở hàng cho các quán, giao khô gà, trà sữa.
 
+17. **Xe ba gác của Chú Bảy** (Ba & Má) chở được: hàng (khô gà, nguyên liệu, bàn ghế sự kiện, đồ dọn trọ) và cả
+    người (đi nhờ, vui). Người chơi có thể phụ Chú Bảy chở hàng, thuê xe ba gác khi chuyển trọ.
+18. **Hồ sơ cá nhân (personal profile) được lưu vĩnh viễn**: làm ở đâu thì ghi vào hồ sơ: nơi làm, vị trí, số ngày
+    làm, ngày bắt đầu/kết thúc, cấp bậc đạt được, đánh giá, lý do nghỉ, người quen ở đó. Số ngày luôn được lưu.
+    Hồ sơ đi theo người chơi khắp khu phố: nhà tuyển dụng (và công ty HR) đọc nó khi phỏng vấn, kinh nghiệm cũ mở
+    khoá việc mới. Gắn với lưu đám mây hiện có (email/mã lưu).
+
 Quyết định tạm (Owner chưa phản đối): chế độ mới "Khu phố T&M" tách khỏi Solo; quán làm đầu tiên là trà sữa;
 người chơi được nghỉ để chuyển chỗ làm.
