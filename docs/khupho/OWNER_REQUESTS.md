@@ -28,5 +28,12 @@ Nguồn sự thật cho agent thiết kế. Mọi mục ở đây phải có m�
 13. **Quán nhậu** (bia, mồi, "dô dô", sau giờ làm của dân văn phòng 7 công ty; drama say xỉn, quên đường về,
     nợ tiền nhậu, karaoke nhà bên). Người chơi làm phục vụ được. Chú ý quy định nồng độ cồn khi lái xe.
 
+14. **Bệnh viện** (hoặc trạm y tế phường/phòng khám): khám khi đói lả, kiệt sức, say xỉn, ăn vụng khô gà đau bụng;
+    bảo hiểm y tế; người chơi làm việc được (điều dưỡng, lễ tân, bảo vệ, nhân viên nhà thuốc).
+15. **Tiệm cắt tóc**: cắt, gội, nhuộm; trung tâm buôn chuyện thứ hai sau chợ; người chơi làm thợ phụ được
+    (gội đầu, quét tóc, rồi lên thợ chính); đổi kiểu tóc nhân vật.
+16. **Xe ôm và xe đạp ôm**: đi lại trong khu phố (tốn tiền, nhanh hơn đi bộ); người chơi làm tài xế xe ôm
+    (công nghệ hoặc truyền thống) hoặc xe đạp ôm được: đón khách, chở hàng cho các quán, giao khô gà, trà sữa.
+
 Quyết định tạm (Owner chưa phản đối): chế độ mới "Khu phố T&M" tách khỏi Solo; quán làm đầu tiên là trà sữa;
 người chơi được nghỉ để chuyển chỗ làm.
