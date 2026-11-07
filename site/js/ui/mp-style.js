@@ -64,6 +64,10 @@ export const MP_CSS = `
 .mp-bld:disabled:not(.on):not(.soon) { opacity: .65; }
 .mp-map-info { margin-top: 10px; background: #fff8ef; border: 2px solid var(--ink); border-radius: 14px; padding: 8px 10px; font-size: 13px; line-height: 1.45; min-height: 64px; }
 .mp-map-info b { display: block; font-size: 14px; }
+.mp-map-info .rec { font-size: 12px; font-weight: 800; color: #b5651d; white-space: nowrap; }
+.mp-bld .bstars { font-size: 12px; letter-spacing: -1px; line-height: 1; color: #b5651d; }
+.mp-total { float: right; font-weight: 900; color: #b5651d; }
+.mp-record { display: inline-block; background: var(--butter); border: 2px solid var(--ink); border-radius: 99px; padding: 2px 12px; font-weight: 900; margin: 2px 0 6px; animation: pulse 1.2s infinite; }
 .mp-map-info span { color: #4a4e5a; }
 .mp-map-info.soon { border-style: dashed; }
 .mp-map-info .tag { background: var(--butter); border: 2px solid var(--ink); border-radius: 99px; padding: 0 7px; font-size: 10.5px; font-weight: 900; color: var(--ink); }
@@ -147,7 +151,7 @@ body.mp-play.mp-touch #toasts { bottom: 200px; width: min(70vw, 420px); }
   .mp-clock .t { font-size: 20px; }
   .mp-orders { order: 3; flex-basis: 100%; }
   .mp-ticket { width: 124px; padding: 5px 7px 6px; }
-  .mp-ticket b { font-size: 12px; } .mp-ticket .st { font-size: 10px; }
+  .mp-ticket b { font-size: 12px; } .mp-ticket .st { display: none; } /* phones: who + what + time; the 📖 book has the steps */
   .mp-top { right: 66px; }
   .mp-spacer { display: none; }
   .mp-side { top: 10px; }

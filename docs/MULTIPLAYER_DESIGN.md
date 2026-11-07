@@ -277,6 +277,12 @@ Cũng trong đợt này (Game Owner: "hiện chữ hơi nhiều"): thông báo n
 "Bàn ghép"/"Bàn" chỉ hiện khi đứng gần; bỏ chữ "đang làm" trên đầu nhân vật. Món vừa làm xong ở một trạm làm việc
 có công đoạn tiếp theo (spec → code) thì bấm là lấy ra, muốn làm tiếp thì đặt lại (`it.fresh`).
 
+## 8g. Kỷ lục sao
+
+Mỗi máy lưu kết quả tốt nhất từng khách hàng (`localStorage` `mp_best`: sao, rồi tiền). Tòa nhà trên bản đồ hiện
+⭐⭐☆, ô thông tin hiện "🏆 sao · tiền", tiêu đề bản đồ hiện tổng "⭐ x/21"; màn kết quả báo "🏆 Kỷ lục mới!".
+Trên điện thoại ticket chỉ hiện ai cần · món gì · thanh thời gian (các bước xem trong 📖).
+
 ## 8e'. Chọn màn trên bản đồ
 
 Game Owner: "phải scroll xuống" → phần chọn khách hàng là **bản đồ khu phố** (đường, cây, trụ sở 🚨 SOS Advisory ở

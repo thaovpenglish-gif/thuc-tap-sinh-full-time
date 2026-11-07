@@ -60,6 +60,8 @@ played inside Messenger (tap a link, short rounds, phones). Built in parallel wi
   tents stay dry, slower walking in the rain), **Cân Đối & Cộng Sự** (motion-sensor lights go out: torches, far labels
   hidden, light switch; partner away for a while), **Nợ Kỹ Thuật Labs** (server racks catch fire and spread, rollback
   extinguisher, deploying unreviewed code ignites one; Daily). Freshly finished work is picked up on the next press.
+- Best stars per client saved in the browser and shown on the map (⭐ x/21 total, "Kỷ lục mới!"); compact tickets on
+  phones. Checked Event, Audit and Tech on a phone.
 
 ## 2026-11-05 — QC round 1 and publish
 
