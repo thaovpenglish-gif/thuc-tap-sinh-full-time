@@ -15,39 +15,39 @@ const PI = Math.PI;
 // [placeId, x1, x2, zFront, facing ('s' = front faces +z/south, 'n' = faces −z/north), depth, height, colour, sign, signBg, signFg]
 const LOTS = [
   // north block, facing the main street (front at z = −5)
-  ['bama', -47, -29, -5, 's', 10, 8, '#f6d7a7', 'BA & MÁ · KHÔ GÀ', '#c0392b', '#fff3d6'],
-  ['tramyte', -27, -13, -5, 's', 10, 7.5, '#e9f4f1', 'TRẠM Y TẾ PHƯỜNG TÂM MỸ', '#ffffff', '#1c7c54'],
-  ['trasua', -6, 6, -5, 's', 11, 9, '#ffd8e4', 'TRÀ SỮA FULL TOPPING', '#ff7aa8', '#ffffff'],
-  ['tienloi', 8, 20, -5, 's', 10, 7, '#e8f0ff', 'LUÔN MỞ 24H', '#2e6be6', '#ffffff'],
+  ['bama', -47, -29, -5, 's', 10, 8, '#f0b86a', 'BA & MÁ · KHÔ GÀ', '#c0392b', '#fff3d6'],
+  ['tramyte', -27, -13, -5, 's', 10, 7.5, '#9fd8c8', 'TRẠM Y TẾ PHƯỜNG TÂM MỸ', '#ffffff', '#1c7c54'],
+  ['trasua', -6, 6, -5, 's', 11, 9, '#f59bb9', 'TRÀ SỮA FULL TOPPING', '#ff7aa8', '#ffffff'],
+  ['tienloi', 8, 20, -5, 's', 10, 7, '#8fb6f0', 'LUÔN MỞ 24H', '#2e6be6', '#ffffff'],
   ['net', 22, 34, -5, 's', 10, 7.5, '#2b2f3a', 'NET KHÔNG LAG', '#141821', '#39ff88'],
-  ['house_n1', 36, 47, -5, 's', 10, 10, '#ffe7b3', '', '', ''],
+  ['house_n1', 36, 47, -5, 's', 10, 10, '#f7d154', '', '', ''],
   // north row, facing the school street (front at z = −34)
-  ['truong_th', -47, -22, -34, 's', 12, 9, '#ffe08a', 'TRƯỜNG TIỂU HỌC & THCS TÂM MỸ', '#ffffff', '#b8401f'],
+  ['truong_th', -47, -22, -34, 's', 12, 9, '#f5c542', 'TRƯỜNG TIỂU HỌC & THCS TÂM MỸ', '#ffffff', '#b8401f'],
   ['congvien', -20, -6, -34, 's', 12, 0, '', 'SÂN CHƠI KHU PHỐ 7', '#3e9b57', '#ffffff'],
-  ['chungcu', -4, 10, -34, 's', 12, 15, '#d9d2c3', 'CHUNG CƯ LÔ C', '#7a6a55', '#ffffff'],
+  ['chungcu', -4, 10, -34, 's', 12, 15, '#c9b79c', 'CHUNG CƯ LÔ C', '#7a6a55', '#ffffff'],
   ['toanha', 12, 28, -34, 's', 14, 30, '#9fb8cf', 'CAO ỐC TÂM MỸ', '#1f3a5f', '#ffffff'],
-  ['agency', 30, 42, -34, 's', 12, 16, '#f3e4d6', 'TREND TRỄ · TẦNG THƯỢNG', '#ff5d8f', '#ffffff'],
-  ['house_n2', 44, 47, -34, 's', 12, 9, '#cfe8d8', '', '', ''],
+  ['agency', 30, 42, -34, 's', 12, 16, '#e9a07a', 'TREND TRỄ · TẦNG THƯỢNG', '#ff5d8f', '#ffffff'],
+  ['house_n2', 44, 47, -34, 's', 12, 9, '#8fd3a6', '', '', ''],
   // south block, facing the main street (front at z = +5)
-  ['congan', -47, -39, 5, 'n', 10, 9, '#f2e6c8', 'CÔNG AN PHƯỜNG TÂM MỸ', '#b8261f', '#ffd25a'],
-  ['khupho', -38, -29.5, 5, 'n', 10, 7, '#f7efe0', 'VĂN PHÒNG KHU PHỐ 7', '#ffffff', '#b8261f'],
-  ['dienluc', -25, -17, 5, 'n', 10, 7.5, '#e7eef6', 'ĐIỆN LỰC · PHÒNG GIAO DỊCH', '#0b5fa5', '#ffffff'],
-  ['house_s1', -16, -7, 5, 'n', 10, 10, '#f5d0c5', '', '', ''],
-  ['caphe', -6, 6, 5, 'n', 10, 7, '#e9d3b4', 'CÀ PHÊ CÓC BẢY GHẾ', '#5d4037', '#ffe9a0'],
-  ['photo', 11, 22, 5, 'n', 10, 8, '#fff3c4', 'PHOTO THẦN TỐC', '#1d1d1f', '#ffd25a'],
-  ['cattoc', 23, 34, 5, 'n', 10, 8.5, '#ffe3ec', 'TIỆM TÓC ĐẸP MỖI NGÀY', '#c2255c', '#ffffff'],
-  ['house_s2', 35, 47, 5, 'n', 10, 11, '#d6ecff', '', '', ''],
+  ['congan', -47, -39, 5, 'n', 10, 9, '#e8cf8f', 'CÔNG AN PHƯỜNG TÂM MỸ', '#b8261f', '#ffd25a'],
+  ['khupho', -38, -29.5, 5, 'n', 10, 7, '#f2d39b', 'VĂN PHÒNG KHU PHỐ 7', '#ffffff', '#b8261f'],
+  ['dienluc', -25, -17, 5, 'n', 10, 7.5, '#a9c6e8', 'ĐIỆN LỰC · PHÒNG GIAO DỊCH', '#0b5fa5', '#ffffff'],
+  ['house_s1', -16, -7, 5, 'n', 10, 10, '#f2a48f', '', '', ''],
+  ['caphe', -6, 6, 5, 'n', 10, 7, '#c99a6a', 'CÀ PHÊ CÓC BẢY GHẾ', '#5d4037', '#f2d06b'],
+  ['photo', 11, 22, 5, 'n', 10, 8, '#f7dc6f', 'PHOTO THẦN TỐC', '#1d1d1f', '#ffd25a'],
+  ['cattoc', 23, 34, 5, 'n', 10, 8.5, '#f3a6c4', 'TIỆM TÓC ĐẸP MỖI NGÀY', '#c2255c', '#ffffff'],
+  ['house_s2', 35, 47, 5, 'n', 10, 11, '#8cc8f2', '', '', ''],
   // south block, facing the market street (front at z = +26)
-  ['hem', -47, -29, 26, 's', 10, 9, '#f0dcc8', 'NHÀ DÂN HẺM 42', '#ffffff', '#5d4037'],
-  ['phongtro', -25, -11, 26, 's', 10, 7, '#e3ecd5', 'DÃY TRỌ BÌNH AN', '#3e7b3a', '#ffffff'],
-  ['house_s3', -9, 7, 26, 's', 10, 10, '#ffd3b8', '', '', ''],
-  ['comtam', 11, 21, 26, 's', 10, 7, '#fff1e0', 'CƠM TẤM CÔ LÀI', '#e67700', '#ffffff'],
-  ['quannhau', 22, 34, 26, 's', 10, 6.5, '#ffe9a0', 'QUÁN NHẬU MỘT HAI BA DÔ', '#2b8a3e', '#ffffff'],
-  ['karaoke', 35, 47, 26, 's', 10, 10, '#e3d9ff', 'NHÀ ÔNG THANH', '#ffffff', '#5f3dc4'],
+  ['hem', -47, -29, 26, 's', 10, 9, '#e6b98f', 'NHÀ DÂN HẺM 42', '#ffffff', '#5d4037'],
+  ['phongtro', -25, -11, 26, 's', 10, 7, '#b5d99c', 'DÃY TRỌ BÌNH AN', '#3e7b3a', '#ffffff'],
+  ['house_s3', -9, 7, 26, 's', 10, 10, '#f5a97f', '', '', ''],
+  ['comtam', 11, 21, 26, 's', 10, 7, '#f6c38b', 'CƠM TẤM CÔ LÀI', '#e67700', '#ffffff'],
+  ['quannhau', 22, 34, 26, 's', 10, 6.5, '#f2d06b', 'QUÁN NHẬU MỘT HAI BA DÔ', '#2b8a3e', '#ffffff'],
+  ['karaoke', 35, 47, 26, 's', 10, 10, '#c3a6e8', 'NHÀ ÔNG THANH', '#ffffff', '#5f3dc4'],
   // market row, facing north (front at z = +34)
-  ['cho', -47, 10, 34, 'n', 12, 7, '#f2e2c4', 'CHỢ TÂM MỸ', '#b8261f', '#ffd25a'],
-  ['daumoi', 12, 28, 34, 'n', 12, 8, '#cfd4da', 'ĐẦU MỐI SỈ THUẬN PHÁT', '#1f3a5f', '#ffd25a'],
-  ['event', 30, 47, 34, 'n', 12, 8.5, '#c7ccd3', 'ĐI ĐÂU CŨNG ĐƯỢC · KHO', '#f2a65a', '#ffffff'],
+  ['cho', -47, 10, 34, 'n', 12, 7, '#e2c48e', 'CHỢ TÂM MỸ', '#b8261f', '#ffd25a'],
+  ['daumoi', 12, 28, 34, 'n', 12, 8, '#a8b2bf', 'ĐẦU MỐI SỈ THUẬN PHÁT', '#1f3a5f', '#ffd25a'],
+  ['event', 30, 47, 34, 'n', 12, 8.5, '#9aa5b3', 'ĐI ĐÂU CŨNG ĐƯỢC · KHO', '#f2a65a', '#ffffff'],
 ];
 
 export const STREET_SPAWN = [-18, 27.6, -PI / 2]; // in front of the boarding house door, looking east along Đường Chợ
@@ -114,9 +114,9 @@ export function buildStreet(scene) {
       }
     }
     if (h > 0 && !tower) box(w, 0.25, depth, '#f3f0ea', cx, h, cz, false, 0, 0.015); // roof slab
-    if (label) {
-      const sw = Math.min(w - 0.6, Math.max(4, label.length * 0.32));
-      poster([label], { w: 1024, h: 180, bg: sbg, fg: sfg, sizes: [label.length > 22 ? 62 : 76], weights: [900] }, cx, 3.05, face + dir * 0.06, ry, sw, sw * 180 / 1024);
+    if (label) { // fixed-height board just above the awning, below the first-floor balconies
+      const sh = 0.68, sw = Math.min(w - 0.6, sh * 1024 / 180);
+      poster([label], { w: 1024, h: 180, bg: sbg, fg: sfg, sizes: [label.length > 22 ? 62 : 76], weights: [900] }, cx, 3.0 + sh / 2, face + dir * 0.06, ry, sw, sh);
     }
     // awning over shops
     if (!isHouse && id !== 'toanha' && id !== 'truong_th' && id !== 'chungcu') {
@@ -164,6 +164,14 @@ export function buildStreet(scene) {
   box(18, 0.05, 0.05, '#7d8590', -38, 1.25, -26.2, false, 0, 0.004);
   collideRect(-47, -29, -26.3, -15);
   poster(['GIÀN PHƠI', 'đừng ăn vụng'], { w: 512, h: 220, bg: '#fff1b8', fg: '#8b1a1a', sizes: [56, 40] }, -38, 1.7, -26.15, PI, 1.6, 0.7);
+  // back walls of the north block along the school street (Ba & Má keeps a see-through fence so you can spot the racks)
+  floorZone(-46.5, -26, 46.5, -15, '#b9b2a6', 1, 0.004);
+  for (const [x1, x2, c] of [[-29, -10.5, '#e6d3b3'], [-7.5, 20, '#d9e4d0'], [20, 46.5, '#e8d0d8']]) {
+    box(x2 - x1, 2.4, 0.25, c, (x1 + x2) / 2, 0, -26.25, true, 0, 0.015);
+    box(x2 - x1, 0.12, 0.4, '#f3f0ea', (x1 + x2) / 2, 2.4, -26.25, false, 0, 0.01);
+    for (let x = x1 + 3; x < x2 - 1; x += 6) for (let k = 0; k < 3; k++) sphere(0.35, ['#3e9b57', '#57b36b'][k % 2], x + k * 0.4, 2.7, -26.4, 0.01); // bougainvillea over the wall
+  }
+  poster(['Cổng phụ · Lối vào trường'], { w: 512, h: 96, bg: '#ffffff', fg: '#b8401f', sizes: [40] }, -9, 2.5, -26.1, PI, 1.4, 0.26);
   // market hall: open front with stalls
   for (let i = 0; i < 9; i++) {
     const x = -44 + i * 6;
@@ -173,7 +181,8 @@ export function buildStreet(scene) {
 
   // ---------- street life: poles + wires, lamps, trees, scooters, carts ----------
   const lamps = [];
-  for (const z of [-4.2, 4.2]) for (let x = -44; x <= 44; x += 11) {
+  const POLES = [-46, -29, -9.5, 7, 21, 35, 46]; // between shopfronts, never in front of a door
+  for (const z of [-4.2, 4.2]) for (const x of POLES) {
     cyl(0.12, 0.14, 7, '#8a8f98', x, 0, z, 8, 0.01);
     box(0.9, 0.08, 0.08, '#8a8f98', x, 5.6, z, false, 0, 0.006);
     for (let k = 0; k < 6; k++) box(0.25, 0.25, 0.25, '#555b66', x + (k % 2 ? 0.25 : -0.25), 4.2 + Math.floor(k / 2) * 0.3, z, false, k * 0.4, 0.004); // the famous cable knots
@@ -184,7 +193,7 @@ export function buildStreet(scene) {
   const wireM = new THREE.LineBasicMaterial({ color: '#2b2b2b' });
   for (const z of [-4.2, 4.2]) for (let k = 0; k < 4; k++) {
     const pts = [];
-    for (let x = -44; x <= 44; x += 1) { const t = ((x + 44) % 11) / 11; pts.push(new THREE.Vector3(x, 5.2 - k * 0.18 - Math.sin(t * PI) * 0.5, z + (k - 1.5) * 0.08)); }
+    for (let p = 0; p < POLES.length - 1; p++) for (let q = 0; q <= 8; q++) { const t = q / 8, x = POLES[p] + (POLES[p + 1] - POLES[p]) * t; pts.push(new THREE.Vector3(x, 5.2 - k * 0.18 - Math.sin(t * PI) * 0.5, z + (k - 1.5) * 0.08)); }
     K.root.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), wireM));
   }
   for (const [x, z] of [[-40, -27], [-14, -27], [16, -27], [38, -27], [-36, 27], [3, 27], [40, 33.5], [-20, 33.5], [-44, 4.6], [44, -4.6]]) tree(x, z, 1.1);
@@ -258,7 +267,7 @@ export function buildStreet(scene) {
     const t = Math.max(0, Math.min(1, (min - m0) / Math.max(1, m1 - m0)));
     sky.material.color.copy(c1.set(a)).lerp(c2.set(b), t);
     const day = min >= 360 && min <= 1110 ? 1 : min > 300 && min < 360 ? (min - 300) / 60 : min > 1110 && min < 1170 ? 1 - (min - 1110) / 60 : 0;
-    hemi.intensity = 0.45 + day * 1.1; amb.intensity = 0.25 + day * 0.25; sun.intensity = day * 1.0;
+    hemi.intensity = 0.35 + day * 0.8; amb.intensity = 0.2 + day * 0.18; sun.intensity = day * 0.75;
     const night = day < 0.4;
     lamps.forEach((l) => { l.material.color.set(night ? '#ffe9a8' : '#d9d9d9'); });
     nightWins.forEach((w, k) => { w.material.color.set(night && (k * 7) % 5 < 3 ? '#ffd98a' : '#9fc6e6'); });

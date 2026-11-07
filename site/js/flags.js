@@ -11,4 +11,7 @@ export const FLAGS = {
   // Multiplayer "Overdeadline & Overburnout" (SOS Advisory): open on the main menu as a beta (Game Owner, 2026-11-05).
   // ?mp=0 hides it again (back to "Sắp ra mắt").
   mp: params.get('mp') !== '0',
+  // Khu phố T&M (endless neighbourhood life sim): phase 1 in progress. ?kp=1 shows its card on the main menu
+  // and opens it directly; the card goes public once the Game Owner approves phase 1.
+  kp: params.get('kp') === '1',
 };

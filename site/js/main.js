@@ -59,6 +59,15 @@ async function startMulti() {
   window.__mpLevelQuiz = (i) => { const q = active.debug.levelData.quiz; return q && q[i] && q[i].good; };
 }
 
+// Khu phố T&M (endless neighbourhood, ?kp=1 while in progress). Like Multiplayer it needs a fresh scene: if Solo
+// already built its office, reload straight into the neighbourhood.
+async function startKhupho() {
+  if (solo) { location.href = location.pathname + '?kp=1&open=kp'; return; }
+  $('#mainMenu').hidden = true;
+  const { startKhupho: start } = await import('./modes/khupho.js');
+  active = start({ scene, camera, input, onExit: () => { location.href = location.pathname + '?kp=1'; } });
+}
+
 async function startLegacy() {
   // The original story (Ba Mẹ & Partners), kept intact at ?legacy=1.
   $('#mainMenu').hidden = true;
@@ -90,6 +99,7 @@ function showMainMenu() {
   document.querySelectorAll('[data-soon]').forEach((b) => {
     b.onclick = () => { $('#menuNote').hidden = false; };
   });
+  if (FLAGS.kp) { $('#kpBtn').hidden = false; $('#kpBtn').onclick = () => startKhupho(); }
   const mp = document.querySelector('[data-soon="mp"]');
   if (FLAGS.mp && mp) {
     mp.innerHTML = '<span class="mode-ico">🚨🏃‍♀️🏃</span><b>Overdeadline<br>&amp; Overburnout</b><span>SOS Advisory · co-op 1–4 người</span><em class="go">Bản thử →</em>';
@@ -104,6 +114,8 @@ async function boot() {
     await startLegacy();
   } else if (FLAGS.mp && (new URLSearchParams(location.search).get('room') || new URLSearchParams(location.search).get('open') === 'mp')) {
     await startMulti(); // opened from an invite link, or coming from Solo
+  } else if (FLAGS.kp && new URLSearchParams(location.search).get('open') === 'kp') {
+    await startKhupho();
   } else {
     showMainMenu();
   }
