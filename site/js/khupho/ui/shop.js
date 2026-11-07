@@ -11,6 +11,7 @@ import { injectCss } from './shift.js';
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const WD = ['Chủ nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
 export const dayLabel = (day) => { const d = T.dateOfDay(day); return `${WD[T.weekdayOf(day)]} ${String(d.d).padStart(2, '0')}/${String(d.m).padStart(2, '0')}`; };
+const shortDay = (day) => { const d = T.dateOfDay(day); const w = T.weekdayOf(day); return `${w === 0 ? 'CN' : `T${w + 1}`} ${String(d.d).padStart(2, '0')}/${String(d.m).padStart(2, '0')}`; };
 const amount = (id, v) => { const u = INGREDIENTS[id].unit; if (u !== 'g') return `${Math.floor(v)} ${u === 'bo' ? 'bộ' : 'cái'}`; return v >= 1000 ? `${String(Math.round(v / 100) / 10).replace('.', ',')} kg` : `${Math.round(v)} g`; };
 const TABS = [['stock', '📦 Kho & nhập hàng'], ['channels', '📣 Truyền thông'], ['pnl', '📊 Lời lỗ'], ['ranks', '🪜 Nấc thang']];
 const ALIAS = { kho: 'stock', nhaphang: 'stock', marketing: 'channels', truyenthong: 'channels', loilo: 'pnl', ranks: 'ranks', nacthang: 'ranks' };
@@ -59,6 +60,8 @@ export const SHOP_CSS = `
 .kp-rk{border:2.5px solid var(--ink,#1d1d1f);border-radius:14px;padding:8px 10px;background:#fff;font-size:12.5px}
 .kp-rk.cur{background:var(--butter,#ffe9a0)}.kp-rk.lock{opacity:.6}
 .kp-rk ul{margin:4px 0 0;padding-left:0;list-style:none}
+.kp-rk p{margin:3px 0}
+.kp-days{display:flex;gap:6px;overflow-x:auto;margin-bottom:6px;padding-bottom:4px}.kp-days button{flex:none}
 .kp-chart{width:100%;height:120px}
 .kp-menu2{display:flex;flex-wrap:wrap;gap:4px}
 .kp-menu2 span{font-size:11px;font-weight:800;border:2px solid var(--ink,#1d1d1f);border-radius:8px;padding:1px 6px}
@@ -96,8 +99,10 @@ export function openShopPanel({ root, shop, kp, ctx, tab = 'stock', onClose } = 
     const rows = Object.entries(INGREDIENTS).map(([id, I]) => {
       const v = shop.stock[id] || 0, f = Math.min(1, v / I.par);
       const lots = shop.lots[id] || [];
-      const exp = lots.length ? `hết hạn ${dayLabel(lots[0].exp)}` : I.shelfDays ? '-' : 'để lâu';
-      return `<tr><td>${I.emoji} ${esc(I.name)}</td><td class="n">${esc(amount(id, v))}</td><td><div class="kp-lvl"><i class="${f < 0.25 ? 'low' : f < 0.5 ? 'mid' : ''}" style="width:${f * 100}%"></i></div></td><td>${esc(exp)}</td></tr>`;
+      const ed = lots.length ? T.dateOfDay(lots[0].exp) : null;
+      const exp = ed ? `${String(ed.d).padStart(2, '0')}/${String(ed.m).padStart(2, '0')}` : I.shelfDays ? '-' : 'để lâu';
+      const soon = lots.length && lots[0].exp <= c.day;
+      return `<tr><td>${I.emoji} ${esc(I.name)}</td><td class="n">${esc(amount(id, v))}</td><td><div class="kp-lvl"><i class="${f < 0.25 ? 'low' : f < 0.5 ? 'mid' : ''}" style="width:${f * 100}%"></i></div></td><td${soon ? ' class="neg"' : ''}>${esc(exp)}${soon ? ' (hôm nay)' : ''}</td></tr>`;
     }).join('');
     const pots = shop.pearls.map((b) => { const s = T.pearlState(b, at); return `<li>${esc(PEARLS[b.kind].name)}: ${b.grams} g · nấu ${esc(T.fmtTime(T.splitAbs(b.cookedMin).min))} · <b>${({ cooking: 'đang nấu', fresh: 'tươi', ok: 'còn ngon', hard: 'cứng (quá 8 giờ)' })[s]}</b></li>`; }).join('') || '<li class="kp-mut">Chưa có nồi trân châu nào (nấu khi mở ca)</li>';
     const pend = shop.deliveries.filter((d) => d.status === 'pending').map((d) => `<li>${SUPPLIER[d.supplierId].icon} ${esc(SUPPLIER[d.supplierId].name)}: ${esc(Object.entries(d.items).map(([id, a]) => `${INGREDIENTS[id].name} ${amount(id, a)}`).join(', '))} · tới ${esc(T.fmtTime(d.etaMin))} ${esc(dayLabel(d.etaDay))}${d.auto ? ' (chị Nhung đặt)' : ''}</li>`).join('') || '<li class="kp-mut">Không có đơn đang chờ</li>';
@@ -123,7 +128,7 @@ export function openShopPanel({ root, shop, kp, ctx, tab = 'stock', onClose } = 
     return `${head()}
       <div class="kp-box"><h3>Thực đơn hôm nay</h3><div class="kp-menu2">${MENU_ORDER.map((id) => `<span class="${av[id].ok ? '' : 'out'}">${MENU[id].emoji} ${esc(MENU[id].short)}</span>`).join('')}</div>
         <p class="kp-mut">Hết một nguyên liệu thì món dùng nó tự xám.</p></div>
-      <div class="kp-box"><h3>Kho</h3><table class="kp-tbl"><tr><th>Nguyên liệu</th><th>Tồn</th><th>Mức</th><th>Hạn dùng</th></tr>${rows}</table></div>
+      <div class="kp-box"><h3>Kho</h3><table class="kp-tbl"><tr><th>Nguyên liệu</th><th>Tồn</th><th>Mức</th><th>Hạn</th></tr>${rows}</table></div>
       <div class="kp-box"><h3>Nồi trân châu</h3><ul>${pots}</ul></div>
       <div class="kp-box"><h3>Hàng đang về</h3><ul>${pend}</ul>
         ${p.autoRestockToggle ? `<button data-auto>${shop.autoRestock ? '✅ Chị Nhung tự nhập hàng mỗi tối (bấm để tự quyết)' : '⬜ Tự quyết nhập hàng (bấm để nhờ chị Nhung)'}</button>` : '<p class="kp-mut">Chị Nhung tự nhập hàng mỗi tối. Từ bậc Nhân viên chính bạn được nhờ đi chợ, từ Ca trưởng thì tự quyết.</p>'}</div>
@@ -141,7 +146,7 @@ export function openShopPanel({ root, shop, kp, ctx, tab = 'stock', onClose } = 
       if (on) btn = ch.days == null ? `<button data-stop="${ch.id}" ${p.channels ? '' : 'disabled'}>Dừng kênh</button>` : `<button disabled>Đang chạy tới ${esc(dayLabel(info.until))}</button>`;
       else if (ch.needsOwnShop) btn = '<button disabled>Chỉ khi mở quán riêng (giai đoạn 2)</button>';
       else if (!p.channels) btn = '<button disabled>Từ bậc Quản lý (hoặc khi chị Nhung nhờ)</button>';
-      else btn = `<button class="pri" data-run="${ch.id}" ${act.length >= MAX_CHANNELS ? 'disabled' : ''}>${act.length >= MAX_CHANNELS ? `Đã đủ ${MAX_CHANNELS} kênh` : `Chạy kênh (${esc(T.fmtMoney(ch.cost))})`}</button>`;
+      else btn = `<button class="pri" data-run="${ch.id}" ${act.length >= MAX_CHANNELS ? 'disabled' : ''}>${act.length >= MAX_CHANNELS ? `Đã đủ ${MAX_CHANNELS} kênh` : `Chạy kênh (${esc(ch.daily ? `${T.fmtMoney(ch.daily)}/ngày` : T.fmtMoney(ch.cost))})`}</button>`;
       return `<div class="kp-ch${on ? ' act' : ''}"><b>${ch.icon} ${esc(ch.name)}</b><span class="kp-mut">${esc(ch.how)}</span>
         <span>💰 ${esc(ch.costText)}</span><span>📈 ${esc(ch.effectText)}</span><span class="kp-mut">⚠️ ${esc(ch.risk)}</span>${info && info.note ? `<span><b>${esc(info.note)}</b></span>` : ''}${btn}</div>`;
     }).join('');
@@ -166,7 +171,7 @@ export function openShopPanel({ root, shop, kp, ctx, tab = 'stock', onClose } = 
     const y = T.yearOf(c.day), yr = shop.yearRevenue[y] || 0, tax = T.taxFor(shop, yr, y);
     return `${head()}
       <div class="kp-box"><h3>Lời lỗ ${p ? esc(dayLabel(day)) : ''}</h3>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">${days.slice(-7).map((d) => `<button data-pday="${d}" class="${d === day ? 'sel' : ''}">${esc(dayLabel(d).replace(/^Thứ /, 'T').replace('Chủ nhật', 'CN'))}</button>`).join('')}</div>${tbl}</div>
+        <div class="kp-days">${days.slice(-7).map((d) => `<button data-pday="${d}" class="${d === day ? 'sel' : ''}">${esc(shortDay(d))}</button>`).join('')}</div>${tbl}</div>
       <div class="kp-box"><h3>7 ngày gần nhất (lời trong ngày)</h3>${chart(last7)}</div>
       <div class="kp-box"><h3>Thuế hộ kinh doanh ${y}</h3><p>Doanh thu cộng dồn năm: <b>${esc(T.fmtMoney(yr))}</b> / 1 tỷ</p><div class="kp-lvl"><i class="${yr > 1e9 ? 'low' : ''}" style="width:${Math.min(100, yr / 1e7)}%"></i></div>
         <p>${esc(tax.reminder)}</p><p class="kp-mut">Thuế khoán đã bỏ từ 01/01/2026, hộ kinh doanh tự kê khai, tự nộp ${esc(T.LAW_NOTE)}</p></div>`;
@@ -197,7 +202,7 @@ export function openShopPanel({ root, shop, kp, ctx, tab = 'stock', onClose } = 
       const isNext = prog.next && prog.next.id === R.id;
       return `<div class="kp-rk${R.id === r ? ' cur' : ''}${R.phase2 ? ' lock' : ''}"><b>${R.id}. ${esc(R.name)}</b>${R.id === r ? ' · <b>bậc hiện tại</b>' : ''}${R.phase2 ? ' · giai đoạn 2' : ''}
         <p>💵 ${esc(pay)}</p><p>📋 Điều kiện: ${esc(need)}</p><p>🔓 ${esc(R.unlock)}</p>
-        ${isNext ? `<ul>${prog.checks.map((x) => `<li>${x.ok ? '✅' : '⬜'} ${esc(x.label)} <span class="kp-mut">(${esc(x.have)}${x.need !== 1 ? ` / ${esc(x.need)}` : ''})</span></li>`).join('')}</ul>${prog.canPromote ? '<button class="pri" data-promote>Xin lên bậc</button>' : ''}` : ''}</div>`;
+        ${isNext && !R.phase2 ? `<ul>${prog.checks.map((x) => `<li>${x.ok ? '✅' : '⬜'} ${esc(x.label)} <span class="kp-mut">(${esc(x.have)}${x.need !== 1 ? ` / ${esc(x.need)}` : ''})</span></li>`).join('')}</ul>${prog.canPromote ? '<button class="pri" data-promote>Xin lên bậc</button>' : ''}` : ''}</div>`;
     }).join('');
     const train = r >= 3 && !shop.me.trainedBong ? `<button data-train>${shop.me.trainNext ? '✅ Ca tới kèm Bông (đạt B trở lên là xong)' : '⬜ Ca tới kèm Bông để đào tạo'}</button>` : '';
     return `${head()}

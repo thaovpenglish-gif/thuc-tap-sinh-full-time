@@ -8,8 +8,10 @@
 // ctx (what the shop needs from the outside world; everything is optional):
 //   { day, min,                      game time (falls back to kp.time)
 //     priceOf(ingredientId) → VND per kg (or per unit for 'ly'/'tem'); ignored when missing or wildly off the base
-//     demand(group, min, day) → multiplier ≥ 0 for 'hocsinh'|'vanphong'|'cudan'|'app'|'khachvanglai' (weather,
-//                                payday, season...; the hour-of-day profile of design 4.2.d is applied here)
+//     demand(group, min, day) → multiplier ≥ 0 for 'hocsinh'|'vanphong'|'cudan'|'app'|'khachvanglai'. The shop applies
+//                                its own hour profile (design 4.2.d): a demand() that honours (min, day) is divided by
+//                                the economy's usual hour shape (weather, payday, Tết survive); one that only knows
+//                                "now" is ignored and weather + calendar (payday, weekend) are used instead
 //     outage: boolean               power cut right now (ice melts during the shift)
 //     weather: 'sun'|'rain'|'heavy'|'hot'   optional; rain = counter -40%, app +60% (only if demand() is absent)
 //     mood, energy: 0..100          optional player needs (tips, mini-game tolerance)
@@ -90,6 +92,7 @@ export function ctxFromKp(kp, econ = ECON) {
     if (econ.demand) c.demand = (g, min = t.min, day = t.day) => econ.demand(kp.economy, day, min, g);
     if (econ.outageAt) { try { c.outage = !!econ.outageAt(kp.economy, t.day, t.min); } catch { /* optional */ } }
   }
+  if (kp && kp.economy && kp.economy.weather && (kp.economy.day == null || kp.economy.day === t.day)) c.weather = kp.economy.weather;
   const p = kp && kp.player;
   if (p) { if (p.needs) { c.mood = p.needs.mood; c.energy = p.needs.energy; } if (Array.isArray(p.certs)) c.certs = p.certs; }
   return c;
@@ -110,11 +113,36 @@ function priceFor(c, id) {
   try { const p = c && c.priceOf ? Number(c.priceOf(id)) : NaN; if (Number.isFinite(p) && p >= base * 0.3 && p <= base * 3) return Math.round(p); } catch { /* ignore */ }
   return base;
 }
+// The hour-of-day profile the economy's demand() typically carries (school weekday). The shop applies its own
+// profile (design 4.2.d), so a time-shaped demand() is divided by this to keep only weather, payday, Tết, outages.
+const REF_SHAPE = {
+  vanphong: [[420, 510, 0.8], [510, 690, 0.5], [690, 810, 2.6], [810, 1050, 0.6], [1050, 1140, 0.9], [1140, 1320, 0.25]],
+  hocsinh: [[360, 435, 1.2], [435, 960, 0.05], [960, 1050, 3.2], [1050, 1260, 0.8]],
+  cudan: [[300, 540, 1], [540, 690, 0.8], [690, 810, 0.7], [810, 960, 0.5], [960, 1050, 0.8], [1050, 1140, 1.1], [1140, 1320, 2], [1320, 1440, 0.5]],
+  app: [[390, 630, 0.6], [630, 810, 1.8], [810, 1020, 0.6], [1020, 1260, 1.6], [1260, 1380, 0.8]],
+  khachvanglai: [[360, 1320, 1]],
+};
+const refShape = (g, m) => { for (const [a, b, v] of REF_SHAPE[g] || []) if (m >= a && m < b) return v; return 0.05; };
+/** Demand multiplier (≈ 1 on a normal day) for a group at minute `min` of ctx.day. */
 function demandOf(c, group, min) {
-  try { const v = c && c.demand ? Number(c.demand(group, min, c.day)) : NaN; if (Number.isFinite(v) && v >= 0 && v < 10) return v; } catch { /* ignore */ }
-  if (c && (c.weather === 'rain' || c.weather === 'heavy')) return group === 'app' ? 1.6 : 0.6;
-  if (c && c.weather === 'hot') return 1.25;
-  return 1;
+  if (c && c.demand) {
+    try {
+      if (c._shaped == null) c._shaped = Number(c.demand('hocsinh', 600, c.day)) !== Number(c.demand('hocsinh', 1000, c.day));
+      if (c._shaped) { const v = Number(c.demand(group, min, c.day)); if (Number.isFinite(v) && v >= 0) return clamp(v / refShape(group, min), 0.3, 2.5); }
+      // a demand() that only knows "now" carries the hour profile of now: ignore it, use weather + calendar below
+    } catch { /* ignore */ }
+  }
+  let v = 1;
+  const w = c && c.weather;
+  if (w === 'rain') v *= group === 'app' ? 1.6 : 0.6;
+  else if (w === 'heavy') v *= group === 'app' ? 1.9 : 0.45;
+  else if (w === 'hot') v *= 1.25;
+  const day = c && Number.isFinite(c.day) ? c.day : 1;
+  const wd = weekdayOf(day), dm = dateOfDay(day).d;
+  if ((wd === 0 || wd === 6) && (group === 'hocsinh' || group === 'vanphong')) v *= group === 'hocsinh' ? 0.4 : 0.3;
+  if (group !== 'hocsinh') { if (dm >= 1 && dm <= 5) v *= 1.15; else if (dm >= 25) v *= 0.9; } // lương 7 công ty về ngày 30
+  if (c && c.outage) v *= 0.85;
+  return v;
 }
 const hasCert = (certs, key) => Array.isArray(certs) && certs.some((x) => CERT_ALIASES[key].includes(String(x).toLowerCase()));
 
@@ -160,7 +188,7 @@ export function expireLots(shop, day) {
   for (const [id, lots] of Object.entries(shop.lots)) {
     let g = 0;
     while (lots.length && lots[0].exp <= day) g += lots.shift().g;
-    if (g > 0) { const v = Math.round(unitCost(shop, id, g)); cost += v; shop.stock[id] = Math.max(0, (shop.stock[id] || 0) - g); notes.push(`${INGREDIENTS[id].name} hết hạn ${g >= 1000 ? `${Math.round(g / 100) / 10} kg` : `${g} g`}`); }
+    if (g > 0) { const v = Math.round(unitCost(shop, id, g)); cost += v; shop.stock[id] = Math.max(0, (shop.stock[id] || 0) - g); notes.push(`${INGREDIENTS[id].name} hết hạn ${g >= 1000 ? `${vn(g / 1000)} kg` : `${g} g`}`); }
   }
   return { cost, notes };
 }
@@ -525,7 +553,7 @@ export function shiftTick(shop, shift, nowMin) {
   }
   if (shift.outage && Math.floor(now / 60) > Math.floor(prev / 60)) {
     const melt = Math.round((shop.stock.da || 0) * 0.15);
-    if (melt > 0) { takeStock(shop, 'da', melt); const v = Math.round(unitCost(shop, 'da', melt)); shift.waste += v; shift.wasteNotes.push(`Đá tan vì cúp điện ${Math.round(melt / 100) / 10} kg`); ev.push({ type: 'melt', text: 'Cúp điện: đá đang tan' }); }
+    if (melt > 0) { takeStock(shop, 'da', melt); const v = Math.round(unitCost(shop, 'da', melt)); shift.waste += v; shift.wasteNotes.push(`Đá tan vì cúp điện ${vn(melt / 1000)} kg`); ev.push({ type: 'melt', text: 'Cúp điện: đá đang tan' }); }
   }
   if (shift.bongBusy && now >= shift.bongBusy.until) {
     const job = shift.bongBusy; shift.bongBusy = null;
@@ -653,7 +681,7 @@ export function closeShift(shop, shift, kp, ctx) {
     rec.sat.sum += satOf(s.grade); rec.sat.n++;
   }
   for (const m of shift.missed) { const h = Math.floor(m.at / 60); rec.hourCups[h] = (rec.hourCups[h] || 0) + 1; rec.sat.sum += 1.5; rec.sat.n++; }
-  rec.wasteCost += shift.waste; rec.wasteNotes.push(...shift.wasteNotes);
+  rec.wasteCost += shift.waste; rec.wasteNotes = [...new Set([...rec.wasteNotes, ...shift.wasteNotes])].slice(-8);
   const R = RANK[shift.rank] || RANK[1];
   const pay = Math.round(wage * hours + wage * 0.3 * nh + (R.revenuePct ? revenue * R.revenuePct : 0));
   rec.playerHours += hours; rec.playerPay += pay; rec.tips += tips;
@@ -671,7 +699,10 @@ export function closeShift(shop, shift, kp, ctx) {
   if (prog.canPromote) { me.rank = prog.next.id; promoted = prog.next; events.push({ type: 'promote', text: `Lên bậc: ${prog.next.name}!` }); }
   shift.closed = true;
   const result = {
-    placeId: PLACE_ID, placeName: PLACE_NAME, kind: 'shop', role: (RANK[shift.rank] || RANK[1]).name, rank: shift.rank, newRank: me.rank,
+    placeId: PLACE_ID, placeName: PLACE_NAME, kind: 'shop', role: (RANK[me.rank] || RANK[1]).name, rank: me.rank, shiftRank: shift.rank, newRank: me.rank,
+    skill: 'phache', nightPaid: true, // pay below already holds the 30% night allowance
+    comment: `${mine.length} ly, ${shift.missed.length} khách bỏ về, hạng ${n ? gradeOf(score) : 'D'}`,
+    highlight: promoted ? `Lên bậc ${promoted.name}` : null,
     day, startMin: shift.startMin, endMin: shift.endMin, hours,
     cups: mine.length, cupsBong: shift.served.length - mine.length, missed: shift.missed.length, grades,
     points: Math.round(points * 10) / 10, speedFactor: Math.round(speedFactor * 100) / 100, score: Math.round(score * 10) / 10, grade,
@@ -740,7 +771,7 @@ export function placeOrder(shop, supplierId, items, kp, ctx, opts = {}) {
   if (S.missRate && lines.length && r() < S.missRate) missing.push(lines[Math.floor(r() * lines.length)].id);
   const refund = lines.filter((l) => missing.includes(l.id)).reduce((a, l) => a + l.price * l.packs, 0);
   const d = {
-    id: nextId(shop, 'd'), supplierId, day: c.day, min: c.min, etaDay: eta.etaDay, etaMin: eta.etaMin, travelMin: eta.travelMin || 0,
+    id: nextId(shop, 'd'), supplierId, supplierName: S.name, day: c.day, min: c.min, etaDay: eta.etaDay, etaMin: eta.etaMin, travelMin: eta.travelMin || 0,
     items: Object.fromEntries(lines.map((l) => [l.id, l.amount])), unitPrice: Object.fromEntries(lines.map((l) => [l.id, l.price / INGREDIENTS[l.id].pack])),
     cost: cost - refund, missing, status: 'pending', credit: !!credit && shop.cash < cost, auto: !!opts.auto,
   };
@@ -825,7 +856,7 @@ export function dayRec(shop, day) {
       softwareMonth: 200_000, marketing: 0, taxRate: tax, hourCups: {}, windows: [], sat: { sum: 0, n: 0 }, lost: 0, closed: false,
     };
     const keys = Object.keys(shop.days).map(Number).sort((a, b) => a - b);
-    while (keys.length > 40) delete shop.days[String(keys.shift())];
+    while (keys.length > 35) delete shop.days[String(keys.shift())];
   }
   return shop.days[key];
 }
@@ -906,7 +937,7 @@ function addRevenue(shop, day, amount, events) {
 /** End of a shop day: the staff (Tú, Bông) sell the hours you did not cover, leftovers are poured out, fixed costs
  *  and channels are booked, stars move, chị Nhung re-orders. Idempotent per day. → { pnl, events[] } */
 export function closeDay(shop, day, ctx = {}) {
-  const c = resolveCtx({ day, min: CLOSE_MIN, ...ctx });
+  const c = resolveCtx(null, { ...(ctx || {}), day, min: CLOSE_MIN });
   const rec = dayRec(shop, day);
   const events = [];
   if (rec.closed) return { pnl: dayPnL(shop, day), events };
@@ -985,6 +1016,7 @@ export function closeDay(shop, day, ctx = {}) {
     }
     if (spent) events.push({ type: 'restock', text: `Chị Nhung nhập hàng ${fmtMoney(spent)} (đầu mối giao 6h sáng mai)` });
   }
+  rec.wasteNotes = [...new Set(rec.wasteNotes)].slice(-8);
   rec.closed = true;
   shop.lastClosed = Math.max(shop.lastClosed || 0, day);
   return { pnl: dayPnL(shop, day), events };

@@ -36,7 +36,7 @@ function registerTeaShop() {
   if (shopRegistered) return; shopRegistered = true;
   teashop.useEconomy(econ);
   world.registerShop('trasua', {
-    create: (seed) => teashop.createTeaShop(hashSeed(String(seed))),
+    create: (seed, kp) => teashop.createTeaShop(hashSeed(String(seed)), { day: kp && kp.time ? kp.time.day : 1 }),
     onAdvance: (shop, kp, from, to) => teashop.receiveDeliveries(shop, to.day, to.min).map((d) => ({ type: 'delivery', placeId: 'trasua', text: `Hàng đã giao tới Trà Sữa Full Topping${d.supplierName ? ' (' + d.supplierName + ')' : ''}.` })),
     onSleep: (shop, kp, day) => { const r = teashop.closeDay(shop, day, teashop.ctxFromKp(kp)); return { events: r.events || [] }; },
   });
@@ -220,7 +220,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
 
   // ---------- shift, sleep ----------
   function ctxNow() {
-    return { day: kp.time.day, min: kp.time.min, priceOf: (item) => econ.priceOf(kp.economy, item), demand: (g) => econ.demand(kp.economy, kp.time.day, kp.time.min, g), outage: econ.outageAt(kp.economy, kp.time.day, kp.time.min) };
+    return { day: kp.time.day, min: kp.time.min, priceOf: (item) => econ.priceOf(kp.economy, item), demand: (g, min = kp.time.min, day = kp.time.day) => econ.demand(kp.economy, day, min, g), outage: econ.outageAt(kp.economy, kp.time.day, kp.time.min) };
   }
   function startShift() {
     const can = world.canWork(kp, 'trasua');

@@ -108,7 +108,7 @@ export const SHIFT_CSS = `
 .kp-checks li{margin:3px 0}
 @media (min-width:860px){
  .kp-st{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"menu menu" "cup top" "milk top" "sugar mech" "pots chores";align-content:start;gap:8px 14px;max-width:1100px;width:100%;margin:0 auto}
- .kp-st>.kp-menu{grid-area:menu}.kp-st>.a-cup{grid-area:cup}.kp-st>.a-top{grid-area:top}.kp-st>.a-milk{grid-area:milk}.kp-st>.a-sugar{grid-area:sugar}.kp-st>.a-mech{grid-area:mech}.kp-st>.a-pots{grid-area:pots}.kp-st>.a-chores{grid-area:chores}
+ .kp-st>.kp-menu{grid-area:menu}.kp-st>.a-cup{grid-area:cup}.kp-st>.a-top{grid-area:top}.kp-st>.a-milk{grid-area:milk}.kp-st>.a-sugar{grid-area:sugar}.kp-st>.a-mech{grid-area:mech}.kp-st>.a-pots{grid-area:pots}.kp-st>.a-chores{grid-area:chores}.kp-st>.a-sugar,.kp-st>.a-mech{align-self:start}
  .kp-sh-cup,.kp-foot{justify-content:center}
  .kp-foot button{max-width:220px}
  .kp-shift button.kp-t{height:56px}

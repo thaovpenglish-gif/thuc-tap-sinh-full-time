@@ -234,7 +234,7 @@ test('a long run keeps stock non-negative and the shop alive (60 days)', () => {
     assert.ok(p.gross > 2_000_000, `day ${d} sold ${p.gross}`);
   }
   assert.ok(shop.rating.stars >= 3.5 && shop.rating.stars <= 5);
-  assert.ok(Object.keys(shop.days).length <= 40);
+  assert.ok(Object.keys(shop.days).length <= 35);
 });
 
 test('channels: 8 of them, rank-gated, at most 3 at once', () => {
