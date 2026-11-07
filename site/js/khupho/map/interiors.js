@@ -1,6 +1,7 @@
 // Phase-1 interiors: your room at Dãy trọ Bình An, and Trà Sữa Full Topping (front of house + the bar you work at).
 // Each builds into its own root far from the street; the mode shows one place at a time.
 import { createKit, FLOORS } from '../../maps/kit3d.js';
+import { FURNITURE } from '../data/furniture.js';
 
 const PI = Math.PI;
 
@@ -11,6 +12,7 @@ export function buildRoom(scene, at = [200, 0]) {
   const [ox, oz] = at;
   K.root.position.set(ox, 0, oz);
   const H = 3.0;
+  const decor = buildDecor(K, H);
   floorZone(-1.75, -2.5, 1.75, 2.5, FLOORS.tiles('#efe6d6', 'rgba(0,0,0,0.12)'), 0.5);
   ceiling(-1.75, -2.5, 1.75, 2.5, H, '#fbf6ee');
   wall(-1.75, -2.5, 1.75, -2.5, '#e9f0e1', { h: H });
@@ -39,8 +41,9 @@ export function buildRoom(scene, at = [200, 0]) {
   poster(['THÔNG BÁO', 'Đóng tiền phòng mùng 5', 'Cổng khóa 23h', 'Cô Ba Lành'], { w: 512, h: 400, bg: '#fff8ec', fg: '#5d4037', sizes: [46, 32, 32, 30] }, 1.72, 1.6, 1.2, -PI / 2, 0.8, 0.62);
   ceilingFan(0, 0, H, '#ffffff');
   box(0.4, 1.6, 0.4, '#d9a273', -1.45, 0, 1.9, true, 0, 0.012); // wardrobe
+  interact('decor', 'Sắp xếp phòng (đồ nội thất)', -1.2, 1.0, 1.5);
   K.lights({ sky: '#fff6e8', ground: '#e8dcc8', hemi: 1.4, amb: 0.45, sun: 0.7 });
-  return K.result({ spawn: [ox + 0.75, oz + 1.6, 0], bounds: { minX: ox - 1.5, maxX: ox + 1.5, minZ: oz - 2.25, maxZ: oz + 2.25 }, origin: at });
+  return K.result({ spawn: [ox + 0.75, oz + 1.6, 0], bounds: { minX: ox - 1.5, maxX: ox + 1.5, minZ: oz - 2.25, maxZ: oz + 2.25 }, origin: at, applyDecor: decor.apply });
 }
 
 /** Trà Sữa Full Topping: 12 × 8 m. Customers' side south, the bar across the middle, stations along the back wall. */
@@ -90,4 +93,57 @@ export function buildTeaShop(scene, at = [300, 0]) {
   K.lights({ sky: '#fff6fa', ground: '#ffe3ec', hemi: 1.55, amb: 0.5, sun: 0.8 });
   // staff spot: chị Nhung behind the bar; you stand at the bar from the customer side when not working
   return K.result({ spawn: [ox, oz + 3.0, 0], bounds: { minX: ox - 5.7, maxX: ox + 5.7, minZ: oz - 3.7, maxZ: oz + 3.7 }, origin: at, staff: { nhung: [ox + 3.2, oz - 1.5, 0] } });
+}
+
+/** Every furniture item from Nội Thất Nhà Mình, built once and hidden; apply(placed) shows what sits in each slot.
+ *  Room layout: bed north-west, desk north-east, window on the west wall, door south (x 0.3..1.2), wardrobe south-west. */
+function buildDecor(K, H) {
+  const { box, cyl, sphere, plane, poster, glow, THREE } = K;
+  const PI = Math.PI;
+  const make = {
+    rug_tron: (c) => cyl(0.62, 0.62, 0.015, c, 0.1, 0.004, 0.4, 28, 0.006),
+    rug_long: (c) => { box(1.4, 0.03, 1.0, c, 0.1, 0.004, 0.4, false, 0, 0.006); for (let i = 0; i < 14; i++) box(0.06, 0.03, 0.06, '#ffffff', -0.55 + i * 0.1, 0.02, 0.4 + ((i * 7) % 5 - 2) * 0.18, false, i, 0); },
+    'rug_carô': (c) => { box(1.3, 0.02, 1.0, '#ffffff', 0.1, 0.004, 0.4, false, 0, 0.006); for (let i = 0; i < 4; i++) for (let k = 0; k < 3; k++) if ((i + k) % 2 === 0) box(0.3, 0.025, 0.3, c, -0.4 + i * 0.33, 0.004, 0.08 + k * 0.32, false, 0, 0); },
+    ga_hoa: (c) => bedding(c, '#ff7aa8'), ga_kesoc: (c) => bedding(c, '#3d7ab8'), ga_meo: (c) => bedding(c, '#f2a65a'),
+    rem_vang: (c) => curtain(c, 0.55), rem_xanh: (c) => curtain(c, 0.85),
+    poster_phim: () => poster(['PHIM CŨ', 'KHỞI CHIẾU 1998', '★★★★☆'], { w: 300, h: 420, bg: '#c0392b', fg: '#fff3d6', sizes: [52, 26, 30] }, -0.95, 1.75, -2.40, 0, 0.55, 0.77),
+    tranh_saigon: () => { box(0.9, 0.64, 0.04, '#5d4037', -0.95, 1.43, -2.43, false, 0, 0.004); poster(['SÀI GÒN MƯA', '· khu phố 7 ·'], { w: 420, h: 280, bg: '#3d5a80', fg: '#e0fbfc', sizes: [44, 28] }, -0.95, 1.75, -2.40, 0, 0.8, 0.54); },
+    lich_to: () => poster(['LỊCH 2027', 'PHÁT TÀI', 'THÁNG 1'], { w: 300, h: 420, bg: '#e63946', fg: '#ffe08a', sizes: [44, 60, 30] }, -0.95, 1.75, -2.40, 0, 0.45, 0.63),
+    den_day: (c) => { for (let i = 0; i < 17; i++) { const t = i / 16, x = -1.6 + t * 3.2; sphere(0.035, glow(c), x, H - 0.25 - Math.sin(t * PI * 3) * 0.08, -2.38, 0); } for (let i = 0; i < 8; i++) sphere(0.035, glow(c), 1.62, H - 0.3 - Math.sin(i) * 0.06, -2.2 + i * 0.3, 0); },
+    den_long: (c) => { for (const [x, z] of [[-0.95, -1.3], [0.4, -0.3], [-0.4, 0.9]]) { cyl(0.005, 0.005, 0.45, '#222', x, H - 0.45, z, 4, 0); sphere(0.17, glow(c), x, H - 0.62, z, 0.006); } },
+    cay_luoi_ho: (c) => { cyl(0.16, 0.13, 0.28, '#e6e6e6', 1.45, 0, 2.05, 14, 0.008); for (let i = 0; i < 6; i++) { const l = box(0.06, 0.55, 0.02, c, 1.45 + Math.cos(i) * 0.06, 0.28, 2.05 + Math.sin(i) * 0.06, false, i, 0.004); l.rotation.z = (i - 2.5) * 0.08; } },
+    cay_kim_tien: (c) => { cyl(0.17, 0.14, 0.3, '#ffffff', 1.45, 0, 2.05, 14, 0.008); for (let i = 0; i < 9; i++) sphere(0.09, c, 1.45 + Math.cos(i * 0.7) * 0.14, 0.42 + (i % 4) * 0.12, 2.05 + Math.sin(i * 0.7) * 0.14, 0.006); },
+    cay_gia: (c) => { cyl(0.14, 0.12, 0.24, '#b0b8c6', 1.45, 0, 2.05, 14, 0.008); for (let i = 0; i < 5; i++) sphere(0.13, c, 1.45 + Math.cos(i) * 0.1, 0.38 + i * 0.07, 2.05 + Math.sin(i) * 0.1, 0.006); },
+    ke_sach: (c) => { box(0.9, 1.25, 0.3, c, -0.55, 0, 2.3, false, 0, 0.012); for (let k = 0; k < 3; k++) { box(0.84, 0.03, 0.3, '#a8754a', -0.55, 0.05 + k * 0.4, 2.25, false, 0, 0); for (let b = 0; b < 6; b++) box(0.08, 0.28, 0.2, ['#e63946', '#3d5a80', '#f2c94c', '#3e9b57', '#ffffff', '#8e44ad'][(b + k) % 6], -0.88 + b * 0.11, 0.09 + k * 0.4, 2.22, false, 0, 0.004); } },
+    ke_treo: (c) => { for (let k = 0; k < 2; k++) box(0.8, 0.04, 0.22, c, 1.2, 1.45 + k * 0.4, -2.38, false, 0, 0.006); cyl(0.05, 0.05, 0.14, '#ffffff', 0.95, 1.49, -2.38, 10, 0.004); box(0.25, 0.2, 0.12, '#ff9ec4', 1.3, 1.49, -2.38, false, 0, 0.004); sphere(0.06, '#3e9b57', 1.0, 1.95, -2.38, 0.004); box(0.08, 0.22, 0.15, '#3d5a80', 1.4, 1.89, -2.38, false, 0, 0.004); },
+    ghe_luoi: (c) => { const s = sphere(0.42, c, -1.15, 0.26, 0.85, 0.012); s.scale.set(1, 0.62, 1); sphere(0.2, c, -1.38, 0.5, 0.85, 0.008); },
+    ghe_nhua: (c) => { box(0.42, 0.04, 0.42, c, 1.2, 0.42, -0.95, false, 0, 0.008); box(0.42, 0.42, 0.04, c, 1.2, 0.46, -0.74, false, 0, 0.008); for (const [dx, dz] of [[-0.18, -0.18], [0.18, -0.18], [-0.18, 0.18], [0.18, 0.18]]) box(0.04, 0.42, 0.04, c, 1.2 + dx, 0, -0.95 + dz, false, 0, 0.004); },
+    den_ban: (c) => { cyl(0.07, 0.08, 0.03, '#2b2b2b', 1.55, 0.72, -1.75, 12, 0.004); const a = cyl(0.012, 0.012, 0.36, '#2b2b2b', 1.55, 0.75, -1.75, 6, 0); a.rotation.z = 0.25; const h = cyl(0.04, 0.1, 0.12, c, 1.48, 1.05, -1.7, 14, 0.006); h.rotation.z = -0.6; sphere(0.035, glow('#fff3c4'), 1.47, 1.03, -1.7, 0); },
+    quat_dung: (c) => { cyl(0.18, 0.2, 0.04, '#e6ecf2', 0.25, 0, -2.15, 14, 0.006); cyl(0.025, 0.025, 1.05, '#e6ecf2', 0.25, 0, -2.15, 8, 0.004); const g = cyl(0.26, 0.26, 0.1, c, 0.25, 1.05, -2.1, 22, 0.008); g.rotation.x = PI / 2; sphere(0.06, '#ffffff', 0.25, 1.1, -2.03, 0.004); },
+    guong_dung: (c) => { box(0.06, 1.55, 0.52, '#c98f5a', 1.66, 0, -0.35, false, 0, 0.008); plane(0.44, 1.44, new THREE.MeshBasicMaterial({ color: c }), 1.62, 0.8, -0.35, -PI / 2); },
+  };
+  function bedding(c, accent) {
+    box(1.34, 0.08, 1.44, c, -0.95, 0.22, -1.0, false, 0, 0.01);
+    for (let i = 0; i < 5; i++) box(1.35, 0.082, 0.05, accent, -0.95, 0.22, -1.55 + i * 0.27, false, 0, 0);
+    box(0.62, 0.14, 0.37, c, -0.95, 0.22, -2.05, false, 0, 0.01);
+  }
+  function curtain(c, spread) {
+    { const r = cyl(0.015, 0.015, 1.5, '#7d8590', -1.62, 1.4, 0.6, 6, 0); r.rotation.x = PI / 2; }
+    for (const s of [-1, 1]) box(0.04, 1.25, 0.34, c, -1.6, 0.92, 0.6 + s * spread * 0.62, false, 0, 0.006);
+  }
+  const items = {};
+  for (const f of FURNITURE) {
+    if (!make[f.id]) continue;
+    const n = K.root.children.length;
+    make[f.id](f.color);
+    items[f.id] = K.root.children.slice(n);
+    items[f.id].forEach((m) => { m.visible = false; });
+  }
+  return {
+    items,
+    apply(placed = {}) {
+      const on = new Set(Object.values(placed || {}));
+      for (const [id, meshes] of Object.entries(items)) meshes.forEach((m) => { m.visible = on.has(id); });
+    },
+  };
 }

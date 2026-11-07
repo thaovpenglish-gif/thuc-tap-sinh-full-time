@@ -23,6 +23,8 @@ import { openShopPanel } from '../khupho/ui/shop.js';
 import { showNight } from '../khupho/ui/night.js';
 import { showProfile } from '../khupho/ui/profile.js';
 import { showXomoi } from '../khupho/ui/xomoi.js';
+import { showFurnitureShop, showDecor } from '../khupho/ui/furniture.js';
+import { ensureHome, morningMood, cozyScore, cozyLabel } from '../khupho/sim/home.js';
 
 const PROFILE_KEY = 'tm_profile_v1';
 const GAME_MIN_PER_SEC = 1; // 1 real second = 1 game minute while walking around (shifts run on their own clock)
@@ -143,6 +145,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
     ov.hidden = true; ov.innerHTML = '';
     show(k);
     const w = PLACES3D[k];
+    if (k === 'room' && room.applyDecor) room.applyDecor(ensureHome(kp).placed);
     const sp = w.spawn;
     fp.teleport(sp[0], sp[1], sp[2] ?? 0);
     hud.hidden = false; mode = 'play'; renderHud(); touchUI(true); save();
@@ -173,6 +176,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
       if (t.id === 'bed') return goSleep();
       if (t.id === 'profile') { const r = openOverlay(); return showProfile({ root: r, kp, onClose: closeOverlay }); }
       if (t.id === 'cook') return eatAt('phongtro', 'tunau');
+      if (t.id === 'decor') return openDecor();
     }
     if (where === 'trasua') {
       if (t.id === 'door') return exitToStreet('trasua');
@@ -182,6 +186,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
     if (where === 'street') {
       if (t.kind === 'npc') return talk(t.id);
       if (t.id === 'phongtro') return enterPlace('room');
+      if (t.id === 'noithat') return openFurniture();
       if (t.id === 'trasua') { if (!world.isOpen(kp, 'trasua')) return doorPanel('trasua'); return enterPlace('trasua'); }
       return doorPanel(t.id);
     }
@@ -213,6 +218,15 @@ export function startKhupho({ scene, camera, input, onExit }) {
     const ride = c.querySelector('#kpRide'); if (ride) ride.onclick = () => rideMenu();
     const tt = c.querySelector('#kpTamTru'); if (tt) tt.onclick = () => { const r = world.registerTamTru(kp); toast(r.ok ? r.text : r.reason); save(); closeOverlay(); };
   }
+  // Nội Thất Nhà Mình + Sắp xếp phòng (sim/home.js): buying changes money and the room, both saved right away
+  function openFurniture() {
+    const r = openOverlay();
+    showFurnitureShop({ root: r, kp, open: world.isOpen(kp, 'noithat'), toast, onChange: () => { room.applyDecor(ensureHome(kp).placed); save(); renderHud(); }, onClose: () => { save(); closeOverlay(); } });
+  }
+  function openDecor() {
+    const r = openOverlay();
+    showDecor({ root: r, kp, onChange: () => { room.applyDecor(ensureHome(kp).placed); save(); }, onClose: () => { save(); closeOverlay(); } });
+  }
   function eatAt(placeId, foodId) {
     const r = world.buyFood(kp, foodId);
     toast(r.ok ? `${(FOOD[foodId] || {}).name}${r.price ? ': ' + fmtVND(-r.price) : ''}${r.tab ? ' (ghi sổ)' : ''}. ${r.line || ''}` : r.reason);
@@ -220,7 +234,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
     save(); closeOverlay();
   }
   function rideMenu() {
-    const dests = ['trasua', 'phongtro', 'cho', 'toanha', 'tramyte', 'bama', 'comtam', 'daumoi'].filter((id) => street.doors[id]);
+    const dests = ['trasua', 'phongtro', 'cho', 'toanha', 'tramyte', 'bama', 'comtam', 'daumoi', 'noithat'].filter((id) => street.doors[id]);
     const c = card(`<h3>Đi xe ôm</h3><p class="kp-muted">Chú Lương chở trong khu phố 15.000đ/cuốc, khoảng 3 phút.</p><div class="kp-btns kp-wrap">${dests.map((id) => `<button class="btn" data-go="${id}">${esc(placeOf(id).name)}</button>`).join('')}<button class="btn ghost" id="kpClose">Thôi, đi bộ</button></div>`);
     c.querySelectorAll('[data-go]').forEach((b) => { b.onclick = () => {
       const fee = 15000; if (kp.player.money < fee) { toast('Không đủ tiền đi xe ôm.'); return closeOverlay(); }
@@ -249,6 +263,12 @@ export function startKhupho({ scene, camera, input, onExit }) {
   }
   function goSleep() {
     const report = world.sleep(kp);
+    const cozy = cozyScore(kp), bonus = morningMood(kp);
+    if (bonus > 0) {
+      kp.player.needs.mood = Math.min(100, Math.round((kp.player.needs.mood || 0) + bonus));
+      if (report.needs) report.needs.mood = kp.player.needs.mood;
+      (report.notes = report.notes || []).push(`Phòng ${cozyLabel(cozy).toLowerCase()} (ấm cúng ${cozy}/30): sáng mai tâm trạng +${bonus}.`);
+    }
     save();
     const r = openOverlay();
     showNight({ root: r, report, onNext: () => { save(); enterPlace('room', true); } });
@@ -313,7 +333,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
   };
 
   // debug hooks for the e2e tests
-  window.__kp = { get kp() { return kp; }, get mode() { return mode; }, get where() { return where; }, fp, street, PLACES3D, world, interact: () => interact(), enter: enterPlace, exit: exitToStreet, doorPanel, sleep: goSleep, startShift, save };
+  window.__kp = { get kp() { return kp; }, get mode() { return mode; }, get where() { return where; }, fp, street, PLACES3D, world, interact: () => interact(), enter: enterPlace, exit: exitToStreet, doorPanel, sleep: goSleep, openFurniture, openDecor, room, startShift, save };
 
   showStart();
   return { update, debug: window.__kp };

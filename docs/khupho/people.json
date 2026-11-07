@@ -156,6 +156,11 @@
    "kind": "office"
   },
   {
+   "id": "noithat",
+   "name": "Nội Thất Nhà Mình",
+   "kind": "shop"
+  },
+  {
    "id": "ngoai",
    "name": "Ngoài khu phố (gọi điện, thỉnh thoảng ghé)",
    "kind": "offmap"
@@ -1574,6 +1579,15 @@
    "group": "kid",
    "age": 6,
    "note": "Cháu nội cô Ba Lành. Tập thể dục giữa giờ hăng nhất trường."
+  },
+  {
+   "id": "kp:tin",
+   "name": "Anh Tín",
+   "role": "Chủ tiệm Nội Thất Nhà Mình",
+   "place": "noithat",
+   "group": "shop:noithat",
+   "age": "40s",
+   "note": "Bán thảm, đèn, cây giả và lời khuyên phong thủy không ai hỏi. Giao hàng nhờ xe ba gác Chú Bảy."
   }
  ],
  "relations": [
@@ -3416,6 +3430,30 @@
    "label": "tập thể dục buổi chiều ở sân chơi",
    "secret": false,
    "origin": "khupho"
+  },
+  {
+   "a": "kp:tin",
+   "b": "bama:bay",
+   "type": "business",
+   "label": "Thuê xe ba gác Chú Bảy chở đồ giao cho khách",
+   "secret": false,
+   "origin": "new"
+  },
+  {
+   "a": "kp:tin",
+   "b": "kp:lanh",
+   "type": "business",
+   "label": "Bán rèm và nệm cho cả dãy trọ Bình An, cô Ba Lành trả góp",
+   "secret": false,
+   "origin": "new"
+  },
+  {
+   "a": "kp:tin",
+   "b": "kp:man",
+   "type": "rival",
+   "label": "Cãi nhau với chị Mận xem ai trang trí Tết đẹp hơn",
+   "secret": false,
+   "origin": "new"
   }
  ]
 }

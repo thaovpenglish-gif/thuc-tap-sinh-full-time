@@ -57,6 +57,8 @@ const EXTRA = {
     desc: 'Chị Mận cắt, chú Ninh hớt, khách ngồi chờ thì cập nhật tin khu phố. Trung tâm tin đồn số hai sau chợ.' },
   quannhau: { short: 'Quán nhậu Một Hai Ba Dô', hours: { all: R(['16', '24']) }, hoursText: '16h-24h',
     desc: 'Anh Mạnh, chị Ly giữ sổ nợ, Tèo chạy bàn. Quán luôn gợi ý gọi xe ôm cho khách đã "dô".' },
+  noithat: { short: 'Nội Thất Nhà Mình', hours: { all: R(['8', '21']) }, hoursText: '8h-21h', enterable: true,
+    desc: 'Anh Tín bán thảm, đèn dây, cây giả, kệ sách và nệm. Đồ to thì Chú Bảy chở về bằng ba gác, 30.000đ một chuyến.' },
   xeom: { short: 'Bến xe ôm hẻm 42', hours: { all: R(['5', '23']) }, hoursText: '5h-23h',
     desc: 'Chú Lương xe ôm truyền thống, ông Quế xe đạp ôm cuối cùng của khu phố, anh Vũ chạy app Xe Tới.' },
   bagac: { short: 'Ba gác Chú Bảy', hours: { all: R(['5', '18']) }, hoursText: '5h-18h, đậu trước Ba & Má',

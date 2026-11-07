@@ -156,7 +156,8 @@ export const PEOPLE = [{"id":"tm:tuyet","name":"Chị Tuyết","role":"Chủ t�
 {"id":"kp:bap","name":"Bắp","role":"Học sinh lớp 4","place":"truong_th","group":"kid","age":9,"note":"Phó biệt đội khô gà; chạy nhanh nhất khu phố."},
 {"id":"kp:dau","name":"Đậu","role":"Học sinh lớp 3","place":"truong_th","group":"kid","age":8,"note":"Trinh sát biệt đội khô gà; ở với bà ngoại Cô Lài."},
 {"id":"kp:na","name":"Na","role":"Học sinh lớp 2","place":"truong_th","group":"kid","age":7,"note":"Em Đậu. Đi học bằng xe đạp ôm của Ông Quế."},
-{"id":"kp:khoai","name":"Khoai","role":"Học sinh lớp 1","place":"truong_th","group":"kid","age":6,"note":"Cháu nội cô Ba Lành. Tập thể dục giữa giờ hăng nhất trường."}];
+{"id":"kp:khoai","name":"Khoai","role":"Học sinh lớp 1","place":"truong_th","group":"kid","age":6,"note":"Cháu nội cô Ba Lành. Tập thể dục giữa giờ hăng nhất trường."},
+{"id":"kp:tin","name":"Anh Tín","role":"Chủ tiệm Nội Thất Nhà Mình","place":"noithat","group":"shop:noithat","age":"40s","note":"Bán thảm, đèn, cây giả và lời khuyên phong thủy không ai hỏi. Giao hàng nhờ xe ba gác Chú Bảy."}];
 export const RELATIONS = [{"a":"tm:gam","b":"tm:tuyet","type":"family","label":"Chị Gấm là em họ chị Tuyết","secret":true,"origin":"tie:tm:gam_tuyet"},
 {"a":"tm:khang","b":"tm:han","type":"family","label":"Khang gọi chị Hân bằng dì","secret":true,"origin":"tie:tm:khang_han"},
 {"a":"tm:phuong","b":"tm:tuyet","type":"secret","label":"Chị Phương là con gái bạn thân chị Tuyết","secret":true,"origin":"tie:tm:phuong_friend"},
@@ -386,7 +387,10 @@ export const RELATIONS = [{"a":"tm:gam","b":"tm:tuyet","type":"family","label":"
 {"a":"kp:que","b":"kp:khoai","type":"neighbour","label":"chở đi học mỗi sáng","secret":false,"origin":"khupho"},
 {"a":"kp:gao","b":"kp:nhung","type":"neighbour","label":"ngồi góc học nhóm ôn thi vào 10","secret":false,"origin":"khupho"},
 {"a":"kp:tinh","b":"kp:cua","type":"neighbour","label":"thu hộ túi khô gà \"tang vật\"","secret":false,"origin":"khupho"},
-{"a":"kp:kem","b":"kp:gao","type":"friend","label":"tập thể dục buổi chiều ở sân chơi","secret":false,"origin":"khupho"}];
+{"a":"kp:kem","b":"kp:gao","type":"friend","label":"tập thể dục buổi chiều ở sân chơi","secret":false,"origin":"khupho"},
+{"a":"kp:tin","b":"bama:bay","type":"business","label":"Thuê xe ba gác Chú Bảy chở đồ giao cho khách","secret":false,"origin":"new"},
+{"a":"kp:tin","b":"kp:lanh","type":"business","label":"Bán rèm và nệm cho cả dãy trọ Bình An, cô Ba Lành trả góp","secret":false,"origin":"new"},
+{"a":"kp:tin","b":"kp:man","type":"rival","label":"Cãi nhau với chị Mận xem ai trang trí Tết đẹp hơn","secret":false,"origin":"new"}];
 export const PERSON = Object.fromEntries(PEOPLE.map((p) => [p.id, p]));
 export const personById = (id) => PERSON[id] || null;
 export const peopleAt = (placeId) => PEOPLE.filter((p) => p.place === placeId);

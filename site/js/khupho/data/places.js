@@ -1013,6 +1013,28 @@ export const PLACES = [
   ]
  },
  {
+  "id": "noithat",
+  "name": "Nội Thất Nhà Mình",
+  "short": "Nội Thất Nhà Mình",
+  "kind": "shop",
+  "kindLabel": "Cửa hàng",
+  "hours": {
+   "all": [
+    [
+     480,
+     1260
+    ]
+   ]
+  },
+  "hoursText": "8h-21h",
+  "desc": "Anh Tín bán thảm, đèn dây, cây giả, kệ sách và nệm. Đồ to thì Chú Bảy chở về bằng ba gác, 30.000đ một chuyến.",
+  "enterable": true,
+  "work": false,
+  "people": [
+   "kp:tin"
+  ]
+ },
+ {
   "id": "ngoai",
   "name": "Ngoài khu phố (gọi điện, thỉnh thoảng ghé)",
   "short": "Ngoài khu phố",

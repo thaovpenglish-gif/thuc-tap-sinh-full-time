@@ -71,6 +71,26 @@ const COVER = () => {
     } else problems.push(`day ${d + 1}: pressing E at the cart opened nothing`);
     // wait for the shop to open (9:00), then walk in
     await p.evaluate(() => { const k = window.__kp; if (k.kp.time.min < 9 * 60 + 5) k.world.advance(k.kp, 9 * 60 + 5 - k.kp.time.min, 'idle'); });
+    // day 1: Nội Thất Nhà Mình, buy a rug (walk up + E), it must land in the room
+    if (d === 0) {
+      await p.evaluate(() => { const k = window.__kp, dd = k.street.doors.noithat; k.fp.player.pos.set(dd.x, k.fp.player.eye, dd.z - 1.0); k.fp.player.yaw = Math.PI; k.fp.player.pitch = 0; });
+      await frames(8);
+      const fp = await p.evaluate(() => { const el = document.querySelector('#kpPrompt'); return el && !el.hidden ? el.textContent : null; });
+      if (!fp || !/NỘI THẤT/i.test(fp)) problems.push(`no prompt at the furniture shop (got ${fp})`);
+      await p.keyboard.press('KeyE'); await p.waitForTimeout(250);
+      const buy = await p.$('#kpOverlay [data-buy="rug_tron"]');
+      if (!buy) problems.push('furniture shop did not open or the rug has no buy button');
+      else {
+        await audit('furniture shop'); await shot('noithat');
+        const m0 = (await state()).money; await buy.click(); await p.waitForTimeout(150);
+        const m1 = (await state()).money;
+        if (!(m1 < m0)) problems.push(`rug cost nothing (${m0} → ${m1})`);
+        const placed = await p.evaluate(() => window.__kp.kp.home && window.__kp.kp.home.placed.rug);
+        if (placed !== 'rug_tron') problems.push(`rug not placed (${placed})`);
+        await p.click('#kpOverlay [data-kp="close2"]'); await p.waitForTimeout(150);
+        if (await p.evaluate(() => !document.querySelector('#kpOverlay').hidden)) problems.push('furniture shop did not close');
+      }
+    }
     await p.evaluate(() => { const k = window.__kp, dd = k.street.doors.trasua; k.fp.player.pos.set(dd.x, k.fp.player.eye, dd.z + 1.0); k.fp.player.yaw = 0; });
     await frames(8);
     await p.keyboard.press('KeyE');
@@ -128,6 +148,12 @@ const COVER = () => {
     // home and sleep
     await p.evaluate(() => window.__kp.exit('trasua'));
     await p.evaluate(() => window.__kp.enter('room'));
+    if (d === 0) {
+      await frames(); await shot('room_decor');
+      await p.evaluate(() => window.__kp.openDecor()); await p.waitForTimeout(200); await audit('decor panel'); await shot('decor');
+      if (!(await p.$('#kpOverlay [data-off="rug"]'))) problems.push('decor panel does not show the placed rug');
+      await p.click('#kpOverlay [data-kp="close2"]'); await p.waitForTimeout(150);
+    }
     await p.evaluate(() => window.__kp.sleep());
     await p.waitForTimeout(300);
     await audit('night report'); if (d === 0) await shot('night');
@@ -146,6 +172,7 @@ const COVER = () => {
   await p.waitForFunction(() => window.__kp.mode === 'play');
   const afterReload = await state();
   if (afterReload.day !== beforeReload.day || afterReload.money !== beforeReload.money || afterReload.days !== beforeReload.days) problems.push(`reload changed the save: ${JSON.stringify(beforeReload)} → ${JSON.stringify(afterReload)}`);
+  if (DAYS && (await p.evaluate(() => (window.__kp.kp.home || {}).placed || {})).rug !== 'rug_tron') problems.push('the rug disappeared after reload');
   const solo = await p.evaluate(() => !!JSON.parse(localStorage.getItem('tm_profile_v1')).runs);
   if (!solo) problems.push('the Solo runs object disappeared from the shared profile');
 

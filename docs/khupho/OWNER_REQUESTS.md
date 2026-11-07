@@ -41,6 +41,11 @@ Nguồn sự thật cho agent thiết kế. Mọi mục ở đây phải có m�
     làm, ngày bắt đầu/kết thúc, cấp bậc đạt được, đánh giá, lý do nghỉ, người quen ở đó. Số ngày luôn được lưu.
     Hồ sơ đi theo người chơi khắp khu phố: nhà tuyển dụng (và công ty HR) đọc nó khi phỏng vấn, kinh nghiệm cũ mở
     khoá việc mới. Gắn với lưu đám mây hiện có (email/mã lưu).
+19. **Cửa hàng đồ nội thất** ("cho user tự đi mua đồ về trang trí phòng"): Nội Thất Nhà Mình của anh Tín, trên
+    đường Tâm Mỹ cạnh tiệm tóc (8h-21h). 23 món chia 11 chỗ trong phòng (thảm, ga gối, rèm, tranh, đèn trang trí, cây,
+    kệ, chỗ ngồi, đèn bàn, quạt đứng, gương). Đồ to do ba gác Chú Bảy chở về (+30.000đ). Mua là hiện ngay trong
+    phòng; đổi món ở "Sắp xếp phòng" (góc tủ đồ). Phòng càng ấm cúng, sáng dậy tâm trạng càng cao (tối đa +10).
+    Code: data/furniture.js, sim/home.js, ui/furniture.js, map/interiors.js (buildDecor). Đã làm.
 
 Quyết định tạm (Owner chưa phản đối): chế độ mới "Khu phố T&M" tách khỏi Solo; quán làm đầu tiên là trà sữa;
 người chơi được nghỉ để chuyển chỗ làm.

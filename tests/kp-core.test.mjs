@@ -60,12 +60,12 @@ test('calendar: day 1 = Thứ Hai 02/11/2026, paydays, rent days, Tết 06/02/20
   assert.equal(C.powerPeriod(1, 3 * 60), 'low');
 });
 
-test('data: 32 places with hours, 7 enterable in phase 1, 157 people, foods priced', () => {
-  assert.equal(PLACES.length, 32);
-  assert.deepEqual([...ENTERABLE].sort(), ['bama', 'cho', 'daumoi', 'phongtro', 'photo', 'tienloi', 'trasua']);
+test('data: 33 places with hours (+ Nội Thất Nhà Mình), 8 enterable in phase 1, 158 people, foods priced', () => {
+  assert.equal(PLACES.length, 33);
+  assert.deepEqual([...ENTERABLE].sort(), ['bama', 'cho', 'daumoi', 'noithat', 'phongtro', 'photo', 'tienloi', 'trasua']);
   for (const p of PLACES) { assert.ok(p.name && p.desc && p.hoursText && p.kind, p.id); assert.ok(Array.isArray(p.hours.all), p.id); }
-  assert.equal(PEOPLE.length, 157);
-  assert.equal(RELATIONS.length, 230);
+  assert.equal(PEOPLE.length, 158);
+  assert.equal(RELATIONS.length, 233);
   assert.ok(peopleAt('trasua').some((p) => p.id === 'kp:nhung'));
   assert.ok(FOODS.every((f) => Number.isInteger(f.price) && f.min > 0));
   // hours: net closes at 22h by law, cơm tấm runs past midnight, tiệm tóc closed Monday morning

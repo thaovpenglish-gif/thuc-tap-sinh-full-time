@@ -1,7 +1,7 @@
 // Khu phố 7, phường Tâm Mỹ: the walkable street (first person). Layout follows docs/khupho/DESIGN.md 2.2.
 //   North St "Đường Trường Học" (z = −30): school, playground, old apartment block Lô C (HR), Cao ốc Tâm Mỹ, Agency loft.
 //   Main St "Đường Tâm Mỹ" (z = 0): north side Ba & Má, trạm y tế, trà sữa, tiện lợi, net; south side công an,
-//     VP khu phố, điện lực, cà phê cóc (opposite trà sữa), photo, tiệm tóc.
+//     VP khu phố, điện lực, cà phê cóc (opposite trà sữa), photo, tiệm tóc, Nội Thất Nhà Mình (anh Tín).
 //   South St "Đường Chợ" (z = +30): north side hẻm 42 houses, dãy trọ Bình An (your room), cơm tấm, quán nhậu,
 //     karaoke house; south side Chợ Tâm Mỹ, đầu mối Thuận Phát, the Event warehouse.
 //   N-S: west road x = −50, east road x = +50, hẻm 42 (x = −27) and hẻm 7 (x = +9) through the south block,
@@ -36,7 +36,7 @@ const LOTS = [
   ['caphe', -6, 6, 5, 'n', 10, 7, '#c99a6a', 'CÀ PHÊ CÓC BẢY GHẾ', '#5d4037', '#f2d06b'],
   ['photo', 11, 22, 5, 'n', 10, 8, '#f7dc6f', 'PHOTO THẦN TỐC', '#1d1d1f', '#ffd25a'],
   ['cattoc', 23, 34, 5, 'n', 10, 8.5, '#f3a6c4', 'TIỆM TÓC ĐẸP MỖI NGÀY', '#c2255c', '#ffffff'],
-  ['house_s2', 35, 47, 5, 'n', 10, 11, '#8cc8f2', '', '', ''],
+  ['noithat', 35, 47, 5, 'n', 10, 11, '#8cc8f2', 'NỘI THẤT NHÀ MÌNH', '#5d4037', '#ffe9a0'],
   // south block, facing the market street (front at z = +26)
   ['hem', -47, -29, 26, 's', 10, 9, '#e6b98f', 'NHÀ DÂN HẺM 42', '#ffffff', '#5d4037'],
   ['phongtro', -25, -11, 26, 's', 10, 7, '#b5d99c', 'DÃY TRỌ BÌNH AN', '#3e7b3a', '#ffffff'],
@@ -238,6 +238,15 @@ export function buildStreet(scene) {
   interact('bagac', 'XE BA GÁC CỦA CHÚ BẢY', -34, 1.0, -7.4);
   // cà phê cóc: plastic stools on the sidewalk opposite trà sữa
   for (let i = 0; i < 7; i++) { cyl(0.18, 0.15, 0.32, ['#e74c3c', '#3498db', '#2ecc71'][i % 3], -4.8 + i * 1.5, 0, 4.2, 10, 0.008); }
+  // Nội Thất Nhà Mình: a sofa, a floor lamp and rolled rugs out on the sidewalk as the shop window
+  box(1.5, 0.42, 0.7, '#c3a6e8', 38.4, 0, 4.45, false, 0, 0.012); box(1.5, 0.45, 0.16, '#a98bd6', 38.4, 0.42, 4.75, false, 0, 0.01);
+  for (const dx of [-0.7, 0.7]) box(0.16, 0.6, 0.7, '#a98bd6', 38.4 + dx, 0, 4.45, false, 0, 0.008);
+  box(0.4, 0.3, 0.12, '#ffe08a', 38.1, 0.42, 4.55, false, 0.2, 0.006);
+  K.collideRect(37.6, 39.2, 4.05, 4.95);
+  cyl(0.2, 0.22, 0.05, '#2b2b2b', 44.2, 0, 4.5, 14, 0.006); cyl(0.025, 0.025, 1.5, '#2b2b2b', 44.2, 0, 4.5, 6, 0.004);
+  cyl(0.18, 0.3, 0.32, '#fff3c4', 44.2, 1.5, 4.5, 14, 0.008);
+  K.collideCircle(44.2, 4.5, 0.25);
+  for (let i = 0; i < 3; i++) { const r = cyl(0.12, 0.12, 1.3, ['#ff9ec4', '#7fb3d5', '#f4f1ea'][i], 45.0 + i * 0.28, 0, 4.7, 10, 0.006); r.rotation.z = 0.12; }
   // loa phường on a pole by the khu phố office
   cyl(0.08, 0.08, 6.5, '#8a8f98', -33, 0, 4.4, 8, 0.008);
   for (const ry of [0.6, -0.6]) { const l = cyl(0.12, 0.35, 0.6, '#d9d9d9', -33, 5.6, 4.4, 14, 0.008); l.rotation.z = PI / 2 + ry; }
