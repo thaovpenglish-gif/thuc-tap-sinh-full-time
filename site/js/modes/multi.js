@@ -81,9 +81,13 @@ export function startMulti({ scene, rig, input, onExit, params }) {
   // pos: left/top in % of the map; coming-soon buildings are under construction.
   const MAP_POS = { tm: [3, 6], bama: [28, 6], hr: [53, 6], agency: [77, 6], event: [8, 63], audit: [52, 63], tech: [76, 63] };
   const SHORT = { tm: 'T&M Partners', bama: 'Ba & Má', hr: 'Người Đúng Chỗ', agency: 'Trend Trễ', event: 'Đi Đâu Cũng Được', audit: 'Cân Đối & CS', tech: 'Nợ Kỹ Thuật Labs' };
+  // best result per client company, kept in this browser: { id: { stars, money } }
+  const bestAll = () => store.json('mp_best', {}) || {};
+  const starRow = (n) => '⭐'.repeat(n) + '☆'.repeat(3 - n);
   function levelInfo(id) {
     const X = LEVELS[id];
-    if (X) return `<b>${X.emoji} ${esc(X.client)} · ${esc(X.title)}</b><span>${esc(X.blurb)}</span>`;
+    const B = bestAll()[id];
+    if (X) return `<b>${X.emoji} ${esc(X.client)} · ${esc(X.title)}${B ? ` <span class="rec">🏆 ${starRow(B.stars)} · ${B.money}k</span>` : ''}</b><span>${esc(X.blurb)}</span>`;
     const C = COMING_SOON.find((c) => c.id === id);
     return C ? `<b>${C.emoji} ${esc(C.client)} · ${esc(C.title)} <span class="tag">🚧 Đang phát triển</span></b><span>${esc(C.teaser)} Chưa chơi được, thử 4 khách hàng kia trước nhé!</span>` : '';
   }
@@ -92,7 +96,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       const [x, y] = MAP_POS[id] || [0, 0];
       const on = id === levelId;
       return `<button class="mp-bld${on ? ' on' : ''}${soon ? ' soon' : ''}" style="left:${x}%;top:${y}%" ${soon ? `data-soon-level="${id}"` : `data-level="${id}"`} ${canPick || soon ? '' : 'disabled'} title="${esc(X.client)}">
-        ${on ? '<span class="pin">📍</span>' : ''}${soon ? '<span class="crane">🏗️</span>' : ''}<span class="ico">${X.emoji}</span><b>${esc(SHORT[id] || X.client)}</b></button>`;
+        ${on ? '<span class="pin">📍</span>' : ''}${soon ? '<span class="crane">🏗️</span>' : ''}<span class="ico">${X.emoji}</span><b>${esc(SHORT[id] || X.client)}</b>${soon ? '' : `<span class="bstars">${starRow((bestAll()[id] || {}).stars || 0)}</span>`}</button>`;
     };
     return `<div class="mp-map">
         <div class="mp-road h"></div><div class="mp-road v" style="left:24.5%"></div><div class="mp-road v" style="left:73.5%"></div>
@@ -151,7 +155,7 @@ export function startMulti({ scene, rig, input, onExit, params }) {
       <div class="mp-help">💻 <kbd>WASD</kbd>/mũi tên đi · <kbd>Space</kbd>/<kbd>E</kbd> làm mọi thứ (lấy, đặt, làm việc, nộp).<br>📱 Cần điều khiển bên trái, nút tròn bên phải.</div>
       <div class="mp-row"><button class="mp-link" id="mpBack">← Menu chính</button></div>
       </div>
-      <div class="mp-col"><div class="mp-field">🗺️ Chọn khách hàng (màn chơi) trên bản đồ</div>${levelPicker(true)}</div>
+      <div class="mp-col"><div class="mp-field">🗺️ Chọn khách hàng (màn chơi) trên bản đồ <span class="mp-total" title="Tổng sao kỷ lục">⭐ ${Object.values(bestAll()).reduce((n, b) => n + (b.stars || 0), 0)}/${LEVEL_ORDER.length * 3}</span></div>${levelPicker(true)}</div>
     </div>`);
     const readName = () => { name = cleanName($('#mpName').value); store.set('mp_name', name); return name; };
     $('#mpCreate').onclick = () => { unlockAudio(); readName(); createRoom(); };
@@ -343,11 +347,16 @@ export function startMulti({ scene, rig, input, onExit, params }) {
   function resultsScreen(g) {
     const stars = starsFor(g);
     const goals = starGoals(g);
+    // remember the best result for this client (shown on the map)
+    const all = bestAll(), prev = all[g.level];
+    const record = !prev || stars > prev.stars || (stars === prev.stars && g.money > prev.money);
+    if (record) { all[g.level] = { stars, money: g.money }; store.set('mp_best', JSON.stringify(all)); }
     const starHtml = [0, 1, 2].map((i) => `<span class="${i < stars ? '' : 'off'}">⭐</span>`).join('');
     show(`<div class="mp-card" style="text-align:center">
       <div class="kicker">HẾT GIỜ · ${esc(L.client.toUpperCase())}</div>
       <h2>${stars === 3 ? 'Khách quá hài lòng!' : stars === 2 ? 'Ổn áp!' : stars === 1 ? 'Tạm qua…' : 'Khách đang soạn email complain'}</h2>
       <div class="mp-stars">${starHtml}</div>
+      ${record && prev ? '<div class="mp-record">🏆 Kỷ lục mới!</div>' : ''}
       <div class="mp-res"><div><b>${g.money}k</b>doanh thu</div><div><b>${g.done}</b>việc đã nộp</div><div><b>${g.failed}</b>trễ deadline</div></div>
       <p class="muted" style="font-size:12.5px">Mốc sao: ${goals.map((x) => x + 'k').join(' · ')}</p>
       <div class="mp-quote">${esc((L.quotes || QUOTES)[stars])}</div>
