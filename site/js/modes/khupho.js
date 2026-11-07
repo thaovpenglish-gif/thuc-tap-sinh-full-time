@@ -89,22 +89,35 @@ export function startKhupho({ scene, camera, input, onExit }) {
   injectCSS();
   const isTouch = matchMedia('(pointer: coarse)').matches;
 
-  function openOverlay() { mode = 'overlay'; fp.unlock(); ov.hidden = false; ov.innerHTML = ''; prompt.hidden = true; return ov; }
-  function closeOverlay() { ov.hidden = true; ov.innerHTML = ''; mode = 'play'; renderHud(); if (!isTouch) fp.lock(); }
+  const touchUI = (on) => { const m = $('#mobile'); if (m) m.hidden = !(on && isTouch); const ch = $('#crosshair'); if (ch) ch.hidden = !(on && !isTouch); };
+  function openOverlay() { mode = 'overlay'; fp.unlock(); ov.hidden = false; ov.innerHTML = ''; prompt.hidden = true; touchUI(false); const t = $('#kpToast'); if (t) t.hidden = true; return ov; }
+  function closeOverlay() { ov.hidden = true; ov.innerHTML = ''; mode = 'play'; renderHud(); touchUI(true); if (!isTouch) fp.lock(); }
   function card(html) { const r = openOverlay(); r.innerHTML = `<div class="kp-card">${html}</div>`; return r.firstChild; }
 
   // ---------- HUD ----------
+  // HUD is built once; every tick only its text and bar widths change (rebuilding it would eat clicks).
+  let hudBuilt = false;
+  function buildHud() {
+    hud.innerHTML = `<div class="kp-hud-l"><b id="kpClock"></b><span id="kpMoney"></span>
+      <div class="kp-needs"><label>🍚<span class="kp-bar"><i id="kpNeedFood" style="background:#f2a65a"></i></span></label><label>⚡<span class="kp-bar"><i id="kpNeedEnergy" style="background:#3fa37a"></i></span></label><label>🙂<span class="kp-bar"><i id="kpNeedMood" style="background:#c77dff"></i></span></label></div></div>
+      <div class="kp-hud-r"><button id="kpXomoi" aria-label="Nhóm Xóm Ơi (phím P)" title="Nhóm Xóm Ơi (P)">📱<em id="kpUnread" hidden></em></button><button id="kpProf" aria-label="Hồ sơ cá nhân (phím H)" title="Hồ sơ cá nhân (H)">📇</button><button id="kpPause" aria-label="Tạm dừng (Esc)" title="Tạm dừng (Esc)">⏸</button></div>`;
+    $('#kpXomoi').onclick = () => openXomoi();
+    $('#kpProf').onclick = () => openProfile();
+    $('#kpPause').onclick = () => pause();
+    hudBuilt = true;
+  }
+  function openXomoi() { if (!kp) return; const r = openOverlay(); showXomoi({ root: r, kp, onClose: () => { save(); closeOverlay(); } }); }
+  function openProfile() { if (!kp) return; const r = openOverlay(); showProfile({ root: r, kp, onClose: closeOverlay }); }
   function renderHud() {
     if (!kp) return;
+    if (!hudBuilt) buildHud();
     const t = kp.time, dt = dateOf(t.day), p = kp.player;
-    const bar = (v, c) => `<span class="kp-bar"><i style="width:${Math.max(0, Math.min(100, v))}%;background:${c}"></i></span>`;
-    const unread = (kp.xomoi && kp.xomoi.unread) || 0;
-    hud.innerHTML = `<div class="kp-hud-l"><b>${esc(dt.label.split(' ').slice(0, 2).join(' '))} · ${hhmm(t.min)}</b><span>${fmtVND(p.money)}</span>
-      <div class="kp-needs"><label>🍚${bar(p.needs.food, '#f2a65a')}</label><label>⚡${bar(p.needs.energy, '#3fa37a')}</label><label>🙂${bar(p.needs.mood, '#c77dff')}</label></div></div>
-      <div class="kp-hud-r"><button id="kpXomoi" aria-label="Nhóm Xóm Ơi">📱${unread ? `<em>${unread}</em>` : ''}</button><button id="kpProf" aria-label="Hồ sơ cá nhân">📇</button><button id="kpPause" aria-label="Tạm dừng">⏸</button></div>`;
-    $('#kpXomoi').onclick = () => { const r = openOverlay(); showXomoi({ root: r, kp, onClose: () => { save(); closeOverlay(); } }); };
-    $('#kpProf').onclick = () => { const r = openOverlay(); showProfile({ root: r, kp, onClose: closeOverlay }); };
-    $('#kpPause').onclick = () => pause();
+    $('#kpClock').textContent = `${dt.label.split(' ').slice(0, 2).join(' ')} · ${hhmm(t.min)}`;
+    $('#kpMoney').textContent = fmtVND(p.money);
+    const w = (v) => `${Math.max(0, Math.min(100, v))}%`;
+    $('#kpNeedFood').style.width = w(p.needs.food); $('#kpNeedEnergy').style.width = w(p.needs.energy); $('#kpNeedMood').style.width = w(p.needs.mood);
+    const unread = (kp.xomoi && kp.xomoi.unread) || 0, u = $('#kpUnread');
+    u.hidden = !unread; u.textContent = unread;
   }
 
   // ---------- start screen ----------
@@ -132,7 +145,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
     const w = PLACES3D[k];
     const sp = w.spawn;
     fp.teleport(sp[0], sp[1], sp[2] ?? 0);
-    hud.hidden = false; mode = 'play'; renderHud(); save();
+    hud.hidden = false; mode = 'play'; renderHud(); touchUI(true); save();
     if (!isTouch) fp.lock();
     if (morning) toast(`Chào buổi sáng. ${dateOf(kp.time.day).label}.`);
   }
@@ -226,7 +239,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
     const can = world.canWork(kp, 'trasua');
     if (!can.ok) { const c = card(`<h3>Trà Sữa Full Topping</h3><p>${esc(can.reason || 'Chưa vào ca được lúc này.')}</p><div class="kp-btns"><button class="btn primary" id="kpOk">Ừ</button></div>`); c.querySelector('#kpOk').onclick = closeOverlay; return; }
     const r = openOverlay(); r.classList.add('kp-full');
-    playShift({ root: r, shop: kp.shops.trasua, kp, ctx: ctxNow(), onEnd: (result) => {
+    playShift({ root: r, shop: kp.shops.trasua, kp, ctx: ctxNow(), realSeconds: window.__kpShiftSecs, onEnd: (result) => {
       r.classList.remove('kp-full');
       const out = world.workShift(kp, 'trasua', result) || {};
       save(); renderHud();
@@ -242,9 +255,10 @@ export function startKhupho({ scene, camera, input, onExit }) {
   }
   function pause() {
     if (mode === 'menu') return;
-    const c = card(`<h3>Tạm dừng</h3><div class="kp-btns kp-col"><button class="btn primary" id="kpRes">Chơi tiếp</button><button class="btn" id="kpP">Hồ sơ cá nhân</button><button class="btn ghost" id="kpHome">Lưu và về menu chính</button></div>`);
+    const c = card(`<h3>Tạm dừng</h3><div class="kp-btns kp-col"><button class="btn primary" id="kpRes">Chơi tiếp</button><button class="btn" id="kpX">📱 Nhóm Xóm Ơi</button><button class="btn" id="kpP">📇 Hồ sơ cá nhân</button><button class="btn ghost" id="kpHome">Lưu và về menu chính</button></div>`);
     c.querySelector('#kpRes').onclick = closeOverlay;
-    c.querySelector('#kpP').onclick = () => { const r = openOverlay(); showProfile({ root: r, kp, onClose: closeOverlay }); };
+    c.querySelector('#kpP').onclick = () => openProfile();
+    c.querySelector('#kpX').onclick = () => openXomoi();
     c.querySelector('#kpHome').onclick = () => { save(); onExit && onExit(); };
   }
 
@@ -268,6 +282,8 @@ export function startKhupho({ scene, camera, input, onExit }) {
     if (inField) return;
     if (mode === 'play' && (e.code === 'KeyE' || e.code === 'Enter')) { e.preventDefault(); interact(); }
     if (mode === 'play' && e.code === 'Escape') pause();
+    if (mode === 'play' && e.code === 'KeyP') { e.preventDefault(); openXomoi(); }
+    if (mode === 'play' && e.code === 'KeyH') { e.preventDefault(); openProfile(); }
   });
   $('#game').addEventListener('click', () => { if (mode === 'play') fp.lock(); });
   if (isTouch) { const b = $('#actBtn'); if (b) b.addEventListener('click', () => interact()); }
@@ -291,6 +307,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
       }
       target = fp.pick(candidates());
       prompt.hidden = !target;
+      if (isTouch) { const ab = $('#actBtn'); if (ab) ab.hidden = !target; }
       if (target) prompt.textContent = `${isTouch ? '👆' : 'E'} · ${target.label}`;
     }
   };
@@ -323,7 +340,7 @@ function injectCSS() {
 .kp-hud-r { display: flex; gap: 6px; } .kp-hud-r button { width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--ink, #1d1d1f); background: #fffaf3; font-size: 18px; position: relative; cursor: pointer; }
 .kp-hud-r em { position: absolute; top: -6px; right: -6px; background: #e63946; color: #fff; border-radius: 99px; font-style: normal; font-size: 11px; font-weight: 900; padding: 1px 6px; }
 #kpPrompt { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 41; background: #fffaf3; border: 2px solid var(--ink, #1d1d1f); border-radius: 99px; padding: 8px 16px; font-weight: 800; font-size: 14px; max-width: 92vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
-#kpToast { position: fixed; left: 50%; bottom: 150px; transform: translateX(-50%); z-index: 72; background: #1d1d1f; color: #fff; border-radius: 12px; padding: 8px 14px; font-weight: 700; font-size: 14px; max-width: 90vw; }
+#kpToast { position: fixed; left: 50%; bottom: 150px; transform: translateX(-50%); z-index: 60; pointer-events: none; background: #1d1d1f; color: #fff; border-radius: 12px; padding: 8px 14px; font-weight: 700; font-size: 14px; max-width: 90vw; }
 @media (max-width: 560px) { .kp-needs { flex-wrap: wrap; } #kpPrompt { bottom: 150px; } }
 `;
   document.head.appendChild(s);
