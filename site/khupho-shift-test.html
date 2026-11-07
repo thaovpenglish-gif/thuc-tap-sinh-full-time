@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Khu phố T&amp;M · thử ca trà sữa</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  #kpOverlay { position: fixed; inset: 0; z-index: 50; }
+  #kpDone { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; font: 700 15px 'Be Vietnam Pro', system-ui, sans-serif; padding: 16px; text-align: center; }
+  #kpDone button { min-height: 44px; padding: 6px 14px; border: 2.5px solid #1d1d1f; border-radius: 12px; background: #ffe9a0; font: inherit; }
+</style>
+</head>
+<body>
+<!-- Standalone harness for the Trà Sữa Full Topping shift (tests/e2e/kp-shift.cjs). Not linked from the game menu.
+     Params: ?secs=300 (real seconds per shift) &rank=2 &day=2 &start=840 (minutes) &seed=7 &debug=1 &panel=stock|channels|pnl|ranks -->
+<div id="kpDone" hidden></div>
+<div id="kpOverlay"></div>
+<script type="module">
+  import { createTeaShop, setRank, closeDay } from './js/khupho/sim/teashop.js';
+  import { playShift } from './js/khupho/ui/shift.js';
+  import { openShopPanel } from './js/khupho/ui/shop.js';
+  const q = new URLSearchParams(location.search);
+  const num = (k, d) => (q.has(k) && Number.isFinite(Number(q.get(k))) ? Number(q.get(k)) : d);
+  const day = num('day', 2), start = num('start', 14 * 60), rank = num('rank', 2);
+  const shop = createTeaShop(num('seed', 7), { day: 1 });
+  setRank(shop, rank);
+  if (rank >= 4) shop.me.certs.push('khamsuckhoe', 'attp');
+  const kp = { time: { day, min: start }, player: { needs: { food: 80, energy: 90, mood: 70 }, certs: [] }, shops: { trasua: shop } };
+  const ctx = { day, min: start };
+  const root = document.getElementById('kpOverlay');
+  const done = document.getElementById('kpDone');
+  window.__kpHarness = { shop, kp, result: null, ended: false };
+  const showPanel = (tab) => { root.hidden = false; done.hidden = true; openShopPanel({ root, shop, kp, ctx: { day, min: Math.min(22 * 60, start + 240) }, tab, onClose: () => { root.hidden = true; done.hidden = false; } }); };
+  window.__kpHarness.showPanel = showPanel;
+  if (q.get('panel')) {
+    for (let d = 1; d < day; d++) closeDay(shop, d);
+    showPanel(q.get('panel'));
+  } else {
+    if (q.get('debug') === '1') window.__kpDebug = null;
+    playShift({ root, shop, kp, ctx, realSeconds: num('secs', 300), onEnd: (result) => {
+      window.__kpHarness.result = result; window.__kpHarness.ended = true;
+      root.hidden = true; done.hidden = false;
+      done.innerHTML = `<div>Ca xong: hạng <b>${result.grade}</b>, ${result.cups} ly, lương ${result.pay.toLocaleString('vi-VN')}đ</div>
+        <div><button data-t="stock">Kho</button> <button data-t="channels">Truyền thông</button> <button data-t="pnl">Lời lỗ</button> <button data-t="ranks">Nấc thang</button></div>`;
+      done.querySelectorAll('[data-t]').forEach((b) => { b.onclick = () => showPanel(b.dataset.t); });
+    } });
+  }
+</script>
+</body>
+</html>

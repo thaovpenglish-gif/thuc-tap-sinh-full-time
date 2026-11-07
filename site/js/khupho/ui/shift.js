@@ -30,9 +30,9 @@ export const SHIFT_CSS = `
 .kp-sh-stat{font-size:12px;font-weight:800;white-space:nowrap}
 .kp-sh-msg{flex:none;height:24px;line-height:22px;padding:0 10px;font-size:12.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-bottom:2px solid var(--ink,#1d1d1f);background:#fff}
 .kp-sh-msg.good{background:var(--mint,#b8f0d8)}.kp-sh-msg.bad{background:var(--peach,#ffc2b3)}.kp-sh-msg.warn{background:var(--butter,#ffe9a0)}
-.kp-sh-rail{flex:none;display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding:7px 10px;min-height:118px;background:#f4ecdf;border-bottom:2.5px solid var(--ink,#1d1d1f);scrollbar-width:thin}
+.kp-sh-rail{flex:none;display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding:6px 10px;min-height:108px;background:#f4ecdf;border-bottom:2.5px solid var(--ink,#1d1d1f);scrollbar-width:thin}
 .kp-sh-empty{align-self:center;color:var(--muted,#6a6f80);font-weight:700;font-size:13px}
-.kp-shift button.kp-tk{flex:none;width:142px;height:102px;text-align:left;display:flex;flex-direction:column;gap:2px;padding:5px 7px;background:#fff;position:relative;overflow:hidden}
+.kp-shift button.kp-tk{flex:none;width:146px;height:94px;text-align:left;display:flex;flex-direction:column;gap:2px;padding:5px 7px;background:#fff;position:relative;overflow:hidden}
 .kp-shift button.kp-tk.app{background:#eef6ff}
 .kp-shift button.kp-tk.sel{outline:3px solid #ff8a00;outline-offset:1px;background:var(--butter,#ffe9a0)}
 .kp-tk b{font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -53,14 +53,14 @@ export const SHIFT_CSS = `
 .kp-chip{font-size:11px;font-weight:800;border:2px solid var(--ink,#1d1d1f);border-radius:99px;padding:1px 6px;background:#f4f4f4;white-space:nowrap}
 .kp-chip.ok{background:var(--mint,#b8f0d8)}.kp-chip.bad{background:var(--peach,#ffc2b3)}
 .kp-st{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:6px 10px 10px;display:flex;flex-direction:column;gap:7px;-webkit-overflow-scrolling:touch}
-.kp-menu{display:flex;gap:4px;flex-wrap:wrap}
-.kp-menu span{font-size:10.5px;font-weight:800;border:2px solid var(--ink,#1d1d1f);border-radius:8px;padding:1px 5px;background:#fff}
+.kp-menu{display:flex;gap:4px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;flex:none}.kp-menu::-webkit-scrollbar{display:none}
+.kp-menu span{flex:none;white-space:nowrap;font-size:10.5px;font-weight:800;border:2px solid var(--ink,#1d1d1f);border-radius:8px;padding:1px 5px;background:#fff}
 .kp-menu span.out{opacity:.35;text-decoration:line-through;background:#ddd}
 .kp-row{display:flex;gap:8px}
 .kp-grp{display:flex;flex-direction:column;gap:3px;min-width:0}
 .kp-grp>span{font-size:11px;font-weight:900;letter-spacing:.02em;color:#4a4a58;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kp-g{display:grid;gap:5px}
-.kp-shift button.kp-t{height:50px;padding:2px 3px;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;overflow:hidden}
+.kp-shift button.kp-t{height:48px;padding:2px 3px;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;overflow:hidden}
 .kp-t .e{font-size:17px;line-height:1}
 .kp-t small{font-size:10.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .kp-shift button.kp-t.warn{background:var(--peach,#ffc2b3)}
@@ -79,7 +79,7 @@ export const SHIFT_CSS = `
 .kp-shift button.kp-hold{flex:none;width:96px;height:auto;min-height:56px;background:var(--butter,#ffe9a0);font-size:12.5px;touch-action:none}
 .kp-shift button.kp-hold.down{background:#ffcf4a;transform:translate(1px,1px)}
 .kp-half{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
-.kp-half .kp-hold{width:100%;min-height:48px}
+.kp-shift .kp-half button.kp-hold{width:100%;min-height:48px}
 .kp-pot{flex:1;min-width:0;display:flex;align-items:center;gap:6px;border:2.5px solid var(--ink,#1d1d1f);border-radius:12px;padding:4px 6px;background:#fff}
 .kp-pot.fresh{background:#e3fbef}.kp-pot.ok{background:#fff6d6}.kp-pot.hard{background:#ffd9d0}.kp-pot.cooking{background:#e6efff}
 .kp-pot div{flex:1;min-width:0;font-size:11px;font-weight:800;line-height:1.25}
@@ -107,8 +107,8 @@ export const SHIFT_CSS = `
 .kp-checks{list-style:none;padding:0;margin:6px 0;font-size:13px}
 .kp-checks li{margin:3px 0}
 @media (min-width:860px){
- .kp-st{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:8px 14px;max-width:1100px;width:100%;margin:0 auto}
- .kp-st>.kp-menu{grid-column:1/-1}
+ .kp-st{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"menu menu" "cup top" "milk top" "sugar mech" "pots chores";align-content:start;gap:8px 14px;max-width:1100px;width:100%;margin:0 auto}
+ .kp-st>.kp-menu{grid-area:menu}.kp-st>.a-cup{grid-area:cup}.kp-st>.a-top{grid-area:top}.kp-st>.a-milk{grid-area:milk}.kp-st>.a-sugar{grid-area:sugar}.kp-st>.a-mech{grid-area:mech}.kp-st>.a-pots{grid-area:pots}.kp-st>.a-chores{grid-area:chores}
  .kp-sh-cup,.kp-foot{justify-content:center}
  .kp-foot button{max-width:220px}
  .kp-shift button.kp-t{height:56px}
@@ -169,35 +169,35 @@ export function playShift({ root, shop, kp, ctx, onEnd, realSeconds, startMin } 
     S.phase = 'play';
     const potRow = Object.keys(PEARLS).map((k) => `<div class="kp-pot" data-pot="${k}"><div></div><button data-cook="${k}">Nấu mẻ mới</button></div>`).join('');
     el.innerHTML = `
-      <div class="kp-sh-top"><span class="kp-sh-clock">--:--</span><div class="kp-sh-prog"><i></i></div><span class="kp-sh-stat"></span><button data-pause aria-label="Tạm dừng">⏸</button></div>
+      <div class="kp-sh-top"><span class="kp-sh-clock">--:--</span><div class="kp-sh-prog"><i></i></div><span class="kp-sh-stat"></span><button data-pause aria-label="Tạm dừng">❚❚</button></div>
       <div class="kp-sh-msg">Mở cửa! Khách đầu tiên sắp tới.</div>
       <div class="kp-sh-rail"><span class="kp-sh-empty">Chưa có phiếu. Lau quầy chờ khách...</span></div>
       <div class="kp-sh-body">
         <div class="kp-sh-cup"><div class="kp-cupic"><i></i><s></s></div><div class="kp-cupchips"></div></div>
         <div class="kp-st">
           <div class="kp-menu"></div>
-          <div class="kp-row">
+          <div class="kp-row a-cup">
             <div class="kp-grp" style="flex:2"><span>Kệ cốc</span><div class="kp-g" style="grid-template-columns:1fr 1fr">${tile('size:M', '🥤', 'Cốc M')}${tile('size:L', '🥤', 'Cốc L')}</div></div>
             <div class="kp-grp" style="flex:3"><span>Trà nền (bình ủ)</span><div class="kp-g" style="grid-template-columns:1fr 1fr 1fr">${Object.entries(TEAS).map(([k, t]) => tile(`tea:${k}`, '🫖', t.name)).join('')}</div></div>
           </div>
-          <div class="kp-grp"><span>Topping (múc vào đáy ly)</span><div class="kp-g" style="grid-template-columns:repeat(4,1fr)">${TOPPING_ORDER.map((k) => tile(`top:${k}`, TOPPINGS[k].emoji, TOPPINGS[k].short)).join('')}<button class="kp-t" data-id="undo-top"><span class="e">↩️</span><small>Bỏ muỗng</small></button></div></div>
-          <div class="kp-row">
+          <div class="kp-grp a-top"><span>Topping (múc vào đáy ly)</span><div class="kp-g" style="grid-template-columns:repeat(4,1fr)">${TOPPING_ORDER.map((k) => tile(`top:${k}`, TOPPINGS[k].emoji, TOPPINGS[k].short)).join('')}<button class="kp-t" data-id="undo-top"><span class="e">↩️</span><small>Bỏ muỗng</small></button></div></div>
+          <div class="kp-row a-milk">
             <div class="kp-grp" style="flex:2"><span>Sữa</span><div class="kp-g" style="grid-template-columns:1fr 1fr">${Object.entries(MILKS).map(([k, m]) => tile(`milk:${k}`, '🥛', m.short)).join('')}</div></div>
             <div class="kp-grp" style="flex:3"><span>Đá %</span><div class="kp-g" style="grid-template-columns:1fr 1fr 1fr">${ICE_STEPS.map((v) => tile(`ice:${v}`, '🧊', `${v}%`)).join('')}</div></div>
           </div>
-          <div class="kp-mech" data-m="sugar"><div style="flex:1;min-width:0"><span class="lbl">Đường % · giữ bơm, thả đúng vạch</span> <span class="val" data-v="sugar"></span>
+          <div class="kp-mech a-sugar" data-m="sugar"><div style="flex:1;min-width:0"><span class="lbl">Đường: giữ bơm, thả đúng vạch</span> <span class="val" data-v="sugar"></span>
             <div class="kp-gauge" data-g="sugar"><div class="fill"></div>${SUGAR_STEPS.map((v) => `<div class="mk" data-mk="${v}" style="left:${v / 110 * 100}%"><b>${v}</b></div>`).join('')}</div></div>
             <button class="kp-hold" data-hold="sugar">🍯 GIỮ<br>để bơm</button></div>
-          <div class="kp-row">
-            <div class="kp-mech kp-half" data-m="shake"><span class="lbl">Lắc · giữ nhịp trong vùng xanh</span>
+          <div class="kp-row a-mech">
+            <div class="kp-mech kp-half" data-m="shake"><span class="lbl">Lắc: giữ trong vùng xanh</span>
               <div class="kp-gauge" data-g="shake"><div class="band" style="left:45%;width:33%"></div><div class="ndl"></div></div><div class="kp-bar"><i data-b="shake"></i></div>
               <button class="kp-hold" data-hold="shake">🍹 GIỮ để lắc</button></div>
-            <div class="kp-mech kp-half" data-m="seal"><span class="lbl">Máy dập nắp · bấm khi màng ở giữa</span>
+            <div class="kp-mech kp-half" data-m="seal"><span class="lbl">Dập nắp: bấm khi ở giữa</span>
               <div class="kp-gauge" data-g="seal"><div class="band" style="left:${tired ? 44 : 40}%;width:${tired ? 12 : 20}%"></div><div class="ndl"></div></div><div class="kp-bar" style="visibility:hidden"><i></i></div>
               <button data-id="seal" style="background:var(--sky,#bfe3ff);min-height:48px">🔨 DẬP</button></div>
           </div>
-          <div class="kp-grp"><span>Nồi trân châu (ngon nhất 4 giờ đầu, quá 8 giờ thì cứng)</span><div class="kp-row">${potRow}</div></div>
-          <div class="kp-grp"><span>Việc vặt</span><div class="kp-chores"></div></div>
+          <div class="kp-grp a-pots"><span>Nồi trân châu (ngon nhất 4 giờ đầu, quá 8 giờ thì cứng)</span><div class="kp-row">${potRow}</div></div>
+          <div class="kp-grp a-chores"><span>Việc vặt</span><div class="kp-chores"></div></div>
         </div>
       </div>
       <div class="kp-foot"><button data-id="label">🏷️ Dán tem</button><button data-id="trash">🗑️ Đổ ly</button>${rank >= 4 ? '<button data-id="bong">🙋 Nhờ Bông</button>' : ''}<button class="go" data-id="give">🛎️ GIAO</button></div>`;
@@ -369,7 +369,7 @@ export function playShift({ root, shop, kp, ctx, onEnd, realSeconds, startMin } 
   function ticketHtml(t) {
     const m = MENU[t.item];
     const tops = t.toppings.map((x) => TOPPINGS[x].emoji).join('');
-    return `<b>${t.source === 'app' ? '🛵' : '🧍'} ${esc(m.short)}</b><small>${t.size} · đường ${t.sugar}% · đá ${t.ice}%</small><small>${tops} ${esc(t.toppings.map((x) => TOPPINGS[x].short).join(', '))}</small>${t.note ? `<em>"${esc(t.note)}"</em>` : ''}<small class="who">${esc(t.client)}</small><span class="pat"><i></i></span>`;
+    return `<b>${t.source === 'app' ? '🛵' : '🧍'} ${esc(m.short)}</b><small>${t.size} · đường ${t.sugar}%</small><small>đá ${t.ice}% · ${tops}</small>${t.note ? `<em>"${esc(t.note)}"</em>` : ''}<small class="who">${esc(t.client)}</small><span class="pat"><i></i></span>`;
   }
   function updateTickets(force) {
     const rail = el.querySelector('.kp-sh-rail'); if (!rail) return;
@@ -630,7 +630,7 @@ export function playShift({ root, shop, kp, ctx, onEnd, realSeconds, startMin } 
         tickets: shift.tickets.map((t) => ({ ...t })), sel: S.sel, cup: S.cup ? { ...S.cup, toppings: [...S.cup.toppings] } : null,
         pump: S.cup ? S.cup.sugarLevel : 0, shake: { v: S.shake.v, prog: S.shake.prog }, seal: sealPos(), sealZone: tired ? [0.44, 0.56] : [0.4, 0.6],
         pearls: Object.keys(PEARLS).map((k) => { const at = nowAbs(); const b = T.activeBatch(shop, k, at, 50); return { kind: k, state: b ? T.pearlState(b, at) : null, age: b ? at - b.cookedMin : null, grams: b ? b.grams : 0, cooking: shop.pearls.some((x) => x.kind === k && x.cookedMin > at) }; }),
-        chores: shift.chores.map((x) => ({ ...x })), served: shift.served.length, missed: shift.missed.length,
+        chores: shift.chores.map((x) => ({ ...x })), served: shift.served.length, missed: shift.missed.length, last: shift.served.length ? { ...shift.served[shift.served.length - 1] } : null,
         result: S.result,
       }),
       deliver: (orderId, cup) => { if (S.phase !== 'play') return { ok: false }; S.sel = orderId; const t = shift.tickets.find((x) => x.id === orderId); if (!t) return { ok: false }; return give(cup || T.answerFor(t)); },

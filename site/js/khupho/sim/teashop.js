@@ -550,9 +550,8 @@ export function serveOrder(shop, shift, orderId, cup, nowMin = shift.now, opts =
   let tip = 0;
   if (shift.rank >= 2 && t.source === 'quay' && grade === 'A' && left >= 0.4 && opts.by !== 'bong') {
     const r = mkRng(hashSeed(shift.seed, 'tip', t.id));
-    tip = 2000 + (r() < 0.35 ? 3000 : 0);
-    if (shift.mood >= 70) tip = roundK(tip * 1.5);
-    if (shift.mood < 30) tip = 0;
+    const chance = shift.mood >= 70 ? 0.45 : shift.mood < 30 ? 0.1 : 0.3; // tâm trạng cao: khách tip nhiều hơn
+    if (r() < chance) tip = r() < 0.3 ? 5000 : 2000;
   }
   shift.tickets.splice(shift.tickets.indexOf(t), 1);
   const rec = { id: t.id, item: t.item, size: t.size, source: t.source, client: t.client, at: t.at, servedAt: nowMin, left, points, raw: score.raw, grade, faults: score.faults, tip, price: t.price, appPrice: t.appPrice || 0, voucher: t.voucher || 0, cost: use.cost, by: opts.by || 'me', pearl: use.pearl };
