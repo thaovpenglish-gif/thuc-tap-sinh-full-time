@@ -23,12 +23,17 @@ export const ITEMS = {
   creamer:  { name: 'Bột béo', unit: 'kg', base: 74000, lo: 0.7, hi: 1.6 },
   blacktea: { name: 'Trà đen', unit: 'kg', base: 150000, lo: 0.7, hi: 1.6 },
   oolong:   { name: 'Trà ô long', unit: 'kg', base: 250000, lo: 0.7, hi: 1.6 },
-  jasmine:  { name: 'Trà lài', unit: 'kg', base: 160000, lo: 0.7, hi: 1.6 },
+  jasmine:  { name: 'Trà lài', unit: 'kg', base: 180000, lo: 0.7, hi: 1.6 },
   sugar:    { name: 'Đường nâu / siro', unit: 'kg', base: 30000, lo: 0.7, hi: 1.6 },
-  pearl:    { name: 'Trân châu khô', unit: 'kg', base: 45000, lo: 0.7, hi: 1.6 },
+  pearl:    { name: 'Trân châu đen (khô)', unit: 'kg', base: 45000, lo: 0.7, hi: 1.6 },
+  pearl_white: { name: 'Trân châu trắng (khô)', unit: 'kg', base: 60000, lo: 0.7, hi: 1.6 },
+  jelly:    { name: 'Thạch', unit: 'kg', base: 40000, lo: 0.7, hi: 1.6 },
+  pudding:  { name: 'Pudding', unit: 'kg', base: 90000, lo: 0.7, hi: 1.6 },
+  cheese:   { name: 'Kem cheese', unit: 'kg', base: 140000, lo: 0.7, hi: 1.6 },
+  label:    { name: 'Tem + túi', unit: 'cái', base: 150, lo: 0.7, hi: 1.6 },
   cupset:   { name: 'Ly + nắp màng + ống hút', unit: 'bộ', base: 1500, lo: 0.7, hi: 1.6 },
-  ice:      { name: 'Đá viên', unit: 'kg', base: 2000, lo: 0.7, hi: 2.0 },
-  milk:     { name: 'Sữa tươi', unit: 'lít', base: 35000, lo: 0.7, hi: 1.6 },
+  ice:      { name: 'Đá viên', unit: 'kg', base: 3000, lo: 0.7, hi: 2.0 },
+  milk:     { name: 'Sữa tươi', unit: 'lít', base: 32000, lo: 0.7, hi: 1.6 },
   mango:    { name: 'Xoài sấy Ba & Má', unit: 'kg', base: 250000, lo: 0.7, hi: 1.6 },
   beer:     { name: 'Bia thùng 24 lon', unit: 'thùng', base: 360000, lo: 0.8, hi: 1.8 },
   gas:      { name: 'Gas', unit: 'bình', base: 500000, lo: 0.7, hi: 1.6 },
@@ -37,10 +42,10 @@ export const ITEMS = {
   power_biz:{ name: 'Điện kinh doanh (giờ bình thường)', unit: 'kWh', base: 3089, lo: 1, hi: 1, fixed: true },
   water_biz:{ name: 'Nước kinh doanh', unit: 'm³', base: 21300, lo: 1, hi: 1, fixed: true },
 };
-/** Other names B's code (or a typo) might use. */
+/** Other names (data/teamenu.js INGREDIENTS ids, Vietnamese words) map to the same index. */
 export const ALIASES = { botbeo: 'creamer', bot_beo: 'creamer', tra: 'blacktea', tea: 'blacktea', tra_den: 'blacktea', black_tea: 'blacktea',
   olong: 'oolong', tra_olong: 'oolong', tralai: 'jasmine', tra_lai: 'jasmine', duong: 'sugar', siro: 'sugar', tranchau: 'pearl', tran_chau: 'pearl',
-  pearls: 'pearl', ly: 'cupset', cup: 'cupset', cups: 'cupset', da: 'ice', sua: 'milk', sua_tuoi: 'milk', xoai: 'mango', xoai_say: 'mango',
+  pearls: 'pearl', tcden_kho: 'pearl', tctrang_kho: 'pearl_white', thach: 'jelly', kemcheese: 'cheese', kem_cheese: 'cheese', tem: 'label', ly: 'cupset', cup: 'cupset', cups: 'cupset', da: 'ice', sua: 'milk', sua_tuoi: 'milk', xoai: 'mango', xoai_say: 'mango',
   traicay: 'fruit', trai_cay: 'fruit', heo: 'pork', bo: 'beef', tom: 'shrimp', rau: 'veg', caphe_nhan: 'coffee', xang: 'fuel', bia: 'beer' };
 const key = (item) => (ITEMS[item] ? item : ALIASES[item] || item);
 
@@ -69,7 +74,7 @@ export const SHOCKS = [
   { id: 'botbeo', item: 'creamer', pct: 0.12, text: 'Bột béo tăng giá' },
   { id: 'rau', item: 'veg', pct: 0.22, text: 'Mưa kéo dài, rau lên giá' },
   { id: 'duong', item: 'sugar', pct: 0.1, text: 'Đường tăng giá' },
-  { id: 'trachau', item: 'pearl', pct: 0.1, text: 'Trân châu khô tăng giá' },
+  { id: 'tranchau', item: 'pearl', pct: 0.1, text: 'Trân châu khô tăng giá' },
 ];
 
 // ---------- NPC businesses (enough to keep the street honest in a 365-day headless run) ----------
@@ -227,6 +232,7 @@ export function priceOf(econ, item) {
   const k = key(item);
   if (ITEMS[k]) {
     const it = ITEMS[k];
+    if (it.fixed) return it.base;
     const p = it.base * clamp(econ.idx[k] ?? 1, it.lo, it.hi);
     return round(p, it.base < 10000 ? 10 : 100);
   }

@@ -72,9 +72,9 @@ export function eat(player, foodId, price = 0, portion = 1) {
   }
   const food = Math.round(f.food * portion);
   const n = player.needs;
-  n.food = clamp(n.food + food);
-  n.energy = clamp(n.energy + energy);
-  n.mood = clamp(n.mood + mood);
+  n.food = r1(clamp(n.food + food));
+  n.energy = r1(clamp(n.energy + energy));
+  n.mood = r1(clamp(n.mood + mood));
   player.today.ate = (player.today.ate || 0) + 1;
   return { ok: true, minutes: f.min, food, energy, mood, price };
 }

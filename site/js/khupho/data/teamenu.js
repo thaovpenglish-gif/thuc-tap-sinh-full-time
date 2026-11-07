@@ -6,26 +6,26 @@
 /** Ingredients. price = VND per kg (or per unit when unit is 'bo' / 'cai'); shelfDays = usable days after delivery
  *  (null = long-lasting); pack = how much one purchase unit holds (grams or units); par = what chị Nhung keeps on hand. */
 export const INGREDIENTS = {
-  botbeo:      { name: 'Bột béo', unit: 'g', price: 74_000, shelfDays: 90, pack: 1000, packName: 'bao 1 kg', par: 8000, emoji: '🥛' },
-  tra_den:     { name: 'Trà đen', unit: 'g', price: 150_000, shelfDays: null, pack: 1000, packName: 'gói 1 kg', par: 3000, emoji: '🍂' },
-  tra_olong:   { name: 'Trà ô long', unit: 'g', price: 300_000, shelfDays: null, pack: 500, packName: 'gói 500 g', par: 1500, emoji: '🍃' },
-  tra_lai:     { name: 'Trà lài', unit: 'g', price: 180_000, shelfDays: null, pack: 500, packName: 'gói 500 g', par: 1500, emoji: '🌼' },
-  duong:       { name: 'Đường nâu / siro', unit: 'g', price: 30_000, shelfDays: null, pack: 1000, packName: 'bịch 1 kg', par: 5000, emoji: '🍯' },
-  tcden_kho:   { name: 'Trân châu đen (khô)', unit: 'g', price: 45_000, shelfDays: null, pack: 1000, packName: 'bịch 1 kg', par: 4000, emoji: '⚫' },
-  tctrang_kho: { name: 'Trân châu trắng (khô)', unit: 'g', price: 60_000, shelfDays: null, pack: 1000, packName: 'bịch 1 kg', par: 2000, emoji: '⚪' },
-  thach:       { name: 'Thạch', unit: 'g', price: 40_000, shelfDays: 7, pack: 1000, packName: 'hũ 1 kg', par: 3000, emoji: '🟩' },
-  pudding:     { name: 'Pudding', unit: 'g', price: 90_000, shelfDays: 3, pack: 1000, packName: 'hộp 1 kg', par: 2000, emoji: '🍮' },
-  kemcheese:   { name: 'Kem cheese', unit: 'g', price: 160_000, shelfDays: 3, pack: 1000, packName: 'hộp 1 kg', par: 1500, emoji: '🧀' },
-  xoai_say:    { name: 'Xoài sấy Ba & Má', unit: 'g', price: 250_000, shelfDays: 30, pack: 500, packName: 'túi 500 g', par: 1000, emoji: '🥭' },
-  sua_tuoi:    { name: 'Sữa tươi', unit: 'g', price: 32_000, shelfDays: 3, pack: 1000, packName: 'hộp 1 lít', par: 6000, emoji: '🍼' },
-  da:          { name: 'Đá viên', unit: 'g', price: 3_000, shelfDays: 1, pack: 10_000, packName: 'bao 10 kg', par: 30_000, emoji: '🧊' },
-  ly:          { name: 'Ly + nắp màng + ống hút', unit: 'bo', price: 1_500, shelfDays: null, pack: 50, packName: 'cây 50 bộ', par: 300, emoji: '🥤' },
-  tem:         { name: 'Tem + túi', unit: 'cai', price: 150, shelfDays: null, pack: 100, packName: 'xấp 100', par: 400, emoji: '🏷️' },
+  botbeo:      { name: 'Bột béo', unit: 'g', price: 74_000, shelfDays: 90, pack: 1000, packName: 'bao 1 kg', par: 12_000, emoji: '🥛' },
+  tra_den:     { name: 'Trà đen', unit: 'g', price: 150_000, shelfDays: null, pack: 1000, packName: 'gói 1 kg', par: 4_000, emoji: '🍂' },
+  tra_olong:   { name: 'Trà ô long', unit: 'g', price: 250_000, shelfDays: null, pack: 500, packName: 'gói 500 g', par: 2_000, emoji: '🍃' },
+  tra_lai:     { name: 'Trà lài', unit: 'g', price: 180_000, shelfDays: null, pack: 500, packName: 'gói 500 g', par: 2_000, emoji: '🌼' },
+  duong:       { name: 'Đường nâu / siro', unit: 'g', price: 30_000, shelfDays: null, pack: 1000, packName: 'bịch 1 kg', par: 6_000, emoji: '🍯' },
+  tcden_kho:   { name: 'Trân châu đen (khô)', unit: 'g', price: 45_000, shelfDays: null, pack: 1000, packName: 'bịch 1 kg', par: 5_000, emoji: '⚫' },
+  tctrang_kho: { name: 'Trân châu trắng (khô)', unit: 'g', price: 60_000, shelfDays: null, pack: 1000, packName: 'bịch 1 kg', par: 2_500, emoji: '⚪' },
+  thach:       { name: 'Thạch', unit: 'g', price: 40_000, shelfDays: 7, pack: 1000, packName: 'hũ 1 kg', par: 3_000, emoji: '🟩' },
+  pudding:     { name: 'Pudding', unit: 'g', price: 90_000, shelfDays: 3, pack: 1000, packName: 'hộp 1 kg', par: 2_000, emoji: '🍮' },
+  kemcheese:   { name: 'Kem cheese', unit: 'g', price: 140_000, shelfDays: 3, pack: 1000, packName: 'hộp 1 kg', par: 2_000, emoji: '🧀' },
+  xoai_say:    { name: 'Xoài sấy Ba & Má', unit: 'g', price: 250_000, shelfDays: 30, pack: 500, packName: 'túi 500 g', par: 1_500, emoji: '🥭' },
+  sua_tuoi:    { name: 'Sữa tươi', unit: 'g', price: 32_000, shelfDays: 3, pack: 1000, packName: 'hộp 1 lít', par: 8_000, emoji: '🍼' },
+  da:          { name: 'Đá viên', unit: 'g', price: 3_000, shelfDays: 1, pack: 10_000, packName: 'bao 10 kg', par: 40_000, emoji: '🧊' },
+  ly:          { name: 'Ly + nắp màng + ống hút', unit: 'bo', price: 1_500, shelfDays: null, pack: 50, packName: 'cây 50 bộ', par: 400, emoji: '🥤' },
+  tem:         { name: 'Tem + túi', unit: 'cai', price: 150, shelfDays: null, pack: 100, packName: 'xấp 100', par: 500, emoji: '🏷️' },
 };
 
 export const SIZES = {
   M: { id: 'M', name: 'Size M', ml: 500, mul: 1 },
-  L: { id: 'L', name: 'Size L', ml: 700, mul: 1.4 },
+  L: { id: 'L', name: 'Size L', ml: 700, mul: 1.3 },
 };
 export const SUGAR_STEPS = [0, 30, 50, 70, 100];
 export const ICE_STEPS = [0, 50, 100];
@@ -33,7 +33,7 @@ export const ICE_STEPS = [0, 50, 100];
 /** Tea bases brewed into the bình ủ at opening. Brewed tea keeps 8 hours. */
 export const TEAS = {
   den: { name: 'Trà đen', ing: 'tra_den', g: 15, color: '#8a4b22' },
-  olong: { name: 'Ô long', ing: 'tra_olong', g: 15, color: '#b07a2a' },
+  olong: { name: 'Ô long', ing: 'tra_olong', g: 12, color: '#b07a2a' },
   lai: { name: 'Trà lài', ing: 'tra_lai', g: 15, color: '#d8b84a' },
 };
 /** Milk bases: "sữa nền" = bột béo pha nước nóng; sữa tươi. */
@@ -59,10 +59,10 @@ export const TOPPINGS = {
   tc_den: { name: 'Trân châu đen', short: 'TC đen', emoji: '⚫', pearl: 'den', g: 50 },
   tc_trang: { name: 'Trân châu trắng', short: 'TC trắng', emoji: '⚪', pearl: 'trang', g: 50 },
   tcdd: { name: 'Trân châu đường đen', short: 'TC đường đen', emoji: '🟤', pearl: 'den', g: 50, extra: { duong: 10 } },
-  thach: { name: 'Thạch', short: 'Thạch', emoji: '🟩', ing: 'thach', g: 40 },
-  pudding: { name: 'Pudding', short: 'Pudding', emoji: '🍮', ing: 'pudding', g: 40 },
-  kemcheese: { name: 'Kem cheese', short: 'Kem cheese', emoji: '🧀', ing: 'kemcheese', g: 30 },
-  xoai: { name: 'Xoài sấy Ba & Má', short: 'Xoài sấy', emoji: '🥭', ing: 'xoai_say', g: 20 },
+  thach: { name: 'Thạch', short: 'Thạch', emoji: '🟩', ing: 'thach', g: 30 },
+  pudding: { name: 'Pudding', short: 'Pudding', emoji: '🍮', ing: 'pudding', g: 30 },
+  kemcheese: { name: 'Kem cheese', short: 'Kem cheese', emoji: '🧀', ing: 'kemcheese', g: 25 },
+  xoai: { name: 'Xoài sấy Ba & Má', short: 'Xoài sấy', emoji: '🥭', ing: 'xoai_say', g: 15 },
 };
 export const TOPPING_ORDER = ['tc_den', 'tc_trang', 'tcdd', 'thach', 'pudding', 'kemcheese', 'xoai'];
 export const EXTRA_TOPPINGS = ['tc_den', 'tc_trang', 'thach', 'pudding']; // khách gọi thêm, +5.000đ mỗi muỗng

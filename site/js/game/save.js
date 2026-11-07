@@ -1,6 +1,8 @@
 // Career profile with several independent runs ("lượt chơi"). Pure functions; storage lives elsewhere.
 // A run = one company + one salary tier + progress. Starting a new run ("nhảy công ty") never deletes old ones.
 
+import { sanitizeKp, mergeKp } from '../khupho/sim/profile.js';
+
 export const SAVE_VERSION = 2;
 const COMPANY_NAMES = { tm: 'T&M Partners', bama: 'Ba & Má' };
 const MAX_RUNS = 40;
@@ -111,6 +113,9 @@ export function validateProfile(obj) {
     };
   }
   out.activeId = out.runs[obj.activeId] ? obj.activeId : null;
+  // Khu phố T&M state (world + personal profile) rides along in the same profile; kept additively.
+  const kp = sanitizeKp(obj.kp);
+  if (kp) out.kp = kp;
   return out;
 }
 
@@ -121,5 +126,9 @@ export function mergeProfiles(a, b) {
   const runs = { ...pa.runs };
   for (const [id, r] of Object.entries(pb.runs)) if (!runs[id] || r.updatedAt > runs[id].updatedAt) runs[id] = r;
   const activeId = (pa.activeId && runs[pa.activeId]) ? pa.activeId : (pb.activeId && runs[pb.activeId]) ? pb.activeId : null;
-  return { v: SAVE_VERSION, runs, activeId };
+  const out = { v: SAVE_VERSION, runs, activeId };
+  // Khu phố: days worked never go down; otherwise the newer kp (by kp.saved) wins.
+  const kp = mergeKp(pa.kp, pb.kp);
+  if (kp) out.kp = kp;
+  return out;
 }
