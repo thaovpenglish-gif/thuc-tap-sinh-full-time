@@ -15,14 +15,21 @@ export function createFPControls({ camera, input, getMode, onPause, start = [0, 
   let lookTouch = null;
   camera.rotation.order = 'YXZ';
 
+  // A touch-capable laptop or an embedded browser still has a mouse: remember what the player last pressed with,
+  // so a mouse click can capture the pointer even when isTouch is true, and mouse-drag looks around without a lock.
+  let lastPointer = isTouch ? 'touch' : 'mouse';
+  let wasLocked = false;
+  let drag = null;
   function lock() {
-    if (isTouch || getMode() !== 'play') return;
+    if (getMode() !== 'play' || (isTouch && lastPointer !== 'mouse')) return;
     try { const pr = canvas.requestPointerLock(); if (pr && pr.catch) pr.catch(() => {}); } catch { /* needs a user gesture */ }
   }
   function unlock() { if (document.pointerLockElement) document.exitPointerLock(); }
 
   document.addEventListener('pointerlockchange', () => {
-    if (!document.pointerLockElement && getMode() === 'play' && !isTouch) onPause();
+    const lost = wasLocked && !document.pointerLockElement;
+    wasLocked = document.pointerLockElement === canvas;
+    if (lost && getMode() === 'play') onPause();
     // a lock that lands after we already left play mode (e.g. a phone opened from the pause card) hides the cursor: drop it
     else if (document.pointerLockElement && getMode() !== 'play') document.exitPointerLock();
   });
@@ -31,6 +38,19 @@ export function createFPControls({ camera, input, getMode, onPause, start = [0, 
     player.yaw -= e.movementX * 0.0022;
     player.pitch = clamp(player.pitch - e.movementY * 0.0022, -1.25, 1.25);
   });
+  // mouse drag (hold the left button and drag) turns the view when the pointer is not captured
+  window.addEventListener('pointerdown', (e) => { lastPointer = e.pointerType || 'mouse'; }, true);
+  canvas.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button === 0 && document.pointerLockElement !== canvas) drag = { x: e.clientX, y: e.clientY };
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerType !== 'mouse') return;
+    if (document.pointerLockElement === canvas || getMode() !== 'play' || !(e.buttons & 1)) { drag = null; return; }
+    player.yaw -= (e.clientX - drag.x) * 0.006;
+    player.pitch = clamp(player.pitch - (e.clientY - drag.y) * 0.005, -1.25, 1.25);
+    drag.x = e.clientX; drag.y = e.clientY;
+  });
+  window.addEventListener('pointerup', () => { drag = null; });
   if (isTouch) {
     canvas.addEventListener('touchstart', (e) => {
       const t = e.changedTouches[0];
@@ -47,7 +67,7 @@ export function createFPControls({ camera, input, getMode, onPause, start = [0, 
     window.addEventListener('touchend', end); window.addEventListener('touchcancel', end);
   }
   // hint for desktop players when the mouse is not captured
-  setInterval(() => { const h = $('#clickHint'); if (h) h.hidden = !(getMode() === 'play' && !isTouch && document.pointerLockElement !== canvas); }, 250);
+  setInterval(() => { const h = $('#clickHint'); if (h) h.hidden = !(getMode() === 'play' && lastPointer === 'mouse' && document.pointerLockElement !== canvas); }, 250);
 
   return {
     player,
