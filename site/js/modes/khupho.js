@@ -12,7 +12,10 @@ import * as world from '../khupho/sim/world.js';
 import * as econ from '../khupho/sim/economy.js';
 import * as player from '../khupho/sim/player.js';
 import { dateOf } from '../khupho/sim/calendar.js';
-import { PLACES } from '../khupho/data/places.js';
+import { PLACE } from '../khupho/data/places.js';
+import * as teashop from '../khupho/sim/teashop.js';
+import { hashSeed } from '../khupho/sim/rng.js';
+import { companyName } from '../companies/index.js';
 import { FOOD } from '../khupho/data/food.js';
 import { PEOPLE } from '../khupho/data/people.js';
 import { playShift } from '../khupho/ui/shift.js';
@@ -25,15 +28,29 @@ const PROFILE_KEY = 'tm_profile_v1';
 const GAME_MIN_PER_SEC = 1; // 1 real second = 1 game minute while walking around (shifts run on their own clock)
 const fmtVND = (n) => (n < 0 ? '−' : '') + Math.abs(Math.round(n)).toLocaleString('vi-VN') + 'đ';
 const hhmm = (min) => `${String(Math.floor(min / 60) % 24).padStart(2, '0')}:${String(Math.floor(min % 60)).padStart(2, '0')}`;
-const placeOf = (id) => (Array.isArray(PLACES) ? PLACES.find((p) => p.id === id) : PLACES[id]) || { id, name: id };
+const placeOf = (id) => PLACE[id] || { id, name: id, short: id };
+
+// The milk-tea shop plugs into the world clock: deliveries arrive while time passes, the day closes when you sleep.
+let shopRegistered = false;
+function registerTeaShop() {
+  if (shopRegistered) return; shopRegistered = true;
+  teashop.useEconomy(econ);
+  world.registerShop('trasua', {
+    create: (seed) => teashop.createTeaShop(hashSeed(String(seed))),
+    onAdvance: (shop, kp, from, to) => teashop.receiveDeliveries(shop, to.day, to.min).map((d) => ({ type: 'delivery', placeId: 'trasua', text: `Hàng đã giao tới Trà Sữa Full Topping${d.supplierName ? ' (' + d.supplierName + ')' : ''}.` })),
+    onSleep: (shop, kp, day) => { const r = teashop.closeDay(shop, day, teashop.ctxFromKp(kp)); return { events: r.events || [] }; },
+  });
+}
 
 export function startKhupho({ scene, camera, input, onExit }) {
   // ---------- save ----------
+  registerTeaShop();
   let profile = validateProfile(store.json(PROFILE_KEY)) || emptyProfile();
-  let kp = profile.kp || null;
+  let kp = profile.kp ? world.loadGame(profile.kp, { now: Date.now() }) : null;
+  if (kp) world.importSoloRuns(kp, profile.runs, companyName);
   const save = () => {
     if (!kp) return;
-    kp.saved = Date.now();
+    world.stamp(kp);
     profile = validateProfile(store.json(PROFILE_KEY)) || profile; // Solo may have written meanwhile: keep its runs
     profile.kp = kp;
     try { store.set(PROFILE_KEY, JSON.stringify(profile)); } catch { /* storage full */ }
@@ -50,15 +67,14 @@ export function startKhupho({ scene, camera, input, onExit }) {
 
   // people standing at their doors (owners), from the people data
   const npcs = [];
-  const ownerAt = { trasua: 'kp:nhung', banhmi: 'kp:cobanhmi', comtam: 'kp:lai', caphe: 'kp:cam', tienloi: 'kp:khoi', photo: 'kp:tan', cattoc: 'kp:man', quannhau: 'kp:manh', net: 'kp:hao', khupho: 'kp:cuong', congan: 'kp:thuan', xeom: 'kp:luong', tramyte: 'kp:lam', phongtro: 'kp:balanh', bagac: 'bama:bay', daumoi: 'kp:thinh', bama: 'bama:hang' };
   const looks = ['#c9b6ff', '#b8f0d8', '#ffc2b3', '#bfe3ff', '#ffe08a', '#ff9fb2', '#9ee8c8'];
-  Object.entries(ownerAt).forEach(([placeId, pid], i) => {
-    const d = street.doors[placeId]; const p = (PEOPLE || []).find((x) => x.id === pid);
-    if (!d || !p) return;
+  Object.entries(street.doors).forEach(([placeId, d], i) => {
+    const pid = (PLACE[placeId] && PLACE[placeId].people || [])[0]; const p = (PEOPLE || []).find((x) => x.id === pid);
+    if (!p || placeId === 'phongtro' || placeId.startsWith('house')) return;
     const mesh = makePerson({ shirt: looks[i % looks.length], hair: i % 3 ? '#2b1d14' : '#5a3a26', pants: '#4a5568' });
-    const side = d.z > 0 ? 1 : -1; // stand beside the door, on the sidewalk
-    mesh.position.set(d.x + 1.6, 0, d.z + (d.z > 0 && d.z < 10 ? -0.4 : 0.1) * side);
-    mesh.rotation.y = d.ry;
+    const out = d.ry === Math.PI ? 1 : -1; // door faces +z when ry = PI
+    mesh.position.set(d.x + 1.8, 0, d.z + out * 0.2);
+    mesh.rotation.y = out > 0 ? 0 : Math.PI;
     mesh.add(nameTag(p.name, String(p.role || '').split('·')[0].trim(), { color: '#ffe9a0' }));
     street.root.add(mesh);
     npcs.push({ id: pid, placeId, mesh, person: p });
@@ -92,6 +108,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
   }
 
   // ---------- start screen ----------
+  let oldProfile = null;
   function showStart() {
     mode = 'menu'; hud.hidden = true; prompt.hidden = true; show('street');
     const lastName = Object.values(profile.runs || {}).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0)).map((r) => r.name).find(Boolean) || '';
@@ -101,10 +118,10 @@ export function startKhupho({ scene, camera, input, onExit }) {
       <div class="kp-btns">${kp ? '<button class="btn primary" id="kpGo">Về khu phố →</button><button class="btn ghost" id="kpNew">Bắt đầu lại</button>' : '<button class="btn primary" id="kpGo">Dọn vào ở →</button>'}<button class="btn ghost" id="kpBack">← Menu chính</button></div>
       <p class="kp-note">Một số luật, giá cả được dùng làm chất liệu chơi (thông tin giải trí, không phải tư vấn pháp lý).</p>`);
     c.querySelector('#kpGo').onclick = () => {
-      if (!kp) { const name = (c.querySelector('#kpName').value || '').trim() || 'Bạn'; kp = world.newGame({ name, seed: (Date.now() % 2147483646) + 1 }); save(); }
+      if (!kp) { const name = (c.querySelector('#kpName').value || '').trim() || 'Bạn'; kp = world.newGame({ name, seed: (Date.now() % 2147483646) + 1, now: Date.now(), profile: oldProfile || undefined, soloRuns: profile.runs, companyName }); save(); }
       enterPlace('room', true);
     };
-    const nb = c.querySelector('#kpNew'); if (nb) nb.onclick = () => { kp = null; profile.kp = undefined; showStart(); };
+    const nb = c.querySelector('#kpNew'); if (nb) nb.onclick = () => { oldProfile = kp.profile; kp = null; showStart(); }; // the hồ sơ cá nhân is kept
     c.querySelector('#kpBack').onclick = () => { onExit && onExit(); };
   }
 
@@ -165,13 +182,14 @@ export function startKhupho({ scene, camera, input, onExit }) {
   function doorPanel(placeId) {
     const p = placeOf(placeId);
     const open = world.isOpen(kp, placeId);
-    const foods = Object.entries(FOOD || {}).filter(([, f]) => f.place === placeId);
-    const staff = (PEOPLE || []).filter((x) => x.place === placeId).slice(0, 6).map((x) => x.name).join(', ');
+    const foods = Object.values(FOOD).filter((f) => f.place === placeId);
+    const staff = (p.people || []).map((id) => (PEOPLE.find((x) => x.id === id) || {}).name).filter(Boolean).slice(0, 6).join(', ');
     const work = world.canWork(kp, placeId);
     let actions = '';
-    if (open && foods.length) actions += foods.map(([id, f]) => `<button class="btn kp-food" data-food="${id}">${esc(f.name)} · ${fmtVND(econ.priceOf(kp.economy, id) || f.price)}</button>`).join('');
-    if (placeId === 'xeom') actions += `<button class="btn" id="kpRide">Gọi xe ôm đi…</button>`;
-    const c = card(`<div class="kp-kicker">${esc(p.kind || '')}</div><h3>${esc(p.name)}</h3>
+    if (open && foods.length) actions += foods.map((f) => `<button class="btn kp-food" data-food="${f.id}">${esc(f.name)} · ${fmtVND(econ.priceOf(kp.economy, f.id) ?? f.price)}</button>`).join('');
+    if (placeId === 'xeom') actions += '<button class="btn" id="kpRide">Gọi xe ôm đi…</button>';
+    if (placeId === 'congan' && !kp.player.tamTru) actions += '<button class="btn" id="kpTamTru">Đăng ký tạm trú</button>';
+    const c = card(`<div class="kp-kicker">${esc(p.kindLabel || '')}</div><h3>${esc(p.name)}</h3>
       <p>${esc(p.desc || '')}</p>
       <p class="kp-muted">${open ? '🟢 Đang mở cửa' : '🔴 Đang đóng cửa'}${p.hoursText ? ' · ' + esc(p.hoursText) : ''}</p>
       ${staff ? `<p class="kp-muted">Ở đây có: ${esc(staff)}</p>` : ''}
@@ -180,16 +198,12 @@ export function startKhupho({ scene, camera, input, onExit }) {
     c.querySelectorAll('[data-food]').forEach((b) => { b.onclick = () => eatAt(placeId, b.dataset.food); });
     c.querySelector('#kpClose').onclick = closeOverlay;
     const ride = c.querySelector('#kpRide'); if (ride) ride.onclick = () => rideMenu();
+    const tt = c.querySelector('#kpTamTru'); if (tt) tt.onclick = () => { const r = world.registerTamTru(kp); toast(r.ok ? r.text : r.reason); save(); closeOverlay(); };
   }
   function eatAt(placeId, foodId) {
-    const f = (FOOD || {})[foodId]; if (!f) { closeOverlay(); return; }
-    const price = econ.priceOf(kp.economy, foodId) || f.price || 0;
-    if (kp.player.money < price) { toast('Không đủ tiền. Cô Bánh Mì có cho ghi sổ, hỏi thử xem.'); closeOverlay(); return; }
-    kp.player.money -= price;
-    player.eat(kp.player, foodId, price);
-    (kp.ledger = kp.ledger || []).push({ day: kp.time.day, min: kp.time.min, k: f.name, v: -price });
-    world.advance(kp, f.minutes || 10, 'rest');
-    toast(`${f.name}: ${fmtVND(-price)}. No hơn rồi.`);
+    const r = world.buyFood(kp, foodId);
+    toast(r.ok ? `${(FOOD[foodId] || {}).name}${r.price ? ': ' + fmtVND(-r.price) : ''}${r.tab ? ' (ghi sổ)' : ''}. ${r.line || ''}` : r.reason);
+    (r.events || []).forEach(handleEvent);
     save(); closeOverlay();
   }
   function rideMenu() {
@@ -197,8 +211,8 @@ export function startKhupho({ scene, camera, input, onExit }) {
     const c = card(`<h3>Đi xe ôm</h3><p class="kp-muted">Chú Lương chở trong khu phố 15.000đ/cuốc, khoảng 3 phút.</p><div class="kp-btns kp-wrap">${dests.map((id) => `<button class="btn" data-go="${id}">${esc(placeOf(id).name)}</button>`).join('')}<button class="btn ghost" id="kpClose">Thôi, đi bộ</button></div>`);
     c.querySelectorAll('[data-go]').forEach((b) => { b.onclick = () => {
       const fee = 15000; if (kp.player.money < fee) { toast('Không đủ tiền đi xe ôm.'); return closeOverlay(); }
-      kp.player.money -= fee; (kp.ledger = kp.ledger || []).push({ day: kp.time.day, min: kp.time.min, k: 'Xe ôm', v: -fee });
-      world.advance(kp, 4, 'rest');
+      world.addMoney(kp, -fee, 'xeom', 'Xe ôm chú Lương');
+      (world.advance(kp, 4, 'idle') || []).forEach(handleEvent);
       const d = street.doors[b.dataset.go]; closeOverlay(); fp.teleport(d.x, d.z + (d.ry === PI ? 0.9 : -0.9), d.ry); save();
     }; });
     c.querySelector('#kpClose').onclick = closeOverlay;
@@ -234,6 +248,16 @@ export function startKhupho({ scene, camera, input, onExit }) {
     c.querySelector('#kpHome').onclick = () => { save(); onExit && onExit(); };
   }
 
+  function handleEvent(e) {
+    if (!e) return;
+    if (e.type === 'must_sleep') { toast(e.text || 'Khuya quá, bạn ngủ gục.'); if (mode === 'play') goSleep(); return; }
+    if (e.type === 'faint') {
+      toast(e.text || 'Bạn xỉu nhẹ, tỉnh dậy ở trạm y tế.');
+      const d = street.doors.tramyte; show('street'); if (d) fp.teleport(d.x, d.z + 0.9, Math.PI); renderHud(); save(); return;
+    }
+    if (e.type === 'xomoi') { renderHud(); return; }
+    if (e.text && e.type !== 'open' && e.type !== 'close') toast(e.text);
+  }
   let toastT = null;
   function toast(text) {
     let el = $('#kpToast'); if (!el) { el = document.createElement('div'); el.id = 'kpToast'; document.body.appendChild(el); }
@@ -260,8 +284,8 @@ export function startKhupho({ scene, camera, input, onExit }) {
       acc += dt * GAME_MIN_PER_SEC;
       if (acc >= 1) {
         const m = Math.floor(acc); acc -= m;
-        const events = world.advance(kp, m, where === 'street' ? 'walk' : 'rest') || [];
-        events.forEach((e) => e.text && toast(e.text));
+        const events = world.advance(kp, m, where === 'street' ? 'walk' : 'idle') || [];
+        events.forEach(handleEvent);
         if (elapsed - lastSave > 10) { lastSave = elapsed; save(); }
         renderHud();
       }
