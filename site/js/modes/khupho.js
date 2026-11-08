@@ -511,7 +511,7 @@ function injectCSS() {
 .kp-obj small { display: block; font-size: 11px; font-weight: 900; color: #6b6257; letter-spacing: .03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .kp-obj b { display: block; font-size: 14.5px; line-height: 1.25; } .kp-obj em { display: block; font-style: normal; font-size: 12px; color: #6b6257; line-height: 1.3; }
 .kp-arrow { width: 30px; height: 30px; border-radius: 50%; background: #1d1d1f; color: #fff; display: grid; place-items: center; font-size: 15px; transition: transform .12s linear; }
-@media (max-width: 560px) { #kpObj { top: auto; bottom: 186px; width: min(300px, calc(100vw - 150px)); } .kp-obj em { display: none; } }
+@media (max-width: 560px) { #kpObj { top: 168px; width: min(320px, calc(100vw - 20px)); } .kp-obj b { font-size: 13.5px; } .kp-obj em { font-size: 11px; } }
 #kpToast { position: fixed; left: 50%; bottom: 150px; transform: translateX(-50%); z-index: 60; pointer-events: none; background: #1d1d1f; color: #fff; border-radius: 12px; padding: 8px 14px; font-weight: 700; font-size: 14px; max-width: 90vw; }
 @media (max-width: 560px) { .kp-needs { flex-wrap: wrap; } #kpPrompt { bottom: 150px; } }
 `;
