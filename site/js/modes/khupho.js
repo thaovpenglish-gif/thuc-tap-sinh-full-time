@@ -184,7 +184,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
     const obs = story.objectives(kp, STORY, DRAMAS);
     const st = obs.find((o) => o.kind === 'story');
     const dr = obs.filter((o) => o.kind === 'drama' && o.today && kp.time.min <= toMinutes(o.to));
-    const row = (o, cls, icon, title) => `<div class="kp-obj ${cls}" data-where="${o.where}"><span class="kp-arrow">${icon}</span><div><small>${esc(title)}</small><b>${esc(fill(o.task))}</b><em>${esc(placeName(o.where))}${o.waiting ? ` · từ ${esc(dateOf(o.minDay).label.replace(/\/\d{4}$/, ''))}` : ''}${o.from ? ` · ${hm(o.from)}-${hm(o.to)}` : ''}${o.hint && cls === 'story' ? ` · ${esc(fill(o.hint))}` : ''}<span class="kp-dist"></span></em></div></div>`;
+    const row = (o, cls, icon, title) => `<div class="kp-obj ${cls}" data-where="${o.where}"><span class="kp-arrow">${icon}</span><div><small>${esc(title)}</small><b>${esc(fill(o.task))}</b><em>${o.hint && cls === 'story' && fill(o.hint).startsWith(placeName(o.where)) ? '' : esc(placeName(o.where))}${o.waiting ? ` · từ ${esc(dateOf(o.minDay).label.replace(/\/\d{4}$/, ''))}` : ''}${o.from ? ` · ${hm(o.from)}-${hm(o.to)}` : ''}${o.hint && cls === 'story' ? `${fill(o.hint).startsWith(placeName(o.where)) ? '' : ' · '}${esc(fill(o.hint))}` : ''}<span class="kp-dist"></span></em></div></div>`;
     const html = (st ? row(st, 'story', '➤', `📌 ${st.chapter}`) : '') + dr.slice(0, 2).map((o) => row(o, 'drama', '➤', `🔥 Có biến · ${o.title}`)).join('');
     if (objEl.dataset.html !== html) { objEl.innerHTML = html; objEl.dataset.html = html; }
     objEl.hidden = !html;
@@ -202,7 +202,8 @@ export function startKhupho({ scene, camera, input, onExit }) {
     objEl.querySelectorAll('.kp-obj').forEach((el) => {
       const d = doorOf(el.dataset.where), arrow = el.querySelector('.kp-arrow'), dist = el.querySelector('.kp-dist');
       if (!d) return;
-      if (where !== 'street') { arrow.style.transform = 'none'; arrow.textContent = '🚪'; dist.textContent = ' · ra phố trước'; return; }
+      const here = (where === 'room' ? 'phongtro' : where) === el.dataset.where;
+      if (where !== 'street') { arrow.style.transform = 'none'; arrow.textContent = here ? '📍' : '🚪'; dist.textContent = here ? ' · ngay đây' : ' · ra phố trước'; return; }
       const a = fp.arrowTo({ x: d.x, z: d.z }); arrow.textContent = '➤'; arrow.style.transform = `rotate(${a.deg}deg)`;
       dist.textContent = a.dist < 3 ? ' · tới rồi, bấm E' : ` · ${Math.round(a.dist)} m`;
     });
