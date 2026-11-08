@@ -30,7 +30,9 @@ const bySlot = () => Object.keys(SLOTS).map((slot) => ({ slot, items: FURNITURE.
 /** The shop. onChange() after a purchase (re-apply decor, save); onClose() when the player leaves. toast(text) for feedback. */
 export function showFurnitureShop({ root, kp, open = true, onChange, onClose, toast }) {
   ensureBase(); ensureStyle('kp-ui-furniture', CSS);
+  let first = true;
   const render = () => {
+    const keep = first ? 0 : ((root.querySelector('.kp-screen') || {}).scrollTop || 0); // re-render after a click keeps your place
     const home = ensureHome(kp);
     const placedIds = new Set(Object.values(home.placed));
     const groups = bySlot().map(({ slot, items }) => `<div class="kp-slotname">${esc(SLOTS[slot])}</div>${items.map((f) => {
@@ -56,6 +58,8 @@ export function showFurnitureShop({ root, kp, open = true, onChange, onClose, to
       render();
     }; });
     root.querySelectorAll('[data-kp="close"],[data-kp="close2"]').forEach((b) => { b.onclick = () => onClose && onClose(); });
+    const scr = root.querySelector('.kp-screen'); if (scr) scr.scrollTop = keep;
+    root.scrollTop = 0; first = false;
   };
   render();
 }
@@ -63,7 +67,9 @@ export function showFurnitureShop({ root, kp, open = true, onChange, onClose, to
 /** "Sắp xếp phòng": for every slot with owned items, pick which one is out (or put it away). */
 export function showDecor({ root, kp, onChange, onClose }) {
   ensureBase(); ensureStyle('kp-ui-furniture', CSS);
+  let first = true;
   const render = () => {
+    const keep = first ? 0 : ((root.querySelector('.kp-screen') || {}).scrollTop || 0); // re-render after a click keeps your place
     const home = ensureHome(kp);
     const groups = bySlot().map(({ slot, items }) => ({ slot, items: items.filter((f) => home.owned.includes(f.id)) })).filter((g) => g.items.length);
     const body = groups.length ? groups.map(({ slot, items }) => `<div class="kp-slotname">${esc(SLOTS[slot])}</div>${items.map((f) => {
@@ -82,6 +88,8 @@ export function showDecor({ root, kp, onChange, onClose }) {
     root.querySelectorAll('[data-put]').forEach((b) => { b.onclick = () => { placeItem(kp, b.dataset.slot, b.dataset.put); if (onChange) onChange(); render(); }; });
     root.querySelectorAll('[data-off]').forEach((b) => { b.onclick = () => { placeItem(kp, b.dataset.off, null); if (onChange) onChange(); render(); }; });
     root.querySelectorAll('[data-kp="close"],[data-kp="close2"]').forEach((b) => { b.onclick = () => onClose && onClose(); });
+    const scr = root.querySelector('.kp-screen'); if (scr) scr.scrollTop = keep;
+    root.scrollTop = 0; first = false;
   };
   render();
 }
