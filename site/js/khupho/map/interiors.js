@@ -5,6 +5,13 @@ import { FURNITURE } from '../data/furniture.js';
 
 const PI = Math.PI;
 
+/** The kit records interactables and colliders in the room's local frame, but the room root sits at (ox, oz):
+ *  move them to world coordinates so picking (E) and walls line up with what the player sees. */
+function toWorld(K, ox, oz) {
+  for (const it of K.interactables) { it.pos.x += ox; it.pos.z += oz; }
+  for (const c of K.colliders) { c.minX += ox; c.maxX += ox; c.minZ += oz; c.maxZ += oz; }
+}
+
 /** Room 5, Dãy trọ Bình An: 3.5 × 5 m, one window, a ceiling fan, a mattress on the floor. Origin = room centre. */
 export function buildRoom(scene, at = [200, 0]) {
   const K = createKit(scene);
@@ -43,6 +50,7 @@ export function buildRoom(scene, at = [200, 0]) {
   box(0.4, 1.6, 0.4, '#d9a273', -1.45, 0, 1.9, true, 0, 0.012); // wardrobe
   interact('decor', 'Sắp xếp phòng (đồ nội thất)', -1.2, 1.0, 1.5);
   K.lights({ sky: '#fff6e8', ground: '#e8dcc8', hemi: 1.4, amb: 0.45, sun: 0.7 });
+  toWorld(K, ox, oz);
   return K.result({ spawn: [ox + 0.75, oz + 1.6, 0], bounds: { minX: ox - 1.5, maxX: ox + 1.5, minZ: oz - 2.25, maxZ: oz + 2.25 }, origin: at, applyDecor: decor.apply });
 }
 
@@ -92,6 +100,7 @@ export function buildTeaShop(scene, at = [300, 0]) {
   for (const x of [-3, 0, 3]) { cyl(0.006, 0.006, 0.6, '#222', x, H - 0.6, 1, 4, 0); cyl(0.05, 0.3, 0.25, pink, x, H - 0.85, 1, 14, 0.01); sphere(0.07, glow('#fff3c4'), x, H - 0.86, 1, 0); }
   K.lights({ sky: '#fff6fa', ground: '#ffe3ec', hemi: 1.55, amb: 0.5, sun: 0.8 });
   // staff spot: chị Nhung behind the bar; you stand at the bar from the customer side when not working
+  toWorld(K, ox, oz);
   return K.result({ spawn: [ox, oz + 3.0, 0], bounds: { minX: ox - 5.7, maxX: ox + 5.7, minZ: oz - 3.7, maxZ: oz + 3.7 }, origin: at, staff: { nhung: [ox + 3.2, oz - 1.5, 0] } });
 }
 

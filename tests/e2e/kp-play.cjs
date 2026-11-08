@@ -96,6 +96,11 @@ const COVER = () => {
     await p.keyboard.press('KeyE');
     await p.waitForFunction(() => window.__kp.where === 'trasua', null, { timeout: 5000 }).catch(() => problems.push(`day ${d + 1}: could not enter the tea shop`));
     if (d === 0) { await frames(); await shot('teashop'); }
+    // the bar inside the shop must answer E (interactables live in world coordinates)
+    await p.evaluate(() => { const k = window.__kp; k.fp.teleport(300 - 0.5, -0.3, 0); });
+    await frames(6);
+    const barPrompt = await p.evaluate(() => { const el = document.querySelector('#kpPrompt'); return el && !el.hidden ? el.textContent : null; });
+    if (!barPrompt || !/Vào ca/i.test(barPrompt)) problems.push(`day ${d + 1}: no prompt at the tea shop bar (got ${barPrompt})`);
     // start the shift (the bar)
     await p.evaluate(() => { window.__kpDebug = null; });
     await p.evaluate(() => window.__kp.startShift());
@@ -148,6 +153,17 @@ const COVER = () => {
     // home and sleep
     await p.evaluate(() => window.__kp.exit('trasua'));
     await p.evaluate(() => window.__kp.enter('room'));
+    // walk to the room door and press E: back on the street, then come home again
+    await p.evaluate(() => { const k = window.__kp; k.fp.teleport(200 + 0.75, 1.7, Math.PI); });
+    await frames(6);
+    const doorPrompt = await p.evaluate(() => { const el = document.querySelector('#kpPrompt'); return el && !el.hidden ? el.textContent : null; });
+    if (!doorPrompt || !/Ra khu phố/i.test(doorPrompt)) problems.push(`day ${d + 1}: no prompt at the room door (got ${doorPrompt})`);
+    await p.keyboard.press('KeyE'); await p.waitForTimeout(200);
+    if ((await state()).where !== 'street') problems.push(`day ${d + 1}: E at the room door did not go out`);
+    await p.evaluate(() => window.__kp.enter('room'));
+    // Esc must only free the mouse, never open a menu
+    await p.keyboard.press('Escape'); await p.waitForTimeout(200);
+    if (await p.evaluate(() => !document.querySelector('#kpOverlay').hidden)) problems.push(`day ${d + 1}: Esc opened a panel`);
     if (d === 0) {
       await frames(); await shot('room_decor');
       await p.evaluate(() => window.__kp.openDecor()); await p.waitForTimeout(200); await audit('decor panel'); await shot('decor');

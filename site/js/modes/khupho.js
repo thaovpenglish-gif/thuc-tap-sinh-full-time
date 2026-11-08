@@ -84,7 +84,8 @@ export function startKhupho({ scene, camera, input, onExit }) {
 
   // ---------- controls + overlay ----------
   let mode = 'menu'; // menu | play | overlay | pause
-  const fp = createFPControls({ camera, input, getMode: () => mode, onPause: () => pause(), start: street.spawn });
+  // Esc only frees the mouse (the click hint shows); the pause card opens from the ⏸ button.
+  const fp = createFPControls({ camera, input, getMode: () => mode, onPause: () => {}, start: street.spawn });
   const ov = document.createElement('div'); ov.id = 'kpOverlay'; ov.hidden = true; document.body.appendChild(ov);
   const hud = document.createElement('div'); hud.id = 'kpHud'; hud.hidden = true; document.body.appendChild(hud);
   const prompt = document.createElement('div'); prompt.id = 'kpPrompt'; prompt.hidden = true; document.body.appendChild(prompt);
@@ -102,7 +103,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
   function buildHud() {
     hud.innerHTML = `<div class="kp-hud-l"><b id="kpClock"></b><span id="kpMoney"></span>
       <div class="kp-needs"><label>🍚<span class="kp-bar"><i id="kpNeedFood" style="background:#f2a65a"></i></span></label><label>⚡<span class="kp-bar"><i id="kpNeedEnergy" style="background:#3fa37a"></i></span></label><label>🙂<span class="kp-bar"><i id="kpNeedMood" style="background:#c77dff"></i></span></label></div></div>
-      <div class="kp-hud-r"><button id="kpXomoi" aria-label="Nhóm Xóm Ơi (phím P)" title="Nhóm Xóm Ơi (P)">📱<em id="kpUnread" hidden></em></button><button id="kpProf" aria-label="Hồ sơ cá nhân (phím H)" title="Hồ sơ cá nhân (H)">📇</button><button id="kpPause" aria-label="Tạm dừng (Esc)" title="Tạm dừng (Esc)">⏸</button></div>`;
+      <div class="kp-hud-r"><button id="kpXomoi" aria-label="Nhóm Xóm Ơi (phím P)" title="Nhóm Xóm Ơi (P)">📱<em id="kpUnread" hidden></em></button><button id="kpProf" aria-label="Hồ sơ cá nhân (phím H)" title="Hồ sơ cá nhân (H)">📇</button><button id="kpPause" aria-label="Tạm dừng" title="Tạm dừng">⏸</button></div>`;
     $('#kpXomoi').onclick = () => openXomoi();
     $('#kpProf').onclick = () => openProfile();
     $('#kpPause').onclick = () => pause();
@@ -301,7 +302,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
   input.onKey((e, { inField }) => {
     if (inField) return;
     if (mode === 'play' && (e.code === 'KeyE' || e.code === 'Enter')) { e.preventDefault(); interact(); }
-    if (mode === 'play' && e.code === 'Escape') pause();
+    if (mode === 'overlay' && e.code === 'Escape') { const x = ov.querySelector('#kpClose, #kpRes, #kpOk, [data-kp="close"]'); if (x) { e.preventDefault(); x.click(); } }
     if (mode === 'play' && e.code === 'KeyP') { e.preventDefault(); openXomoi(); }
     if (mode === 'play' && e.code === 'KeyH') { e.preventDefault(); openProfile(); }
   });
