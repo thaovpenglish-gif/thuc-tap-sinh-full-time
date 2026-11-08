@@ -26,6 +26,11 @@ const OUT = process.env.SHOTS || null;
   await p.fill('#kpName', 'Thảo'); await p.click('#kpGo');
   await p.waitForFunction(() => window.__kp.mode !== 'menu');
   await p.waitForTimeout(600);
+  // START=ch,beat,day,min jumps to a beat (to test later chapters quickly)
+  if (process.env.START) {
+    const [ch, beat, day, min] = process.env.START.split(',').map(Number);
+    await p.evaluate(([ch, beat, day, min]) => { const k = window.__kp, kp = k.kp; while (kp.time.day < day) k.world.sleep(kp); kp.time.min = min; kp.story.ch = ch; kp.story.beat = beat; kp.story.base = JSON.parse(JSON.stringify(kp.counters)); kp.player.needs.food = 80; }, [ch, beat, day, min]);
+  }
 
   const S = () => p.evaluate(() => {
     const k = window.__kp, kp = k.kp, q = (s) => document.querySelector(s);
@@ -42,7 +47,7 @@ const OUT = process.env.SHOTS || null;
     await p.waitForTimeout(350);
     await p.keyboard.press('KeyE'); await p.waitForTimeout(300);
   }
-  let scenes = 0, choicesSeen = 0, audited = false;
+  let scenes = 0, choicesSeen = 0, audited = false, dramaActs = 0;
   async function playOverlay() {
     for (let i = 0; i < 60; i++) {
       const st = await p.evaluate(() => {
@@ -104,7 +109,7 @@ const OUT = process.env.SHOTS || null;
     if (s.day > MAX_DAYS) { problems.push(`story not past chapter ${s.chapters + 1} by day ${MAX_DAYS} (at "${s.beat.task}")`); break; }
     const key = s.beat.id;
     if (key !== lastKey) { lastKey = key; sameSince = s.day; log.push(`d${s.day} ${String(Math.floor(s.min / 60)).padStart(2, '0')}h · ${s.beat.chapter} · ${s.beat.task}${s.beat.need ? ' [' + s.beat.need.type + ']' : ''}`); }
-    else if (s.day - sameSince > 3) { problems.push(`stuck on "${s.beat.task}" since day ${sameSince}`); break; }
+    else if (s.day - Math.max(sameSince, s.beat.minDay || 0) > ((s.beat.need || {}).type === 'drama' ? 12 : 3)) { problems.push(`stuck on "${s.beat.task}" since day ${sameSince}`); break; }
     if (!s.obj || !/Việc chính|📌/.test(s.obj + '📌')) problems.push(`day ${s.day}: HUD shows no objective`);
     if (steps === 2) await shot('hud');
     const bt = s.beat;
@@ -130,12 +135,25 @@ const OUT = process.env.SHOTS || null;
       case 'tamtru': await goTo('congan'); await playOverlay(); await goTo('congan'); { const t = p.locator('#kpOverlay #kpTamTru'); if (await t.count()) await t.click(); } await playOverlay(); break;
       case 'work': case 'shift': case 'office': if (!(await shift())) await sleepNow(); break;
       case 'eat': await waitUntil(7 * 60); await goTo('banhmi'); await playOverlay(); await goTo('banhmi'); { const f = p.locator('#kpOverlay [data-food]').first(); if (await f.count()) await f.click(); } await playOverlay(); break;
-      case 'furniture': await waitUntil(9 * 60); await p.evaluate(() => { window.__kp.kp.player.money += 300000; window.__kp.openFurniture(); }); await p.waitForTimeout(200); {
+      case 'furniture': await waitUntil(9 * 60); { const sc = await p.evaluate(() => { window.__kp.kp.player.money += 300000; window.__kp.openFurniture(); const x = document.querySelector('#kpOverlay .kp-screen'); return [x && x.scrollTop, document.activeElement && document.activeElement.tagName + '.' + document.activeElement.className]; }); log.push('furniture opened, scrollTop ' + JSON.stringify(sc)); } await p.waitForTimeout(200); {
+        const sc0 = await p.evaluate(() => { const x = document.querySelector('#kpOverlay .kp-screen'); return x && x.scrollTop; });
         const where = await p.evaluate(() => { const bt = document.querySelector('#kpOverlay [data-buy]'); if (!bt) return null; const r = bt.getBoundingClientRect(), ov = document.querySelector('#kpOverlay'); return { top: Math.round(r.top), h: Math.round(r.height), vh: innerHeight, ovTop: Math.round(ov.getBoundingClientRect().top), ovScroll: ov.scrollTop, kids: ov.children.length, first: ov.firstElementChild && ov.firstElementChild.className }; });
-        if (where && (where.top < 0 || where.top + where.h > where.vh)) { problems.push('furniture buy button off screen: ' + JSON.stringify(where)); await shot('noithat_offscreen'); }
+        if (where && (where.top < 0 || where.top + where.h > where.vh)) { problems.push('furniture buy button off screen: ' + JSON.stringify({ ...where, sc0 })); await shot('noithat_offscreen'); }
         await p.evaluate(() => { const bt = document.querySelector('#kpOverlay [data-buy]'); if (bt) bt.click(); });
       } await playOverlay(); break;
-      case 'sleep': case 'day': case 'drama': case 'money': case 'cozy': await sleepNow(); break;
+      case 'drama': {
+        const d = await p.evaluate(() => window.__kp.story.objectives().filter((o) => o.kind === 'drama' && o.today)[0]);
+        const now = (await S()).min;
+        if (!d || now > toMin(d.to)) await sleepNow();
+        else if (now < toMin(d.from)) await waitUntil(toMin(d.from) + 1);
+        else {
+          await goTo(d.where); await p.waitForTimeout(400);
+          if (!(await S()).ov) await p.evaluate((w) => window.__kp.story.playScenes(w), d.where);
+          dramaActs++; await playOverlay();
+        }
+        break;
+      }
+      case 'sleep': case 'day': case 'money': case 'cozy': await sleepNow(); break;
       case 'xomoi': await p.evaluate(() => window.__kp.story.openXomoi()); await p.waitForTimeout(200); await playOverlay(); break;
       case 'profile': await p.evaluate(() => window.__kp.story.openProfile()); await p.waitForTimeout(200); await playOverlay(); break;
       case 'ride': await p.evaluate(() => { window.__kp.kp.player.money += 20000; window.__kp.story.rideMenu(); }); await p.waitForTimeout(200); await p.locator('#kpOverlay [data-go]').first().click(); await playOverlay(); break;
@@ -150,7 +168,7 @@ const OUT = process.env.SHOTS || null;
   const end = await S();
   await shot('end');
   console.log(log.join('\n'));
-  console.log('RESULT', JSON.stringify({ day: end.day, chapters: end.chapters, beat: end.beat && end.beat.task, scenes, choicesSeen, dramas: end.dramas }));
+  console.log('RESULT', JSON.stringify({ day: end.day, chapters: end.chapters, beat: end.beat && end.beat.task, scenes, choicesSeen, dramaActs, dramas: end.dramas }));
   if (end.chapters < CHAPTERS && end.beat) problems.push(`only ${end.chapters} chapters done`);
   if (scenes < 3) problems.push(`only ${scenes} scenes played`);
   console.log('PROBLEMS', problems.length ? '\n  ' + problems.join('\n  ') : 'none');

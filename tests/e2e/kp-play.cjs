@@ -36,6 +36,8 @@ const COVER = () => {
   const audit = async (where) => { const bad = await p.evaluate(COVER); bad.forEach((x) => problems.push(`${where}: ${x}`)); };
   const state = () => p.evaluate(() => { const k = window.__kp.kp; return k && { day: k.time.day, min: k.time.min, money: k.player.money, needs: k.player.needs, days: (k.profile.entries || []).reduce((a, e) => a + (e.daysWorked || 0), 0), where: window.__kp.where, mode: window.__kp.mode }; });
   const frames = (n = 6) => p.waitForTimeout(n * 60);
+  // story scenes (sim/story.js) may open on their own (moving in, waking up, entering a shop): read them through
+  const clearScenes = async () => { let idle = 0; for (let i = 0; i < 60 && idle < 3; i++) { const n = await p.$('#kpOverlay:not([hidden]) #kpSceneNext, #kpOverlay:not([hidden]) [data-c], #kpOverlay:not([hidden]) .kp-card > .kp-btns #kpOk'); if (!n) { idle++; await p.waitForTimeout(150); continue; } idle = 0; await n.click(); await p.waitForTimeout(100); } };
 
   await p.goto(BASE + '?kp=1&open=kp&debug=1', { waitUntil: 'networkidle' });
   await p.evaluate(() => { localStorage.clear(); localStorage.setItem('tts_letter_v1', '1'); window.__kpShiftSecs = 40; });
@@ -45,7 +47,9 @@ const COVER = () => {
   await audit('start'); await shot('start');
   await p.fill('#kpName', 'Thảo');
   await p.click('#kpGo');
-  await p.waitForFunction(() => window.__kp.where === 'room' && window.__kp.mode === 'play');
+  await p.waitForFunction(() => window.__kp.where === 'room');
+  await p.waitForTimeout(500); await clearScenes();
+  await p.waitForFunction(() => window.__kp.mode === 'play');
   await audit('room HUD'); await shot('room');
   const s0 = await state();
   console.log('moved in:', JSON.stringify(s0));
@@ -60,7 +64,7 @@ const COVER = () => {
     const prompt = await p.evaluate(() => { const el = document.querySelector('#kpPrompt'); return el && !el.hidden ? el.textContent : null; });
     if (!prompt || !/BÁNH MÌ/i.test(prompt)) problems.push(`day ${d + 1}: no prompt at the bánh mì cart (got ${prompt})`);
     await p.keyboard.press('KeyE');
-    await p.waitForTimeout(250);
+    await p.waitForTimeout(250); await clearScenes();
     const opened = await p.evaluate(() => !!document.querySelector('#kpOverlay:not([hidden]) .kp-card'));
     if (opened) {
       await audit('bánh mì panel'); if (d === 0) await shot('banhmi');
@@ -95,6 +99,7 @@ const COVER = () => {
     await frames(8);
     await p.keyboard.press('KeyE');
     await p.waitForFunction(() => window.__kp.where === 'trasua', null, { timeout: 5000 }).catch(() => problems.push(`day ${d + 1}: could not enter the tea shop`));
+    await p.waitForTimeout(400); await clearScenes();
     if (d === 0) { await frames(); await shot('teashop'); }
     // the bar inside the shop must answer E (interactables live in world coordinates)
     await p.evaluate(() => { const k = window.__kp; k.fp.teleport(300 - 0.5, -0.3, 0); });
@@ -176,6 +181,7 @@ const COVER = () => {
     const nightText = await p.evaluate(() => (document.querySelector('#kpOverlay') || {}).innerText || '');
     if (!/tối nay/i.test(nightText)) problems.push(`day ${d + 1}: night report missing ("${nightText.slice(0, 60)}")`);
     await p.evaluate(() => { const b = [...document.querySelectorAll('#kpOverlay button')].pop(); if (b) b.click(); });
+    await p.waitForTimeout(500); await clearScenes();
     await p.waitForFunction(() => window.__kp.mode === 'play' && window.__kp.where === 'room', null, { timeout: 5000 }).catch(() => problems.push(`day ${d + 1}: did not wake up in the room`));
     console.log(`slept → ${JSON.stringify(await state())}`);
   }

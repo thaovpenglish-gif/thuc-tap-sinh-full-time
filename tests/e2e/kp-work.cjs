@@ -17,6 +17,8 @@ const PLACE = { tm: 'toanha', tech: 'toanha', audit: 'toanha', bama: 'bama', age
   const errors = [], problems = [];
   p.on('pageerror', (e) => errors.push(e.message));
   p.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource|supabase|ERR_|net::/i.test(m.text())) errors.push('console: ' + m.text()); });
+  // story scenes (sim/story.js) may open on their own (moving in, waking up, entering a shop): read them through
+  const clearScenes = async () => { let idle = 0; for (let i = 0; i < 60 && idle < 3; i++) { const n = await p.$('#kpOverlay:not([hidden]) #kpSceneNext, #kpOverlay:not([hidden]) [data-c], #kpOverlay:not([hidden]) .kp-card > .kp-btns #kpOk'); if (!n) { idle++; await p.waitForTimeout(150); continue; } idle = 0; await n.click(); await p.waitForTimeout(100); } };
   const kpState = () => p.evaluate(() => { const k = window.__kp && window.__kp.kp; if (!k) return null; const e = (k.profile.entries || []).find((x) => x.kind === 'company'); return { day: k.time.day, min: k.time.min, money: k.player.money, where: window.__kp.where, mode: window.__kp.mode, work: k.work, officeDay: k.flags.officeDay, entry: e && { placeId: e.placeId, days: e.daysWorked, earned: e.earned, role: e.role } }; });
 
   await p.goto(BASE + '?kp=1&open=kp&debug=1', { waitUntil: 'networkidle' });
@@ -24,7 +26,8 @@ const PLACE = { tm: 'toanha', tech: 'toanha', audit: 'toanha', bama: 'bama', age
   await p.reload({ waitUntil: 'networkidle' });
   await p.waitForFunction(() => window.__kp && document.querySelector('#kpOverlay:not([hidden]) #kpGo'));
   await p.fill('#kpName', 'Thảo'); await p.click('#kpGo');
-  await p.waitForFunction(() => window.__kp.mode === 'play' && window.__kp.where === 'room');
+  await p.waitForFunction(() => window.__kp.where === 'room');
+  await p.waitForTimeout(500); await clearScenes();
 
   // drive one Solo day (interview or workday) until the page goes back to the neighbourhood
   async function playSoloDay(label) {
@@ -118,6 +121,7 @@ const PLACE = { tm: 'toanha', tech: 'toanha', audit: 'toanha', bama: 'bama', age
   await p.evaluate(() => { window.__kp.enter('room'); window.__kp.sleep(); });
   await p.waitForTimeout(300);
   await p.evaluate(() => { const b = [...document.querySelectorAll('#kpOverlay button')].pop(); if (b) b.click(); });
+  await p.waitForTimeout(500); await clearScenes();
   await p.waitForFunction(() => window.__kp.mode === 'play');
   await p.evaluate(() => { const k = window.__kp; k.world.advance(k.kp, Math.max(0, 8 * 60 + 15 - k.kp.time.min), 'idle'); });
   const m1 = (await kpState()).money;

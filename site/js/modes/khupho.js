@@ -161,7 +161,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
   function showQueuedCard() {
     const q = cardQueue.shift(); if (!q) return;
     const c = card(`<div class="kp-kicker">${esc(q.kicker)}</div><h2>${esc(q.title)}</h2><p>${esc(q.text)}</p><div class="kp-btns"><button class="btn primary" id="kpOk">Đi thôi →</button></div>`);
-    c.querySelector('#kpOk').onclick = closeOverlay;
+    c.querySelector('#kpOk').onclick = () => { closeOverlay(); if (where !== 'street') playScenes(where === 'room' ? 'phongtro' : where); };
   }
   /** Play the first scene waiting at this door (story beat or drama act). then() runs after it. → true if one played. */
   function playScenes(placeId, then) {
