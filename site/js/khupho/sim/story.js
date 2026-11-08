@@ -149,7 +149,7 @@ export function newDay(kp, DRAMAS) {
 export function objectives(kp, STORY, DRAMAS) {
   const out = [];
   const cur = currentBeat(kp, STORY);
-  if (cur) out.push({ kind: 'story', task: cur.beat.task, hint: cur.beat.hint || '', where: cur.beat.where, chapter: cur.chapter.title, from: cur.beat.from, to: cur.beat.to });
+  if (cur) out.push({ kind: 'story', task: cur.beat.task, hint: cur.beat.hint || '', where: cur.beat.where, chapter: cur.chapter.title, from: cur.beat.from, to: cur.beat.to, minDay: cur.beat.minDay || 0, waiting: (cur.beat.minDay || 0) > kp.time.day });
   for (const a of kp.dramas.active) {
     const d = DRAMAS.find((x) => x.id === a.id); if (!d || a.act >= d.acts.length) continue;
     const act = d.acts[a.act], day = actDay(a, d, a.act);
