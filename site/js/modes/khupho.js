@@ -25,6 +25,12 @@ import { showProfile } from '../khupho/ui/profile.js';
 import { showXomoi } from '../khupho/ui/xomoi.js';
 import { showFurnitureShop, showDecor } from '../khupho/ui/furniture.js';
 import { ensureHome, morningMood, cozyScore, cozyLabel } from '../khupho/sim/home.js';
+import * as office from '../khupho/sim/office.js';
+import * as story from '../khupho/sim/story.js';
+import { STORY } from '../khupho/data/story.js';
+import { DRAMAS as DRAMAS_A } from '../khupho/data/dramas_a.js';
+import { DRAMAS as DRAMAS_B } from '../khupho/data/dramas_b.js';
+import { showScene } from '../khupho/ui/scene.js';
 
 const PROFILE_KEY = 'tm_profile_v1';
 const GAME_MIN_PER_SEC = 1; // 1 real second = 1 game minute while walking around (shifts run on their own clock)
@@ -50,6 +56,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
   let profile = validateProfile(store.json(PROFILE_KEY)) || emptyProfile();
   let kp = profile.kp ? world.loadGame(profile.kp, { now: Date.now() }) : null;
   if (kp) world.importSoloRuns(kp, profile.runs, companyName);
+  if (kp) story.ensureStory(kp);
   const save = () => {
     if (!kp) return;
     world.stamp(kp);
@@ -89,6 +96,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
   const ov = document.createElement('div'); ov.id = 'kpOverlay'; ov.hidden = true; document.body.appendChild(ov);
   const hud = document.createElement('div'); hud.id = 'kpHud'; hud.hidden = true; document.body.appendChild(hud);
   const prompt = document.createElement('div'); prompt.id = 'kpPrompt'; prompt.hidden = true; document.body.appendChild(prompt);
+  const objEl = document.createElement('div'); objEl.id = 'kpObj'; objEl.hidden = true; document.body.appendChild(objEl);
   injectCSS();
   const isTouch = matchMedia('(pointer: coarse)').matches;
 
@@ -109,8 +117,8 @@ export function startKhupho({ scene, camera, input, onExit }) {
     $('#kpPause').onclick = () => pause();
     hudBuilt = true;
   }
-  function openXomoi() { if (!kp) return; const r = openOverlay(); showXomoi({ root: r, kp, onClose: () => { save(); closeOverlay(); } }); }
-  function openProfile() { if (!kp) return; const r = openOverlay(); showProfile({ root: r, kp, onClose: closeOverlay }); }
+  function openXomoi() { if (!kp) return; const r = openOverlay(); showXomoi({ root: r, kp, onClose: () => { save(); closeOverlay(); did('xomoi'); } }); }
+  function openProfile() { if (!kp) return; const r = openOverlay(); showProfile({ root: r, kp, onClose: () => { closeOverlay(); did('profile'); } }); }
   function renderHud() {
     if (!kp) return;
     if (!hudBuilt) buildHud();
@@ -121,20 +129,98 @@ export function startKhupho({ scene, camera, input, onExit }) {
     $('#kpNeedFood').style.width = w(p.needs.food); $('#kpNeedEnergy').style.width = w(p.needs.energy); $('#kpNeedMood').style.width = w(p.needs.mood);
     const unread = (kp.xomoi && kp.xomoi.unread) || 0, u = $('#kpUnread');
     u.hidden = !unread; u.textContent = unread;
+    renderObjectives();
+  }
+
+  // ---------- story + dramas (sim/story.js): the HUD always says what to do next ----------
+  const DRAMAS = [...DRAMAS_A, ...DRAMAS_B];
+  const nameOf = (id) => (PEOPLE.find((x) => x.id === id) || {}).name || id;
+  const fill = (t) => String(t || '').replaceAll('{ten}', kp ? kp.player.name : 'bạn');
+  const doorOf = (placeId) => street.doors[placeId] || null;
+  const placeName = (id) => (placeOf(id).short || placeOf(id).name || id);
+  const cardQueue = [];
+  function roles() {
+    const r = ['any'];
+    if ((kp.counters && kp.counters.shift > 0) || (kp.job && kp.job.placeId === 'trasua')) r.push('trasua');
+    for (const co of Object.keys(office.OFFICES)) if (soloRunAt(co)) r.push(co);
+    return r;
+  }
+  function did(type, place) { if (!kp) return; story.count(kp, type, place); storyEvents(story.progress(kp, STORY)); save(); }
+  function storyEvents(ev = []) {
+    for (const e of ev) {
+      if (e.type === 'beat') toast(`✅ Xong: ${fill(e.task)}`);
+      else if (e.type === 'chapter') cardQueue.push({ kicker: 'CHƯƠNG MỚI', title: e.title, text: fill(e.intro) });
+      else if (e.type === 'chapter_done' && e.done) cardQueue.push({ kicker: 'XONG CHƯƠNG', title: e.title, text: fill(e.done) });
+      else if (e.type === 'story_end') cardQueue.push({ kicker: 'HẾT CỐT TRUYỆN CHÍNH', title: 'Khu phố 7 giờ là nhà', text: 'Câu chuyện chính đã khép lại, nhưng khu phố thì không: drama vẫn nổ, quán vẫn mở, Xóm Ơi vẫn rung. Sống tiếp nhé.' });
+      else if (e.type === 'drama_start') toast(`🔥 Có biến mới: ${e.title}`);
+      else if (e.type === 'drama_end') toast(`🎬 Hết drama "${e.title}". Biên bản khu phố có thêm một dòng.`);
+      else if (e.type === 'drama_missed') toast(`📱 Bạn lỡ một hồi "${e.title}". Xóm Ơi đang kể lại.`);
+    }
+    renderObjectives();
+  }
+  function showQueuedCard() {
+    const q = cardQueue.shift(); if (!q) return;
+    const c = card(`<div class="kp-kicker">${esc(q.kicker)}</div><h2>${esc(q.title)}</h2><p>${esc(q.text)}</p><div class="kp-btns"><button class="btn primary" id="kpOk">Đi thôi →</button></div>`);
+    c.querySelector('#kpOk').onclick = closeOverlay;
+  }
+  /** Play the first scene waiting at this door (story beat or drama act). then() runs after it. → true if one played. */
+  function playScenes(placeId, then) {
+    if (!kp) return false;
+    const items = story.scenesAt(kp, placeId, STORY, DRAMAS);
+    if (!items.length) return false;
+    const item = items[0];
+    const r = openOverlay();
+    showScene({ root: r, item, choices: story.choicesFor(kp, item.scene, roles()), nameOf, fill,
+      onChoose: (i) => { const res = story.finishScene(kp, item, i, STORY, DRAMAS); storyEvents(res.events); save(); renderHud(); return res.lines; },
+      onDone: () => { closeOverlay(); if (then) then(); } });
+    return true;
+  }
+  // a floating diamond over the door the story points at (and one for today's drama)
+  const mkMarker = (color) => { const m = new THREE.Mesh(new THREE.OctahedronGeometry(0.42), new THREE.MeshBasicMaterial({ color })); m.scale.y = 1.5; m.visible = false; street.root.add(m); return m; };
+  const markers = { story: mkMarker('#b18cff'), drama: mkMarker('#ff6b4a') };
+  const hm = (t) => (t ? t.replace(':00', 'h').replace(':', 'h') : '');
+  function renderObjectives() {
+    if (!kp || hud.hidden) { objEl.hidden = true; return; }
+    const obs = story.objectives(kp, STORY, DRAMAS);
+    const st = obs.find((o) => o.kind === 'story');
+    const dr = obs.filter((o) => o.kind === 'drama' && o.today && kp.time.min <= toMinutes(o.to));
+    const row = (o, cls, icon, title) => `<div class="kp-obj ${cls}" data-where="${o.where}"><span class="kp-arrow">${icon}</span><div><small>${esc(title)}</small><b>${esc(fill(o.task))}</b><em>${esc(placeName(o.where))}${o.from ? ` · ${hm(o.from)}-${hm(o.to)}` : ''}${o.hint && cls === 'story' ? ` · ${esc(fill(o.hint))}` : ''}<span class="kp-dist"></span></em></div></div>`;
+    const html = (st ? row(st, 'story', '➤', `📌 ${st.chapter}`) : '') + dr.slice(0, 2).map((o) => row(o, 'drama', '➤', `🔥 Có biến · ${o.title}`)).join('');
+    if (objEl.dataset.html !== html) { objEl.innerHTML = html; objEl.dataset.html = html; }
+    objEl.hidden = !html;
+    markers.story.userData.where = st ? st.where : null;
+    markers.drama.userData.where = dr[0] ? dr[0].where : null;
+  }
+  const toMinutes = (hhmm) => { const [h, m] = String(hhmm || '23:59').split(':').map(Number); return h * 60 + (m || 0); };
+  function updateObjectives(t) {
+    for (const m of Object.values(markers)) {
+      const d = m.userData.where && doorOf(m.userData.where);
+      m.visible = !!(d && where === 'street' && mode !== 'menu');
+      if (m.visible) { m.position.set(d.x, 4.3 + Math.sin(t * 2.4) * 0.18, d.z); m.rotation.y = t * 1.6; }
+    }
+    if (objEl.hidden) return;
+    objEl.querySelectorAll('.kp-obj').forEach((el) => {
+      const d = doorOf(el.dataset.where), arrow = el.querySelector('.kp-arrow'), dist = el.querySelector('.kp-dist');
+      if (!d) return;
+      if (where !== 'street') { arrow.style.transform = 'none'; arrow.textContent = '🚪'; dist.textContent = ' · ra phố trước'; return; }
+      const a = fp.arrowTo({ x: d.x, z: d.z }); arrow.textContent = '➤'; arrow.style.transform = `rotate(${a.deg}deg)`;
+      dist.textContent = a.dist < 3 ? ' · tới rồi, bấm E' : ` · ${Math.round(a.dist)} m`;
+    });
   }
 
   // ---------- start screen ----------
   let oldProfile = null;
   function showStart() {
-    mode = 'menu'; hud.hidden = true; prompt.hidden = true; show('street');
+    mode = 'menu'; hud.hidden = true; prompt.hidden = true; objEl.hidden = true; show('street');
     const lastName = Object.values(profile.runs || {}).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0)).map((r) => r.name).find(Boolean) || '';
     const c = card(`<div class="kp-kicker">BẢN THỬ · GIAI ĐOẠN 1</div><h2>Khu phố T&amp;M</h2>
-      <p>Khu phố 7, phường Tâm Mỹ. Bạn thuê một phòng ở Dãy trọ Bình An, đi làm ở Trà Sữa Full Topping, ăn bánh mì đầu hẻm, đọc nhóm Xóm Ơi, và sống tiếp, mãi mãi.</p>
+      <p>Khu phố 7, phường Tâm Mỹ. Bạn thuê một phòng ở Dãy trọ Bình An, sáng đi làm ở một trong 7 công ty (hoặc Trà Sữa Full Topping), ăn bánh mì đầu hẻm, đọc nhóm Xóm Ơi, và sống tiếp, mãi mãi.</p>
       ${kp ? `<p class="kp-muted">Đang ở: ${esc(dateOf(kp.time.day).label)} · ${fmtVND(kp.player.money)}</p>` : `<label class="kp-field">Tên của bạn<input id="kpName" maxlength="16" value="${esc(lastName)}" placeholder="VD: Linh" autocomplete="off"></label>`}
       <div class="kp-btns">${kp ? '<button class="btn primary" id="kpGo">Về khu phố →</button><button class="btn ghost" id="kpNew">Bắt đầu lại</button>' : '<button class="btn primary" id="kpGo">Dọn vào ở →</button>'}<button class="btn ghost" id="kpBack">← Menu chính</button></div>
       <p class="kp-note">Một số luật, giá cả được dùng làm chất liệu chơi (thông tin giải trí, không phải tư vấn pháp lý).</p>`);
     c.querySelector('#kpGo').onclick = () => {
-      if (!kp) { const name = (c.querySelector('#kpName').value || '').trim() || 'Bạn'; kp = world.newGame({ name, seed: (Date.now() % 2147483646) + 1, now: Date.now(), profile: oldProfile || undefined, soloRuns: profile.runs, companyName }); save(); }
+      if (!kp) { const name = (c.querySelector('#kpName').value || '').trim() || 'Bạn'; kp = world.newGame({ name, seed: (Date.now() % 2147483646) + 1, now: Date.now(), profile: oldProfile || undefined, soloRuns: profile.runs, companyName }); story.ensureStory(kp); storyEvents(story.newDay(kp, DRAMAS)); save(); }
+      storyEvents(story.progress(kp, STORY));
       enterPlace('room', true);
     };
     const nb = c.querySelector('#kpNew'); if (nb) nb.onclick = () => { oldProfile = kp.profile; kp = null; showStart(); }; // the hồ sơ cá nhân is kept
@@ -151,7 +237,12 @@ export function startKhupho({ scene, camera, input, onExit }) {
     fp.teleport(sp[0], sp[1], sp[2] ?? 0);
     hud.hidden = false; mode = 'play'; renderHud(); touchUI(true); save();
     if (!isTouch) fp.lock();
-    if (morning) toast(`Chào buổi sáng. ${dateOf(kp.time.day).label}.`);
+    if (k !== 'street') { const pid = k === 'room' ? 'phongtro' : k; story.count(kp, 'visit', pid); storyEvents(story.progress(kp, STORY)); setTimeout(() => { if (mode === 'play' && where === k) playScenes(pid); }, 250); }
+    if (morning) {
+      const job = ['tm', 'tech', 'audit', 'bama', 'agency', 'event', 'hr'].map(soloRunAt).filter(Boolean)[0];
+      const wd = dateOf(kp.time.day).weekday, o = job && office.OFFICES[job.company];
+      toast(`Chào buổi sáng. ${dateOf(kp.time.day).label}.${o && wd > 0 && wd < 6 ? ` 💼 ${office.hoursText(job.company).split('-')[0]} vào làm ở ${companyName(job.company)} (${o.where}).` : ''}`);
+    }
   }
   function exitToStreet(fromPlaceId) {
     const d = street.doors[fromPlaceId];
@@ -186,11 +277,16 @@ export function startKhupho({ scene, camera, input, onExit }) {
     }
     if (where === 'street') {
       if (t.kind === 'npc') return talk(t.id);
-      if (t.id === 'phongtro') return enterPlace('room');
-      if (t.id === 'noithat') return openFurniture();
-      if (t.id === 'trasua') { if (!world.isOpen(kp, 'trasua')) return doorPanel('trasua'); return enterPlace('trasua'); }
-      return doorPanel(t.id);
+      const entering = t.id === 'phongtro' || (t.id === 'trasua' && world.isOpen(kp, 'trasua'));
+      if (!entering) { did('visit', t.id); if (playScenes(t.id, () => streetDoor(t.id))) return; }
+      return streetDoor(t.id);
     }
+  }
+  function streetDoor(id) {
+    if (id === 'phongtro') return enterPlace('room');
+    if (id === 'noithat') return openFurniture();
+    if (id === 'trasua' && world.isOpen(kp, 'trasua')) return enterPlace('trasua');
+    return doorPanel(id);
   }
   function talk(pid) {
     const n = npcs.find((x) => x.id === pid); if (!n) return;
@@ -206,33 +302,72 @@ export function startKhupho({ scene, camera, input, onExit }) {
     const work = world.canWork(kp, placeId);
     let actions = '';
     if (open && foods.length) actions += foods.map((f) => `<button class="btn kp-food" data-food="${f.id}">${esc(f.name)} · ${fmtVND(econ.priceOf(kp.economy, f.id) ?? f.price)}</button>`).join('');
+    const cos = office.officesAt(placeId);
+    const coInfo = cos.map((co) => {
+      const run = soloRunAt(co), o = office.OFFICES[co];
+      return `<p class="kp-muted">💼 <b>${esc(companyName(co))}</b> · ${esc(o.where)} · giờ làm ${office.hoursText(co)} · ${run ? `bạn đang thực tập (ngày ${run.day}/45)` : 'đang tuyển thực tập sinh'}</p>`;
+    }).join('');
+    actions += cos.map((co) => `<button class="btn${office.canGoToWork(kp, co).ok ? ' primary' : ''}" data-work="${co}">💼 ${soloRunAt(co) ? 'Vào làm' : 'Ứng tuyển'} ở ${esc(companyName(co))}</button>`).join('');
     if (placeId === 'xeom') actions += '<button class="btn" id="kpRide">Gọi xe ôm đi…</button>';
     if (placeId === 'congan' && !kp.player.tamTru) actions += '<button class="btn" id="kpTamTru">Đăng ký tạm trú</button>';
     const c = card(`<div class="kp-kicker">${esc(p.kindLabel || '')}</div><h3>${esc(p.name)}</h3>
       <p>${esc(p.desc || '')}</p>
       <p class="kp-muted">${open ? '🟢 Đang mở cửa' : '🔴 Đang đóng cửa'}${p.hoursText ? ' · ' + esc(p.hoursText) : ''}</p>
       ${staff ? `<p class="kp-muted">Ở đây có: ${esc(staff)}</p>` : ''}
+      ${coInfo}
       ${work && !work.ok && work.reason ? `<p class="kp-hint">💼 ${esc(work.reason)}</p>` : ''}
       <div class="kp-btns kp-wrap">${actions}<button class="btn ghost" id="kpClose">Đi tiếp</button></div>`);
     c.querySelectorAll('[data-food]').forEach((b) => { b.onclick = () => eatAt(placeId, b.dataset.food); });
+    c.querySelectorAll('[data-work]').forEach((b) => { b.onclick = () => goToWork(b.dataset.work); });
     c.querySelector('#kpClose').onclick = closeOverlay;
     const ride = c.querySelector('#kpRide'); if (ride) ride.onclick = () => rideMenu();
-    const tt = c.querySelector('#kpTamTru'); if (tt) tt.onclick = () => { const r = world.registerTamTru(kp); toast(r.ok ? r.text : r.reason); save(); closeOverlay(); };
+    const tt = c.querySelector('#kpTamTru'); if (tt) tt.onclick = () => { const r = world.registerTamTru(kp); toast(r.ok ? r.text : r.reason); save(); closeOverlay(); storyEvents(story.progress(kp, STORY)); };
   }
   // Nội Thất Nhà Mình + Sắp xếp phòng (sim/home.js): buying changes money and the room, both saved right away
   function openFurniture() {
     const r = openOverlay();
-    showFurnitureShop({ root: r, kp, open: world.isOpen(kp, 'noithat'), toast, onChange: () => { room.applyDecor(ensureHome(kp).placed); save(); renderHud(); }, onClose: () => { save(); closeOverlay(); } });
+    showFurnitureShop({ root: r, kp, open: world.isOpen(kp, 'noithat'), toast, onChange: () => { room.applyDecor(ensureHome(kp).placed); did('furniture'); renderHud(); }, onClose: () => { save(); closeOverlay(); } });
   }
   function openDecor() {
     const r = openOverlay();
     showDecor({ root: r, kp, onChange: () => { room.applyDecor(ensureHome(kp).placed); save(); }, onClose: () => { save(); closeOverlay(); } });
+  }
+  // ---------- going to work at the 7 companies (sim/office.js): the day itself is played in Solo ----------
+  const soloRunAt = (co) => Object.values(profile.runs || {}).filter((r) => r && r.company === co && !r.ended).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))[0] || null;
+  function goToWork(co) {
+    const g = office.canGoToWork(kp, co);
+    if (!g.ok) { toast(g.reason); return; }
+    office.leaveForWork(kp, co); save();
+    const dbg = /[?&]debug=1/.test(location.search) ? '&debug=1' : '';
+    location.href = `${location.pathname}?kp=1&open=work&co=${co}&name=${encodeURIComponent(kp.player.name || '')}${dbg}`;
+  }
+  function backFromWork() {
+    let h = null;
+    try { h = JSON.parse(localStorage.getItem('kp_handoff_v1') || 'null'); localStorage.removeItem('kp_handoff_v1'); } catch { /* private mode */ }
+    if (!kp || !kp.work) return false;
+    const co = kp.work.co;
+    const r = office.finishWorkday(kp, h || {}, { now: Date.now() });
+    if (r.ok && h && h.worked) { story.count(kp, 'office'); storyEvents(story.progress(kp, STORY)); }
+    storyEvents(story.tickDramas(kp, DRAMAS));
+    world.importSoloRuns(kp, profile.runs, companyName);
+    save();
+    show('street');
+    const d = street.doors[(office.OFFICES[co] || {}).place];
+    if (d) fp.teleport(d.x, d.z + (d.ry === PI ? 0.9 : -0.9), d.ry);
+    hud.hidden = false; mode = 'play'; renderHud(); touchUI(true);
+    const c = card(`<div class="kp-kicker">${esc(dateOf(kp.time.day).label)} · ${hhmm(kp.time.min)}</div><h3>${h && h.worked ? 'Tan làm' : 'Về lại khu phố'} · ${esc(companyName(co))}</h3>
+      <ul class="kp-list">${(r.lines.length ? r.lines : ['Bạn về lại khu phố.']).map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
+      <p class="kp-muted">Buổi tối là của bạn: ăn gì đó, ghé trà sữa làm thêm ca, hoặc về phòng ngủ.</p>
+      <div class="kp-btns"><button class="btn primary" id="kpOk">Ra phố →</button></div>`);
+    c.querySelector('#kpOk').onclick = () => { closeOverlay(); (r.events || []).forEach(handleEvent); };
+    return true;
   }
   function eatAt(placeId, foodId) {
     const r = world.buyFood(kp, foodId);
     toast(r.ok ? `${(FOOD[foodId] || {}).name}${r.price ? ': ' + fmtVND(-r.price) : ''}${r.tab ? ' (ghi sổ)' : ''}. ${r.line || ''}` : r.reason);
     (r.events || []).forEach(handleEvent);
     save(); closeOverlay();
+    if (r.ok) did('eat');
   }
   function rideMenu() {
     const dests = ['trasua', 'phongtro', 'cho', 'toanha', 'tramyte', 'bama', 'comtam', 'daumoi', 'noithat'].filter((id) => street.doors[id]);
@@ -241,7 +376,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
       const fee = 15000; if (kp.player.money < fee) { toast('Không đủ tiền đi xe ôm.'); return closeOverlay(); }
       world.addMoney(kp, -fee, 'xeom', 'Xe ôm chú Lương');
       (world.advance(kp, 4, 'idle') || []).forEach(handleEvent);
-      const d = street.doors[b.dataset.go]; closeOverlay(); fp.teleport(d.x, d.z + (d.ry === PI ? 0.9 : -0.9), d.ry); save();
+      const d = street.doors[b.dataset.go]; closeOverlay(); fp.teleport(d.x, d.z + (d.ry === PI ? 0.9 : -0.9), d.ry); save(); did('ride');
     }; });
     c.querySelector('#kpClose').onclick = closeOverlay;
   }
@@ -260,10 +395,14 @@ export function startKhupho({ scene, camera, input, onExit }) {
       save(); renderHud();
       if (out.events) out.events.forEach((e) => e.text && toast(e.text));
       closeOverlay();
+      did('shift');
     } });
   }
   function goSleep() {
     const report = world.sleep(kp);
+    story.count(kp, 'sleep');
+    const dramaEv = story.newDay(kp, DRAMAS);
+    for (const e of dramaEv) if (e.type === 'drama_start') (report.notes = report.notes || []).push(`🔥 Có biến mới trong khu phố: "${e.title}". Mai xem góc trái màn hình để biết đi đâu.`);
     const cozy = cozyScore(kp), bonus = morningMood(kp);
     if (bonus > 0) {
       kp.player.needs.mood = Math.min(100, Math.round((kp.player.needs.mood || 0) + bonus));
@@ -272,7 +411,7 @@ export function startKhupho({ scene, camera, input, onExit }) {
     }
     save();
     const r = openOverlay();
-    showNight({ root: r, report, onNext: () => { save(); enterPlace('room', true); } });
+    showNight({ root: r, report, onNext: () => { save(); enterPlace('room', true); storyEvents(dramaEv.filter((e) => e.type !== 'drama_start')); storyEvents(story.progress(kp, STORY)); } });
   }
   function pause() {
     if (mode === 'menu') return;
@@ -323,9 +462,12 @@ export function startKhupho({ scene, camera, input, onExit }) {
         const m = Math.floor(acc); acc -= m;
         const events = world.advance(kp, m, where === 'street' ? 'walk' : 'idle') || [];
         events.forEach(handleEvent);
+        storyEvents(story.tickDramas(kp, DRAMAS));
         if (elapsed - lastSave > 10) { lastSave = elapsed; save(); }
         renderHud();
       }
+      if (cardQueue.length) showQueuedCard();
+      updateObjectives(elapsed);
       target = fp.pick(candidates());
       prompt.hidden = !target;
       if (isTouch) { const ab = $('#actBtn'); if (ab) ab.hidden = !target; }
@@ -336,7 +478,9 @@ export function startKhupho({ scene, camera, input, onExit }) {
   // debug hooks for the e2e tests
   window.__kp = { get kp() { return kp; }, get mode() { return mode; }, get where() { return where; }, fp, street, PLACES3D, world, interact: () => interact(), enter: enterPlace, exit: exitToStreet, doorPanel, sleep: goSleep, openFurniture, openDecor, room, startShift, save };
 
-  showStart();
+  window.__kp.goToWork = goToWork;
+  window.__kp.story = { objectives: () => story.objectives(kp, STORY, DRAMAS), beat: () => { const c = story.currentBeat(kp, STORY); return c && { ...c.beat, chapter: c.chapter.title, chIndex: c.chIndex, seen: !!kp.story.seen[c.beat.id] }; }, scenesAt: (pid) => story.scenesAt(kp, pid, STORY, DRAMAS).map((x) => ({ kind: x.kind, ref: x.ref, task: x.task })), playScenes, startShift, rideMenu, openXomoi, openProfile };
+  if (!backFromWork()) showStart();
   return { update, debug: window.__kp };
 }
 
@@ -361,6 +505,13 @@ function injectCSS() {
 .kp-hud-r { display: flex; gap: 6px; } .kp-hud-r button { width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--ink, #1d1d1f); background: #fffaf3; font-size: 18px; position: relative; cursor: pointer; }
 .kp-hud-r em { position: absolute; top: -6px; right: -6px; background: #e63946; color: #fff; border-radius: 99px; font-style: normal; font-size: 11px; font-weight: 900; padding: 1px 6px; }
 #kpPrompt { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 41; background: #fffaf3; border: 2px solid var(--ink, #1d1d1f); border-radius: 99px; padding: 8px 16px; font-weight: 800; font-size: 14px; max-width: 92vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+#kpObj { position: fixed; top: 112px; left: 10px; z-index: 40; display: grid; gap: 6px; width: min(340px, calc(100vw - 20px)); pointer-events: none; }
+.kp-obj { display: grid; grid-template-columns: 30px 1fr; gap: 8px; align-items: center; background: rgba(255, 250, 243, .95); border: 2px solid var(--ink, #1d1d1f); border-left: 8px solid #b18cff; border-radius: 14px; padding: 6px 10px; box-shadow: 3px 3px 0 var(--ink, #1d1d1f); }
+.kp-obj.drama { border-left-color: #ff6b4a; }
+.kp-obj small { display: block; font-size: 11px; font-weight: 900; color: #6b6257; letter-spacing: .03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kp-obj b { display: block; font-size: 14.5px; line-height: 1.25; } .kp-obj em { display: block; font-style: normal; font-size: 12px; color: #6b6257; line-height: 1.3; }
+.kp-arrow { width: 30px; height: 30px; border-radius: 50%; background: #1d1d1f; color: #fff; display: grid; place-items: center; font-size: 15px; transition: transform .12s linear; }
+@media (max-width: 560px) { #kpObj { top: auto; bottom: 186px; width: min(300px, calc(100vw - 150px)); } .kp-obj em { display: none; } }
 #kpToast { position: fixed; left: 50%; bottom: 150px; transform: translateX(-50%); z-index: 60; pointer-events: none; background: #1d1d1f; color: #fff; border-radius: 12px; padding: 8px 14px; font-weight: 700; font-size: 14px; max-width: 90vw; }
 @media (max-width: 560px) { .kp-needs { flex-wrap: wrap; } #kpPrompt { bottom: 150px; } }
 `;

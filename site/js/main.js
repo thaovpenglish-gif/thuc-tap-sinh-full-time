@@ -35,11 +35,11 @@ function frame() {
 }
 
 let solo = null; // the T&M Solo mode is built once, then reused (its menu lists the saved runs)
-async function startSolo() {
+async function startSolo(bridge = null) {
   $('#mainMenu').hidden = true;
   if (solo) { active = solo; solo.showMenu(); return; }
   const { startSolo: start } = await import('./modes/solo.js');
-  solo = start({ scene, camera, input, onExit: () => showMainMenu() });
+  solo = start({ scene, camera, input, onExit: () => showMainMenu(), bridge });
   active = solo;
 }
 
@@ -114,6 +114,13 @@ async function boot() {
     await startLegacy();
   } else if (FLAGS.mp && (new URLSearchParams(location.search).get('room') || new URLSearchParams(location.search).get('open') === 'mp')) {
     await startMulti(); // opened from an invite link, or coming from Solo
+  } else if (FLAGS.kp && new URLSearchParams(location.search).get('open') === 'work') {
+    // Khu phố → a workday at one of the 7 companies, played in Solo; the result goes back through localStorage
+    const q = new URLSearchParams(location.search), dbg = q.get('debug') === '1' ? '&debug=1' : '';
+    await startSolo({ co: q.get('co') || 'tm', name: (q.get('name') || '').slice(0, 16), back: (info) => {
+      try { localStorage.setItem('kp_handoff_v1', JSON.stringify({ ...info, at: Date.now() })); } catch { /* private mode */ }
+      location.href = `${location.pathname}?kp=1&open=kp${dbg}`;
+    } });
   } else if (FLAGS.kp && new URLSearchParams(location.search).get('open') === 'kp') {
     await startKhupho();
   } else {

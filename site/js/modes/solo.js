@@ -62,7 +62,11 @@ const GIAO_LINES = [
   ['giao', 'Nếu bạn thấy vui, cho chị xin một cốc cà phê nhé. Không có cũng không sao, chị không trừ lương ai cả.'],
 ];
 
-export function startSolo({ scene, camera, input, onExit }) {
+/**
+ * bridge (optional, from Khu phố T&M): { co, name, back(info) }. Opens straight into that company's run (or its
+ * interview), plays one workday, then hands back to the neighbourhood instead of showing the next day.
+ */
+export function startSolo({ scene, camera, input, onExit, bridge = null }) {
   let profile = validateProfile(store.json(PROFILE_KEY)) || emptyProfile();
   let R = null;          // active run
   let CO = null;         // active company module
@@ -784,7 +788,7 @@ export function startSolo({ scene, camera, input, onExit }) {
   const statGrid = () => `<div class="stat-grid"><div><b>${Math.round(R.st.uy)}</b><span>Uy tín</span></div><div><b>${Math.round(R.st.dr)}</b><span>Drama</span></div><div><b>${Math.round(R.st.nl)}</b><span>Năng lượng</span></div></div>`;
   const relChips = () => Object.entries(R.rel).filter(([id, v]) => v !== 0 && CO && CO.cast[id]).sort((a, b) => b[1] - a[1]).slice(0, 8)
     .map(([id, v]) => `<span>${charInfo(id).emoji} ${esc(charInfo(id).name)} ${v > 0 ? '❤️'.repeat(Math.min(v, 5)) : '💔'.repeat(Math.min(-v, 3))}</span>`).join('');
-  const navBtn = '<button class="btn ghost" data-nav="menu">📋 Hồ sơ sự nghiệp</button>';
+  const navBtn = bridge ? '' : '<button class="btn ghost" data-nav="menu">📋 Hồ sơ sự nghiệp</button>';
   function wireNav() { document.querySelectorAll('#ovCard [data-nav="menu"]').forEach((b) => { b.onclick = () => { save(); hideOverlay(); showMenu(); }; }); }
 
   function beginDay() {
@@ -912,6 +916,7 @@ export function startSolo({ scene, camera, input, onExit }) {
     const pending = [];
     let ended = null;
     const fromDay = R.day;
+    bridgeDay = { day: fromDay, interview: isInterview };
     if (diary) R.diary = [...(R.diary || []), { day: fromDay, title: d.title, text: fmt(diary) }].slice(-60);
     if (!isInterview) {
       // pay accrues per workday; commute costs money; tasks still open count as late
@@ -959,7 +964,7 @@ export function startSolo({ scene, camera, input, onExit }) {
       ${isInterview ? `<div class="pct">💰 Mức đã deal: ${R.tier ? `${TIERS[R.tier].label}/tháng (${TIERS[R.tier].name})` : '—'} · Ví: ${fmtVND(Math.round(R.money))}</div>` : `<div class="pct">📋 Việc vặt: ${sum.done} xong · ${sum.late + (sum.open || 0)} trễ · 🚌 Đi lại −${fmtVND(C.COMMUTE_COST)} · 💰 Ví: ${fmtVND(Math.round(R.money))}</div>`}
       <div class="rels">${relChips()}</div>
       <p class="muted">💾 Đã lưu: ${esc(runLabel(R, (t) => TIERS[t].label, companyName))}</p>
-      <div class="btns"><button class="btn primary" id="nextCard">${isInterview ? 'Tiếp tục →' : 'Mai đi làm tiếp →'}</button><button class="btn" id="dayNote">📓 Sổ tay</button><button class="btn" id="dayPhone">💬 Teams</button>${navBtn}</div>
+      <div class="btns"><button class="btn primary" id="nextCard">${isInterview ? 'Tiếp tục →' : bridge ? 'Tan làm →' : 'Mai đi làm tiếp →'}</button><button class="btn" id="dayNote">📓 Sổ tay</button><button class="btn" id="dayPhone">💬 Teams</button>${navBtn}</div>
       ${!isInterview && !ended ? '<div class="resign-row"><button class="link" id="resignBtn">🚪 Nghỉ việc ở đây (kết thúc lượt chơi này)</button></div>' : ''}
     `);
     R.tasks = [];
@@ -993,7 +998,7 @@ export function startSolo({ scene, camera, input, onExit }) {
   function showNextPending() {
     mode = 'overlay';
     const q = R.pending || [];
-    if (!q.length) { hideOverlay(); if (R.ended) showEnding(); else showDayIntro(); return; }
+    if (!q.length) { hideOverlay(); if (R.ended) showEnding(); else if (bridge && bridgeDay) bridgeBack(); else showDayIntro(); return; }
     const card = q[0];
     const done = (fx) => { if (fx) applyFx(fx); R.pending = (R.pending || []).slice(1); save(); showNextPending(); };
     if (card.type === 'life') {
@@ -1091,8 +1096,9 @@ export function startSolo({ scene, camera, input, onExit }) {
       <div class="pct">📅 ${R.ended ? R.ended.day : R.day} ngày · 📋 Review: ${(R.reviews || []).map((x) => x.grade).join(' ') || 'chưa có'} · 💰 Tổng lương: ${fmtVND(paid)} · Ví: ${fmtVND(Math.round(R.money))}</div>
       <div class="rels">${relChips()}</div>
       <p class="muted">Lượt chơi này đã khép lại và vẫn nằm trong hồ sơ sự nghiệp. Công ty tiếp theo đang tuyển.</p>
-      <div class="btns"><button class="btn primary" id="toCompanies">Ứng tuyển công ty khác →</button>${navBtn}</div>`);
+      <div class="btns">${bridge ? '<button class="btn primary" id="toKp">Về khu phố →</button>' : `<button class="btn primary" id="toCompanies">Ứng tuyển công ty khác →</button>${navBtn}`}</div>`);
     wireNav();
+    if (bridge) { $('#toKp').onclick = () => bridgeBack(); return; }
     $('#toCompanies').onclick = () => { hideOverlay(); showCompanies(R.name); };
   }
 
@@ -1226,7 +1232,7 @@ export function startSolo({ scene, camera, input, onExit }) {
   $('#soloName').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#soloNew').click(); });
   $('#companyBack').onclick = () => { $('#companyMenu').hidden = true; showMenu(); };
   $('#companyName').addEventListener('input', () => { $('#soloName').value = $('#companyName').value; });
-  $('#soloBack').onclick = () => { hideGameUI(); $('#soloMenu').hidden = true; mode = 'away'; onExit && onExit(); };
+  $('#soloBack').onclick = () => { hideGameUI(); $('#soloMenu').hidden = true; mode = 'away'; if (bridge) bridgeBack(); else if (onExit) onExit(); };
 
   // cloud saves (email + game password, or an 8-character code)
   createCloudPanel({
@@ -1250,7 +1256,8 @@ export function startSolo({ scene, camera, input, onExit }) {
   const leaveRun = () => { save(); $('#pause').hidden = true; clearTimeout(ringTimer); stopRing(); };
   $('#restartBtn').textContent = '📋 Hồ sơ sự nghiệp (đổi lượt / nhảy công ty)';
   $('#restartBtn').onclick = () => { leaveRun(); showMenu(); };
-  $('#homeBtn').onclick = () => { leaveRun(); hideGameUI(); mode = 'away'; onExit && onExit(); };
+  $('#homeBtn').onclick = () => { leaveRun(); hideGameUI(); mode = 'away'; if (bridge) bridgeBack(); else if (onExit) onExit(); };
+  if (bridge) { $('#homeBtn').textContent = '🏘️ Về khu phố (chưa tính công hôm nay)'; $('#restartBtn').hidden = true; }
   $('#phoneBtn').onclick = () => { if (mode === 'play' || mode === 'pause') phone.open(); };
   $('#soundBtn').onclick = () => { setSound(!isSoundOn()); $('#soundBtn').textContent = isSoundOn() ? '🔊' : '🔇'; };
   $('#soundBtn').textContent = isSoundOn() ? '🔊' : '🔇';
@@ -1405,6 +1412,20 @@ export function startSolo({ scene, camera, input, onExit }) {
     window.__tm.skipTo = (d) => { if (!R) return; R.day = d; R.step = 0; R.today = null; R.pending = []; save(); showDayIntro(); };
     window.__tm.fx = applyFx;
   }
-  showMenu();
+  // ---------- Khu phố bridge ----------
+  let bridgeDay = null; // set when a workday (or the interview) ends in this visit
+  function bridgeBack() {
+    if (R) save();
+    const info = R ? { co: R.company, coName: companyName(R.company), runId: R.id, worked: !!bridgeDay, interview: !!(bridgeDay && bridgeDay.interview),
+      ended: !!R.ended, salary: R.salary || 0, status: R.status, soloDay: bridgeDay ? bridgeDay.day : R.day } : { co: bridge.co, worked: false };
+    bridge.back(info);
+  }
+  async function bridgeStart() {
+    const open = listRuns(profile).find((r) => r.company === bridge.co && !r.ended);
+    if (open) return resumeRun(open.id);
+    $('#soloName').value = bridge.name || ''; $('#companyName').value = bridge.name || 'Bạn';
+    return applyTo(bridge.co);
+  }
+  if (bridge) { window.__tm.bridgeBack = bridgeBack; bridgeStart(); } else showMenu();
   return { update, showMenu };
 }
