@@ -101,8 +101,8 @@ export function startKhupho({ scene, camera, input, onExit }) {
   const isTouch = matchMedia('(pointer: coarse)').matches;
 
   const touchUI = (on) => { const m = $('#mobile'); if (m) m.hidden = !(on && isTouch); const ch = $('#crosshair'); if (ch) ch.hidden = !(on && !isTouch); };
-  function openOverlay() { mode = 'overlay'; fp.unlock(); ov.hidden = false; ov.innerHTML = ''; prompt.hidden = true; touchUI(false); const t = $('#kpToast'); if (t) t.hidden = true; return ov; }
-  function closeOverlay() { ov.hidden = true; ov.innerHTML = ''; mode = 'play'; renderHud(); touchUI(true); if (!isTouch) fp.lock(); }
+  function openOverlay() { mode = 'overlay'; fp.unlock(); ov.hidden = false; ov.innerHTML = ''; ov.scrollTop = 0; ov.classList.remove('kp-full'); prompt.hidden = true; touchUI(false); const t = $('#kpToast'); if (t) t.hidden = true; return ov; }
+  function closeOverlay() { ov.hidden = true; ov.innerHTML = ''; ov.scrollTop = 0; mode = 'play'; renderHud(); touchUI(true); if (!isTouch) fp.lock(); }
   function card(html) { const r = openOverlay(); r.innerHTML = `<div class="kp-card">${html}</div>`; return r.firstChild; }
 
   // ---------- HUD ----------

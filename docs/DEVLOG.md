@@ -3,6 +3,22 @@
 Diary of what was built, decided and fixed, newest first. Design reference: `docs/GAME_DESIGN.md`.
 Content format: `docs/COMPANY_CONTRACT.md`.
 
+## 2026-11-08 — Khu phố: companies, main story, 28 dramas (Owner requests 20-21)
+
+- **Go to work at the 7 companies** (`sim/office.js`): office hours per company, enter up to 2h30 late, weekdays only,
+  once a day. The workday is Solo itself: `?kp=1&open=work&co=<id>` opens the run (or its interview) through
+  `startSolo({ bridge })`; "Tan làm" writes `kp_handoff_v1` to localStorage and reloads into Khu phố, which moves the
+  clock to closing time (feeding the player on the way), pays salary/22 and logs +1 day in the hồ sơ (`solo-<runId>`).
+- **Story + dramas** (`sim/story.js`, `ui/scene.js`, format `docs/khupho/STORY_FORMAT.md`, checker
+  `scripts/check-kp-story.mjs`): beats are a scene at a door and/or a need counted from the beat start; dramas start one
+  every 3-5 days (≤ 2 at once), acts have a day and a time window, missed acts go to Xóm Ơi. HUD: "📌 Việc chính" and
+  "🔥 Có biến" with a rotating arrow, distance and a floating diamond over the door. Content written by agents:
+  7 chapters / 55 beats, 28 dramas / 90 acts.
+- Fixes: room/tea-shop interactables were in local coordinates (E did nothing inside); Esc only frees the mouse;
+  mouse-drag look and pointer lock on touch-capable laptops; overlay scroll reset between panels.
+- Tests: `tests/kp-office.test.mjs`, `tests/kp-story.test.mjs`, e2e `kp-work.cjs` (interview + workday),
+  `kp-story.cjs` (follows the HUD through the chapters).
+
 ## 2026-11-07 — Khu phố T&M phase 1 (beta, behind `?kp=1`)
 
 An endless neighbourhood life sim beside Solo. Open with `?kp=1` (card "Khu phố T&M · Bản thử") or `?kp=1&open=kp`.

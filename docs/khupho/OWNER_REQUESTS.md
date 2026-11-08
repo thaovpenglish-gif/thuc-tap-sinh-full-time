@@ -46,6 +46,14 @@ Nguồn sự thật cho agent thiết kế. Mọi mục ở đây phải có m�
     kệ, chỗ ngồi, đèn bàn, quạt đứng, gương). Đồ to do ba gác Chú Bảy chở về (+30.000đ). Mua là hiện ngay trong
     phòng; đổi món ở "Sắp xếp phòng" (góc tủ đồ). Phòng càng ấm cúng, sáng dậy tâm trạng càng cao (tối đa +10).
     Code: data/furniture.js, sim/home.js, ui/furniture.js, map/interiors.js (buildDecor). Đã làm.
+20. **Đi làm ở công ty ngay trong khu phố** ("t sẽ dậy và đi làm được ở trong khu phố này"): cửa Cao ốc (T&M, Tech,
+    Cân Đối), Ba & Má, Agency, Event, Lô C (HR) có nút Ứng tuyển / Vào làm; ngày làm chơi y như Solo rồi 17h30 tan làm
+    về phố, ví +1 ngày phụ cấp, hồ sơ +1 ngày. Code: sim/office.js, cầu nối trong modes/solo.js + main.js. Đã làm.
+21. **Có cốt truyện và đủ các drama, không để người chơi lang thang** ("nhớ cho tất cả mấy cái drama vào nha, và có
+    cốt truyện dùm t được ko, ko để cho người chơi đi lang thang quá nhiều để bị chán"): cốt truyện chính 7 chương
+    (Phòng số 5 → Tin đồn Tâm Mỹ Plaza → Hội chợ Khu phố 7 → Tết), 28 drama của mục 8.3 thành cảnh chơi được; góc
+    trái luôn có "📌 Việc chính" và "🔥 Có biến" kèm mũi tên, khoảng cách và dấu trên cửa. Định dạng:
+    docs/khupho/STORY_FORMAT.md. Code: sim/story.js, ui/scene.js, data/story.js, dramas_a.js, dramas_b.js. Đã làm.
 
 Quyết định tạm (Owner chưa phản đối): chế độ mới "Khu phố T&M" tách khỏi Solo; quán làm đầu tiên là trà sữa;
 người chơi được nghỉ để chuyển chỗ làm.
