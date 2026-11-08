@@ -130,7 +130,11 @@ const OUT = process.env.SHOTS || null;
       case 'tamtru': await goTo('congan'); await playOverlay(); await goTo('congan'); { const t = p.locator('#kpOverlay #kpTamTru'); if (await t.count()) await t.click(); } await playOverlay(); break;
       case 'work': case 'shift': case 'office': if (!(await shift())) await sleepNow(); break;
       case 'eat': await waitUntil(7 * 60); await goTo('banhmi'); await playOverlay(); await goTo('banhmi'); { const f = p.locator('#kpOverlay [data-food]').first(); if (await f.count()) await f.click(); } await playOverlay(); break;
-      case 'furniture': await waitUntil(9 * 60); await p.evaluate(() => { window.__kp.kp.player.money += 300000; window.__kp.openFurniture(); }); await p.waitForTimeout(200); { const f = p.locator('#kpOverlay [data-buy]').first(); if (await f.count()) await f.click(); } await playOverlay(); break;
+      case 'furniture': await waitUntil(9 * 60); await p.evaluate(() => { window.__kp.kp.player.money += 300000; window.__kp.openFurniture(); }); await p.waitForTimeout(200); {
+        const where = await p.evaluate(() => { const bt = document.querySelector('#kpOverlay [data-buy]'); if (!bt) return null; const r = bt.getBoundingClientRect(), ov = document.querySelector('#kpOverlay'); return { top: Math.round(r.top), h: Math.round(r.height), vh: innerHeight, ovTop: Math.round(ov.getBoundingClientRect().top), ovScroll: ov.scrollTop, kids: ov.children.length, first: ov.firstElementChild && ov.firstElementChild.className }; });
+        if (where && (where.top < 0 || where.top + where.h > where.vh)) { problems.push('furniture buy button off screen: ' + JSON.stringify(where)); await shot('noithat_offscreen'); }
+        await p.evaluate(() => { const bt = document.querySelector('#kpOverlay [data-buy]'); if (bt) bt.click(); });
+      } await playOverlay(); break;
       case 'sleep': case 'day': case 'drama': case 'money': case 'cozy': await sleepNow(); break;
       case 'xomoi': await p.evaluate(() => window.__kp.story.openXomoi()); await p.waitForTimeout(200); await playOverlay(); break;
       case 'profile': await p.evaluate(() => window.__kp.story.openProfile()); await p.waitForTimeout(200); await playOverlay(); break;
